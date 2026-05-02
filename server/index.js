@@ -22,12 +22,17 @@ connectDB();
 // - allow local development
 // - allow the production Vercel domain
 // - allow Vercel preview deployments for this project
+
+
 const explicitAllowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://sanwariya-project.vercel.app',
+  'https://sanwariyas.vercel.app',   
   process.env.CLIENT_URL,
 ].filter(Boolean);
+
+
 
 const vercelPreviewPattern = /^https:\/\/sanwariya-project-[a-z0-9-]+-projects\.vercel\.app$/;
 
