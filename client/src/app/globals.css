@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {  
+  --font-cormorant: 'Cormorant Garamond', serif;
+  --font-jost: 'Jost', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
+  
+  --african: #574325;
+  --coffee: #6F4E37;
+  --old-brown: #634236;
+  --dark-brown: #5D432C;
+  --chocolate: #713600;
+  --taupe: #483C32;
+  --mud: #70543E;
+  --cream: #F5EFE6;
+  --gold: #C9A84C;
+  --light-gold: #E8D5A3;
+  --parchment: #FAF3E8;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {    
+  background-color: var(--parchment);
+  color: var(--taupe);
+  font-family: var(--font-jost);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--parchment); }
+::-webkit-scrollbar-thumb { background: var(--coffee); border-radius: 3px; }
+
+/* Selection */
+::selection {
+  background-color: var(--gold);
+  color: white;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-coffee text-brand-cream px-8 py-3 font-sans font-medium tracking-widest text-xs uppercase transition-all duration-300 hover:bg-brand-african hover:shadow-lg active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border border-brand-coffee text-brand-coffee px-8 py-3 font-sans font-medium tracking-widest text-xs uppercase transition-all duration-300 hover:bg-brand-coffee hover:text-brand-cream;
+  }
+
+  .section-title {
+    @apply font-display text-4xl md:text-5xl text-brand-african font-normal leading-tight;
+  }
+
+  .section-subtitle {
+    @apply font-serif text-lg text-brand-mud italic;
+  }
+
+  .card-hover {
+    @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl;
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(135deg, var(--gold), var(--light-gold), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .divider-ornament {
+    @apply flex items-center gap-4 my-6;
+  }
+
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: '';
+    @apply flex-1 h-px bg-brand-lightgold;
+  }
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0e6d3 25%, #e8d5a3 50%, #f0e6d3 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Ornamental border */
+.ornament-border {
+  position: relative;
+}
+.ornament-border::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+}
+
+/* Product image zoom */
+.product-img-wrap {
+  overflow: hidden;
+}
+.product-img-wrap img {
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.product-img-wrap:hover img {
+  transform: scale(1.08);
+}
+
+ /* smooth gold hover */
+.gold-text {
+  color: var(--light-gold);
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.gold-text:hover {
+  opacity: 0.82;   /* balanced subtle dark */
+}
+
+@keyframes slide { 
+  from { transform: translateX(0); } 
+  to { transform: translateX(-50%); } 
+}

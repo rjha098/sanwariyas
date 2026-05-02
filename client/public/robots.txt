@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /api
+
+# Host
+Host: https://yourclothingstore.com
+
+# Sitemaps
+Sitemap: https://yourclothingstore.com/sitemap.xml
