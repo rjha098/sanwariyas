@@ -1,162 +1,339 @@
-// export default function FaqSection({ faqs }) {
-//   // Safe check if faqs data is missing
-//   if (!faqs || faqs.length === 0) return null; 
+// FILE: client/src/components/home/FaqSection.js
+"use client";
 
-//   // ── NEW EARTHY COLOR PALETTE ────────────────────────────────
-//   // Background: #FDF7F2 (Light Cream) to #F2D9C3 (Pumpkin Essence)
-//   // Headings/Active: #7A3D2A (Dark Burnt)
-//   // Default Text: #a07f61 (Warm Brown)
-//   // Accents & Borders: #BE6E5B (Terracotta)
-//   // ────────────────────────────────────────────────────────────
+import { useState } from "react";
+import Link from "next/link";
 
-//   return (
-//     <section
-//       className="py-24 md:py-32 relative"
-//       // Updated to Light Earthy Background matching the theme
-//       style={{ background: 'linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)' }}
-//     >
-//       {/* Top Decorative Line */}
-//       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
+// ── COLOR PALETTE ────────────────────────────────
+// Background : #FDF7F2 to #F2D9C3 (Light Cream to Pumpkin Essence)
+// Headings   : #7A3D2A  (Dark Burnt)
+// Body text  : #a07f61  (Warm Brown)
+// Accent     : #BE6E5B  (Terracotta)
+// ─────────────────────────────────────────────────
 
-//       <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        
-//         {/* Header */}
-//         <div className="text-center mb-16 md:mb-20">
-//           <p className="font-sans text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
-//             Common Questions
-//           </p>
-//           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold">
-//             Frequently Asked
-//           </h2>
-//           <div className="flex items-center justify-center gap-4 mt-6">
-//             <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]/60" />
-//             <span className="text-[#BE6E5B] text-lg animate-pulse">✦</span>
-//             <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]/60" />
-//           </div>
-//         </div>
+const BUILT_IN_FAQS = [
+  {
+    name: "How do I place an order at SANWARIYAS?",
+    acceptedAnswer: {
+      text: "Simply browse our wholesale catalogue, select the styles you want to source, and fill out the bulk inquiry form with your requirements — quantity, size distribution, and international shipping address. Our export desk will get back to you within 24 hours with a custom proforma quotation.",
+    },
+    category: "Ordering",
+  },
+  {
+    name: "Do you offer customization on ethnic wear?",
+    acceptedAnswer: {
+      text: "Yes — we offer full contract manufacturing support including custom fabric selection, custom size specifications, custom embroidery, print production, and private label label/OEM solutions. Detail your specifications in the B2B inquiry form.",
+    },
+    category: "Customization",
+  },
+  {
+    name: "What is the delivery timeline?",
+    acceptedAnswer: {
+      text: "Ready inventory lots are dispatched within 5–7 business days. Custom commercial manufacturing orders typically require 15–21 business days based on manufacturing load and design complexity. Timelines are committed upfront before booking.",
+    },
+    category: "Shipping",
+  },
+  {
+    name: "What is the minimum order quantity (MOQ)?",
+    acceptedAnswer: {
+      text: "Our wholesale MOQ starts strictly at 50 pieces per style. This helps boutique owners, international retailers, and commercial distributors scale up inventory efficiently. Better container pricing applies to larger order volumes.",
+    },
+    category: "Ordering",
+  },
+  {
+    name: "What fabrics do you work with?",
+    acceptedAnswer: {
+      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, Rayon, Chanderi, Tussar Silk, Velvet, Net, and high-durability mixed blends. Every lot is checked thoroughly for colorfastness and stitching tensile strength.",
+    },
+    category: "Products",
+  },
+  {
+    name: "Do you ship internationally?",
+    acceptedAnswer: {
+      text: "Yes. We export worldwide to over 50+ countries including the USA, UK, UAE, Canada, and Australia. All global export shipments are fully cargo-insured, securely crated or packed, and freight-forwarded via trackable global carrier services.",
+    },
+    category: "Shipping",
+  },
+  {
+    name: "Can I get a sample before placing a bulk order?",
+    acceptedAnswer: {
+      text: "Yes, evaluation sample pieces can be ordered to check stitching quality and fabric specifications. Samples are charged at commercial prototype rates plus shipping costs, which are fully adjusted when your bulk order invoice is generated.",
+    },
+    category: "Ordering",
+  },
+  {
+    name: "What payment methods do you accept?",
+    acceptedAnswer: {
+      text: "We process payments via secure corporate Bank Wire Transfers (SWIFT / International Telegraphic Transfers), NEFT, RTGS, and legal business invoices. For overseas trade orders, we accept clean wire payments in USD, GBP, AED, and EUR accounts.",
+    },
+    category: "Payment",
+  },
+];
 
-//         {/* FAQ Accordion List */}
-//         <div className="space-y-4">
-//           {faqs.map((faq, i) => (
-//             <details 
-//               key={i} 
-//               className="group border border-[#BE6E5B]/20 hover:border-[#BE6E5B]/60 transition-colors duration-300 rounded-lg bg-white/60 backdrop-blur-sm hover:bg-white overflow-hidden shadow-sm hover:shadow-md"
-//             >
-//               <summary className="flex justify-between items-center cursor-pointer list-none p-6 md:p-8 gap-4 select-none">
-//                 <div className="flex items-center gap-4 md:gap-6 flex-1 min-w-0">
-//                   {/* Left Indicator Bar */}
-//                   <div className="w-[3px] h-6 bg-[#BE6E5B]/30 group-open:bg-[#BE6E5B] flex-shrink-0 transition-colors duration-500 rounded-full" />
-                  
-//                   {/* Question Text */}
-//                   <span className="font-display text-lg md:text-xl text-[#7A3D2A] group-open:text-[#BE6E5B] transition-colors duration-300 font-bold">
-//                     {faq.name}
-//                   </span>
-//                 </div>
-                
-//                 {/* Plus/Cross Icon Button */}
-//                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex-shrink-0 border-2 border-[#BE6E5B]/40 group-open:border-[#BE6E5B] group-open:bg-[#BE6E5B] flex items-center justify-center transition-all duration-500 group-hover:scale-110">
-//                   <span className="text-[#7A3D2A] group-open:text-[#FDF7F2] font-sans text-xl leading-none group-open:rotate-45 inline-block transition-transform duration-500">
-//                     +
-//                   </span>
-//                 </div>
-//               </summary>
-              
-//               {/* Answer Content */}
-//               <div className="pb-8 px-6 md:px-16">
-//                 <p className="font-sans text-sm md:text-base text-[#a07f61] font-medium leading-relaxed border-t border-[#BE6E5B]/20 pt-6">
-//                   {faq.acceptedAnswer.text}
-//                 </p>
-//               </div>
-//             </details>
-//           ))}
-//         </div>
-        
-//       </div>
-//     </section>
-//   );
-// }
-
+const CATEGORY_COLORS = {
+  Ordering:      { bg: "bg-[#7A3D2A]/10", text: "text-[#7A3D2A]", border: "border-[#7A3D2A]/20" },
+  Customization: { bg: "bg-[#BE6E5B]/10", text: "text-[#BE6E5B]", border: "border-[#BE6E5B]/20" },
+  Products:      { bg: "bg-[#8B6040]/10", text: "text-[#8B6040]", border: "border-[#8B6040]/20" },
+  Shipping:      { bg: "bg-[#9A5535]/10", text: "text-[#9A5535]", border: "border-[#9A5535]/20" },
+  Payment:       { bg: "bg-[#BE6E5B]/10", text: "text-[#BE6E5B]", border: "border-[#BE6E5B]/20" },
+  Default:       { bg: "bg-[#a07f61]/10", text: "text-[#a07f61]", border: "border-[#a07f61]/20" },
+};
 
 export default function FaqSection({ faqs }) {
-  // Safe check if faqs data is missing
-  if (!faqs || faqs.length === 0) return null; 
+  const [openIndex, setOpenIndex] = useState(null);
 
-  // ── NEW EARTHY COLOR PALETTE ────────────────────────────────
-  // Background: #FDF7F2 (Light Cream) to #F2D9C3 (Pumpkin Essence)
-  // Headings/Active: #7A3D2A (Dark Burnt)
-  // Default Text: #a07f61 (Warm Brown)
-  // Accents & Borders: #BE6E5B (Terracotta)
-  // ────────────────────────────────────────────────────────────
+  // Assign categories to incoming schema items based on keywords
+  const processedIncoming = (faqs || []).map((f) => {
+    let assignedCategory = "Ordering";
+    const titleLower = f.name.toLowerCase();
+    
+    if (titleLower.includes("custom") || titleLower.includes("stitch") || titleLower.includes("design")) {
+      assignedCategory = "Customization";
+    } else if (titleLower.includes("fabric") || titleLower.includes("material") || titleLower.includes("product")) {
+      assignedCategory = "Products";
+    } else if (titleLower.includes("ship") || titleLower.includes("delivery") || titleLower.includes("timeline")) {
+      assignedCategory = "Shipping";
+    } else if (titleLower.includes("pay") || titleLower.includes("invoice") || titleLower.includes("price")) {
+      assignedCategory = "Payment";
+    }
+    
+    return { ...f, category: assignedCategory };
+  });
+
+  // Filter out semantic duplicates dynamically
+  const finalFaqsList = [...processedIncoming];
+
+  BUILT_IN_FAQS.forEach((builtInItem) => {
+    const isAlreadyPresent = finalFaqsList.some((incomingItem) => {
+      const incTitle = incomingItem.name.toLowerCase();
+      const builtTitle = builtInItem.name.toLowerCase();
+      return (
+        incTitle === builtTitle ||
+        (incTitle.includes("order") && builtTitle.includes("order")) ||
+        (incTitle.includes("custom") && builtTitle.includes("custom")) ||
+        (incTitle.includes("delivery") && builtTitle.includes("delivery")) ||
+        (incTitle.includes("fabric") && builtTitle.includes("fabric"))
+      );
+    });
+
+    if (!isAlreadyPresent) {
+      finalFaqsList.push(builtInItem);
+    }
+  });
+
+  if (finalFaqsList.length === 0) return null;
+
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  // Split into left and right arrays natively but track their actual true indices
+  const leftColumnFaqs = finalFaqsList.filter((_, i) => i % 2 === 0);
+  const rightColumnFaqs = finalFaqsList.filter((_, i) => i % 2 !== 0);
 
   return (
-    // ✅ A11Y & SEO: Added aria-labelledby to clearly identify the section's purpose
     <section
       aria-labelledby="faq-heading"
-      className="py-24 md:py-32 relative"
-      // Updated to Light Earthy Background matching the theme
-      style={{ background: 'linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)' }}
+      className="relative py-24 md:py-32 overflow-hidden z-10"
+      style={{ background: "linear-gradient(150deg, #FDF7F2 0%, #F2D9C3 60%, #EDD0B5 100%)" }}
     >
-      {/* Top Decorative Line */}
-      {/* ✅ A11Y: Hidden decorative line from screen readers */}
-      <div aria-hidden="true" className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
+      {/* Dot Grid Background */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(#7A3D2A 1.5px, transparent 1.5px)", backgroundSize: "28px 28px" }}
+      />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        
-        {/* Header */}
+      {/* Frame Decorative Lines */}
+      <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
+      <div aria-hidden="true" className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
+      <div aria-hidden="true" className="absolute left-6 md:left-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden sm:block" />
+      <div aria-hidden="true" className="absolute right-6 md:right-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden sm:block" />
+
+      {/* Giant Background Watermark */}
+      <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <span className="font-serif font-bold text-[#7A3D2A]/5 tracking-tighter leading-none" style={{ fontSize: "clamp(10rem, 22vw, 24rem)" }}>
+          FAQ
+        </span>
+      </div>
+
+      {/* Corner Brackets */}
+      {[
+        ["top-5 left-5", "rotate-0"],
+        ["top-5 right-5", "rotate-90"],
+        ["bottom-5 left-5", "-rotate-90"],
+        ["bottom-5 right-5", "rotate-180"],
+      ].map(([pos, rot], i) => (
+        <svg
+          key={i}
+          aria-hidden="true"
+          width="36" height="36" viewBox="0 0 36 36" fill="none"
+          className={`absolute ${pos} ${rot} opacity-[0.16] hidden md:block`}
+        >
+          <path d="M3 3 L33 3 L33 7 M3 3 L3 33 L7 33" stroke="#BE6E5B" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="3" cy="3" r="2" fill="#BE6E5B" />
+        </svg>
+      ))}
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header Block */}
         <div className="text-center mb-16 md:mb-20">
-          <p className="font-sans text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
-            Common Questions
+          <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
+            Commercial Sourcing Help
           </p>
-          <h2 id="faq-heading" className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold">
+
+          <h2 id="faq-heading" className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold leading-tight">
             Frequently Asked
           </h2>
-          {/* ✅ A11Y: Hidden purely visual star and separators */}
+
           <div aria-hidden="true" className="flex items-center justify-center gap-4 mt-6">
-            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]/60" />
+            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
             <span className="text-[#BE6E5B] text-lg animate-pulse">✦</span>
-            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]/60" />
+            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
           </div>
+
+          <p className="font-serif italic text-[#a07f61] mt-6 text-sm md:text-lg max-w-xl mx-auto font-medium">
+            Everything you need to verify before placing your international wholesale export inquiry.
+          </p>
         </div>
 
-        {/* FAQ Accordion List */}
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <details 
-              key={i} 
-              className="group border border-[#BE6E5B]/20 hover:border-[#BE6E5B]/60 transition-colors duration-300 rounded-lg bg-white/60 backdrop-blur-sm hover:bg-white overflow-hidden shadow-sm hover:shadow-md"
-            >
-              <summary className="flex justify-between items-center cursor-pointer list-none p-6 md:p-8 gap-4 select-none">
-                <div className="flex items-center gap-4 md:gap-6 flex-1 min-w-0">
-                  {/* Left Indicator Bar */}
-                  {/* ✅ A11Y: Hidden purely visual indicator */}
-                  <div aria-hidden="true" className="w-[3px] h-6 bg-[#BE6E5B]/30 group-open:bg-[#BE6E5B] flex-shrink-0 transition-colors duration-500 rounded-full" />
-                  
-                  {/* Question Text */}
-                  <span className="font-display text-lg md:text-xl text-[#7A3D2A] group-open:text-[#BE6E5B] transition-colors duration-300 font-bold">
-                    {faq.name}
-                  </span>
-                </div>
-                
-                {/* Plus/Cross Icon Button */}
-                {/* ✅ A11Y: Hidden the "+" icon so screen readers don't read "Plus" at the end of every question */}
-                <div aria-hidden="true" className="w-8 h-8 md:w-10 md:h-10 rounded-full flex-shrink-0 border-2 border-[#BE6E5B]/40 group-open:border-[#BE6E5B] group-open:bg-[#BE6E5B] flex items-center justify-center transition-all duration-500 group-hover:scale-110">
-                  <span className="text-[#7A3D2A] group-open:text-[#FDF7F2] font-sans text-xl leading-none group-open:rotate-45 inline-block transition-transform duration-500">
-                    +
-                  </span>
-                </div>
-              </summary>
-              
-              {/* Answer Content */}
-              <div className="pb-8 px-6 md:px-16">
-                <p className="font-sans text-sm md:text-base text-[#a07f61] font-medium leading-relaxed border-t border-[#BE6E5B]/20 pt-6">
-                  {faq.acceptedAnswer.text}
-                </p>
-              </div>
-            </details>
-          ))}
+        {/* ── Fixed Two-Column Symmetrical Grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-start max-w-6xl mx-auto w-full">
+          
+          {/* Left Column Stack */}
+          <div className="flex flex-col gap-4 md:gap-5 w-full">
+            {leftColumnFaqs.map((faq) => {
+              const globalIndex = finalFaqsList.findIndex(f => f.name === faq.name);
+              return (
+                <FaqItem
+                  key={globalIndex}
+                  faq={faq}
+                  isOpen={openIndex === globalIndex}
+                  onToggle={() => handleToggle(globalIndex)}
+                />
+              );
+            })}
+          </div>
+
+          {/* Right Column Stack (Perfect Line-Level Alignment) */}
+          <div className="flex flex-col gap-4 md:gap-5 w-full">
+            {rightColumnFaqs.map((faq) => {
+              const globalIndex = finalFaqsList.findIndex(f => f.name === faq.name);
+              return (
+                <FaqItem
+                  key={globalIndex}
+                  faq={faq}
+                  isOpen={openIndex === globalIndex}
+                  onToggle={() => handleToggle(globalIndex)}
+                />
+              );
+            })}
+          </div>
+
         </div>
-        
+
+        {/* Bottom CTA Block */}
+        <div className="mt-16 md:mt-24 flex flex-col sm:flex-row items-center justify-between gap-6 px-8 py-8 rounded-2xl border border-[#BE6E5B]/20 bg-white/60 backdrop-blur-md shadow-[0_10px_40px_rgba(122,61,42,0.08)] max-w-6xl mx-auto w-full">
+          <div className="text-center sm:text-left">
+            <p className="font-sans text-[10px] uppercase tracking-[0.4em] text-[#BE6E5B] font-bold mb-2">
+              Have unique trade specifications?
+            </p>
+            <p className="font-display text-2xl md:text-3xl font-bold text-[#7A3D2A]">
+              Our export consultants are standby.
+            </p>
+          </div>
+
+          <Link
+            href="/contact"
+            className="group relative inline-flex items-center justify-center gap-3 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] md:text-xs tracking-[0.3em] uppercase font-bold px-8 py-4 rounded-md hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden flex-shrink-0 w-full sm:w-auto"
+          >
+            <span aria-hidden="true" className="absolute inset-0 bg-[#7A3D2A] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10" />
+            <span className="relative z-10">Connect Direct</span>
+            <span aria-hidden="true" className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300 text-sm md:text-lg leading-none">→</span>
+          </Link>
+        </div>
+
       </div>
     </section>
+  );
+}
+
+// ── Atomic FAQ Item Card Component ──────────────────────────────
+function FaqItem({ faq, isOpen, onToggle }) {
+  const currentCatColors = faq.category ? CATEGORY_COLORS[faq.category] || CATEGORY_COLORS.Default : CATEGORY_COLORS.Default;
+
+  return (
+    <div
+      onClick={onToggle}
+      className={`group relative border rounded-xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all duration-500 ${
+        isOpen 
+          ? "bg-white/95 border-[#BE6E5B]/50 shadow-[0_15px_40px_rgba(122,61,42,0.12)]" 
+          : "bg-white/60 border-[#BE6E5B]/20 shadow-sm hover:bg-white/85 hover:border-[#BE6E5B]/40 hover:shadow-md"
+      }`}
+    >
+      {/* Sliding Active Top Indicator Glow */}
+      <div 
+        aria-hidden="true" 
+        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7A3D2A] via-[#BE6E5B] to-[#a07f61] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`} 
+      />
+
+      <div className="flex items-start gap-4 p-6 md:p-7 select-none">
+        
+        {/* Left Vertical Dynamic Pillar */}
+        <div
+          aria-hidden="true"
+          className={`mt-1.5 w-1 rounded-full flex-shrink-0 transition-all duration-500 ${
+            isOpen ? "h-full bg-[#BE6E5B]" : "h-5 bg-[#BE6E5B]/30 group-hover:bg-[#BE6E5B]/50"
+          }`}
+        />
+
+        {/* Question + Premium Category Pill */}
+        <div className="flex-1 min-w-0">
+          <span className={`inline-flex items-center px-3 py-0.5 mb-2.5 rounded-full border text-[8.5px] font-bold uppercase tracking-[0.2em] transition-colors duration-300 ${currentCatColors.bg} ${currentCatColors.text} ${currentCatColors.border}`}>
+            {faq.category}
+          </span>
+          <h3 className={`font-display text-base md:text-lg font-bold leading-snug transition-colors duration-300 ${isOpen ? "text-[#BE6E5B]" : "text-[#7A3D2A]"}`}>
+            {faq.name}
+          </h3>
+        </div>
+
+        {/* Animated Smooth Plus/Cross SVG Trigger */}
+        <div
+          aria-hidden="true"
+          className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex-shrink-0 border-2 flex items-center justify-center mt-0.5 transition-all duration-500 ${
+            isOpen 
+              ? "border-[#BE6E5B] bg-[#BE6E5B] rotate-45" 
+              : "border-[#BE6E5B]/40 bg-transparent rotate-0 group-hover:border-[#BE6E5B]/80"
+          }`}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M6 1V11M1 6H11"
+              stroke={isOpen ? "#FDF7F2" : "#7A3D2A"}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Buttery Dynamic Grid Animation Panel */}
+      <div 
+        className="grid transition-all duration-500 ease-in-out overflow-hidden"
+        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
+      >
+        <div className="overflow-hidden">
+          <div className="px-6 md:px-7 pb-7 pt-0">
+            <div className="ml-[19px] pl-4 border-l-2 border-[#BE6E5B]/25">
+              <p className="font-sans text-sm md:text-[15px] text-[#a07f61] leading-relaxed font-medium">
+                {faq.acceptedAnswer.text}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   );
 }

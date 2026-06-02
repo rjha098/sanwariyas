@@ -1,31 +1,3 @@
-// import Link from 'next/link';
-// import Navbar from '../components/layout/Navbar';
-// import Footer from '../components/layout/Footer';
-
-// export default function NotFound() {
-//   return (
-//     <>
-//       <Navbar />
-//       <main className="min-h-screen bg-brand-parchment flex items-center justify-center px-4">
-//         <div className="text-center max-w-lg">
-//           <p className="font-display text-9xl text-brand-lightgold/50 leading-none mb-6">404</p>
-//           <h1 className="font-display text-3xl text-brand-african mb-4">Page Not Found</h1>
-//           <p className="font-sans text-sm text-brand-mud/70 mb-10 leading-relaxed">
-//             The page you're looking for doesn't exist or has been moved. Let us help you find what you're looking for.
-//           </p>
-//           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-//             <Link href="/" className="btn-primary inline-block">Go Home</Link>
-//             <Link href="/products" className="btn-outline inline-block">View Collections</Link>
-//           </div>
-//         </div>
-//       </main>
-//       <Footer />
-//     </>
-//   );
-// }
-
-
-
 import Link from 'next/link';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
