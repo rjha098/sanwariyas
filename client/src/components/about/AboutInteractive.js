@@ -44,6 +44,13 @@ const TEAM = [
     initial: "A",
   },
   {
+    name: "Yogita",
+    role: "Inventory Analyst",
+    bio: "Yogita keeps a sharp eye on our stock levels, coordinating with our production team to ensure that our most popular designs are always ready for dispatch.",
+    image: "/images/team/yogita.png",
+    initial: "Y",
+  },
+  {
     name: "Annu Singh",
     role: "Dispatch Supervisor & Order Processing",
     bio: "Annu oversees the entire dispatch pipeline — from order confirmation to final packaging and courier handover. She ensures every wholesale consignment is packed accurately, labelled correctly, and shipped on time, every time.",
@@ -54,7 +61,7 @@ const TEAM = [
     name: "Manish",
     role: "Order And Return Processing",
     bio: "Manish streamlines our logistics by managing the complex flow of orders and returns, ensuring a smooth experience for our retail partners and end customers alike.",
-    image: "/images/team/manish.jpeg",
+    image: "/images/team/manish.png",
     initial: "M",
   },
   {
@@ -65,12 +72,13 @@ const TEAM = [
     initial: "M",
   },
   {
-    name: "Yogita",
-    role: "Inventory Analyst",
-    bio: "Yogita keeps a sharp eye on our stock levels, coordinating with our production team to ensure that our most popular designs are always ready for dispatch.",
-    image: "/images/team/yogita.png",
-    initial: "Y",
-  },
+    name:"Sandeep",
+    role:"Accountant",
+    bio:"Sandeep oversees our day-to-day financial operations, specializing in export tax compliance, GST documentation, and multi-currency reconciliations. He ensures every international B2B transaction is processed smoothly and securely.",
+    image:"/images/team/sandeep.png",
+    initial:"S"
+  }
+  
 ];
 
 const VALUES = [
