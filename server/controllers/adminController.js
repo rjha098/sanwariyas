@@ -1,7 +1,7 @@
 import { createAdminToken, safeCompare, verifyAdminToken } from '../utils/adminAuth.js';
 
 const login = async (req, res) => {
-  try {
+  try {  
     // Credentials coming from the admin login form.
     const { username, password } = req.body;
     const adminUsername = process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || 'admin';
@@ -14,6 +14,7 @@ const login = async (req, res) => {
       });
     }
 
+   
     if (!username || !password) {
       return res.status(400).json({ success: false, message: 'Username and password are required' });
     }

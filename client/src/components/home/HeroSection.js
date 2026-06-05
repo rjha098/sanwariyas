@@ -1,4 +1,608 @@
+// "use client";
+// import { useState, useEffect, useCallback, useRef } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
 
+// const slides = [
+//   {
+//     id: 1,
+//     title: ["Global Wholesale", "Regal Heritage"],
+//     sub: "India's premier export house for high-end ethnic wear. Discover the pinnacle of Kurti craftsmanship and designer suits.",
+//     img: "/images/ROLARIMAGES.png",
+//     imgAlt: "Sanwariyas Global Wholesale Hub – Premium Indian Ethnic Wear",
+//     bg: "radial-gradient(ellipse at 90% 10%, #F2D9C3 0%, #F2D9C3 25%, #E0BFA2 60%, #C9A485 100%)",
+//     accentGold: "#8B6508",
+//     accentLight: "#F5E6CC",
+//     badge: "Export House",
+//   },
+//   {
+//     id: 2,
+//     title: ["Exquisite Handwoven", "Bridal Masterpieces"],
+//     sub: "Intricately stitched lehengas and sarees crafted for your most unforgettable moments. A legacy of pure luxury.",
+//     img: "https://images.unsplash.com/photo-1769063382670-823451e5a7ef?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Premium Handwoven Bridal Lehengas and Sarees – Luxury Indian Couture",
+//     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
+//     accentGold: "#996515",
+//     accentLight: "#F8EDD5",
+//     badge: "Bridal Couture",
+//   },
+//   {
+//     id: 3,
+//     title: ["Timeless Grace", "Contemporary Suits"],
+//     sub: "Redefining the standard of ethnic fashion. Designer Anarkalis and coord sets tailored for the modern woman.",
+//     img: "https://images.unsplash.com/photo-1767687718046-bf05d7243259?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Designer Anarkali Suits and Ethnic Coord Sets – Modern Indian Fashion",
+//     bg: "linear-gradient(180deg, #F2D9C3 0%, #EDD0B5 15%, #E0BFA2 45%, #C4A07A 100%)",
+//     accentGold: "#6B4226",
+//     accentLight: "#F3DCC8",
+//     badge: "Designer Suits",
+//   },
+//   {
+//     id: 4,
+//     title: ["Craftsmanship In", "Every Single Thread"],
+//     sub: "Directly sourced from India's master weavers. Fabrics that carry the soul and heritage of our rich culture.",
+//     img: "https://images.unsplash.com/photo-1765529375039-13dabeab0684?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Artisan Hand-Stitched Indian Fabrics – Heritage Weaving",
+//     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
+//     accentGold: "#8B6508",
+//     accentLight: "#F5E6CC",
+//     badge: "Artisan Craft",
+//   },
+//   {
+//     id: 5,
+//     title: ["Tailored Exclusively", "For Your Vision"],
+//     sub: "Personalised luxury at wholesale rates. We customize every stitch to your specific measurements and occasion.",
+//     img: "https://plus.unsplash.com/premium_photo-1687485793889-9402fd58b544?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Custom Tailored Ethnic Wear – Personalized Indian Fashion",
+//     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
+//     accentGold: "#6B4226",
+//     accentLight: "#F3DCC8",
+//     badge: "Custom Orders",
+//   },
+//   {
+//     id: 6,
+//     title: ["Global Luxury", "Seamless Delivery"],
+//     sub: "Exporting Indian excellence to the world. Fully insured, securely packaged, and delivered with royal care.",
+//     img: "https://plus.unsplash.com/premium_photo-1668443423052-81d51888646d?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Global Indian Ethnic Wear Export – Worldwide Delivery",
+//     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
+//     accentGold: "#996515",
+//     accentLight: "#F8EDD5",
+//     badge: "Worldwide Export",
+//   },
+//   {
+//     id: 7,
+//     title: ["Premium Partner", "Bulk Order Luxury"],
+//     sub: "Partner with India's most trusted export empire. Scalable solutions for global retailers and luxury boutiques.",
+//     img: "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop",
+//     imgAlt: "Wholesale Bulk Orders – Indian Ethnic Wear for Retailers",
+//     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
+//     accentGold: "#8B6508",
+//     accentLight: "#F5E6CC",
+//     badge: "Wholesale",
+//   },
+// ];
+
+// const STYLES = `
+//   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
+
+//   @keyframes fadeSlideUp {
+//     from { opacity:0; transform:translateY(22px); }
+//     to   { opacity:1; transform:translateY(0); }
+//   }
+//   @keyframes fadeSlideLeft {
+//     from { opacity:0; transform:translateX(26px) scale(0.97); }
+//     to   { opacity:1; transform:translateX(0) scale(1); }
+//   }
+//   @keyframes badgePop {
+//     0%  { opacity:0; transform:translateY(-10px) scale(0.88); }
+//     65% { transform:translateY(2px) scale(1.02); }
+//     100%{ opacity:1; transform:translateY(0) scale(1); }
+//   }
+//   @keyframes spinSlow  { to { transform:rotate(360deg); } }
+//   @keyframes spinSlowR { to { transform:rotate(-360deg); } }
+//   @keyframes slideProgress { from{width:0%} to{width:100%} }
+//   @keyframes floatOrb {
+//     0%,100%{ transform:translateY(0) scale(1); }
+//     50%    { transform:translateY(-8px) scale(1.06); }
+//   }
+//   @keyframes pulseGlow {
+//     0%,100%{ opacity:0.4; transform:scale(1); }
+//     50%    { opacity:0.75; transform:scale(1.04); }
+//   }
+//   @keyframes lineGrow { from{width:0;opacity:0} to{width:52px;opacity:1} }
+//   @keyframes shimmerSweep {
+//     0%   { background-position: -200% center; }
+//     100% { background-position:  200% center; }
+//   }
+//   @keyframes dotPulse {
+//     0%,100%{ transform:scale(1); opacity:1; }
+//     50%    { transform:scale(1.5); opacity:0.7; }
+//   }
+//   @keyframes orbFloat {
+//     0%,100%{ transform:translate(0,0) scale(1); }
+//     33%    { transform:translate(6px,-10px) scale(1.08); }
+//     66%    { transform:translate(-5px,-6px) scale(0.95); }
+//   }
+
+//   .anim-badge  { animation: badgePop    0.65s cubic-bezier(0.22,1,0.36,1) 0.05s both; }
+//   .anim-title  { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+//   .anim-line   { animation: lineGrow    0.6s  cubic-bezier(0.22,1,0.36,1) 0.28s both; }
+//   .anim-sub    { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.28s both; }
+//   .anim-btns   { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.40s both; }
+//   .anim-stats  { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.52s both; }
+//   .anim-img    { animation: fadeSlideLeft 0.85s cubic-bezier(0.22,1,0.36,1) 0.08s both; }
+
+//   .spin-slow  { animation: spinSlow  32s linear infinite; }
+//   .spin-slowR { animation: spinSlowR 40s linear infinite; }
+//   .float-orb  { animation: orbFloat 4.5s ease-in-out infinite; }
+//   .float-orb2 { animation: orbFloat 4.5s ease-in-out 2.2s infinite; }
+//   .float-orb3 { animation: orbFloat 5s ease-in-out 1.1s infinite; }
+//   .pulse-glow { animation: pulseGlow 3.5s ease-in-out infinite; }
+//   .dot-pulse  { animation: dotPulse 2s ease-in-out infinite; }
+
+//   .shimmer-btn { background-size: 200% auto; }
+//   .shimmer-btn:hover { animation: shimmerSweep 1.4s linear infinite; }
+
+//   .grain-layer {
+//     position:absolute; inset:0; pointer-events:none; z-index:1;
+//     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+//     opacity:0.3; mix-blend-mode:overlay;
+//   }
+
+//   .thumb-card {
+//     transition: transform 0.4s cubic-bezier(0.22,1,0.36,1),
+//                 opacity   0.4s ease,
+//                 box-shadow 0.4s ease;
+//   }
+//   .thumb-card:hover { transform: scale(1.08) translateY(-5px) !important; }
+//   .scrollbar-hide::-webkit-scrollbar { display:none; }
+//   .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+
+//   .stat-pill {
+//     transition: transform 0.3s ease, box-shadow 0.3s ease;
+//   }
+//   .stat-pill:hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 8px 24px rgba(139,101,8,0.15);
+//   }
+
+//   .nav-btn {
+//     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+//   }
+//   .nav-btn:hover {
+//     transform: scale(1.12);
+//     box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+//     background: white;
+//   }
+
+//   .explore-btn {
+//     transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+//   }
+//   .explore-btn:hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 12px 32px rgba(139,101,8,0.35);
+//     filter: brightness(1.06);
+//   }
+
+//   .outline-btn {
+//     transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+//   }
+//   .outline-btn:hover {
+//     transform: translateY(-2px);
+//     background: rgba(255,255,255,0.92);
+//     box-shadow: 0 8px 24px rgba(139,101,8,0.12);
+//   }
+
+//   .deco-vline {
+//     position:absolute; width:1px;
+//     background:linear-gradient(to bottom, transparent 0%, rgba(139,101,8,0.18) 40%, rgba(139,101,8,0.18) 60%, transparent 100%);
+//   }
+
+//   /* Ensure section never overflows viewport height on laptop */
+//   @media (min-width:1024px) {
+//     .hero-section {
+//       height: 100dvh;
+//       min-height: 620px;
+//       max-height: 900px;
+//     }
+//     .hero-main-grid {
+//       flex: 1 1 0;
+//       min-height: 0;
+//     }
+//     .hero-thumb-strip {
+//       flex-shrink: 0;
+//     }
+//     .hero-img-wrap {
+//       height: clamp(300px, 48vh, 430px);
+//     }
+//     .hero-title {
+//       font-size: clamp(2.2rem, 4vw, 3.5rem);
+//     }
+//   }
+// `;
+
+// const CornerOrnament = ({ accentGold, className = "" }) => (
+//   <svg aria-hidden="true" width="56" height="56" viewBox="0 0 56 56" fill="none" className={className}>
+//     <path d="M3 3 L53 3 L53 8 M3 3 L3 53 L8 53" stroke={accentGold} strokeWidth="1.2" strokeLinecap="round"/>
+//     <path d="M12 3 L3 3 L3 12" stroke={accentGold} strokeWidth="0.5" strokeLinecap="round" opacity="0.4"/>
+//     <circle cx="3"  cy="3"  r="2.5" fill={accentGold}/>
+//     <circle cx="53" cy="3"  r="1.5" fill={accentGold} opacity="0.35"/>
+//     <circle cx="3"  cy="53" r="1.5" fill={accentGold} opacity="0.35"/>
+//     <circle cx="10" cy="10" r="1"   fill={accentGold} opacity="0.2"/>
+//   </svg>
+// );
+
+// const StatPill = ({ value, label, accentGold, accentLight }) => (
+//   <div className="stat-pill flex flex-col items-center px-3 lg:px-4 py-2 lg:py-2.5 rounded-xl"
+//     style={{
+//       background: `linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.45))`,
+//       border: `1px solid rgba(255,255,255,0.6)`,
+//       backdropFilter: "blur(16px)",
+//       WebkitBackdropFilter: "blur(16px)",
+//       boxShadow: `0 4px 16px rgba(139,101,8,0.08), inset 0 1px 0 rgba(255,255,255,0.8)`,
+//     }}>
+//     <span style={{
+//       fontFamily:"'Cinzel',serif", fontWeight:700, fontSize:"clamp(0.95rem, 1.6vw, 1.15rem)",
+//       letterSpacing:"0.04em", color:accentGold,
+//     }}>{value}</span>
+//     <span style={{
+//       fontFamily:"'Jost',sans-serif", fontWeight:500,
+//       fontSize:"clamp(8px, 0.9vw, 10px)", letterSpacing:"0.2em",
+//       textTransform:"uppercase", color:"#b0895e", marginTop:"1px",
+//     }}>{label}</span>
+//   </div>
+// );
+
+// const SlideCard = ({ slide, isActive, onClick, accentGold, paused, animKey }) => (
+//   <button onClick={onClick}
+//     aria-current={isActive ? "true" : "false"}
+//     aria-label={`View: ${slide.title[0]} ${slide.title[1]}`}
+//     className="thumb-card relative flex-shrink-0 overflow-hidden snap-start focus:outline-none focus-visible:ring-2 rounded-2xl"
+//     style={{
+//       width: "clamp(82px, 9vw, 112px)",
+//       height: "clamp(108px, 12vw, 140px)",
+//       backgroundImage: `url('${slide.img}')`,
+//       backgroundSize: "cover",
+//       backgroundPosition: "center",
+//       border: isActive ? `2px solid ${accentGold}` : "1.5px solid rgba(255,255,255,0.28)",
+//       opacity: isActive ? 1 : 0.52,
+//       transform: isActive ? "scale(1.07) translateY(-5px)" : "scale(1)",
+//       boxShadow: isActive
+//         ? `0 12px 36px rgba(0,0,0,0.24), 0 0 0 3px ${accentGold}22`
+//         : "0 4px 12px rgba(0,0,0,0.1)",
+//     }}>
+//     <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent rounded-2xl"/>
+//     {isActive && (
+//       <div className="absolute top-1.5 left-1.5 z-20 px-1.5 py-0.5 rounded-md"
+//         style={{
+//           background: accentGold,
+//           fontFamily:"'Jost',sans-serif", fontWeight:700,
+//           fontSize:"7px", letterSpacing:"0.18em",
+//           textTransform:"uppercase", color:"white",
+//         }}>{slide.badge}</div>
+//     )}
+//     <div className="relative h-full flex flex-col justify-end p-2 z-10 text-left pb-4">
+//       <p style={{
+//         fontFamily:"'Jost',sans-serif", fontWeight:600,
+//         fontSize:"9px", lineHeight:1.35,
+//         color:"white", display:"-webkit-box",
+//         WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden",
+//       }}>{slide.title[0]} {slide.title[1]}</p>
+//     </div>
+//     {isActive && (
+//       <div key={animKey} aria-hidden="true" className="absolute bottom-0 left-0 h-[3px] z-20 rounded-b-2xl"
+//         style={{
+//           background:`linear-gradient(to right, ${accentGold}, #BE6E5B)`,
+//           animation:`slideProgress 5000ms linear forwards`,
+//           animationPlayState: paused ? "paused" : "running",
+//         }}/>
+//     )}
+//   </button>
+// );
+
+// export default function HeroSection() {
+//   const [cur, setCur] = useState(0);
+//   const [animKey, setAnimKey] = useState(0);
+//   const [paused, setPaused] = useState(false);
+//   const pausedRef = useRef(false);
+
+//   // Keep ref in sync with state so interval can read it without re-registering
+//   useEffect(() => {
+//     pausedRef.current = paused;
+//   }, [paused]);
+
+//   // ── Auto-rotation: single setInterval, never resets, just skips when paused ──
+//   useEffect(() => {
+//     const id = setInterval(() => {
+//       if (pausedRef.current) return;
+//       setCur(c => (c + 1) % slides.length);
+//       setAnimKey(k => k + 1);
+//     }, 5000);
+//     return () => clearInterval(id);
+//   }, []); // empty deps = interval runs once for the lifetime of the component
+
+//   const goTo = useCallback((n) => {
+//     const next = ((n % slides.length) + slides.length) % slides.length;
+//     setCur(next);
+//     setAnimKey(k => k + 1);
+//   }, []);
+
+//   const slide = slides[cur];
+
+//   return (
+//     <>
+//       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
+
+//       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+//         "@context":"https://schema.org","@type":"Organization",
+//         name:"Sanwariyas Global Wholesale",
+//         description:"India's premier export house for high-end ethnic wear, Kurtis, designer suits, and bridal couture.",
+//         url:"https://sanwariyas.com",
+//         offers:{"@type":"AggregateOffer",priceCurrency:"INR",offerCount:"500+",description:"Wholesale bulk orders for Indian ethnic wear"},
+//       })}} />
+
+//       <section
+//         className="hero-section relative w-full flex flex-col overflow-hidden"
+//         style={{ minHeight:"100dvh" }}
+//         aria-label="Sanwariyas Global Wholesale – Premium Indian Ethnic Wear"
+//         aria-roledescription="carousel"
+//         itemScope itemType="https://schema.org/WPHeader"
+//         onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+//         onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
+//       >
+//         {/* ── Slide backgrounds ── */}
+//         {slides.map((s, i) => (
+//           <div key={s.id} aria-hidden="true"
+//             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i===cur?"opacity-100 z-0":"opacity-0 -z-10"}`}
+//             style={{ background: s.bg }}/>
+//         ))}
+//         <div aria-hidden="true" className="grain-layer"/>
+
+//         {/* ── Decorative vertical lines ── */}
+//         <div aria-hidden="true" className="deco-vline hidden lg:block h-3/4 top-[12%] left-[5.5%] z-10"/>
+//         <div aria-hidden="true" className="deco-vline hidden lg:block h-2/5 top-[30%] right-[5.5%] z-10"/>
+
+//         {/* ── Corner ornaments ── */}
+//         <div aria-hidden="true" className="absolute top-3 left-3 z-10 hidden lg:block opacity-20">
+//           <CornerOrnament accentGold={slide.accentGold}/>
+//         </div>
+//         <div aria-hidden="true" className="absolute top-3 right-3 z-10 hidden lg:block opacity-20" style={{transform:"rotate(90deg)"}}>
+//           <CornerOrnament accentGold={slide.accentGold}/>
+//         </div>
+
+//         {/* ── Slide counter ── */}
+//         <div aria-hidden="true" className="absolute top-5 right-5 z-20 hidden lg:flex items-center gap-2">
+//           <span style={{fontFamily:"'Cinzel',serif", fontWeight:600, fontSize:"10px", letterSpacing:"0.22em", color:"#b0895e"}}>
+//             {String(cur+1).padStart(2,"0")}
+//           </span>
+//           <div style={{width:"32px", height:"1px", background:"linear-gradient(to right,#C9A485,transparent)"}}/>
+//           <span style={{fontFamily:"'Cinzel',serif", fontSize:"10px", letterSpacing:"0.22em", color:"#C9A485", opacity:0.6}}>
+//             {String(slides.length).padStart(2,"0")}
+//           </span>
+//         </div>
+
+//         {/* ── Main content ── */}
+//         <div className="hero-main-grid relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-5 lg:px-14 pt-16 lg:pt-20 pb-3 lg:pb-2">
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 xl:gap-16 items-center w-full">
+
+//             {/* ════ LEFT: Text ════ */}
+//             <div key={`txt-${animKey}`} aria-live="polite" aria-atomic="true"
+//               className="flex flex-col justify-center order-2 lg:order-1 mt-2 lg:mt-0">
+
+//               {/* Badge row */}
+//               <div className="anim-badge flex items-center gap-3 mb-4">
+//                 <span style={{
+//                   display:"inline-flex", alignItems:"center", gap:"6px",
+//                   padding:"5px 14px", borderRadius:"999px",
+//                   background:`linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 100%)`,
+//                   fontFamily:"'Jost',sans-serif", fontWeight:700,
+//                   fontSize:"8.5px", letterSpacing:"0.24em", textTransform:"uppercase",
+//                   color:"white",
+//                   boxShadow:`0 4px 18px ${slide.accentGold}40`,
+//                 }}>
+//                   <span aria-hidden="true" className="dot-pulse inline-block w-1.5 h-1.5 rounded-full bg-white/80"/>
+//                   {slide.badge}
+//                 </span>
+//                 <div className="anim-line h-px rounded-full flex-shrink-0"
+//                   style={{
+//                     width:"52px",
+//                     background:`linear-gradient(to right, ${slide.accentGold}, transparent)`,
+//                     opacity:0.7,
+//                   }}/>
+//               </div>
+
+//               {/* Heading */}
+//               <h1 className="anim-title hero-title font-bold leading-[1.02] mb-3 tracking-wide text-[#7A3D2A]"
+//                 style={{fontFamily:"'Cormorant Garamond',Georgia,serif"}}
+//                 itemProp="headline">
+//                 <span className="block">{slide.title[0]}</span>
+//                 <span className="block italic mt-0.5 text-transparent bg-clip-text"
+//                   style={{
+//                     backgroundImage:`linear-gradient(110deg, ${slide.accentGold} 0%, #BE6E5B 55%, ${slide.accentGold} 100%)`,
+//                     paddingBottom:"2px",
+//                   }}>
+//                   {slide.title[1]}
+//                 </span>
+//               </h1>
+
+//               {/* Divider line */}
+//               <div aria-hidden="true" className="mb-4 rounded-full"
+//                 style={{height:"1.5px", width:"48px", background:`linear-gradient(to right, ${slide.accentGold}, transparent)`, opacity:0.55}}/>
+
+//               {/* Subtitle */}
+//               <p className="anim-sub leading-[1.85] mb-5 lg:mb-6 tracking-wide text-[#a07f61] max-w-md"
+//                 style={{
+//                   fontFamily:"'Jost',sans-serif", fontWeight:400,
+//                   fontSize:"clamp(11.5px, 1.15vw, 13.5px)",
+//                 }}
+//                 itemProp="description">
+//                 {slide.sub}
+//               </p>
+
+//               {/* CTA buttons */}
+//               <div className="anim-btns flex flex-wrap gap-2.5 mb-5 lg:mb-6">
+//                 <Link href="/products" aria-label="Explore our ethnic wear collection"
+//                   className="explore-btn shimmer-btn group relative inline-flex items-center gap-2.5 rounded-xl overflow-hidden"
+//                   style={{
+//                     padding:"10px 22px",
+//                     backgroundImage:`linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 50%, ${slide.accentGold} 100%)`,
+//                     backgroundSize:"200% auto",
+//                     color:"#FDF7F2",
+//                     fontFamily:"'Jost',sans-serif", fontWeight:700,
+//                     fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase",
+//                     boxShadow:`0 6px 24px ${slide.accentGold}38`,
+//                   }}>
+//                   <span aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+//                     style={{background:"linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%)",backgroundSize:"200% auto"}}/>
+//                   <span className="relative">Explore Collection</span>
+//                   <span aria-hidden="true" className="relative transition-transform duration-300 group-hover:translate-x-1">→</span>
+//                 </Link>
+
+//                 <Link href="/contact" aria-label="Get wholesale pricing"
+//                   className="outline-btn group inline-flex items-center gap-2 rounded-xl"
+//                   style={{
+//                     padding:"10px 22px",
+//                     background:"rgba(255,255,255,0.65)",
+//                     backdropFilter:"blur(12px)",
+//                     border:`1.5px solid ${slide.accentGold}`,
+//                     color:slide.accentGold,
+//                     fontFamily:"'Jost',sans-serif", fontWeight:700,
+//                     fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase",
+//                   }}>
+//                   Get Wholesale Price
+//                   <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5 opacity-55">↗</span>
+//                 </Link>
+//               </div>
+
+//               {/* Stats */}
+//               <div className="anim-stats flex items-center gap-2 lg:gap-3">
+//                 <StatPill value="500+" label="Designs"   accentGold={slide.accentGold} accentLight={slide.accentLight}/>
+//                 <StatPill value="50+"  label="Countries" accentGold={slide.accentGold} accentLight={slide.accentLight}/>
+//                 <StatPill value="15K+" label="Orders"    accentGold={slide.accentGold} accentLight={slide.accentLight}/>
+//               </div>
+//             </div>
+
+//             {/* ════ RIGHT: Image orb ════ */}
+//             <div key={`img-${cur}`}
+//               className="anim-img hero-img-wrap relative flex items-center justify-center order-1 lg:order-2"
+//               style={{ height:"clamp(240px, 40vw, 450px)" }}>
+//               <div className="relative w-full h-full"
+//                 style={{ maxWidth:"clamp(240px, 38vw, 430px)", margin:"0 auto" }}>
+
+//                 {/* Outer glow */}
+//                 <div aria-hidden="true" className="pulse-glow absolute inset-0 rounded-full pointer-events-none"
+//                   style={{ boxShadow:`0 0 70px 18px ${slide.accentGold}22, inset 0 0 40px ${slide.accentGold}0F` }}/>
+
+//                 {/* Rings */}
+//                 <div aria-hidden="true" className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+//                   style={{ border:`1.5px solid ${slide.accentGold}`, opacity:0.45, transform:"scale(1.07)" }}/>
+//                 <div aria-hidden="true" className="spin-slowR absolute inset-0 rounded-full pointer-events-none"
+//                   style={{ border:`1px dashed ${slide.accentGold}`, opacity:0.22, transform:"scale(1.13)" }}/>
+//                 <div aria-hidden="true" className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+//                   style={{ border:`0.5px solid rgba(190,110,91,0.13)`, transform:"scale(1.19)" }}/>
+
+//                 {/* Floating orbs */}
+//                 <div aria-hidden="true" className="float-orb absolute top-[6%] right-[7%] w-3 h-3 rounded-full z-20"
+//                   style={{ background:`radial-gradient(circle, #fff 20%, ${slide.accentGold})`, boxShadow:`0 3px 10px ${slide.accentGold}60` }}/>
+//                 <div aria-hidden="true" className="float-orb2 absolute bottom-[9%] left-[6%] w-2.5 h-2.5 rounded-full z-20"
+//                   style={{ background:`radial-gradient(circle, #fff 20%, #BE6E5B)`, boxShadow:"0 3px 8px rgba(190,110,91,0.55)" }}/>
+//                 <div aria-hidden="true" className="float-orb3 absolute top-[48%] right-[-2%] w-2 h-2 rounded-full z-20"
+//                   style={{ background:`radial-gradient(circle, #fff 20%, ${slide.accentGold})`, opacity:0.8 }}/>
+
+//                 {/* Image circle — slide 0 rotates (spin-slow), others are still */}
+//                 <div className={`absolute inset-3.5 lg:inset-5 rounded-full overflow-hidden transition-all duration-700 bg-transparent ${cur === 0 ? "spin-slow" : ""}`}
+//                   style={{ boxShadow:"0 24px 60px rgba(0,0,0,0.18)" }}>
+//                   <Image src={slide.img} alt={slide.imgAlt} fill
+//                     className="object-cover transition-transform duration-700 hover:scale-[1.04] mix-blend-multiply"
+//                     sizes="(max-width:1024px) 280px, 430px"
+//                     priority fetchPriority="high"/>
+//                   <div aria-hidden="true" className="absolute inset-0 rounded-full"
+//                     style={{ boxShadow:`inset 0 0 50px ${slide.accentGold}14` }}/>
+//                 </div>
+
+//                 {/* "Made in India" tag */}
+//                 <div aria-hidden="true"
+//                   className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full"
+//                   style={{
+//                     padding:"5px 18px",
+//                     background:`linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)`,
+//                     fontFamily:"'Jost',sans-serif", fontWeight:700,
+//                     fontSize:"8px", letterSpacing:"0.22em",
+//                     textTransform:"uppercase", color:"white",
+//                     boxShadow:`0 6px 20px ${slide.accentGold}45`,
+//                   }}>
+//                   ✦ Made in India ✦
+//                 </div>
+
+//                 {/* Nav arrows */}
+//                 <button onClick={() => goTo(cur-1)} aria-label="Previous slide"
+//                   className="nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 lg:-translate-x-9 z-20 rounded-full flex items-center justify-center"
+//                   style={{
+//                     width:"clamp(36px, 3.5vw, 46px)", height:"clamp(36px, 3.5vw, 46px)",
+//                     background:"rgba(255,255,255,0.88)",
+//                     backdropFilter:"blur(12px)",
+//                     border:"1px solid rgba(255,255,255,0.7)",
+//                     color:slide.accentGold,
+//                     boxShadow:"0 4px 16px rgba(0,0,0,0.1)",
+//                     fontFamily:"serif", fontWeight:700, fontSize:"clamp(14px,1.4vw,18px)",
+//                   }}>❮</button>
+
+//                 <button onClick={() => goTo(cur+1)} aria-label="Next slide"
+//                   className="nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 lg:translate-x-9 z-20 rounded-full flex items-center justify-center"
+//                   style={{
+//                     width:"clamp(36px, 3.5vw, 46px)", height:"clamp(36px, 3.5vw, 46px)",
+//                     background:"rgba(255,255,255,0.88)",
+//                     backdropFilter:"blur(12px)",
+//                     border:"1px solid rgba(255,255,255,0.7)",
+//                     color:slide.accentGold,
+//                     boxShadow:"0 4px 16px rgba(0,0,0,0.1)",
+//                     fontFamily:"serif", fontWeight:700, fontSize:"clamp(14px,1.4vw,18px)",
+//                   }}>❯</button>
+//               </div>
+//             </div>
+
+//           </div>
+//         </div>
+
+//         {/* ── Thumbnail strip ── */}
+//         <div className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-auto"
+//           style={{ background:"linear-gradient(to top, rgba(0,0,0,0.08), transparent)" }}>
+//           <nav aria-label="Carousel slide selector" className="max-w-7xl mx-auto px-4 lg:px-14">
+
+//             {/* Dot indicators */}
+//             <div aria-hidden="true" className="flex justify-center gap-1.5 mb-2.5">
+//               {slides.map((s, i) => (
+//                 <button key={s.id} onClick={() => goTo(i)} aria-label={`Go to slide ${i+1}`}
+//                   className="rounded-full transition-all duration-400"
+//                   style={{
+//                     height:"5px",
+//                     width: i===cur ? "26px" : "5px",
+//                     background: i===cur ? slide.accentGold : "#C9A485",
+//                     opacity: i===cur ? 1 : 0.38,
+//                   }}/>
+//               ))}
+//             </div>
+
+//             {/* Thumbnail cards */}
+//             <div className="flex md:justify-center gap-2 lg:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory">
+//               {slides.map((s, index) => (
+//                 <SlideCard key={s.id} slide={s} isActive={index===cur}
+//                   onClick={() => goTo(index)} accentGold={s.accentGold}
+//                   paused={paused} animKey={animKey}/>
+//               ))}
+//             </div>
+
+//           </nav>
+//         </div>
+//       </section>
+//     </>
+//   );
+// }
+
+
+
+// FILE: client/src/components/home/HeroSection.js
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
@@ -13,6 +617,7 @@ const slides = [
     imgAlt: "Sanwariyas Global Wholesale Hub – Premium Indian Ethnic Wear",
     bg: "radial-gradient(ellipse at 90% 10%, #F2D9C3 0%, #F2D9C3 25%, #E0BFA2 60%, #C9A485 100%)",
     accentGold: "#8B6508",
+    accentLight: "#F5E6CC",
     badge: "Export House",
   },
   {
@@ -23,16 +628,18 @@ const slides = [
     imgAlt: "Premium Handwoven Bridal Lehengas and Sarees – Luxury Indian Couture",
     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
     accentGold: "#996515",
+    accentLight: "#F8EDD5",
     badge: "Bridal Couture",
   },
   {
     id: 3,
     title: ["Timeless Grace", "Contemporary Suits"],
-    sub: "Redefining the standard of ethnic fashion. Designer Anarkalis and cord sets tailored for the modern woman.",
+    sub: "Redefining the standard of ethnic fashion. Designer Anarkalis and coord sets tailored for the modern woman.",
     img: "https://images.unsplash.com/photo-1767687718046-bf05d7243259?q=80&w=687&auto=format&fit=crop",
-    imgAlt: "Designer Anarkali Suits and Ethnic Cord Sets – Modern Indian Fashion",
+    imgAlt: "Designer Anarkali Suits and Ethnic Coord Sets – Modern Indian Fashion",
     bg: "linear-gradient(180deg, #F2D9C3 0%, #EDD0B5 15%, #E0BFA2 45%, #C4A07A 100%)",
     accentGold: "#6B4226",
+    accentLight: "#F3DCC8",
     badge: "Designer Suits",
   },
   {
@@ -43,6 +650,7 @@ const slides = [
     imgAlt: "Artisan Hand-Stitched Indian Fabrics – Heritage Weaving",
     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
     accentGold: "#8B6508",
+    accentLight: "#F5E6CC",
     badge: "Artisan Craft",
   },
   {
@@ -53,6 +661,7 @@ const slides = [
     imgAlt: "Custom Tailored Ethnic Wear – Personalized Indian Fashion",
     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
     accentGold: "#6B4226",
+    accentLight: "#F3DCC8",
     badge: "Custom Orders",
   },
   {
@@ -63,6 +672,7 @@ const slides = [
     imgAlt: "Global Indian Ethnic Wear Export – Worldwide Delivery",
     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
     accentGold: "#996515",
+    accentLight: "#F8EDD5",
     badge: "Worldwide Export",
   },
   {
@@ -73,217 +683,262 @@ const slides = [
     imgAlt: "Wholesale Bulk Orders – Indian Ethnic Wear for Retailers",
     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
     accentGold: "#8B6508",
+    accentLight: "#F5E6CC",
     badge: "Wholesale",
   },
 ];
 
-/* ─────────────── STYLES ─────────────── */
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;600;700&family=Nunito+Sans:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
 
-  :root {
-    --gold-primary: #8B6508;
-    --cream-light: #F2D9C3;
-    --cream-mid: #E0BFA2;
-    --brown-dark: #7A3D2A;
-  }
-
-  /* ── Entrance animations ── */
   @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(28px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0)   scale(1); }
+    from { opacity:0; transform:translateY(22px); }
+    to   { opacity:1; transform:translateY(0); }
   }
   @keyframes fadeSlideLeft {
-    from { opacity: 0; transform: translateX(30px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes subtleFadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  @keyframes lineReveal {
-    from { width: 0; }
-    to   { width: 60px; }
+    from { opacity:0; transform:translateX(26px) scale(0.97); }
+    to   { opacity:1; transform:translateX(0) scale(1); }
   }
   @keyframes badgePop {
-    0%   { opacity: 0; transform: translateY(-12px) scale(0.85); }
-    70%  { transform: translateY(2px) scale(1.03); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+    0%  { opacity:0; transform:translateY(-10px) scale(0.88); }
+    65% { transform:translateY(2px) scale(1.02); }
+    100%{ opacity:1; transform:translateY(0) scale(1); }
   }
-
-  .anim-title   { animation: fadeSlideUp  0.85s cubic-bezier(0.22,1,0.36,1) forwards; opacity: 0; }
-  .anim-sub     { animation: fadeSlideUp  0.85s cubic-bezier(0.22,1,0.36,1) 0.18s forwards; opacity: 0; }
-  .anim-btns    { animation: fadeSlideUp  0.85s cubic-bezier(0.22,1,0.36,1) 0.32s forwards; opacity: 0; }
-  .anim-stats   { animation: fadeSlideUp  0.85s cubic-bezier(0.22,1,0.36,1) 0.46s forwards; opacity: 0; }
-  .anim-img     { animation: fadeSlideLeft 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s forwards; opacity: 0; }
-  .anim-badge   { animation: badgePop     0.7s cubic-bezier(0.22,1,0.36,1) 0.55s forwards; opacity: 0; }
-  .anim-line    { animation: lineReveal   0.7s cubic-bezier(0.22,1,0.36,1) 0.15s forwards; }
-
-  /* ── Orbit / ring spins ── */
-  @keyframes spinSlow  { to { transform: rotate(360deg); } }
-  @keyframes spinSlowR { to { transform: rotate(-360deg); } }
-  .spin-slow  { animation: spinSlow  35s linear infinite; }
-  .spin-slowR { animation: spinSlowR 40s linear infinite; }
-
-  /* ── Slide progress bar ── */
-  @keyframes slideProgress { from { width: 0%; } to { width: 100%; } }
-
-  /* ── Shimmer on CTA button ── */
-  @keyframes shimmer {
+  @keyframes spinSlow  { to { transform:rotate(360deg); } }
+  @keyframes spinSlowR { to { transform:rotate(-360deg); } }
+  @keyframes slideProgress { from{width:0%} to{width:100%} }
+  @keyframes floatOrb {
+    0%,100%{ transform:translateY(0) scale(1); }
+    50%    { transform:translateY(-8px) scale(1.06); }
+  }
+  @keyframes pulseGlow {
+    0%,100%{ opacity:0.4; transform:scale(1); }
+    50%    { opacity:0.75; transform:scale(1.04); }
+  }
+  @keyframes lineGrow { from{width:0;opacity:0} to{width:52px;opacity:1} }
+  @keyframes shimmerSweep {
     0%   { background-position: -200% center; }
     100% { background-position:  200% center; }
   }
-  .btn-shimmer {
-    background-size: 200% auto;
-    transition: background-position 0s;
+  @keyframes dotPulse {
+    0%,100%{ transform:scale(1); opacity:1; }
+    50%    { transform:scale(1.5); opacity:0.7; }
   }
-  .btn-shimmer:hover {
-    animation: shimmer 1.6s linear infinite;
-  }
-
-  /* ── Floating orbs on image ring ── */
-  @keyframes floatOrb {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    50%       { transform: translateY(-8px) scale(1.06); }
-  }
-  .float-orb { animation: floatOrb 3.5s ease-in-out infinite; }
-  .float-orb-delay { animation: floatOrb 3.5s ease-in-out 1.8s infinite; }
-
-  /* ── Scroll indicator bounce ── */
-  @keyframes scrollBounce {
-    0%, 100% { transform: translateY(0) translateX(-50%); opacity: 0.6; }
-    50%       { transform: translateY(7px) translateX(-50%); opacity: 1; }
-  }
-  .scroll-bounce { animation: scrollBounce 2s ease-in-out infinite; }
-
-  /* ── Grain texture overlay ── */
-  .grain-overlay {
-    position: absolute; inset: 0; pointer-events: none; z-index: 1;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.35;
-    mix-blend-mode: overlay;
+  @keyframes orbFloat {
+    0%,100%{ transform:translate(0,0) scale(1); }
+    33%    { transform:translate(6px,-10px) scale(1.08); }
+    66%    { transform:translate(-5px,-6px) scale(0.95); }
   }
 
-  /* ── Diagonal decorative line ── */
-  .deco-line {
-    position: absolute;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(139,101,8,0.25), transparent);
+  .anim-badge  { animation: badgePop    0.65s cubic-bezier(0.22,1,0.36,1) 0.05s both; }
+  .anim-title  { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+  .anim-line   { animation: lineGrow    0.6s  cubic-bezier(0.22,1,0.36,1) 0.28s both; }
+  .anim-sub    { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.28s both; }
+  .anim-btns   { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.40s both; }
+  .anim-stats  { animation: fadeSlideUp 0.8s  cubic-bezier(0.22,1,0.36,1) 0.52s both; }
+  .anim-img    { animation: fadeSlideLeft 0.85s cubic-bezier(0.22,1,0.36,1) 0.08s both; }
+
+  .spin-slow  { animation: spinSlow  32s linear infinite; }
+  .spin-slowR { animation: spinSlowR 40s linear infinite; }
+  .float-orb  { animation: orbFloat 4.5s ease-in-out infinite; }
+  .float-orb2 { animation: orbFloat 4.5s ease-in-out 2.2s infinite; }
+  .float-orb3 { animation: orbFloat 5s ease-in-out 1.1s infinite; }
+  .pulse-glow { animation: pulseGlow 3.5s ease-in-out infinite; }
+  .dot-pulse  { animation: dotPulse 2s ease-in-out infinite; }
+
+  .shimmer-btn { background-size: 200% auto; }
+  .shimmer-btn:hover { animation: shimmerSweep 1.4s linear infinite; }
+
+  .grain-layer {
+    position:absolute; inset:0; pointer-events:none; z-index:1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    opacity:0.3; mix-blend-mode:overlay;
   }
 
-  /* ── Number counter shine ── */
-  .stat-num {
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Thumbnail card hover lift ── */
   .thumb-card {
-    transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.45s ease, box-shadow 0.45s ease, border-color 0.45s ease;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1),
+                opacity   0.4s ease,
+                box-shadow 0.4s ease;
   }
-  .thumb-card:hover { transform: scale(1.08) translateY(-3px) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+  .thumb-card:hover { transform: scale(1.08) translateY(-5px) !important; }
+  .scrollbar-hide::-webkit-scrollbar { display:none; }
+  .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
 
-  /* ── Nav dot indicator ── */
-  .dot-active {
-    transition: width 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s;
+  .stat-pill {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stat-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139,101,8,0.15);
   }
 
-  /* hide scrollbar */
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-btn {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  }
+  .nav-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    background: white;
+  }
+
+  .explore-btn {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  }
+  .explore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(139,101,8,0.35);
+    filter: brightness(1.06);
+  }
+
+  .outline-btn {
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .outline-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 8px 24px rgba(139,101,8,0.12);
+  }
+
+  .deco-vline {
+    position:absolute; width:1px;
+    background:linear-gradient(to bottom, transparent 0%, rgba(139,101,8,0.18) 40%, rgba(139,101,8,0.18) 60%, transparent 100%);
+  }
+
+  @media (min-width:1024px) {
+    .hero-section {
+      height: 100dvh;
+      min-height: 620px;
+      max-height: 900px;
+    }
+    .hero-main-grid {
+      flex: 1 1 0;
+      min-height: 0;
+    }
+    .hero-thumb-strip {
+      flex-shrink: 0;
+    }
+    .hero-img-wrap {
+      height: clamp(300px, 48vh, 430px);
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+    }
+  }
 `;
 
-/* ─────────────── SUB-COMPONENTS ─────────────── */
-
-/** Decorative floating corner ornament */
-const CornerOrnament = ({ accentGold }) => (
-  <svg aria-hidden="true" width="60" height="60" viewBox="0 0 60 60" fill="none" className="opacity-30">
-    <path d="M4 4 L56 4 L56 8 M4 4 L4 56 L8 56" stroke={accentGold} strokeWidth="1.5" strokeLinecap="round"/>
-    <circle cx="4" cy="4" r="2.5" fill={accentGold}/>
+const CornerOrnament = ({ accentGold, className = "" }) => (
+  <svg aria-hidden="true" width="56" height="56" viewBox="0 0 56 56" fill="none" className={className}>
+    <path d="M3 3 L53 3 L53 8 M3 3 L3 53 L8 53" stroke={accentGold} strokeWidth="1.2" strokeLinecap="round"/>
+    <path d="M12 3 L3 3 L3 12" stroke={accentGold} strokeWidth="0.5" strokeLinecap="round" opacity="0.4"/>
+    <circle cx="3"  cy="3"  r="2.5" fill={accentGold}/>
+    <circle cx="53" cy="3"  r="1.5" fill={accentGold} opacity="0.35"/>
+    <circle cx="3"  cy="53" r="1.5" fill={accentGold} opacity="0.35"/>
+    <circle cx="10" cy="10" r="1"   fill={accentGold} opacity="0.2"/>
   </svg>
 );
 
-/** Animated stat pill */
 const StatPill = ({ value, label, accentGold }) => (
-  <div className="flex flex-col items-center px-4 py-2 rounded-xl bg-white/40 backdrop-blur-md border border-white/60 shadow-sm">
-    <span className="stat-num text-lg lg:text-xl" style={{ color: accentGold }}>{value}</span>
-    <span className="text-[9px] lg:text-[10px] uppercase tracking-widest text-[#a07f61] font-semibold mt-0.5">{label}</span>
+  <div className="stat-pill flex flex-col items-center px-3 lg:px-4 py-2 lg:py-2.5 rounded-xl"
+    style={{
+      background: `linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.45))`,
+      border: `1px solid rgba(255,255,255,0.6)`,
+      backdropFilter: "blur(16px)",
+      WebkitBackdropFilter: "blur(16px)",
+      boxShadow: `0 4px 16px rgba(139,101,8,0.08), inset 0 1px 0 rgba(255,255,255,0.8)`,
+    }}>
+    <span style={{
+      fontFamily:"'Cinzel',serif", fontWeight:700, fontSize:"clamp(0.95rem, 1.6vw, 1.15rem)",
+      letterSpacing:"0.04em", color:accentGold,
+    }}>{value}</span>
+    <span style={{
+      fontFamily:"'Jost',sans-serif", fontWeight:500,
+      fontSize:"clamp(8px, 0.9vw, 10px)", letterSpacing:"0.2em",
+      textTransform:"uppercase", color:"#b0895e", marginTop:"1px",
+    }}>{label}</span>
   </div>
 );
 
-/** Slide thumbnail card */
 const SlideCard = ({ slide, isActive, onClick, accentGold, paused, animKey }) => (
-  <button
-    onClick={onClick}
+  <button onClick={onClick}
     aria-current={isActive ? "true" : "false"}
-    aria-label={`View slide: ${slide.title[0]} ${slide.title[1]}`}
-    className="thumb-card relative flex-shrink-0 w-[100px] h-[132px] lg:w-[122px] lg:h-[148px] rounded-xl overflow-hidden snap-start focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+    aria-label={`View: ${slide.title[0]} ${slide.title[1]}`}
+    className="thumb-card relative flex-shrink-0 overflow-hidden snap-start focus:outline-none focus-visible:ring-2 rounded-2xl"
     style={{
-      backgroundImage: `url('${slide.img}')`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      border: isActive ? `2px solid ${accentGold}` : "2px solid rgba(255,255,255,0.3)",
-      opacity: isActive ? 1 : 0.6,
-      transform: isActive ? "scale(1.06) translateY(-3px)" : "scale(1)",
-      boxShadow: isActive ? `0 8px 28px rgba(0,0,0,0.22), 0 0 0 3px ${accentGold}22` : "0 4px 12px rgba(0,0,0,0.12)",
-    }}
-  >
-    <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-    {/* Badge label */}
+      width: "clamp(82px, 9vw, 112px)",
+      height: "clamp(108px, 12vw, 140px)",
+      border: isActive ? `2px solid ${accentGold}` : "1.5px solid rgba(255,255,255,0.28)",
+      opacity: isActive ? 1 : 0.52,
+      transform: isActive ? "scale(1.07) translateY(-5px)" : "scale(1)",
+      boxShadow: isActive
+        ? `0 12px 36px rgba(0,0,0,0.24), 0 0 0 3px ${accentGold}22`
+        : "0 4px 12px rgba(0,0,0,0.1)",
+    }}>
+    
+    {/* ✅ PERFORMANCE FIX: Image optimization for thumbnails */}
+    <Image 
+      src={slide.img} 
+      alt={`Thumbnail for ${slide.title[0]}`} 
+      fill 
+      sizes="(max-width: 1024px) 82px, 112px"
+      className="object-cover -z-10"
+    />
+    
+    <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent rounded-2xl z-0"/>
+    
     {isActive && (
-      <div
-        className="absolute top-2 left-2 z-20 px-1.5 py-0.5 rounded-md text-[7px] font-bold uppercase tracking-widest text-white"
-        style={{ background: accentGold }}
-      >
-        {slide.badge}
-      </div>
-    )}
-
-    <div className="relative h-full flex flex-col justify-end p-2.5 z-10 text-left pb-4">
-      <p className="text-[9.5px] lg:text-[10.5px] font-bold leading-tight line-clamp-2 text-white">
-        {slide.title[0]} {slide.title[1]}
-      </p>
-    </div>
-
-    {isActive && (
-      <div
-        key={animKey}
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 h-[3px] z-20 rounded-b-xl"
+      <div className="absolute top-1.5 left-1.5 z-20 px-1.5 py-0.5 rounded-md"
         style={{
-          background: `linear-gradient(to right, ${accentGold}, #BE6E5B)`,
-          animation: "slideProgress 5000ms linear forwards",
+          background: accentGold,
+          fontFamily:"'Jost',sans-serif", fontWeight:700,
+          fontSize:"7px", letterSpacing:"0.18em",
+          textTransform:"uppercase", color:"white",
+        }}>{slide.badge}</div>
+    )}
+    
+    <div className="relative h-full flex flex-col justify-end p-2 z-10 text-left pb-4 pointer-events-none">
+      <p style={{
+        fontFamily:"'Jost',sans-serif", fontWeight:600,
+        fontSize:"9px", lineHeight:1.35,
+        color:"white", display:"-webkit-box",
+        WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden",
+      }}>{slide.title[0]} {slide.title[1]}</p>
+    </div>
+    
+    {isActive && (
+      <div key={animKey} aria-hidden="true" className="absolute bottom-0 left-0 h-[3px] z-20 rounded-b-2xl"
+        style={{
+          background:`linear-gradient(to right, ${accentGold}, #BE6E5B)`,
+          animation:`slideProgress 5000ms linear forwards`,
           animationPlayState: paused ? "paused" : "running",
-        }}
-      />
+        }}/>
     )}
   </button>
 );
 
-/* ─────────────── MAIN COMPONENT ─────────────── */
 export default function HeroSection() {
   const [cur, setCur] = useState(0);
   const [animKey, setAnimKey] = useState(0);
   const [paused, setPaused] = useState(false);
-  const timerRef = useRef(null);
-
-  const goTo = useCallback(
-    (n) => {
-      const next = ((n % slides.length) + slides.length) % slides.length;
-      if (next === cur) return;
-      setCur(next);
-      setAnimKey((k) => k + 1);
-    },
-    [cur],
-  );
+  const pausedRef = useRef(false);
 
   useEffect(() => {
-    if (paused) return;
-    timerRef.current = setTimeout(() => goTo(cur + 1), 5000);
-    return () => clearTimeout(timerRef.current);
-  }, [cur, paused, goTo]);
+    pausedRef.current = paused;
+  }, [paused]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (pausedRef.current) return;
+      setCur(c => (c + 1) % slides.length);
+      setAnimKey(k => k + 1);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  const goTo = useCallback((n) => {
+    const next = ((n % slides.length) + slides.length) % slides.length;
+    setCur(next);
+    setAnimKey(k => k + 1);
+  }, []);
 
   const slide = slides[cur];
 
@@ -291,311 +946,282 @@ export default function HeroSection() {
     <>
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 
-      {/* ── SEO: Structured Data ── */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
+      <script 
+        type="application/ld+json" 
+        dangerouslySetInnerHTML={{ 
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Sanwariyas Global Wholesale",
-            description: "India's premier export house for high-end ethnic wear, Kurtis, designer suits, and bridal couture.",
-            url: "https://sanwariyas.com",
-            sameAs: [],
-            offers: {
-              "@type": "AggregateOffer",
-              priceCurrency: "INR",
-              offerCount: "500+",
-              description: "Wholesale bulk orders for Indian ethnic wear",
-            },
-          }),
-        }}
+            "@context":"https://schema.org",
+            "@type":"Organization",
+            "name":"Sanwariyas Global Wholesale",
+            "description":"India's premier export house for high-end ethnic wear, Kurtis, designer suits, and bridal couture.",
+            "url":"https://sanwariyas.com",
+            "offers":{
+              "@type":"AggregateOffer",
+              "priceCurrency":"INR",
+              "offerCount":"500+",
+              "description":"Wholesale bulk orders for Indian ethnic wear"
+            }
+          })
+        }} 
       />
 
       <section
+        className="hero-section relative w-full flex flex-col overflow-hidden"
+        style={{ minHeight:"100dvh" }}
         aria-label="Sanwariyas Global Wholesale – Premium Indian Ethnic Wear"
         aria-roledescription="carousel"
-        itemScope
-        itemType="https://schema.org/WPHeader"
-        className="relative w-full min-h-[100dvh] lg:h-screen flex flex-col overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
+        itemScope itemType="https://schema.org/WPHeader"
+        onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
       >
-        {/* ── Background transitions ── */}
+        {/* ── Slide backgrounds ── */}
         {slides.map((s, i) => (
-          <div
-            key={s.id}
-            aria-hidden="true"
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === cur ? "opacity-100 z-0" : "opacity-0 -z-10"}`}
-            style={{ background: s.bg }}
-          />
+          <div key={s.id} aria-hidden="true"
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i===cur?"opacity-100 z-0":"opacity-0 -z-10"}`}
+            style={{ background: s.bg }}/>
         ))}
+        <div aria-hidden="true" className="grain-layer"/>
 
-        {/* ── Grain texture ── */}
-        <div aria-hidden="true" className="grain-overlay" />
-
-        {/* ── Subtle backdrop ── */}
-        <div aria-hidden="true" className="absolute inset-0 bg-white/15 backdrop-blur-[1px] pointer-events-none z-0" />
-
-        {/* ── Vertical decorative line left ── */}
-        <div aria-hidden="true" className="deco-line hidden lg:block h-3/4 top-[12%] left-[8%] z-10" />
-        {/* ── Vertical decorative line right ── */}
-        <div aria-hidden="true" className="deco-line hidden lg:block h-1/2 top-[25%] right-[8%] z-10" />
+        {/* ── Decorative vertical lines ── */}
+        <div aria-hidden="true" className="deco-vline hidden lg:block h-3/4 top-[12%] left-[5.5%] z-10"/>
+        <div aria-hidden="true" className="deco-vline hidden lg:block h-2/5 top-[30%] right-[5.5%] z-10"/>
 
         {/* ── Corner ornaments ── */}
-        <div aria-hidden="true" className="absolute top-4 left-4 z-10 hidden lg:block">
-          <CornerOrnament accentGold={slide.accentGold} />
+        <div aria-hidden="true" className="absolute top-3 left-3 z-10 hidden lg:block opacity-20">
+          <CornerOrnament accentGold={slide.accentGold}/>
         </div>
-        <div aria-hidden="true" className="absolute top-4 right-4 z-10 hidden lg:block rotate-90">
-          <CornerOrnament accentGold={slide.accentGold} />
+        <div aria-hidden="true" className="absolute top-3 right-3 z-10 hidden lg:block opacity-20" style={{transform:"rotate(90deg)"}}>
+          <CornerOrnament accentGold={slide.accentGold}/>
         </div>
 
-        {/* ── Slide counter top-right ── */}
-        <div
-          aria-hidden="true"
-          className="absolute top-6 right-6 z-20 hidden lg:flex items-center gap-2"
-        >
-          <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#a07f61]">
-            {String(cur + 1).padStart(2, "0")}
+        {/* ── Slide counter ── */}
+        <div aria-hidden="true" className="absolute top-5 right-5 z-20 hidden lg:flex items-center gap-2">
+          <span style={{fontFamily:"'Cinzel',serif", fontWeight:600, fontSize:"10px", letterSpacing:"0.22em", color:"#b0895e"}}>
+            {String(cur+1).padStart(2,"0")}
           </span>
-          <div className="w-10 h-px bg-[#C9A485]" />
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#C9A485]">
-            {String(slides.length).padStart(2, "0")}
+          <div style={{width:"32px", height:"1px", background:"linear-gradient(to right,#C9A485,transparent)"}}/>
+          <span style={{fontFamily:"'Cinzel',serif", fontSize:"10px", letterSpacing:"0.22em", color:"#C9A485", opacity:0.6}}>
+            {String(slides.length).padStart(2,"0")}
           </span>
         </div>
 
-        {/* ── Main content grid ── */}
-        <div className="relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-6 lg:px-14 pt-20 lg:pt-24 pb-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
+        {/* ── Main content ── */}
+        <div className="hero-main-grid relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-5 lg:px-14 pt-16 lg:pt-20 pb-3 lg:pb-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 xl:gap-16 items-center w-full">
 
-            {/* LEFT – Text block */}
-            <div
-              key={animKey}
-              aria-live="polite"
-              aria-atomic="true"
-              className="flex flex-col justify-center mt-4 lg:mt-0 order-2 lg:order-1"
-            >
-              {/* Eyebrow badge */}
-              <div className="anim-badge flex items-center gap-3 mb-5">
-                <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-[0.22em] font-bold text-white shadow-md"
-                  style={{ background: `linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)` }}
-                >
-                  <svg aria-hidden="true" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="white"/></svg>
+            {/* ════ LEFT: Text ════ */}
+            <div key={`txt-${animKey}`} aria-live="polite" aria-atomic="true"
+              className="flex flex-col justify-center order-2 lg:order-1 mt-2 lg:mt-0">
+
+              {/* Badge row */}
+              <div className="anim-badge flex items-center gap-3 mb-4">
+                <span style={{
+                  display:"inline-flex", alignItems:"center", gap:"6px",
+                  padding:"5px 14px", borderRadius:"999px",
+                  background:`linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 100%)`,
+                  fontFamily:"'Jost',sans-serif", fontWeight:700,
+                  fontSize:"8.5px", letterSpacing:"0.24em", textTransform:"uppercase",
+                  color:"white",
+                  boxShadow:`0 4px 18px ${slide.accentGold}40`,
+                }}>
+                  <span aria-hidden="true" className="dot-pulse inline-block w-1.5 h-1.5 rounded-full bg-white/80"/>
                   {slide.badge}
                 </span>
-                <div
-                  className="anim-line h-px flex-shrink-0"
-                  style={{ background: `linear-gradient(to right, ${slide.accentGold}, transparent)` }}
-                />
+                <div className="anim-line h-px rounded-full flex-shrink-0"
+                  style={{
+                    width:"52px",
+                    background:`linear-gradient(to right, ${slide.accentGold}, transparent)`,
+                    opacity:0.7,
+                  }}/>
               </div>
 
-              {/* Headline */}
-              <h1
-                className="anim-title text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.04] mb-2 tracking-wide text-[#7A3D2A]"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-                itemProp="headline"
-              >
+              {/* Heading */}
+              <h1 className="anim-title hero-title font-bold leading-[1.02] mb-3 tracking-wide text-[#7A3D2A]"
+                style={{fontFamily:"'Cormorant Garamond',Georgia,serif"}}
+                itemProp="headline">
                 <span className="block">{slide.title[0]}</span>
-                <span
-                  className="block italic mt-1 pb-1 text-transparent bg-clip-text"
+                <span className="block italic mt-0.5 text-transparent bg-clip-text"
                   style={{
-                    backgroundImage: `linear-gradient(110deg, ${slide.accentGold} 0%, #BE6E5B 60%, ${slide.accentGold} 100%)`,
-                  }}
-                >
+                    backgroundImage:`linear-gradient(110deg, ${slide.accentGold} 0%, #BE6E5B 55%, ${slide.accentGold} 100%)`,
+                    paddingBottom:"2px",
+                  }}>
                   {slide.title[1]}
                 </span>
               </h1>
 
-              {/* Thin rule */}
-              <div
-                aria-hidden="true"
-                className="mb-5 h-px w-16 rounded-full opacity-50"
-                style={{ background: slide.accentGold }}
-              />
+              {/* Divider line */}
+              <div aria-hidden="true" className="mb-4 rounded-full"
+                style={{height:"1.5px", width:"48px", background:`linear-gradient(to right, ${slide.accentGold}, transparent)`, opacity:0.55}}/>
 
-              {/* Sub-description */}
-              <p
-                className="anim-sub text-xs lg:text-sm leading-[1.8] mb-6 lg:mb-8 tracking-wide text-[#a07f61] max-w-md"
-                style={{ fontFamily: "'Nunito Sans', sans-serif" }}
-                itemProp="description"
-              >
+              {/* Subtitle */}
+              <p className="anim-sub leading-[1.85] mb-5 lg:mb-6 tracking-wide text-[#a07f61] max-w-md"
+                style={{
+                  fontFamily:"'Jost',sans-serif", fontWeight:400,
+                  fontSize:"clamp(11.5px, 1.15vw, 13.5px)",
+                }}
+                itemProp="description">
                 {slide.sub}
               </p>
 
-              {/* CTA Buttons */}
-              <div className="anim-btns flex flex-wrap gap-3 mb-8">
-                <Link
-                  href="/products"
-                  aria-label="Explore our ethnic wear collection"
-                  className="btn-shimmer group relative inline-flex items-center gap-2 px-6 py-3 lg:px-8 lg:py-3.5 rounded-xl font-bold text-[9.5px] lg:text-[10.5px] tracking-widest uppercase transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+              {/* CTA buttons */}
+              <div className="anim-btns flex flex-wrap gap-2.5 mb-5 lg:mb-6">
+                <Link href="/products" aria-label="Explore our ethnic wear collection"
+                  className="explore-btn shimmer-btn group relative inline-flex items-center gap-2.5 rounded-xl overflow-hidden"
                   style={{
-                    backgroundImage: `linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 50%, ${slide.accentGold} 100%)`,
-                    color: "#FDF7F2",
-                  }}
-                >
-                  {/* shimmer layer */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)", backgroundSize: "200% auto" }}
-                  />
+                    padding:"10px 22px",
+                    backgroundImage:`linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 50%, ${slide.accentGold} 100%)`,
+                    backgroundSize:"200% auto",
+                    color:"#FDF7F2",
+                    fontFamily:"'Jost',sans-serif", fontWeight:700,
+                    fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase",
+                    boxShadow:`0 6px 24px ${slide.accentGold}38`,
+                  }}>
+                  <span aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{background:"linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%)",backgroundSize:"200% auto"}}/>
                   <span className="relative">Explore Collection</span>
                   <span aria-hidden="true" className="relative transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </Link>
 
-                <Link
-                  href="/contact"
-                  aria-label="Get wholesale pricing for bulk orders"
-                  className="group inline-flex items-center gap-2 px-6 py-3 lg:px-8 lg:py-3.5 rounded-xl font-bold text-[9.5px] lg:text-[10.5px] tracking-widest uppercase bg-white/70 backdrop-blur-sm transition-all duration-300 hover:bg-white/90 hover:shadow-lg hover:-translate-y-1"
+                <Link href="/contact" aria-label="Get wholesale pricing"
+                  className="outline-btn group inline-flex items-center gap-2 rounded-xl"
                   style={{
-                    border: `1.5px solid ${slide.accentGold}`,
-                    color: slide.accentGold,
-                  }}
-                >
+                    padding:"10px 22px",
+                    background:"rgba(255,255,255,0.65)",
+                    backdropFilter:"blur(12px)",
+                    border:`1.5px solid ${slide.accentGold}`,
+                    color:slide.accentGold,
+                    fontFamily:"'Jost',sans-serif", fontWeight:700,
+                    fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase",
+                  }}>
                   Get Wholesale Price
-                  <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1 opacity-60">↗</span>
+                  <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5 opacity-55">↗</span>
                 </Link>
               </div>
 
-              {/* Stats row */}
-              <div className="anim-stats flex items-center gap-3 flex-wrap">
-                <StatPill value="500+" label="Designs" accentGold={slide.accentGold} />
-                <StatPill value="50+" label="Countries" accentGold={slide.accentGold} />
-                <StatPill value="15K+" label="Orders" accentGold={slide.accentGold} />
+              {/* Stats */}
+              <div className="anim-stats flex items-center gap-2 lg:gap-3">
+                <StatPill value="500+" label="Designs"   accentGold={slide.accentGold} />
+                <StatPill value="50+"  label="Countries" accentGold={slide.accentGold} />
+                <StatPill value="15K+" label="Orders"    accentGold={slide.accentGold} />
               </div>
             </div>
 
-            {/* RIGHT – Image orb */}
-            <div
-              key={`img-${cur}`}
-              className="anim-img relative flex items-center justify-center h-[280px] md:h-[360px] lg:h-[460px] order-1 lg:order-2"
-            >
-              <div className="relative w-full h-full max-w-[280px] md:max-w-[360px] lg:max-w-[430px]">
+            {/* ════ RIGHT: Image orb ════ */}
+            <div key={`img-${cur}`}
+              className="anim-img hero-img-wrap relative flex items-center justify-center order-1 lg:order-2"
+              style={{ height:"clamp(240px, 40vw, 450px)" }}>
+              <div className="relative w-full h-full"
+                style={{ maxWidth:"clamp(240px, 38vw, 430px)", margin:"0 auto" }}>
 
-                {/* Outer glow ring */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{
-                    boxShadow: `0 0 60px 15px ${slide.accentGold}22, inset 0 0 40px ${slide.accentGold}11`,
-                    transition: "box-shadow 0.7s ease",
-                  }}
-                />
+                {/* Outer glow */}
+                <div aria-hidden="true" className="pulse-glow absolute inset-0 rounded-full pointer-events-none"
+                  style={{ boxShadow:`0 0 70px 18px ${slide.accentGold}22, inset 0 0 40px ${slide.accentGold}0F` }}/>
 
-                {/* Spinning rings */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-full pointer-events-none spin-slow"
-                  style={{ border: `1px solid ${slide.accentGold}`, opacity: 0.5, transform: "scale(1.07)" }}
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-full pointer-events-none spin-slowR"
-                  style={{ border: `1px dashed ${slide.accentGold}`, opacity: 0.25, transform: "scale(1.13)" }}
-                />
+                {/* Rings */}
+                <div aria-hidden="true" className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+                  style={{ border:`1.5px solid ${slide.accentGold}`, opacity:0.45, transform:"scale(1.07)" }}/>
+                <div aria-hidden="true" className="spin-slowR absolute inset-0 rounded-full pointer-events-none"
+                  style={{ border:`1px dashed ${slide.accentGold}`, opacity:0.22, transform:"scale(1.13)" }}/>
+                <div aria-hidden="true" className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+                  style={{ border:`0.5px solid rgba(190,110,91,0.13)`, transform:"scale(1.19)" }}/>
 
-                {/* Floating accent orbs on ring */}
-                <div
-                  aria-hidden="true"
-                  className="float-orb absolute top-[5%] right-[8%] w-3 h-3 rounded-full shadow-lg z-20"
-                  style={{ background: `radial-gradient(circle, white, ${slide.accentGold})` }}
-                />
-                <div
-                  aria-hidden="true"
-                  className="float-orb-delay absolute bottom-[8%] left-[5%] w-2 h-2 rounded-full shadow-md z-20"
-                  style={{ background: `radial-gradient(circle, white, #BE6E5B)` }}
-                />
+                {/* Floating orbs */}
+                <div aria-hidden="true" className="float-orb absolute top-[6%] right-[7%] w-3 h-3 rounded-full z-20"
+                  style={{ background:`radial-gradient(circle, #fff 20%, ${slide.accentGold})`, boxShadow:`0 3px 10px ${slide.accentGold}60` }}/>
+                <div aria-hidden="true" className="float-orb2 absolute bottom-[9%] left-[6%] w-2.5 h-2.5 rounded-full z-20"
+                  style={{ background:`radial-gradient(circle, #fff 20%, #BE6E5B)`, boxShadow:"0 3px 8px rgba(190,110,91,0.55)" }}/>
+                <div aria-hidden="true" className="float-orb3 absolute top-[48%] right-[-2%] w-2 h-2 rounded-full z-20"
+                  style={{ background:`radial-gradient(circle, #fff 20%, ${slide.accentGold})`, opacity:0.8 }}/>
 
-                {/* Main image circle */}
-                <div
-                  className={`absolute inset-4 md:inset-5 rounded-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-700 bg-white ${cur === 0 ? "spin-slow" : ""}`}
-                >
-                  <Image
-                    src={slide.img}
-                    alt={slide.imgAlt}
-                    fill
-                    className="object-cover transition-transform duration-700 hover:scale-105"
-                    sizes="(max-width:1024px) 300px, 460px"
-                    priority
-                    fetchPriority="high"
-                  />
-                  {/* Inner vignette */}
-                  <div aria-hidden="true" className="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(139,101,8,0.08)]" />
+                {/* Image circle — slide 0 rotates (spin-slow), others are still */}
+                <div className={`absolute inset-3.5 lg:inset-5 rounded-full overflow-hidden transition-all duration-700 bg-transparent ${cur === 0 ? "spin-slow" : ""}`}
+                  style={{ boxShadow:"0 24px 60px rgba(0,0,0,0.18)" }}>
+                  <Image src={slide.img} alt={slide.imgAlt} fill
+                    className="object-cover transition-transform duration-700 hover:scale-[1.04] mix-blend-multiply"
+                    sizes="(max-width:1024px) 280px, 430px"
+                    priority fetchPriority="high"/>
+                  <div aria-hidden="true" className="absolute inset-0 rounded-full"
+                    style={{ boxShadow:`inset 0 0 50px ${slide.accentGold}14` }}/>
                 </div>
 
-                {/* Floating tag on image */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 rounded-full text-[9px] uppercase tracking-widest font-bold text-white shadow-xl whitespace-nowrap"
-                  style={{ background: `linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)` }}
-                >
+                {/* "Made in India" tag */}
+                <div aria-hidden="true"
+                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full"
+                  style={{
+                    padding:"5px 18px",
+                    background:`linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)`,
+                    fontFamily:"'Jost',sans-serif", fontWeight:700,
+                    fontSize:"8px", letterSpacing:"0.22em",
+                    textTransform:"uppercase", color:"white",
+                    boxShadow:`0 6px 20px ${slide.accentGold}45`,
+                  }}>
                   ✦ Made in India ✦
                 </div>
 
                 {/* Nav arrows */}
-                <button
-                  onClick={() => goTo(cur - 1)}
-                  aria-label="Previous slide"
-                  className="group absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 lg:-translate-x-10 z-20 w-9 h-9 lg:w-11 lg:h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl border border-white/60"
-                  style={{ color: slide.accentGold }}
-                >
-                  <span aria-hidden="true" className="text-base lg:text-lg font-bold transition-transform duration-300 group-hover:-translate-x-0.5">❮</span>
-                </button>
+                <button onClick={() => goTo(cur-1)} aria-label="Previous slide"
+                  className="nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 lg:-translate-x-9 z-20 rounded-full flex items-center justify-center"
+                  style={{
+                    width:"clamp(36px, 3.5vw, 46px)", height:"clamp(36px, 3.5vw, 46px)",
+                    background:"rgba(255,255,255,0.88)",
+                    backdropFilter:"blur(12px)",
+                    border:"1px solid rgba(255,255,255,0.7)",
+                    color:slide.accentGold,
+                    boxShadow:"0 4px 16px rgba(0,0,0,0.1)",
+                    fontFamily:"serif", fontWeight:700, fontSize:"clamp(14px,1.4vw,18px)",
+                  }}>❮</button>
 
-                <button
-                  onClick={() => goTo(cur + 1)}
-                  aria-label="Next slide"
-                  className="group absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 lg:translate-x-10 z-20 w-9 h-9 lg:w-11 lg:h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl border border-white/60"
-                  style={{ color: slide.accentGold }}
-                >
-                  <span aria-hidden="true" className="text-base lg:text-lg font-bold transition-transform duration-300 group-hover:translate-x-0.5">❯</span>
-                </button>
+                <button onClick={() => goTo(cur+1)} aria-label="Next slide"
+                  className="nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 lg:translate-x-9 z-20 rounded-full flex items-center justify-center"
+                  style={{
+                    width:"clamp(36px, 3.5vw, 46px)", height:"clamp(36px, 3.5vw, 46px)",
+                    background:"rgba(255,255,255,0.88)",
+                    backdropFilter:"blur(12px)",
+                    border:"1px solid rgba(255,255,255,0.7)",
+                    color:slide.accentGold,
+                    boxShadow:"0 4px 16px rgba(0,0,0,0.1)",
+                    fontFamily:"serif", fontWeight:700, fontSize:"clamp(14px,1.4vw,18px)",
+                  }}>❯</button>
               </div>
             </div>
+
           </div>
         </div>
 
-
-        {/* ── Thumbnail strip + dot nav ── */}
-        <div className="relative z-20 w-full bg-gradient-to-t from-black/8 to-transparent pt-4 pb-6 mt-auto">
+        {/* ── Thumbnail strip ── */}
+        <div className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-auto"
+          style={{ background:"linear-gradient(to top, rgba(0,0,0,0.08), transparent)" }}>
           <nav aria-label="Carousel slide selector" className="max-w-7xl mx-auto px-4 lg:px-14">
+
             {/* Dot indicators */}
-            <div aria-hidden="true" className="flex justify-center gap-1.5 mb-3">
+            <div aria-hidden="true" className="flex justify-center gap-1.5 mb-2.5">
               {slides.map((s, i) => (
-                <button
-                  key={s.id}
-                  onClick={() => goTo(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className="dot-active rounded-full h-1.5 transition-all duration-400"
+                <button key={s.id} onClick={() => goTo(i)} aria-label={`Go to slide ${i+1}`}
+                  className="rounded-full transition-all duration-400"
                   style={{
-                    width: i === cur ? "24px" : "6px",
-                    background: i === cur ? slide.accentGold : "#C9A485",
-                    opacity: i === cur ? 1 : 0.45,
-                  }}
-                />
+                    height:"5px",
+                    width: i===cur ? "26px" : "5px",
+                    background: i===cur ? slide.accentGold : "#C9A485",
+                    opacity: i===cur ? 1 : 0.38,
+                  }}/>
               ))}
             </div>
 
             {/* Thumbnail cards */}
-            <div className="flex md:justify-center gap-2.5 lg:gap-3.5 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+            <div className="flex md:justify-center gap-2 lg:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory">
               {slides.map((s, index) => (
-                <SlideCard
-                  key={s.id}
-                  slide={s}
-                  isActive={index === cur}
-                  onClick={() => goTo(index)}
-                  accentGold={s.accentGold}
-                  paused={paused}
-                  animKey={animKey}
-                />
+                <SlideCard key={s.id} slide={s} isActive={index===cur}
+                  onClick={() => goTo(index)} accentGold={s.accentGold}
+                  paused={paused} animKey={animKey}/>
               ))}
             </div>
+
           </nav>
         </div>
       </section>
     </>
   );
 }
+
+
+

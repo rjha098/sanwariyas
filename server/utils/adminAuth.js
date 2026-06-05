@@ -5,7 +5,7 @@ import crypto from 'crypto';
 const DEFAULT_SECRET = 'change-this-admin-secret';
 
 const getSecret = () => process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET || DEFAULT_SECRET;
-
+  
 // Compare values safely to reduce timing-based guessing.
 const safeCompare = (a, b) => {
   const left = Buffer.from(String(a));

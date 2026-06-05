@@ -1,55 +1,53 @@
+// // FILE: client/src/app/layout.js
 // import './globals.css';
 // import WhatsAppWidget from '@/components/ui/WhatsAppWidget';
 
-// // ✅ SEO: Separated viewport configuration (Next.js 14+ Best Practice)
 // export const viewport = {
 //   themeColor: '#FAF3E8',
 //   width: 'device-width',
 //   initialScale: 1,
-//   maximumScale: 5, // Allows visually impaired users to zoom in
+//   maximumScale: 5,
 // };
 
 // export const metadata = {
-//   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://yourclothingstore.com'),
+//   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com'),
 //   title: {
-//     default: 'SANWARIYAS — Premium Ethnic Wear & Luxury Indian Fashion',
-//     template: '%s | SANWARIYAS Ethnic Luxury',
+//     default: 'SANWARIYAS — Premium Ethnic Wear Exporter & Wholesale Indian Fashion',
+//     template: '%s | SANWARIYAS Wholesale',
 //   },
 //   description:
-//     'Discover SANWARIYAS\'s curated collection of premium ethnic wear — Banarasi sarees, bridal lehengas, designer suits, and more. Send inquiry for pricing and availability.',
+//     'Discover SANWARIYAS\'s curated collection of premium wholesale ethnic wear — Banarasi sarees, bridal lehengas, designer suits. Bulk sourcing with low MOQ and global shipping.',
 //   keywords: [
-//     'ethnic wear',
-//     'Indian fashion',
-//     'sarees',
-//     'lehengas',
-//     'bridal wear',
-//     'Banarasi saree',
-//     'designer suits',
-//     'luxury Indian clothing',
+//     'wholesale ethnic wear',
+//     'Indian fashion exporter',
+//     'bulk sarees',
+//     'wholesale lehengas',
+//     'kurti manufacturer India',
+//     'B2B clothing supplier',
 //   ],
-//   authors: [{ name: 'SANWARIYAS Fashion' }],
-//   creator: 'SANWARIYAS Fashion',
+//   authors: [{ name: 'SANWARIYAS Exports' }],
+//   creator: 'SANWARIYAS Exports',
 //   openGraph: {
 //     type: 'website',
 //     locale: 'en_IN',
 //     url: '/',
-//     siteName: 'SANWARIYAS Ethnic Luxury',
-//     title: 'SANWARIYAS — Premium Ethnic Wear & Luxury Indian Fashion',
+//     siteName: 'SANWARIYAS Wholesale Exports',
+//     title: 'SANWARIYAS — Premium Ethnic Wear Exporter',
 //     description:
-//       'Explore our curated collection of premium ethnic wear. Authentic Banarasi sarees, bridal lehengas, designer suits and more.',
+//       'Partner with SANWARIYAS for wholesale ethnic wear. Low MOQ, custom manufacturing, and global shipping for boutiques and retailers.',
 //     images: [
 //       {
 //         url: '/og-image.jpg',
 //         width: 1200,
 //         height: 630,
-//         alt: 'SANWARIYAS Ethnic Luxury Fashion',
+//         alt: 'SANWARIYAS Export Facility',
 //       },
 //     ],
 //   },
 //   twitter: {
 //     card: 'summary_large_image',
-//     title: 'SANWARIYAS — Premium Ethnic Wear',
-//     description: 'Luxury Indian ethnic wear collection. Sarees, Lehengas, Suits & more.',
+//     title: 'SANWARIYAS — Wholesale Ethnic Wear',
+//     description: 'B2B Indian ethnic wear exporter. Low MOQ & Global Shipping.',
 //     images: ['/og-image.jpg'],
 //   },
 //   robots: {
@@ -68,32 +66,32 @@
 // const organizationSchema = {
 //   '@context': 'https://schema.org',
 //   '@type': 'Organization',
-//   name: 'SANWARIYAS Ethnic Luxury',
-//   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://yourclothingstore.com',
-//   logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yourclothingstore.com'}/logo.png`,
-//   description: 'Premium ethnic wear and luxury Indian fashion brand',
+//   name: 'SANWARIYAS Exports',
+//   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com',
+//   logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com'}/logo.png`,
+//   description: 'Premium ethnic wear B2B exporter and manufacturer',
 //   contactPoint: {
 //     '@type': 'ContactPoint',
-//     telephone: '+91-XXXXXXXXXX',
-//     contactType: 'customer service',
+//     telephone: '+91-9680812813',
+//     contactType: 'sales',
 //     availableLanguage: ['English', 'Hindi'],
 //   },
 //   sameAs: [
-//     'https://www.instagram.com/SANWARIYASfashion',
-//     'https://www.facebook.com/SANWARIYASfashion',
+//     'https://www.instagram.com/sanwariyas.official',
+//     'https://www.facebook.com/sanwariyas.official',
 //   ],
 // };
 
 // const websiteSchema = {
 //   '@context': 'https://schema.org',
 //   '@type': 'WebSite',
-//   name: 'SANWARIYAS Ethnic Luxury',
-//   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://yourclothingstore.com',
+//   name: 'SANWARIYAS Exports',
+//   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com',
 //   potentialAction: {
 //     '@type': 'SearchAction',
 //     target: {
 //       '@type': 'EntryPoint',
-//       urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yourclothingstore.com'}/products?search={search_term_string}`,
+//       urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com'}/products?search={search_term_string}`,
 //     },
 //     'query-input': 'required name=search_term_string',
 //   },
@@ -107,8 +105,6 @@
 //         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 //       </head>
 //       <body suppressHydrationWarning className="font-sans antialiased bg-[#FAF3E8] text-[#1A1A1A] min-h-screen flex flex-col">
-        
-//         {/* ✅ A11Y: Skip to main content link for keyboard users. This is invisible until focused. */}
 //         <a 
 //           href="#main-content" 
 //           className="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:p-4 focus:bg-white focus:text-[#7A3D2A] focus:font-bold focus:shadow-md"
@@ -116,7 +112,6 @@
 //           Skip to main content
 //         </a>
         
-//         {/* ✅ SEO: Added ID to script tags for better Next.js hydration tracking */}
 //         <script    
 //           id="schema-organization"
 //           type="application/ld+json"
@@ -137,6 +132,7 @@
 //     </html>
 //   );
 // }
+
 
 
 
@@ -166,7 +162,11 @@ export const metadata = {
     'wholesale lehengas',
     'kurti manufacturer India',
     'B2B clothing supplier',
+    'Jaipur ethnic wear manufacturer'
   ],
+  alternates: {
+    canonical: '/',
+  },
   authors: [{ name: 'SANWARIYAS Exports' }],
   creator: 'SANWARIYAS Exports',
   openGraph: {
@@ -205,19 +205,30 @@ export const metadata = {
   },
 };
 
+// ✅ UPGRADED SCHEMA: Added LocalBusiness & WholesaleStore with Jaipur Address
 const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Organization', 'WholesaleStore', 'ClothingStore'],
   name: 'SANWARIYAS Exports',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com',
   logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com'}/logo.png`,
-  description: 'Premium ethnic wear B2B exporter and manufacturer',
+  image: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sanwariyas.com'}/og-image.jpg`,
+  description: 'Premium ethnic wear B2B exporter and manufacturer based in Jaipur.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Shop no.- 12,13, 1st floor, Shiv Plaza, near HDFC bank, Printers Colony, Dada Gurudev Nagar, Sanganer',
+    addressLocality: 'Jaipur',
+    addressRegion: 'Rajasthan',
+    postalCode: '302029',
+    addressCountry: 'IN'
+  },
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: '+91-9680812813',
-    contactType: 'sales',
+    contactType: 'wholesale sales',
     availableLanguage: ['English', 'Hindi'],
   },
+  priceRange: "$$",
   sameAs: [
     'https://www.instagram.com/sanwariyas.official',
     'https://www.facebook.com/sanwariyas.official',

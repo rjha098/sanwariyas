@@ -22,7 +22,7 @@ const BUILT_IN_FAQS = [
   {
     name: "Do you offer customization on ethnic wear?",
     acceptedAnswer: {
-      text: "Yes — we offer full contract manufacturing support including custom fabric selection, custom size specifications, custom embroidery, print production, and private label label/OEM solutions. Detail your specifications in the B2B inquiry form.",
+      text: "Yes — we offer full contract manufacturing support including custom fabric selection, custom size specifications, custom embroidery, print production, and private label/OEM solutions. Detail your specifications in the B2B inquiry form.",
     },
     category: "Customization",
   },
@@ -208,6 +208,7 @@ export default function FaqSection({ faqs }) {
               return (
                 <FaqItem
                   key={globalIndex}
+                  index={globalIndex}
                   faq={faq}
                   isOpen={openIndex === globalIndex}
                   onToggle={() => handleToggle(globalIndex)}
@@ -223,6 +224,7 @@ export default function FaqSection({ faqs }) {
               return (
                 <FaqItem
                   key={globalIndex}
+                  index={globalIndex}
                   faq={faq}
                   isOpen={openIndex === globalIndex}
                   onToggle={() => handleToggle(globalIndex)}
@@ -260,13 +262,24 @@ export default function FaqSection({ faqs }) {
 }
 
 // ── Atomic FAQ Item Card Component ──────────────────────────────
-function FaqItem({ faq, isOpen, onToggle }) {
+function FaqItem({ faq, isOpen, onToggle, index }) {
   const currentCatColors = faq.category ? CATEGORY_COLORS[faq.category] || CATEGORY_COLORS.Default : CATEGORY_COLORS.Default;
 
   return (
     <div
       onClick={onToggle}
-      className={`group relative border rounded-xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all duration-500 ${
+      // ✅ A11Y FIX: Make the entire div keyboard accessible as a button
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isOpen}
+      aria-controls={`faq-answer-${index}`}
+      className={`group relative border rounded-xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all duration-500 outline-none focus-visible:ring-2 focus-visible:ring-[#BE6E5B] focus-visible:ring-offset-2 ${
         isOpen 
           ? "bg-white/95 border-[#BE6E5B]/50 shadow-[0_15px_40px_rgba(122,61,42,0.12)]" 
           : "bg-white/60 border-[#BE6E5B]/20 shadow-sm hover:bg-white/85 hover:border-[#BE6E5B]/40 hover:shadow-md"
@@ -320,6 +333,9 @@ function FaqItem({ faq, isOpen, onToggle }) {
 
       {/* Buttery Dynamic Grid Animation Panel */}
       <div 
+        id={`faq-answer-${index}`}
+        role="region"
+        aria-labelledby={`faq-heading-${index}`}
         className="grid transition-all duration-500 ease-in-out overflow-hidden"
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
       >
