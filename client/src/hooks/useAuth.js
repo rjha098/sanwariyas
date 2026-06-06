@@ -1,0 +1,137 @@
+// FILE: client/src/hooks/useAuth.js
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { unifiedLogin, verifyOTP, checkAuthSession, customerSignup } from '@/lib/api';
+
+export function useAuth() {
+  const [token, setToken]               = useState(null);
+  const [user, setUser]                 = useState(null);
+  const [authChecking, setAuthChecking] = useState(true);
+
+  // Login step 1
+  const [loginError, setLoginError]   = useState('');
+  const [loggingIn, setLoggingIn]     = useState(false);
+
+  // OTP step 2
+  const [otpPending, setOtpPending]     = useState(false);
+  const [emailHint, setEmailHint]       = useState('');
+  const [otpError, setOtpError]         = useState('');
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+
+  // Signup
+  const [signupError, setSignupError]   = useState('');
+  const [signingUp, setSigningUp]       = useState(false);
+  const [signupDone, setSignupDone]     = useState(false);
+
+  // ── Restore session on page reload ──────────────────────────
+  useEffect(() => {
+    const saved = sessionStorage.getItem('sanwariyas_token');
+    if (!saved) { setAuthChecking(false); return; }
+
+    checkAuthSession(saved)
+      .then((data) => {
+        if (data?.token && data?.user) {
+          sessionStorage.setItem('sanwariyas_token', data.token);
+          setToken(data.token);
+          setUser(data.user);
+        }
+      })
+      .catch(() => sessionStorage.removeItem('sanwariyas_token'))
+      .finally(() => setAuthChecking(false));
+  }, []);
+
+  // ── LOGIN STEP 1 ─────────────────────────────────────────────
+  const login = useCallback(async (identifier, password) => {
+    setLoggingIn(true);
+    setLoginError('');
+    try {
+      const data = await unifiedLogin({ identifier, password });
+
+      if (data.requires2FA) {
+        setOtpPending(true);
+        setEmailHint(data.emailHint || '');
+        return { success: true, requires2FA: true };
+      }
+
+      // Direct success (no 2FA)
+      sessionStorage.setItem('sanwariyas_token', data.token);
+      setToken(data.token);
+      setUser(data.user);
+      return { success: true, role: data.user.role };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Login failed. Please check your credentials.';
+      setLoginError(message);
+      return { success: false, error: message };
+    } finally {
+      setLoggingIn(false);
+    }
+  }, []);
+
+  // ── OTP STEP 2 ───────────────────────────────────────────────
+  const submitOtp = useCallback(async (otp) => {
+    setVerifyingOtp(true);
+    setOtpError('');
+    try {
+      const data = await verifyOTP({ otp, role: 'admin' });
+      sessionStorage.setItem('sanwariyas_token', data.token);
+      setToken(data.token);
+      setUser(data.user);
+      setOtpPending(false);
+      return { success: true, role: data.user.role };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Invalid OTP. Please try again.';
+      setOtpError(message);
+      return { success: false, error: message };
+    } finally {
+      setVerifyingOtp(false);
+    }
+  }, []);
+
+  const cancelOtp = useCallback(() => {
+    setOtpPending(false);
+    setOtpError('');
+    setEmailHint('');
+  }, []);
+
+  // ── SIGNUP ───────────────────────────────────────────────────
+  const signup = useCallback(async (formData) => {
+    setSigningUp(true);
+    setSignupError('');
+    setSignupDone(false);
+    try {
+      await customerSignup(formData);
+      setSignupDone(true);
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Signup failed. Please try again.';
+      setSignupError(message);
+      return { success: false, error: message };
+    } finally {
+      setSigningUp(false);
+    }
+  }, []);
+
+  // ── LOGOUT ───────────────────────────────────────────────────
+  const logout = useCallback(() => {
+    sessionStorage.removeItem('sanwariyas_token');
+    setToken(null);
+    setUser(null);
+    setLoginError('');
+    setOtpPending(false);
+  }, []);
+
+  const isAdmin         = user?.role === 'admin';
+  const isStaff         = user?.role === 'staff';
+  const isCustomer      = user?.role === 'customer';
+  const isAuthenticated = !!token && !!user;
+
+  return {
+    token, user, authChecking, isAuthenticated,
+    isAdmin, isStaff, isCustomer,
+    login, loginError, setLoginError, loggingIn,
+    otpPending, emailHint, otpError, verifyingOtp, submitOtp, cancelOtp,
+    signup, signupError, setSignupError, signingUp, signupDone,
+    logout,
+  };
+}

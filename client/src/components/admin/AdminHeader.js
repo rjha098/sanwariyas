@@ -1,161 +1,73 @@
-// export default function AdminHeader({
-//   admin,
-//   activeTab,
-//   setActiveTab,
-//   handleLogout,
-// }) {
-//   return (
-//     <header className="bg-brand-african text-brand-cream px-6 py-5 border-b border-brand-gold/20">
-//       <div className="max-w-7xl mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-//         <div>
-//           <p
-//             className="font-sans text-[11px] tracking-[0.4em] uppercase text-brand-gold mb-2"
-//             aria-hidden="true"
-//           >
-//             Sanwariyas
-//           </p>
-//           <h1 className="font-display text-3xl">Admin Panel</h1>
-//           <p className="font-sans text-sm text-brand-cream/70 mt-1">
-//             Signed in as {admin?.username || "admin"}
-//           </p>
-//         </div>
+'use client';
 
-//         <nav aria-label="Admin Navigation" className="flex flex-wrap gap-3">
-//           <button
-//             onClick={() => setActiveTab("products")}
-//             aria-current={activeTab === "products" ? "page" : undefined}
-//             className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-colors ${
-//               activeTab === "products"
-//                 ? "bg-brand-gold text-brand-african border-brand-gold"
-//                 : "border-brand-cream/30 text-brand-cream"
-//             }`}
-//           >
-//             Products
-//           </button>
-//           <button
-//             onClick={() => setActiveTab("inquiries")}
-//             aria-current={activeTab === "inquiries" ? "page" : undefined}
-//             className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-colors ${
-//               activeTab === "inquiries"
-//                 ? "bg-brand-gold text-brand-african border-brand-gold"
-//                 : "border-brand-cream/30 text-brand-cream"
-//             }`}
-//           >
-//             Inquiries
-//           </button>
+export default function AdminHeader({ admin, activeTab, setActiveTab, handleLogout }) {
+  const tabs = [
+    { id: 'products', label: 'Products' },
+    { id: 'lookbook', label: 'Lookbook' },
+    { id: 'inquiries', label: 'Inquiries' },
+  ];
 
-//           <button
-//             onClick={() => setActiveTab("lookbook")}
-//             className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-colors ${
-//               activeTab === "lookbook"
-//                 ? "bg-brand-gold text-brand-african border-brand-gold"
-//                 : "border-brand-cream/30 text-brand-cream"
-//             }`}
-//           >
-//             Gallery
-//           </button>
-
-//           <a
-//             href="/"
-//             className="px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border border-brand-cream/30 text-brand-cream"
-//             aria-label="View main website"
-//           >
-//             View Site
-//           </a>
-//           <button
-//             onClick={handleLogout}
-//             className="px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border border-brand-cream/30 text-brand-cream"
-//             aria-label="Logout of admin panel"
-//           >
-//             Logout
-//           </button>
-//         </nav>
-//       </div>
-//     </header>
-//   );
-// }
-
-
-
-import Link from 'next/link';
-
-export default function AdminHeader({
-  admin,
-  activeTab,
-  setActiveTab,
-  handleLogout,
-}) {
   return (
-    <header className="bg-brand-african text-brand-cream px-6 py-5 border-b border-brand-gold/20">
-      <div className="max-w-7xl mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p
-            className="font-sans text-[11px] tracking-[0.4em] uppercase text-brand-gold mb-2"
-            aria-hidden="true"
-          >
-            Sanwariyas
-          </p>
-          <h1 className="font-display text-3xl">Admin Panel</h1>
-          <p className="font-sans text-sm text-brand-cream/70 mt-1">
-            Signed in as {admin?.username || "admin"}
-          </p>
+    <header className="bg-white border-b border-brand-lightgold/40 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Brand */}
+          <div className="flex items-center gap-4">
+            <span className="font-display text-xl text-brand-african">SANWARIYAS</span>
+            <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-brand-mud bg-brand-cream px-2 py-1">
+              Operations Center
+            </span>
+          </div>
+
+          {/* Tabs */}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Dashboard sections">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 font-sans text-xs tracking-[0.2em] uppercase transition-colors ${
+                  activeTab === tab.id
+                    ? 'text-brand-coffee border-b-2 border-brand-coffee'
+                    : 'text-brand-mud hover:text-brand-coffee'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* User + logout */}
+          <div className="flex items-center gap-4">
+            {admin && (
+              <span className="font-sans text-xs text-brand-mud hidden sm:block">
+                {admin.username || admin.email}
+              </span>
+            )}
+            <button
+              onClick={handleLogout}
+              className="font-sans text-xs tracking-[0.2em] uppercase text-brand-mud hover:text-red-600 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
-        <nav aria-label="Admin Navigation" className="flex flex-wrap gap-3">
-          <button
-            onClick={() => setActiveTab("products")}
-            aria-current={activeTab === "products" ? "page" : undefined}
-            className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-all duration-300 ${
-              activeTab === "products"
-                ? "bg-brand-gold text-brand-african border-brand-gold shadow-md"
-                : "border-brand-cream/30 text-brand-cream hover:border-brand-gold hover:text-brand-gold"
-            }`}
-          >
-            Products
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("inquiries")}
-            aria-current={activeTab === "inquiries" ? "page" : undefined}
-            className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-all duration-300 ${
-              activeTab === "inquiries"
-                ? "bg-brand-gold text-brand-african border-brand-gold shadow-md"
-                : "border-brand-cream/30 text-brand-cream hover:border-brand-gold hover:text-brand-gold"
-            }`}
-          >
-            Inquiries
-          </button>
-
-          <button
-            onClick={() => setActiveTab("lookbook")}
-            // ✅ A11Y FIX: Added missing aria-current for screen readers
-            aria-current={activeTab === "lookbook" ? "page" : undefined}
-            className={`px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border transition-all duration-300 ${
-              activeTab === "lookbook"
-                ? "bg-brand-gold text-brand-african border-brand-gold shadow-md"
-                : "border-brand-cream/30 text-brand-cream hover:border-brand-gold hover:text-brand-gold"
-            }`}
-          >
-            Gallery
-          </button>
-
-          {/* ✅ PERFORMANCE FIX: Replaced <a> with Next.js <Link> */}
-          <Link
-            href="/"
-            className="px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border border-brand-cream/30 text-brand-cream transition-all duration-300 hover:border-brand-gold hover:text-brand-gold"
-            aria-label="View main website"
-          >
-            View Site
-          </Link>
-          
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 font-sans text-xs tracking-[0.3em] uppercase border border-brand-cream/30 text-brand-cream transition-all duration-300 hover:border-red-400 hover:text-red-400"
-            aria-label="Logout of admin panel"
-          >
-            Logout
-          </button>
-        </nav>
+        {/* Mobile tabs */}
+        <div className="flex md:hidden gap-1 pb-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 py-1.5 font-sans text-[10px] tracking-[0.2em] uppercase transition-colors ${
+                activeTab === tab.id
+                  ? 'text-brand-coffee border-b-2 border-brand-coffee'
+                  : 'text-brand-mud'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
     </header>
   );

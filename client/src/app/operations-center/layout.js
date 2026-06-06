@@ -1,9 +1,8 @@
-// FILE: client/src/app/admin/layout.js
+// FILE: client/src/app/operations-center/layout.js
 
 export const metadata = {
-  title: "Admin Panel | SANWARIYAS",
+  title: "Operations Center | SANWARIYAS",
   description: "Secure administrative dashboard for SANWARIYAS wholesale management.",
-  // ✅ CRITICAL FIX: Yeh robots tag Google ko is page ko index karne se rokega
   robots: {
     index: false,
     follow: false,
@@ -16,7 +15,7 @@ export const metadata = {
   },
 };
 
-export default function AdminLayout({ children }) {
+export default function OperationsCenterLayout({ children }) {
   return (
     <div className="admin-wrapper bg-[#f8f4ec] min-h-screen">
       {children}
