@@ -11,7 +11,7 @@ const lbl    = 'block font-sans text-[11px] tracking-[0.2em] uppercase text-bran
 const btn    = 'w-full bg-brand-coffee text-brand-cream py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-brand-african transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
 // ── OTP Screen ────────────────────────────────────────────────────────────────
-function OtpScreen({ emailHint, verifyingOtp, onSubmit, onBack }) {
+function OtpScreen({ emailHint, devOtp, verifyingOtp, onSubmit, onBack }) {
   const [otp, setOtp] = useState('');
   return (
     <div className="space-y-5">
@@ -21,6 +21,11 @@ function OtpScreen({ emailHint, verifyingOtp, onSubmit, onBack }) {
           A 6-digit code was sent to <strong>{emailHint}</strong>. Valid for 10 minutes.
         </p>
       </div>
+      {devOtp && (
+        <p className="font-sans text-xs text-brand-coffee bg-brand-lightgold/20 border border-brand-lightgold/50 px-4 py-3">
+          Local dev OTP: <strong>{devOtp}</strong>
+        </p>
+      )}
       <form
         onSubmit={(e) => { e.preventDefault(); if (otp.length === 6) onSubmit(otp); }}
         className="space-y-5"
@@ -172,7 +177,7 @@ export default function LoginPage() {
 
   const {
     login, loginError, setLoginError, loggingIn,
-    otpPending, emailHint, otpError, verifyingOtp, submitOtp, cancelOtp,
+    otpPending, emailHint, devOtp, otpError, verifyingOtp, submitOtp, cancelOtp,
     signup, signupError, setSignupError, signingUp, signupDone,
     isAuthenticated, isAdmin, isStaff, authChecking,
   } = useAuth();
@@ -201,7 +206,7 @@ export default function LoginPage() {
   // Signup success → Toast + switch to signin
   useEffect(() => {
     if (signupDone) {
-      showToast('Account created! Check your email to verify.', 'success');
+      showToast('Account created! Sign in to receive your email OTP.', 'success');
       setMode('signin');
     }
   }, [signupDone]);
@@ -310,6 +315,7 @@ export default function LoginPage() {
             {otpPending ? (
               <OtpScreen
                 emailHint={emailHint}
+                devOtp={devOtp}
                 verifyingOtp={verifyingOtp}
                 onSubmit={handleOtp}
                 onBack={handleCancelOtp}

@@ -1,10 +1,10 @@
+// // FILE: client/src/components/layout/Navbar.js
 // "use client";
 // import { useState, useEffect } from "react";
 // import Link from "next/link";
 // import Image from "next/image";
 // import { usePathname } from "next/navigation";
 
-// // ✅ FIX: Added Lookbook here so it shows on BOTH Desktop and Mobile menus automatically
 // const navLinks = [
 //   { href: "/", label: "Home", title: "Sanwariyas Home - Premium Ethnic Wear" },
 //   {
@@ -211,7 +211,6 @@
 //                   }}
 //                 >
 //                   {link.label}
-//                   {/* ✅ A11Y: Hidden decorative underline span */}
 //                   <span aria-hidden="true" className="sw-nav-ul" />
 //                 </Link>
 //               );
@@ -220,10 +219,9 @@
 
 //           {/* AUTH, CTA + HAMBURGER */}
 //           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-//             {/* Desktop Auth (Single Login Link with Icon) */}
+//             {/* Desktop Auth */}
 //             <div className="hidden lg:flex items-center mr-2 border-r border-[#BE6E5B]/20 pr-5">
 //               <Link href="/login" className="sw-auth-link" aria-label="Log In">
-//                 {/* ✅ A11Y: Hidden decorative SVG icon */}
 //                 <svg
 //                   aria-hidden="true"
 //                   focusable="false"
@@ -265,7 +263,6 @@
 //                 boxShadow: "0 4px 15px rgba(190,110,91,0.35)",
 //               }}
 //             >
-//               {/* ✅ A11Y: Hidden decorative star */}
 //               <span aria-hidden="true" style={{ fontSize: "12px" }}>
 //                 ✦
 //               </span>{" "}
@@ -277,6 +274,7 @@
 //               className="flex lg:hidden"
 //               onClick={() => setMenuOpen((o) => !o)}
 //               aria-expanded={menuOpen}
+//               aria-controls="sw-mobile-menu"
 //               aria-label={menuOpen ? "Close menu" : "Open menu"}
 //               style={{
 //                 flexDirection: "column",
@@ -320,6 +318,7 @@
 //         </div>
 
 //         {/* MOBILE MENU */}
+//         {/* ✅ A11Y FIX: Added visibility hidden so keyboard users can't tab into closed menu */}
 //         <nav
 //           id="sw-mobile-menu"
 //           aria-label="Mobile Navigation"
@@ -328,6 +327,7 @@
 //           style={{
 //             maxHeight: menuOpen ? "100vh" : "0",
 //             opacity: menuOpen ? 1 : 0,
+//             visibility: menuOpen ? "visible" : "hidden",
 //             overflowY: "auto",
 //             transition: "all 0.5s ease-in-out",
 //             background: "linear-gradient(180deg, #FFF0EB 0%, #FFE8DF 100%)",
@@ -358,7 +358,6 @@
 //                   }}
 //                 >
 //                   <span>{link.label}</span>
-//                   {/* ✅ A11Y: Hidden decorative arrow */}
 //                   <span
 //                     aria-hidden="true"
 //                     style={{
@@ -372,7 +371,7 @@
 //               );
 //             })}
 
-//             {/* Mobile Auth (Single Login Link) */}
+//             {/* Mobile Auth */}
 //             <Link
 //               href="/login"
 //               onClick={() => setMenuOpen(false)}
@@ -395,7 +394,6 @@
 //               <div
 //                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
 //               >
-//                 {/* ✅ A11Y: Hidden decorative SVG icon */}
 //                 <svg
 //                   aria-hidden="true"
 //                   focusable="false"
@@ -413,7 +411,6 @@
 //                 </svg>
 //                 <span>Log In / Register</span>
 //               </div>
-//               {/* ✅ A11Y: Hidden decorative arrow */}
 //               <span
 //                 aria-hidden="true"
 //                 style={{ color: "#BE6E5B", fontSize: "18px" }}
@@ -422,7 +419,6 @@
 //               </span>
 //             </Link>
 
-//             {/* ✅ FIX: Removed nested <Link> tag that was crashing the mobile layout */}
 //             {/* Mobile CTA */}
 //             <Link
 //               href="/contact"
@@ -460,20 +456,28 @@
 
 
 
+// the  upper  side  dynacic    that  show  the  product  and   the  downside  the    static  that  not  showing  the product  list  in  the  navbar   
+
+
+
 // FILE: client/src/components/layout/Navbar.js
 "use client";
+import NotificationBell from '@/components/ui/NotificationBell';
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import api from "@/lib/api";
 
 const navLinks = [
   { href: "/", label: "Home", title: "Sanwariyas Home - Premium Ethnic Wear" },
-  {
-    href: "/products",
-    label: "Products",
-    title: "Sanwariyas Products - Bridal & Ethnic Wear",
-  },
+  // ✅ FIX: Products ko uncomment kar diya taaki ye navbar me dikhe
+  // {
+  //   href: "/products",
+  //   label: "Products",
+  //   title: "Sanwariyas Products - Bridal & Ethnic Wear",
+  // },
   {
     href: "/lookbook",
     label: "Lookbook",
@@ -498,13 +502,30 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+ 
   const [hoveredLink, setHoveredLink] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
+
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Auth context and state
+  const { isAuthenticated, user, logout, token } = useAuth();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    router.push("/login");
+  };
+
+  const getDashboardLink = () => {
+    if (user?.role === "admin" || user?.role === "staff") return "/operations-center";
+    return "/dashboard";
+  };
 
   return (
     <>
@@ -538,6 +559,9 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           gap: 6px;
+          background: transparent;
+          border: none;
+          cursor: pointer;
         }
         .sw-auth-link:hover { color: #7A3D2A; }
 
@@ -571,7 +595,7 @@ export default function Navbar() {
           style={{
             maxWidth: "1280px",
             margin: "0 auto",
-            padding: "16px 24px",
+            padding: "6px 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -586,15 +610,15 @@ export default function Navbar() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              gap: "10px",
               textDecoration: "none",
             }}
           >
             <div
               style={{
                 position: "relative",
-                width: "48px",
-                height: "48px",
+                width: "70px",
+                height: "70px",
                 flexShrink: 0,
               }}
             >
@@ -682,25 +706,39 @@ export default function Navbar() {
           {/* AUTH, CTA + HAMBURGER */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             {/* Desktop Auth */}
-            <div className="hidden lg:flex items-center mr-2 border-r border-[#BE6E5B]/20 pr-5">
-              <Link href="/login" className="sw-auth-link" aria-label="Log In">
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                Log In
-              </Link>
+            <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
+              {isAuthenticated ? (
+                <>
+                  {/* <Link href={getDashboardLink()} className="relative sw-auth-link" aria-label="Notifications"> */}
+                  <NotificationBell />
+                  <Link href={getDashboardLink()} className="sw-auth-link" aria-label="Dashboard">
+                    Dashboard
+                  </Link>
+
+                  <button onClick={handleLogout} className="sw-auth-link" aria-label="Log Out">
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <Link href="/login" className="sw-auth-link" aria-label="Log In">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  Log In
+                </Link>
+              )}
             </div>
 
             {/* CTA Button */}
@@ -780,7 +818,6 @@ export default function Navbar() {
         </div>
 
         {/* MOBILE MENU */}
-        {/* ✅ A11Y FIX: Added visibility hidden so keyboard users can't tab into closed menu */}
         <nav
           id="sw-mobile-menu"
           aria-label="Mobile Navigation"
@@ -834,52 +871,101 @@ export default function Navbar() {
             })}
 
             {/* Mobile Auth */}
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className="sw-mob-link"
-              aria-label="Log In or Register"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px 0",
-                borderBottom: "1px solid rgba(190,110,91,0.2)",
-                color: "#a07f61",
-                fontSize: "12px",
-                fontWeight: "600",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href={getDashboardLink()}
+                  onClick={() => setMenuOpen(false)}
+                  className="sw-mob-link"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "16px 0",
+                    borderBottom: "1px solid rgba(190,110,91,0.2)",
+                    color: "#a07f61",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    textDecoration: "none",
+                  }}
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>Log In / Register</span>
-              </div>
-              <span
-                aria-hidden="true"
-                style={{ color: "#BE6E5B", fontSize: "18px" }}
+                  <span>Dashboard</span>
+                  <span aria-hidden="true" style={{ color: "#BE6E5B", fontSize: "18px" }}>›</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="sw-mob-link"
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "16px 0",
+                    borderBottom: "1px solid rgba(190,110,91,0.2)",
+                    color: "#a07f61",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span>Log Out</span>
+                  <span aria-hidden="true" style={{ color: "#BE6E5B", fontSize: "18px" }}>›</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMenuOpen(false)}
+                className="sw-mob-link"
+                aria-label="Log In or Register"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "16px 0",
+                  borderBottom: "1px solid rgba(190,110,91,0.2)",
+                  color: "#a07f61",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                }}
               >
-                ›
-              </span>
-            </Link>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Log In / Register</span>
+                </div>
+                <span
+                  aria-hidden="true"
+                  style={{ color: "#BE6E5B", fontSize: "18px" }}
+                >
+                  ›
+                </span>
+              </Link>
+            )}
 
             {/* Mobile CTA */}
             <Link

@@ -1,4 +1,8 @@
+
 'use client';
+
+
+import NotificationBell from '@/components/ui/NotificationBell';
 
 export default function AdminHeader({ admin, activeTab, setActiveTab, handleLogout }) {
   const tabs = [
@@ -38,6 +42,7 @@ export default function AdminHeader({ admin, activeTab, setActiveTab, handleLogo
 
           {/* User + logout */}
           <div className="flex items-center gap-4">
+              <NotificationBell />
             {admin && (
               <span className="font-sans text-xs text-brand-mud hidden sm:block">
                 {admin.username || admin.email}

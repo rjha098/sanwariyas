@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { unifiedLogin, verifyOTP, checkAuthSession, customerSignup } from '@/lib/api';
+import { unifiedLogin, verifyOTP, checkAuthSession, customerSignup, authLogout } from '@/lib/api';
 
 export function useAuth() {
   const [token, setToken]               = useState(null);
@@ -16,6 +16,9 @@ export function useAuth() {
   // OTP step 2
   const [otpPending, setOtpPending]     = useState(false);
   const [emailHint, setEmailHint]       = useState('');
+  const [devOtp, setDevOtp]             = useState('');
+  const [otpRole, setOtpRole]           = useState('');
+  const [otpIdentifier, setOtpIdentifier] = useState('');
   const [otpError, setOtpError]         = useState('');
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
@@ -50,7 +53,10 @@ export function useAuth() {
 
       if (data.requires2FA) {
         setOtpPending(true);
+        setOtpRole(data.role || 'admin');
+        setOtpIdentifier(identifier);
         setEmailHint(data.emailHint || '');
+        setDevOtp(data.devOtp || '');
         return { success: true, requires2FA: true };
       }
 
@@ -73,11 +79,14 @@ export function useAuth() {
     setVerifyingOtp(true);
     setOtpError('');
     try {
-      const data = await verifyOTP({ otp, role: 'admin' });
+      const data = await verifyOTP({ otp, role: otpRole || 'admin', identifier: otpIdentifier });
       sessionStorage.setItem('sanwariyas_token', data.token);
       setToken(data.token);
       setUser(data.user);
       setOtpPending(false);
+      setOtpRole('');
+      setOtpIdentifier('');
+      setDevOtp('');
       return { success: true, role: data.user.role };
     } catch (err) {
       const message = err.response?.data?.message || 'Invalid OTP. Please try again.';
@@ -86,12 +95,15 @@ export function useAuth() {
     } finally {
       setVerifyingOtp(false);
     }
-  }, []);
+  }, [otpRole, otpIdentifier]);
 
   const cancelOtp = useCallback(() => {
     setOtpPending(false);
     setOtpError('');
     setEmailHint('');
+    setDevOtp('');
+    setOtpRole('');
+    setOtpIdentifier('');
   }, []);
 
   // ── SIGNUP ───────────────────────────────────────────────────
@@ -114,12 +126,17 @@ export function useAuth() {
 
   // ── LOGOUT ───────────────────────────────────────────────────
   const logout = useCallback(() => {
+    const saved = token || sessionStorage.getItem('sanwariyas_token');
+    if (saved) authLogout(saved).catch(() => {});
     sessionStorage.removeItem('sanwariyas_token');
     setToken(null);
     setUser(null);
     setLoginError('');
     setOtpPending(false);
-  }, []);
+    setOtpRole('');
+    setOtpIdentifier('');
+    setDevOtp('');
+  }, [token]);
 
   const isAdmin         = user?.role === 'admin';
   const isStaff         = user?.role === 'staff';
@@ -130,7 +147,7 @@ export function useAuth() {
     token, user, authChecking, isAuthenticated,
     isAdmin, isStaff, isCustomer,
     login, loginError, setLoginError, loggingIn,
-    otpPending, emailHint, otpError, verifyingOtp, submitOtp, cancelOtp,
+    otpPending, emailHint, devOtp, otpError, verifyingOtp, submitOtp, cancelOtp,
     signup, signupError, setSignupError, signingUp, signupDone,
     logout,
   };

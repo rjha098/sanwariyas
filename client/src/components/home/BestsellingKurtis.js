@@ -1,5 +1,5 @@
 // // FILE: client/src/components/home/BestsellingKurtis.js
-// import Link from "next/link";
+// import div from "next/div";
 // import Image from "next/image";
 
 // const BADGES = ["Best Seller","Top Pick","Fan Favourite","Most Ordered","Trending","Staff Pick"];
@@ -20,14 +20,14 @@
 //     : null;
 
 //   return (
-//     <li className="group relative flex-shrink-0 w-[210px] sm:w-[235px] md:w-[255px]">
-//       <Link href={`/products/${product.slug}`} title={`View ${product.name}`}
-//         className="block rounded-2xl overflow-hidden border border-[#BE6E5B]/18 bg-white/72 backdrop-blur-sm shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_24px_56px_rgba(122,61,42,0.18)] hover:border-[#BE6E5B]/55 hover:bg-white">
+//     <li className="group relative flex-shrink-0 w-[210px] sm:w-[235px] md:w-[260px]">
+//       <div href={`/products/${product.slug}`} title={`View ${product.name}`}
+//         className="block rounded-2xl overflow-hidden border border-[#BE6E5B]/20 bg-white/80 backdrop-blur-sm shadow-md transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_28px_60px_rgba(122,61,42,0.22)] hover:border-[#BE6E5B]/60 hover:bg-white">
 
 //         {/* Image */}
 //         <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#F2D9C3]">
 //           <Image src={product.image} alt={product.name} fill
-//             sizes="(max-width:640px) 210px, 255px"
+//             sizes="(max-width:640px) 210px, 260px"
 //             className="object-cover transition-transform duration-700 group-hover:scale-110"/>
 
 //           {/* Rank */}
@@ -45,7 +45,7 @@
 
 //           {/* Discount */}
 //           {discount && (
-//             <div className="absolute bottom-3 left-3 z-10 px-2.5 py-0.5 rounded-full text-[9px] font-black text-white drop-shadow-md"
+//             <div className="absolute bottom-3 left-3 z-10 px-2.5 py-1 rounded-full text-[9px] font-black text-white drop-shadow-md"
 //               style={{background:"rgba(92,49,32,0.92)"}}>
 //               {discount}% OFF
 //             </div>
@@ -53,22 +53,22 @@
 
 //           {/* Hover overlay */}
 //           <div aria-hidden="true"
-//             className="absolute inset-0 bg-gradient-to-t from-[#5C3120]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
+//             className="absolute inset-0 bg-gradient-to-t from-[#5C3120]/45 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
 
 //           {/* Quick view pill */}
 //           <div aria-hidden="true"
-//             className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full text-[8px] uppercase tracking-widest font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 drop-shadow-md"
-//             style={{background:"rgba(122,61,42,0.88)",backdropFilter:"blur(8px)"}}>
+//             className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 px-5 py-2 rounded-full text-[8px] uppercase tracking-widest font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 drop-shadow-md"
+//             style={{background:"rgba(122,61,42,0.90)",backdropFilter:"blur(8px)"}}>
 //             View Details →
 //           </div>
 //         </div>
 
 //         {/* Info */}
-//         <div className="p-4">
+//         <div className="px-4 py-4">
 //           {product.category && (
 //             <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-[#BE6E5B] font-bold mb-1">{product.category}</p>
 //           )}
-//           <h3 className="font-display text-[15px] md:text-base text-[#7A3D2A] font-bold leading-snug line-clamp-2 mb-2">
+//           <h3 className="font-display text-[15px] md:text-base text-[#5C3120] font-bold leading-snug line-clamp-2 mb-2">
 //             {product.name}
 //           </h3>
 //           <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@
 //           </div>
 //           {product.fabric && <p className="font-sans text-[10px] text-[#a07f61] mt-1">{product.fabric}</p>}
 //         </div>
-//       </Link>
+//       </div>
 //     </li>
 //   );
 // }
@@ -91,9 +91,10 @@
 
 //   return (
 //     <section aria-labelledby="bestselling-heading"
-//       className="relative py-20 md:py-24 overflow-hidden"
+//       className="relative py-20 md:py-28 overflow-hidden"
 //       style={{background:"linear-gradient(160deg,#FDF7F2 0%,#F2D9C3 100%)"}}>
 
+//       {/* Background pattern */}
 //       <div aria-hidden="true" className="absolute inset-0 opacity-[0.03]"
 //         style={{backgroundImage:"repeating-linear-gradient(45deg,#BE6E5B 0,#BE6E5B 1px,transparent 0,transparent 36px)",backgroundSize:"36px 36px"}}/>
 //       <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"/>
@@ -102,7 +103,7 @@
 //       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 //         {/* Header */}
-//         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-12">
+//         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-14">
 //           <div>
 //             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">Most Ordered</p>
 //             <h2 id="bestselling-heading"
@@ -114,31 +115,33 @@
 //               <span className="text-[#BE6E5B] text-base animate-pulse">✦</span>
 //             </div>
 //           </div>
-//           <Link href="/products" aria-label="View all bestselling wholesale products"
-//             className="group relative self-start md:self-auto inline-flex items-center gap-2 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] tracking-[0.3em] uppercase font-bold px-7 py-3 rounded-xl hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden">
+
+//           {/* View All Button — consistent style */}
+//           <div href="/products" aria-label="View all bestselling wholesale products"
+//             className="group relative self-start md:self-auto inline-flex items-center gap-2.5 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] tracking-[0.3em] uppercase font-bold px-8 py-3.5 rounded-xl hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden">
 //             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#7A3D2A] to-[#BE6E5B] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10"/>
 //             <span className="relative z-10">View All</span>
 //             <span aria-hidden="true" className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300">→</span>
-//           </Link>
+//           </div>
 //         </div>
 
 //         {/* Scroll strip */}
 //         <div className="relative">
-//           <div aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-10 z-10 pointer-events-none bg-gradient-to-r from-[#FDF7F2]/80 to-transparent"/>
-//           <div aria-hidden="true" className="absolute right-0 top-0 bottom-0 w-10 z-10 pointer-events-none bg-gradient-to-l from-[#F2D9C3]/80 to-transparent"/>
-          
+//           <div aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-[#FDF7F2]/90 to-transparent"/>
+//           <div aria-hidden="true" className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-[#F2D9C3]/90 to-transparent"/>
+
 //           <ul aria-label="Bestselling products list"
-//             className="flex gap-4 md:gap-5 overflow-x-auto pb-4 list-none p-0 m-0 snap-x snap-mandatory"
+//             className="flex gap-5 md:gap-6 overflow-x-auto pb-5 list-none p-0 m-0 snap-x snap-mandatory"
 //             style={{scrollbarWidth:"none",msOverflowStyle:"none",WebkitOverflowScrolling:"touch"}}>
 //             {list.map((p, i) => (
 //               <div key={p._id} className="snap-start shrink-0">
-//                  <Card product={p} rank={i+1}/>
+//                 <Card product={p} rank={i+1}/>
 //               </div>
 //             ))}
 //           </ul>
 //         </div>
 
-//         <p aria-hidden="true" className="text-center mt-4 text-[9px] uppercase tracking-[0.4em] text-[#a07f61]/55 font-bold md:hidden">
+//         <p aria-hidden="true" className="text-center mt-5 text-[9px] uppercase tracking-[0.4em] text-[#a07f61]/55 font-bold md:hidden">
 //           ← Swipe to explore →
 //         </p>
 //       </div>
@@ -148,11 +151,16 @@
 
 
 
+
+// the  upper  side  code  is the   dynamic  code  and  the  down  side    code is  the  static    only  for  the  1  mnth   after  i  would   like  to  making  the  changes  
+
+
+
+
 // FILE: client/src/components/home/BestsellingKurtis.js
-import Link from "next/link";
 import Image from "next/image";
 
-const BADGES = ["Best Seller","Top Pick","Fan Favourite","Most Ordered","Trending","Staff Pick"];
+const BADGES = ["Best Seller","Top Pick","Fan Favourite","Most Ordered","Trending","Staff Pick"]; 
 
 const PLACEHOLDER = [
   { _id:"p1", slug:"anarkali-embroidered-suit",  name:"Anarkali Embroidered Suit",    category:"Suits",    price:8900,  originalPrice:12000, fabric:"Georgette",    image:"https://images.unsplash.com/photo-1614519379172-32183e78b3b6?w=600&q=80" },
@@ -170,8 +178,8 @@ function Card({ product, rank }) {
     : null;
 
   return (
-    <li className="group relative flex-shrink-0 w-[210px] sm:w-[235px] md:w-[260px]">
-      <Link href={`/products/${product.slug}`} title={`View ${product.name}`}
+   <li className="group relative flex-shrink-0 snap-start shrink-0 w-[210px] sm:w-[235px] md:w-[260px]">
+      <div 
         className="block rounded-2xl overflow-hidden border border-[#BE6E5B]/20 bg-white/80 backdrop-blur-sm shadow-md transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_28px_60px_rgba(122,61,42,0.22)] hover:border-[#BE6E5B]/60 hover:bg-white">
 
         {/* Image */}
@@ -231,13 +239,18 @@ function Card({ product, rank }) {
           </div>
           {product.fabric && <p className="font-sans text-[10px] text-[#a07f61] mt-1">{product.fabric}</p>}
         </div>
-      </Link>
+      </div>
     </li>
   );
 }
 
-export default function BestsellingKurtis({ products }) {
-  const list = products && products.length > 0 ? products : PLACEHOLDER;
+export default function BestsellingKurtis() {
+  // Future dynamic version
+  // const list = products && products.length > 0 ? products : PLACEHOLDER;
+
+
+  // Current static version
+const list = PLACEHOLDER;
 
   return (
     <section aria-labelledby="bestselling-heading"
@@ -267,12 +280,12 @@ export default function BestsellingKurtis({ products }) {
           </div>
 
           {/* View All Button — consistent style */}
-          <Link href="/products" aria-label="View all bestselling wholesale products"
+          <div 
             className="group relative self-start md:self-auto inline-flex items-center gap-2.5 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] tracking-[0.3em] uppercase font-bold px-8 py-3.5 rounded-xl hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden">
             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#7A3D2A] to-[#BE6E5B] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10"/>
             <span className="relative z-10">View All</span>
             <span aria-hidden="true" className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300">→</span>
-          </Link>
+          </div>
         </div>
 
         {/* Scroll strip */}
@@ -283,11 +296,14 @@ export default function BestsellingKurtis({ products }) {
           <ul aria-label="Bestselling products list"
             className="flex gap-5 md:gap-6 overflow-x-auto pb-5 list-none p-0 m-0 snap-x snap-mandatory"
             style={{scrollbarWidth:"none",msOverflowStyle:"none",WebkitOverflowScrolling:"touch"}}>
+            
             {list.map((p, i) => (
-              <div key={p._id} className="snap-start shrink-0">
-                <Card product={p} rank={i+1}/>
-              </div>
-            ))}
+  <Card
+    key={p._id}
+    product={p}
+    rank={i + 1}
+  />
+))}
           </ul>
         </div>
 
@@ -298,3 +314,5 @@ export default function BestsellingKurtis({ products }) {
     </section>
   );
 }
+
+

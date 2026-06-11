@@ -1,18 +1,34 @@
-// PURPOSE: Handle HTTP requests for inquiry operations
-
-
+// FILE: server/controllers/inquiryController.js
+import mongoose from 'mongoose';
 import * as inquiryService from '../services/inquiryService.js';
+import User from '../models/User.js';
+import { verifyAuthToken } from '../utils/authUtils.js';
 
-const submitInquiry = async (req, res) => {
+export const submitInquiry = async (req, res) => {
   try {
-    const inquiry = await inquiryService.createInquiry(req.body);
+    let userId = req.body.userId || null;
+
+    if (!userId) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.slice(7);
+        try {
+          const decoded = verifyAuthToken(token);
+          userId = decoded.id || decoded._id || decoded.userId; 
+        } catch (err) {
+          console.log("Invalid token, proceeding as guest.");
+        }
+      }
+    }
+
+    const inquiry = await inquiryService.createInquiry(req.body, userId);
     res.status(201).json({ success: true, inquiry });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-const getInquiries = async (req, res) => {
+export const getInquiries = async (req, res) => {
   try {
     const data = await inquiryService.getAllInquiries(req.query);
     res.json({ success: true, ...data });
@@ -21,17 +37,139 @@ const getInquiries = async (req, res) => {
   }
 };
 
-const updateStatus = async (req, res) => {
+// export const getMyInquiries = async (req, res) => {
+//   try {
+//     // ✅ CRITICAL FIX: Checking both 'id' and '_id' to prevent undefined errors
+//     // const userId = req.authUser?.id || req.authUser?._id || req.authUser?.userId;
+    
+
+
+//     const userId =
+//   req.authUser?.id ||
+//   req.authUser?._id ||
+//   req.authUser?.userId;
+
+//     if (!userId) {
+//       return res.status(401).json({ success: false, message: 'Unauthorized. Please login.' });
+//     }
+
+//     const userEmail = req.authUser?.email;
+
+
+//     // const inquiries = await inquiryService.getUserInquiries(userId);
+//     // res.json({ success: true, inquiries });
+    
+//     const inquiries =
+//   await inquiryService.getUserInquiries(
+//     userId,
+//     userEmail
+//   );
+
+
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+
+export const getMyInquiries = async (req, res) => {
+  try {
+
+    console.log("===== GET MY INQUIRIES =====");
+    console.log("AUTH USER:", req.authUser);
+
+    const userId =
+      req.authUser?.id ||
+      req.authUser?._id ||
+      req.authUser?.userId;
+
+    console.log("USER ID:", userId);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized. Please login.'
+      });
+    }
+
+    const inquiries = await inquiryService.getUserInquiries(userId);
+
+    console.log("INQUIRIES FOUND:", inquiries.length);
+
+    res.json({
+      success: true,
+      inquiries
+    });
+
+  } catch (error) {
+    console.error("GET MY INQUIRIES ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+export const updateStatus = async (req, res) => {
   try {
     const inquiry = await inquiryService.updateInquiryStatus(req.params.id, req.body);
     res.json({ success: true, inquiry });
   } catch (error) {
-    res.status(error.statusCode || 500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export {
-  getInquiries,
-  submitInquiry,
-  updateStatus,
+export const replyToInquiry = async (req, res) => {
+  try {
+    const userObj = req.authUser || {};
+    
+    let senderId = userObj.id || userObj._id || userObj.userId;
+    const role = userObj.role || 'admin';
+
+    if (!senderId) {
+      senderId = '000000000000000000000000'; 
+    }
+
+    const inquiry = await inquiryService.addReplyToInquiry(
+      req.params.id, 
+      senderId, 
+      role, 
+      req.body.message
+    );
+    
+    res.json({ success: true, inquiry });
+  } catch (error) {
+    console.error("Reply Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
+
+export const markViewed = async (req, res) => {
+  try {
+    const inquiry = await inquiryService.markInquiryAsViewed(req.params.id, req.authUser.role);
+    res.json({ success: true, inquiry });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getSingleInquiry = async (req, res) => {
+  try {
+    const inquiry = await inquiryService.getInquiryById(req.params.id);
+    res.json({ success: true, inquiry });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const deleteInquiry = async (req,res) => {
+  try{
+   await inquiryService.deleteInquiryById(req.params.id);
+   res.json({success:true,message:'Inquiry deleted successfully'});
+  }catch(error){
+    res.status(500).json({success:false,message:error.message});
+  }
+};
+
