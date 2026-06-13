@@ -251,6 +251,10 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSkeleton";
 import { fetchProducts, fetchCategories } from "@/lib/api";
+// FILE: client/src/app/products/page.js
+import { redirect } from 'next/navigation';
+
+
 
 const FABRICS = ["Cotton", "Georgette", "Silk", "Rayon", "Mixed"];
 
@@ -320,6 +324,8 @@ function ProductsContent() {
     loadProducts(activeCategory, activeFabric, newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+
 
   return (
     <>
@@ -468,6 +474,8 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
+
+  redirect('/'); 
   return (
     <>
       <Navbar />

@@ -6,7 +6,7 @@ import NotificationBell from '@/components/ui/NotificationBell';
 
 export default function AdminHeader({ admin, activeTab, setActiveTab, handleLogout }) {
   const tabs = [
-    { id: 'products', label: 'Products' },
+    // { id: 'products', label: 'Products' },
     { id: 'lookbook', label: 'Lookbook' },
     { id: 'inquiries', label: 'Inquiries' },
   ];

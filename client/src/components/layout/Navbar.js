@@ -452,17 +452,11 @@
 //   );
 // }
 
-
-
-
-
-// the  upper  side  dynacic    that  show  the  product  and   the  downside  the    static  that  not  showing  the product  list  in  the  navbar   
-
-
+// the  upper  side  dynacic    that  show  the  product  and   the  downside  the    static  that  not  showing  the product  list  in  the  navbar
 
 // FILE: client/src/components/layout/Navbar.js
 "use client";
-import NotificationBell from '@/components/ui/NotificationBell';
+import NotificationBell from "@/components/ui/NotificationBell";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -479,11 +473,6 @@ const navLinks = [
   //   title: "Sanwariyas Products - Bridal & Ethnic Wear",
   // },
   {
-    href: "/lookbook",
-    label: "Lookbook",
-    title: "Sanwariyas Lookbook - Collections & Gallery",
-  },
-  {
     href: "/contact",
     label: "Inquire",
     title: "Contact Sanwariyas - Send an Inquiry",
@@ -494,6 +483,11 @@ const navLinks = [
     title: "About Sanwariyas - Our Story & Heritage",
   },
   {
+    href: "/lookbook",
+    label: "Lookbook",
+    title: "Sanwariyas Lookbook - Collections & Gallery",
+  },
+  {
     href: "/exportdocs",
     label: "Export",
     title: "Sanwariyas Export Documentation & Wholesale",
@@ -502,7 +496,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
- 
+
   const [hoveredLink, setHoveredLink] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
 
@@ -523,7 +517,8 @@ export default function Navbar() {
   };
 
   const getDashboardLink = () => {
-    if (user?.role === "admin" || user?.role === "staff") return "/operations-center";
+    if (user?.role === "admin" || user?.role === "staff")
+      return "/operations-center";
     return "/dashboard";
   };
 
@@ -711,16 +706,28 @@ export default function Navbar() {
                 <>
                   {/* <Link href={getDashboardLink()} className="relative sw-auth-link" aria-label="Notifications"> */}
                   <NotificationBell />
-                  <Link href={getDashboardLink()} className="sw-auth-link" aria-label="Dashboard">
+                  <Link
+                    href={getDashboardLink()}
+                    className="sw-auth-link"
+                    aria-label="Dashboard"
+                  >
                     Dashboard
                   </Link>
 
-                  <button onClick={handleLogout} className="sw-auth-link" aria-label="Log Out">
+                  <button
+                    onClick={handleLogout}
+                    className="sw-auth-link"
+                    aria-label="Log Out"
+                  >
                     Log Out
                   </button>
                 </>
               ) : (
-                <Link href="/login" className="sw-auth-link" aria-label="Log In">
+                <Link
+                  href="/login"
+                  className="sw-auth-link"
+                  aria-label="Log In"
+                >
                   <svg
                     aria-hidden="true"
                     focusable="false"
@@ -892,7 +899,12 @@ export default function Navbar() {
                   }}
                 >
                   <span>Dashboard</span>
-                  <span aria-hidden="true" style={{ color: "#BE6E5B", fontSize: "18px" }}>›</span>
+                  <span
+                    aria-hidden="true"
+                    style={{ color: "#BE6E5B", fontSize: "18px" }}
+                  >
+                    ›
+                  </span>
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -915,7 +927,12 @@ export default function Navbar() {
                   }}
                 >
                   <span>Log Out</span>
-                  <span aria-hidden="true" style={{ color: "#BE6E5B", fontSize: "18px" }}>›</span>
+                  <span
+                    aria-hidden="true"
+                    style={{ color: "#BE6E5B", fontSize: "18px" }}
+                  >
+                    ›
+                  </span>
                 </button>
               </>
             ) : (

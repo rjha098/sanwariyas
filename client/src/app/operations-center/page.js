@@ -189,14 +189,15 @@ import { useInquiries } from '@/hooks/useInquiries';
 import AdminHeader from '@/components/admin/AdminHeader';
 import DashboardStats from '@/components/admin/DashboardStats';
 import ProductForm from '@/components/admin/ProductForm';
-import ProductTable from '@/components/admin/ProductTable';
+// import ProductTable from '@/components/admin/ProductTable';
 import InquiryTable from '@/components/admin/InquiryTable';
 import LookbookManager from '@/components/admin/LookbookManager';
 import Toast from '@/components/ui/Toast';
 
 export default function OperationsCenter() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('products');
+  // const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('lookbook');
   const [toast, setToast] = useState({ isVisible: false, message: '', type: 'success' });
 
   const showToast = (message, type = 'success') =>
@@ -296,7 +297,7 @@ export default function OperationsCenter() {
     resolvedInquiriesTotal={inquiryStats?.resolved || 0}
   />
 
-          {activeTab === 'products' && (
+          {/* {activeTab === 'products' && (
             <section aria-label="Product Management" className="space-y-6">
               <div className="grid lg:grid-cols-[1.05fr_1.45fr] gap-6">
                 <ProductForm
@@ -326,7 +327,7 @@ export default function OperationsCenter() {
                 />
               </div>
             </section>
-          )}
+          )} */}
 
           {activeTab === 'lookbook' && (
             <section aria-label="Lookbook Management">

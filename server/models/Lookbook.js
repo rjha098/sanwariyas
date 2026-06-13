@@ -1,3 +1,4 @@
+// model/lookbook.js 
 import mongoose from 'mongoose';
 
 const lookbookSchema = new mongoose.Schema({

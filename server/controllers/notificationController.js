@@ -6,7 +6,7 @@ export const getUnreadCount = async (req, res) => {
     const { role, id } = req.authUser;
     let query;
 
-    if (role === 'admin' || role === 'staff') {
+    if (role === 'admin' || role === 'staff') {  
       query = { isGlobalAdmin: true, isRead: false };
     } else {
       query = { recipientId: id, isRead: false };
