@@ -7,12 +7,12 @@ const USP_ITEMS = [
     icon:<svg aria-hidden="true" viewBox="0 0 40 40" fill="none" className="w-7 h-7" stroke="#BE6E5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="12" width="10" height="20" rx="2"/><rect x="15" y="8" width="10" height="24" rx="2"/><rect x="24" y="16" width="10" height="16" rx="2"/></svg>,
   },
   {
-    number:"02", title:"Export-Grade Quality Control",
-    desc:"Every piece passes a 4-step QC — fabric check, stitching inspection, colour-fastness test, and a final finishing review before dispatch.",
+    number:"02", title:"Export-Grade Quality Control.",
+    desc:"Every piece passes a 4-step QC — fabric check, stitching inspection, color-fastness test, and a final finishing review before dispatch.",
     icon:<svg aria-hidden="true" viewBox="0 0 40 40" fill="none" className="w-7 h-7" stroke="#BE6E5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="20" cy="20" r="13"/><path d="M13 20.5 L17.5 25 L27 15"/></svg>,
   },
   {
-    number:"03", title:"Direct from Manufacturer",
+    number:"03", title:"Direct from Manufacturer:",
     desc:"No middlemen. We manufacture in Jaipur and ship directly — factory pricing, faster lead times, and full visibility over every order.",
     icon:<svg aria-hidden="true" viewBox="0 0 40 40" fill="none" className="w-7 h-7" stroke="#BE6E5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 28 L8 16 L20 8 L32 16 L32 28"/><rect x="15" y="20" width="10" height="8" rx="1"/><path d="M8 28 L32 28"/></svg>,
   },
@@ -23,7 +23,7 @@ const USP_ITEMS = [
   },
   {
     number:"05", title:"Worldwide Export & Fast Dispatch",
-    desc:"We ship to 50+ countries with fully insured, trackable consignments. Most orders dispatched within 5–7 business days from confirmation.",
+    desc:"We ship to 50+ countries with fully insured, trackable consignments. Most orders are dispatched within 5–7 business days of confirmation.",
     icon:<svg aria-hidden="true" viewBox="0 0 40 40" fill="none" className="w-7 h-7" stroke="#BE6E5B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="20" cy="20" r="13"/><path d="M7 20 Q13 14 20 20 Q27 26 33 20"/><path d="M20 7 Q14 13 20 20 Q26 27 20 33"/></svg>,
   },
   {

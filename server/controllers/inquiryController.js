@@ -6,7 +6,7 @@ import { verifyAuthToken } from '../utils/authUtils.js';
 
 export const submitInquiry = async (req, res) => {
   try {
-    let userId = req.body.userId || null;
+    let userId = req.body.userId || null;    
 
     if (!userId) {
       const authHeader = req.headers.authorization;
@@ -37,53 +37,14 @@ export const getInquiries = async (req, res) => {
   }
 };
 
-// export const getMyInquiries = async (req, res) => {
-//   try {
-//     // ✅ CRITICAL FIX: Checking both 'id' and '_id' to prevent undefined errors
-//     // const userId = req.authUser?.id || req.authUser?._id || req.authUser?.userId;
-    
-
-
-//     const userId =
-//   req.authUser?.id ||
-//   req.authUser?._id ||
-//   req.authUser?.userId;
-
-//     if (!userId) {
-//       return res.status(401).json({ success: false, message: 'Unauthorized. Please login.' });
-//     }
-
-//     const userEmail = req.authUser?.email;
-
-
-//     // const inquiries = await inquiryService.getUserInquiries(userId);
-//     // res.json({ success: true, inquiries });
-    
-//     const inquiries =
-//   await inquiryService.getUserInquiries(
-//     userId,
-//     userEmail
-//   );
-
-
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-
-
 export const getMyInquiries = async (req, res) => {
   try {
-
-    console.log("===== GET MY INQUIRIES =====");
-    console.log("AUTH USER:", req.authUser);
-
     const userId =
       req.authUser?.id ||
       req.authUser?._id ||
       req.authUser?.userId;
 
-    console.log("USER ID:", userId);
+    const userEmail = req.authUser?.email;
 
     if (!userId) {
       return res.status(401).json({
@@ -92,9 +53,7 @@ export const getMyInquiries = async (req, res) => {
       });
     }
 
-    const inquiries = await inquiryService.getUserInquiries(userId);
-
-    console.log("INQUIRIES FOUND:", inquiries.length);
+    const inquiries = await inquiryService.getUserInquiries(userId, userEmail);
 
     res.json({
       success: true,
@@ -103,13 +62,14 @@ export const getMyInquiries = async (req, res) => {
 
   } catch (error) {
     console.error("GET MY INQUIRIES ERROR:", error);
-
     res.status(500).json({
       success: false,
       message: error.message
     });
   }
 };
+
+
 
 
 export const updateStatus = async (req, res) => {

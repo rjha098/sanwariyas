@@ -3,11 +3,11 @@
 export const metadata = {
   title: "Lookbook & Brand Story | SANWARIYAS Ethnic Luxury",
   description: "Explore our manufacturing process, seasonal shoots, and trending ethnic wear designs curated for global wholesale boutiques.",
-  alternates: { canonical: "https://www.yourdomain.com/lookbook" }, // Replace with your actual live domain
+  alternates: { canonical: "https://www.sanwariyas.com/lookbook" }, 
   openGraph: {
     title: "Lookbook | SANWARIYAS Wholesale Ethnic Wear",
     description: "Explore our manufacturing process, seasonal shoots, and trending designs.",
-    url: "https://www.yourdomain.com/lookbook",
+    url: "https://www.sanwariyas.com/lookbook",
     siteName: "SANWARIYAS",
     locale: "en_IN",
     type: "website",

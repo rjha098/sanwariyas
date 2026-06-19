@@ -124,42 +124,42 @@ const categories = [
     name: "Anarkali Kurtis",
     slug: "anarkali-kurti",
     image:
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=80",
+      "/images/suits/Anarkali/anarkali2.png",
     count: "Anarkali • Festive • Designer",
   },
   {
     name: "Short Kurtis",
     slug: "short-kurti",
     image:
-      "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80",
+      "/images/suits/singleKurti/simplekurti2.png",
     count: "Casual • Printed • Daily Wear",
   },
   {
     name: "Long Kurtis",
     slug: "long-kurti",
     image:
-      "https://images.unsplash.com/photo-1724139139873-57572c120322?q=80&w=880&auto=format&fit=crop",
+      "/images/suits/Anarkali/anarkali2.png",
     count: "Straight • Ethnic • Elegant",
   },
   {
-    name: "Co-ord Sets",
-    slug: "coord-set",
+    name: "Cord Sets",
+    slug: "cord-sets",
     image:
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80",
+      "/images/suits/cordset/cordset2.png",
     count: "Matching Sets • Trendy • Modern",
   },
   {
     name: "Straight 3 Piece",
     slug: "straight-3piece-suit",
     image:
-      "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=80",
+     "/images/suits/Straight3piece/straight3piece2.png",
     count: "Kurta • Pant • Dupatta",
   },
   {
     name: "A-Line Suits",
     slug: "a-line-suit",
     image:
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&q=80",
+      "/images/suits/A-Line/aline2.png",
     count: "A-Line • Party • Festive",
   },
 ];

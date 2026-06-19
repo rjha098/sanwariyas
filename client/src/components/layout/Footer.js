@@ -53,7 +53,7 @@ export default function Footer() {
               <li className="flex gap-3">
                 <span aria-hidden="true" className="text-[#EAC9A8] mt-0.5">✦</span>
                 <span className="text-[#FDF7F2]/60 leading-relaxed">
-                  Shop no.- 12, 13, 1st floor, Shiv plaza, near HDFC bank, Printers Colony, Dada Gurudev Nagar, Sanganer<br />Jaipur, Rajasthan 302029
+                  Shop no.- 12, 13, 1st floor, Shiv plaza, near HDFC Bank, Printers Colony, Dada Gurudev Nagar, Sanganer<br />Jaipur, Rajasthan 302029
                 </span>
               </li>
               <li className="flex gap-3">

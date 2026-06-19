@@ -10,16 +10,16 @@ export const metadata = {
   description:
     "Learn the story of SANWARIYAS — Jaipur's trusted wholesale ethnic wear manufacturer. Discover our manufacturing capability, quality process, and the team behind every piece.",
   keywords:
-    "SANWARIYAS about, ethnic wear manufacturer Jaipur, wholesale kurti manufacturer, Indian ethnic fashion brand story, Rajasthan ethnic wear factory",
-  alternates: { canonical: "https://www.yourdomain.com/about" }, // Replace with your actual live domain
+    "SANWARIYAS about, ethnic wear manufacturer Jaipur, wholesale kurti manufacturer, Indian ethnic fashion brand story, Rajasthan ethnic wear factory.",
+  alternates: { canonical: "https://sanwariyas.com/about" }, // Replace with your actual live domain
   openGraph: {
     title: "About SANWARIYAS | Premium Wholesale Ethnic Wear",
     description: "Learn the story of SANWARIYAS — Jaipur's trusted wholesale ethnic wear manufacturer.",
-    url: "https://www.yourdomain.com/about",
+    url: "https://sanwariyas.com/about",
     siteName: "SANWARIYAS",
     images: [
       {
-        url: "/images/og-about.jpg", // Add an actual image path here if you have one for link sharing
+        url: "/images/og-about.jpg", 
         width: 1200,
         height: 630,
         alt: "SANWARIYAS Wholesale Ethnic Wear Manufacturing",
@@ -85,7 +85,7 @@ const MANUFACTURING = [
   {
     step: "01",
     title: "Fabric Sourcing",
-    desc: "We source directly from certified mills in Surat, Varanasi, and Jaipur. Every fabric batch is tested for GSM, colour-fastness, shrinkage, and tensile strength before entering production.",
+    desc: "We source directly from certified mills in Surat, Varanasi, and Jaipur. Every fabric batch is tested for GSM, color-fastness, shrinkage, and tensile strength before entering production.",
   },
   {
     step: "02",
@@ -100,11 +100,11 @@ const MANUFACTURING = [
   {
     step: "04",
     title: "Embroidery & Embellishment",
-    desc: "For embroidered pieces, we use a mix of hand-embroidery artisans and computerised embroidery machines — ensuring intricate detailing without compromising on speed or consistency.",
+    desc: "For embroidered pieces, we use a mix of hand-embroidery artisans and computerized embroidery machines — ensuring intricate detailing without compromising on speed or consistency.",
   },
   {
     step: "05",
-    title: "4-Step Quality Control",
+    title: "4-Step Quality Control:",
     desc: "Every garment passes through four QC checkpoints: fabric inspection, mid-production stitch check, finishing review, and a final packing audit — before it ever leaves our facility.",
   },
   {
@@ -126,7 +126,7 @@ const VALUES = [
     desc: "We work with master weavers and skilled artisans from Rajasthan, preserving centuries-old craft traditions in every collection.",
   },
   {
-    title: "Transparent Pricing",
+    title: "Transparent Pricing:",
     icon: "◎",
     desc: "Factory-direct means no middlemen. You get wholesale pricing straight from the source, with full invoice transparency on every order.",
   },
@@ -230,7 +230,7 @@ export default function AboutPage() {
             </p>
             <p className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto mb-16 leading-relaxed font-medium">
               We manufacture premium ethnic wear — Kurtis, Anarkalis, Suits, Lehengas, and
-              Co-ord Sets — directly in our Jaipur facility, and deliver to boutiques,
+              Cord Set — directly in our Jaipur facility, and deliver to boutiques,
               retailers, and wholesalers worldwide.
             </p>
 
@@ -354,7 +354,7 @@ export default function AboutPage() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionHeader
               eyebrow="How We Make It"
-              title="Manufacturing Capability"
+              title="Manufacturing Capability:"
               subtitle="A 6-step production process built for consistency, quality, and scale."
             />
 
@@ -444,7 +444,7 @@ export default function AboutPage() {
 
           <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#F2D9C3] font-bold opacity-80 mb-6">
-              Partner With Us
+              Partner With Us:
             </p>
             <h2
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
@@ -479,7 +479,7 @@ export default function AboutPage() {
         </section>
       </main>
 
-      <Footer />
+      <Footer /> 
     </>
   );
 }

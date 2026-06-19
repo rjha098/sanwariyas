@@ -454,6 +454,9 @@
 
 // the  upper  side  dynacic    that  show  the  product  and   the  downside  the    static  that  not  showing  the product  list  in  the  navbar
 
+
+
+
 // FILE: client/src/components/layout/Navbar.js
 "use client";
 import NotificationBell from "@/components/ui/NotificationBell";
@@ -462,16 +465,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import api from "@/lib/api";
 
+// ✅ Mega Menu Structure updated with Lookbook included inside Discover
 const navLinks = [
   { href: "/", label: "Home", title: "Sanwariyas Home - Premium Ethnic Wear" },
-  // ✅ FIX: Products ko uncomment kar diya taaki ye navbar me dikhe
-  // {
-  //   href: "/products",
-  //   label: "Products",
-  //   title: "Sanwariyas Products - Bridal & Ethnic Wear",
-  // },
   {
     href: "/contact",
     label: "Inquire",
@@ -483,20 +480,38 @@ const navLinks = [
     title: "About Sanwariyas - Our Story & Heritage",
   },
   {
-    href: "/lookbook",
-    label: "Lookbook",
-    title: "Sanwariyas Lookbook - Collections & Gallery",
-  },
-  {
     href: "/exportdocs",
     label: "Export",
     title: "Sanwariyas Export Documentation & Wholesale",
+  },
+  {
+    id: "discover",
+    type: "megamenu", 
+    label: "Discover ▾",
+    title: "Discover More",
+    columns: [
+      {
+        title: "Collections & Media",
+        links: [
+          { href: "/lookbook", label: "Our Lookbook" }, // Added Lookbook here
+          { href: "/blog", label: "Journal & Blog" },
+        ],
+      },
+      {
+        title: "Support",
+        links: [
+          { href: "/contact", label: "Contact Us" },
+          { href: "/faq", label: "FAQs" },
+          { href: "/terms", label: "Terms & Conditions" },
+        ],
+      },
+    ],
   },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [mobMegaOpen, setMobMegaOpen] = useState(false); // Mobile dropdown toggle ke liye
   const [hoveredLink, setHoveredLink] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
 
@@ -504,10 +519,11 @@ export default function Navbar() {
   const router = useRouter();
 
   // Auth context and state
-  const { isAuthenticated, user, logout, token } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     setMenuOpen(false);
+    setMobMegaOpen(false);
   }, [pathname]);
 
   const handleLogout = () => {
@@ -626,7 +642,7 @@ export default function Navbar() {
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <span
                 style={{
                   fontFamily: 'Georgia, "Times New Roman", serif',
@@ -660,11 +676,74 @@ export default function Navbar() {
           <nav
             aria-label="Main Navigation"
             className="hidden lg:flex"
-            style={{ alignItems: "center", gap: "32px" }}
+            style={{ alignItems: "center", gap: "24px", height: "100%" }}
           >
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
-              const isHovered = hoveredLink === link.href;
+              const isHovered = hoveredLink === (link.href || link.id);
+
+              // ✅ MEGA MENU RENDERING (Desktop)
+              if (link.type === "megamenu") {
+                return (
+                  <div
+                    key={link.id}
+                    className="group relative flex items-center"
+                    onMouseEnter={() => setHoveredLink(link.id)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                    style={{ height: "40px" }}
+                  >
+                    <button
+                      className={`sw-nav-link ${isHovered ? "active" : ""}`}
+                      style={{
+                        position: "relative",
+                        fontFamily: "sans-serif",
+                        fontSize: "11px",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        fontWeight: "600",
+                        textDecoration: "none",
+                        padding: "0",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: isHovered ? "#BE6E5B" : "#a07f61",
+                        transition: "color 0.2s ease",
+                        display: "flex",
+                        alignItems: "center"
+                      }}
+                    >
+                      {link.label}
+                      <span aria-hidden="true" className="sw-nav-ul" />
+                    </button>
+
+                    {/* Dropdown Container */}
+                    <div className="absolute top-[40px] left-1/2 -translate-x-1/2 w-max bg-[#FAF3E8] border border-[#E8D5A3] shadow-[0_10px_40px_rgba(87,67,37,0.15)] rounded-xl p-8 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 z-[100] flex gap-12">
+                      {link.columns.map((col, idx) => (
+                        <div key={idx} className="flex flex-col min-w-[160px]">
+                          <h3 className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-[#7A3D2A] mb-4 pb-2 border-b border-[#E8D5A3]/50">
+                            {col.title}
+                          </h3>
+                          <ul className="flex flex-col gap-3">
+                            {col.links.map((sublink) => (
+                              <li key={sublink.href}>
+                                <Link
+                                  href={sublink.href}
+                                  className="font-sans text-[11px] tracking-[0.1em] text-[#a07f61] hover:text-[#BE6E5B] transition-colors flex items-center gap-2"
+                                >
+                                  <span className="w-1 h-1 rounded-full bg-[#E8D5A3] block"></span>
+                                  {sublink.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              // Normal Links
               return (
                 <Link
                   key={link.href}
@@ -682,13 +761,15 @@ export default function Navbar() {
                     textTransform: "uppercase",
                     fontWeight: isActive ? "800" : "600",
                     textDecoration: "none",
-                    paddingBottom: "4px",
+                    padding: "0",
                     color: isActive
                       ? "#7A3D2A"
                       : isHovered
-                        ? "#BE6E5B"
-                        : "#a07f61",
+                      ? "#BE6E5B"
+                      : "#a07f61",
                     transition: "color 0.2s ease",
+                    display: "flex",
+                    alignItems: "center"
                   }}
                 >
                   {link.label}
@@ -704,8 +785,6 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
               {isAuthenticated ? (
                 <>
-                  {/* <Link href={getDashboardLink()} className="relative sw-auth-link" aria-label="Notifications"> */}
-                  <NotificationBell />
                   <Link
                     href={getDashboardLink()}
                     className="sw-auth-link"
@@ -776,6 +855,13 @@ export default function Navbar() {
               Inquire Now
             </Link>
 
+
+            {isAuthenticated && (
+              <div className="hidden lg:block">
+                <NotificationBell />
+              </div>
+            )}
+
             {/* HAMBURGER */}
             <button
               className="flex lg:hidden"
@@ -842,6 +928,65 @@ export default function Navbar() {
           <div style={{ padding: "24px 32px", paddingBottom: "40px" }}>
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
+
+              // ✅ MEGA MENU RENDERING (Mobile Accordion)
+              if (link.type === "megamenu") {
+                return (
+                  <div key={link.id} className="flex flex-col" style={{ borderBottom: "1px solid rgba(190,110,91,0.2)" }}>
+                    <button
+                      onClick={() => setMobMegaOpen(!mobMegaOpen)}
+                      className="sw-mob-link"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "16px 0",
+                        color: mobMegaOpen ? "#7A3D2A" : "#a07f61",
+                        fontSize: "12px",
+                        fontWeight: mobMegaOpen ? "800" : "600",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        background: "none",
+                        border: "none",
+                      }}
+                    >
+                      <span>{link.label.replace(" ▾", "")}</span>
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          color: mobMegaOpen ? "#7A3D2A" : "#BE6E5B",
+                          fontSize: "18px",
+                          transform: mobMegaOpen ? "rotate(90deg)" : "none",
+                          transition: "transform 0.3s ease",
+                        }}
+                      >
+                        ›
+                      </span>
+                    </button>
+                    {/* Mobile Nested Links */}
+                    <div className={`overflow-hidden transition-all duration-300 ${mobMegaOpen ? "max-h-[800px] pb-4" : "max-h-0"}`}>
+                      {link.columns.map((col, idx) => (
+                        <div key={idx} className="mb-4 pl-4 border-l border-[#BE6E5B]/20">
+                          <h4 className="text-[#7A3D2A] text-[10px] font-bold uppercase tracking-[0.2em] mb-2">{col.title}</h4>
+                          <div className="flex flex-col gap-3 pl-2">
+                            {col.links.map((sub) => (
+                              <Link
+                                key={sub.href}
+                                href={sub.href}
+                                onClick={() => setMenuOpen(false)}
+                                className="text-[#a07f61] text-[10px] uppercase tracking-wider hover:text-[#BE6E5B] transition-colors"
+                              >
+                                {sub.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.href}

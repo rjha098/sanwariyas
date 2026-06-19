@@ -15,9 +15,9 @@ const BUILT_IN_FAQS = [
   {
     name: "How do I place an order at SANWARIYAS?",
     acceptedAnswer: {
-      text: "Simply browse our wholesale catalogue, select the styles you want to source, and fill out the bulk inquiry form with your requirements — quantity, size distribution, and international shipping address. Our export desk will get back to you within 24 hours with a custom proforma quotation.",
+      text: "Simply browse our wholesale catalogue, select the styles you want to source, and fill out the bulk inquiry form with your requirements — quantity, size distribution, and international shipping address. Our export desk will get back to you within 24 hours with a custom proposal quote.",
     },
-    category: "Ordering",
+    category: "Ordering:",
   },
   {
     name: "Do you offer customization on ethnic wear?",
@@ -66,7 +66,7 @@ const BUILT_IN_FAQS = [
     acceptedAnswer: {
       text: "We process payments via secure corporate Bank Wire Transfers (SWIFT / International Telegraphic Transfers), NEFT, RTGS, and legal business invoices. For overseas trade orders, we accept clean wire payments in USD, GBP, AED, and EUR accounts.",
     },
-    category: "Payment",
+    category: "Payment:",
   },
 ];
 
@@ -184,7 +184,7 @@ export default function FaqSection({ faqs }) {
           </p>
 
           <h2 id="faq-heading" className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold leading-tight">
-            Frequently Asked
+            Frequently Asked:
           </h2>
 
           <div aria-hidden="true" className="flex items-center justify-center gap-4 mt-6">
@@ -242,7 +242,7 @@ export default function FaqSection({ faqs }) {
               Have unique trade specifications?
             </p>
             <p className="font-display text-2xl md:text-3xl font-bold text-[#7A3D2A]">
-              Our export consultants are standby.
+              Our export consultants are standing by.
             </p>
           </div>
 
@@ -251,7 +251,7 @@ export default function FaqSection({ faqs }) {
             className="group relative inline-flex items-center justify-center gap-3 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] md:text-xs tracking-[0.3em] uppercase font-bold px-8 py-4 rounded-md hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden flex-shrink-0 w-full sm:w-auto"
           >
             <span aria-hidden="true" className="absolute inset-0 bg-[#7A3D2A] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10" />
-            <span className="relative z-10">Connect Direct</span>
+            <span className="relative z-10">Connect Direct.</span>
             <span aria-hidden="true" className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300 text-sm md:text-lg leading-none">→</span>
           </Link>
         </div>

@@ -67,8 +67,7 @@ export const fetchProducts = (params = {}) =>
 export const fetchProductBySlug = (slug) =>
   api.get(`/products/${slug}`).then((r) => r.data);
 
-export const fetchCategories = () =>
-  api.get('/products/categories').then((r) => r.data);
+export const fetchProductCategories = () => api.get('/products/categories').then(r => r.data);
 
 // ─────────────────────────────────────────
 // PRODUCTS — ADMIN
@@ -158,5 +157,18 @@ export const markNotificationsRead = (token) =>
       Authorization: `Bearer ${token}`
     }
   }).then((r) => r.data);
+
+
+
+
+  // blog
+
+// Blog Categories
+export const fetchBlogCategories = () => api.get('/blogs/categories').then(r => r.data);
+export const createBlogCategory = (token, data) => api.post('/blogs/categories', data, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.data);
+export const createBlog = (token, formData) => api.post('/blogs', formData, { 
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } 
+}).then(r => r.data);
+
 
 export default api;

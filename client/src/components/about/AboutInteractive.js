@@ -67,7 +67,7 @@ const TEAM = [
   {
     name: "Annu Singh",
     role: "Dispatch Incharge",
-    bio: "Annu oversees the entire dispatch pipeline — from packaging to international courier handover. She ensures every wholesale consignment is labelled correctly and shipped securely on time.",
+    bio: "Annu oversees the entire dispatch pipeline — from packaging to international courier handover. She ensures every wholesale consignment is labeled correctly and shipped securely on time.",
     image: "/images/team/annu.png",
     initial: "A",
   },

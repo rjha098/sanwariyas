@@ -189,7 +189,7 @@ export const createInquiry = async (data, userId) => {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'Sanwariyas System <onboarding@resend.dev>', // Required for free tier
+        from: process.env.RESEND_FROM_EMAIL || 'Sanwariyas System <onboarding@resend.dev>', // Required for free tier
         to: ADMIN_EMAIL,
         subject: `🔥 New Wholesale Inquiry from ${data.name}`,
         html: `
@@ -300,7 +300,7 @@ export const addReplyToInquiry = async (id, senderId, role, message) => {
       try {
          const resend = new Resend(process.env.RESEND_API_KEY);
          await resend.emails.send({
-           from: 'Sanwariyas Updates <onboarding@resend.dev>', 
+           from: process.env.RESEND_FROM_EMAIL || 'Sanwariyas Updates <onboarding@resend.dev>', 
            to: inquiry.email,
            subject: `Update on your Sanwariyas Inquiry`,
            html: `
