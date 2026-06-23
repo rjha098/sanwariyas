@@ -8,9 +8,9 @@ const slides = [
   {
     id: 1,
     title: ["Global Wholesale", "Regal Heritage"],
-    sub: "India's premier export house for high-end ethnic wear. Discover the pinnacle of Kurti craftsmanship and designer suits.",
+    sub: "India's premier export house for high-end ethnic wear. Discover the pinnacle of pure cotton suits and kurti craftsmanship.",
     img: "/images/ROLARIMAGES.png",
-    imgAlt: "Sanwariyas Global Wholesale Hub – Premium Indian Ethnic Wear",
+    imgAlt: "Sanwariyas Global Wholesale Hub – Premium Cotton Ethnic Wear",
     bg: "radial-gradient(ellipse at 90% 10%, #F2D9C3 0%, #F2D9C3 25%, #E0BFA2 60%, #C9A485 100%)",
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
@@ -18,71 +18,69 @@ const slides = [
   },
   {
     id: 2,
-    title: ["Exquisite Handwoven", "Bridal Masterpieces"],
-    sub: "Intricately stitched lehengas and sarees crafted for your most unforgettable moments. A legacy of pure luxury.",
+    title: ["Exquisite Craftsmanship", "A-Line Masterpieces"],
+    sub: "Flawlessly stitched A-Line suits crafted for elegance. Experience the perfect blend of comfort and pure luxury in every thread.",
     img: "/images/suits/A-line/aline1.png",
-    imgAlt:
-      "Premium Handwoven Bridal Lehengas and Sarees – Luxury Indian Couture",
+    imgAlt: "Premium Pure Cotton A-Line Suits – Luxury Indian Ethnic Wear",
     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
     accentGold: "#996515",
     accentLight: "#F8EDD5",
-    badge: "Bridal Couture",
+    badge: "A-Line Suits",
   },
   {
     id: 3,
-    title: ["Timeless Grace", "Contemporary Suits"],
-    sub: "Redefining the standard of ethnic fashion. Designer Anarkalis and coord sets tailored for the modern woman.",
+    title: ["Timeless Grace", "Designer Anarkalis"],
+    sub: "Redefining the standard of ethnic fashion. Beautifully flared Anarkali suits tailored with breathable fabrics for the modern woman.",
     img: "/images/suits/Anarkali/anarkali1.png",
-    imgAlt:
-      "Designer Anarkali Suits and Ethnic Coord Sets – Modern Indian Fashion",
+    imgAlt: "Designer Pure Cotton Anarkali Suits – Modern Indian Fashion",
     bg: "linear-gradient(180deg, #F2D9C3 0%, #EDD0B5 15%, #E0BFA2 45%, #C4A07A 100%)",
     accentGold: "#6B4226",
     accentLight: "#F3DCC8",
-    badge: "Designer Suits",
+    badge: "Anarkali Collection",
   },
   {
     id: 4,
-    title: ["Craftsmanship In", "Every Single Thread"],
-    sub: "Directly sourced from India's master weavers. Fabrics that carry the soul and heritage of our rich culture.",
+    title: ["Modern Silhouettes", "Chic Cord Sets"],
+    sub: "Directly sourced from India's master weavers. Trendy, highly demanded, and comfortable cotton Cord sets for everyday luxury.",
     img: "/images/suits/cordset/cordset1.png",
-    imgAlt: "Artisan Hand-Stitched Indian Fabrics – Heritage Weaving",
+    imgAlt: "Trendy Cotton Co-ord Sets – Wholesale Indian Fashion",
     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
-    badge: "Artisan Craft",
+    badge: "Co-ord Sets",
   },
   {
     id: 5,
-    title: ["Tailored Exclusively", "For Your Vision"],
-    sub: "Personalised luxury at wholesale rates. We customize every stitch to your specific measurements and occasion.",
-    img: "/images/suits/singleKurti/simplekurti.png",
-    imgAlt: "Custom Tailored Ethnic Wear – Personalized Indian Fashion",
+    title: ["Everyday Elegance", "Premium Short Kurtis"],
+    sub: "Versatile and stylish short kurtis at wholesale rates. We ensure perfect fits, breathable fabrics, and vibrant long-lasting prints.",
+    img: "/images/suits/shortkurti/sortkurti1.png",
+    imgAlt: "Premium Cotton Short Kurtis – Wholesale Ethnic Wear",
     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
     accentGold: "#6B4226",
     accentLight: "#F3DCC8",
-    badge: "Custom Orders",
+    badge: "Short Kurtis",
   },
   {
     id: 6,
-    title: ["Global Luxury", "Seamless Delivery"],
-    sub: "Exporting Indian excellence to the world. Fully insured, securely packaged, and delivered with royal care.",
+    title: ["Complete Elegance", "Straight 3-Piece Suits"],
+    sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas. Fully insured, securely packaged, and exported worldwide.",
     img: "/images/suits/Straight3piece/straight3piece1.png",
-    imgAlt: "Global Indian Ethnic Wear Export – Worldwide Delivery",
+    imgAlt: "Straight 3-Piece Cotton Suits Export – Worldwide Delivery",
     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
     accentGold: "#996515",
     accentLight: "#F8EDD5",
-    badge: "Worldwide Export",
+    badge: "3-Piece Suits",
   },
   {
     id: 7,
-    title: ["Premium Partner", "Bulk Order Luxury"],
-    sub: "Partner with India's most trusted export empire. Scalable solutions for global retailers and luxury boutiques.",
-    img: "/images/suits/Straight3piece/straight3piece1.png",
-    imgAlt: "Wholesale Bulk Orders – Indian Ethnic Wear for Retailers",
+    title: ["Graceful Lengths", "Classic Long Kurtis"],
+    sub: "Elegant long kurtis perfect for retail scaling. Partner with India's most trusted export empire for your bulk requirements.",
+    img: "/images/suits/longkurti/longkurti1.png",
+    imgAlt: "Wholesale Long Kurtis – Premium Cotton Ethnic Wear for Retailers",
     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
-    badge: "Wholesale",
+    badge: "Long Kurtis",
   },
 ];
 
@@ -158,7 +156,8 @@ const STYLES = `
                 opacity   0.4s ease,
                 box-shadow 0.4s ease;
   }
-  .thumb-card:hover { transform: scale(1.08) translateY(-5px) !important; }
+  .thumb-card { margin: 0; }
+  .thumb-card:hover { transform: scale(1.08) translateY(-5px) !important; margin: 0 16px !important; }
   .scrollbar-hide::-webkit-scrollbar { display:none; }
   .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
 
@@ -216,7 +215,7 @@ const STYLES = `
       flex-shrink: 0;
     }
     .hero-img-wrap {
-      height: clamp(300px, 48vh, 430px);
+      height: clamp(280px, 42vh, 420px);
     }
     .hero-title {
       font-size: clamp(2.2rem, 4vw, 3.5rem);
@@ -307,6 +306,7 @@ const SlideCard = ({
     style={{
       width: "clamp(82px, 9vw, 112px)",
       height: "clamp(108px, 12vw, 140px)",
+      margin: isActive ? "0 16px" : "0",
       border: isActive
         ? `2px solid ${accentGold}`
         : "1.5px solid rgba(255,255,255,0.28)",
@@ -315,20 +315,23 @@ const SlideCard = ({
       boxShadow: isActive
         ? `0 12px 36px rgba(0,0,0,0.24), 0 0 0 3px ${accentGold}22`
         : "0 4px 12px rgba(0,0,0,0.1)",
+      transition:
+        "margin 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease, box-shadow 0.4s ease",
     }}
   >
-    {/* ✅ PERFORMANCE FIX: Image optimization for thumbnails */}
-    <Image
-      src={slide.img}
-      alt={`Thumbnail for ${slide.title[0]}`}
-      fill
-      sizes="(max-width: 1024px) 82px, 112px"
-      className="object-cover -z-10"
-    />
+    <div className="absolute inset-0 z-0">
+      <Image
+        src={slide.img}
+        alt={`Thumbnail for ${slide.title[0]}`}
+        fill
+        sizes="(max-width: 1024px) 82px, 112px"
+        className="object-cover"
+      />
+    </div>
 
     <div
       aria-hidden="true"
-      className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent rounded-2xl z-0"
+      className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent rounded-2xl z-10"
     />
 
     {isActive && (
@@ -348,7 +351,7 @@ const SlideCard = ({
       </div>
     )}
 
-    <div className="relative h-full flex flex-col justify-end p-2 z-10 text-left pb-4 pointer-events-none">
+    <div className="relative h-full flex flex-col justify-end p-2 z-20 text-left pb-4 pointer-events-none">
       <p
         style={{
           fontFamily: "'Jost',sans-serif",
@@ -411,26 +414,6 @@ export default function HeroSection() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Sanwariyas Global Wholesale",
-            description:
-              "India's premier export house for high-end ethnic wear, Kurtis, designer suits, and bridal couture.",
-            url: "https://sanwariyas.com",
-            offers: {
-              "@type": "AggregateOffer",
-              priceCurrency: "INR",
-              offerCount: "500+",
-              description: "Wholesale bulk orders for Indian ethnic wear",
-            },
-          }),
-        }}
-      />
 
       <section
         className="hero-section relative w-full flex flex-col overflow-hidden"
@@ -561,23 +544,32 @@ export default function HeroSection() {
                 />
               </div>
 
-              {/* Heading */}
+              {/* SEO H1 — visually a small eyebrow line, semantically the page's main heading */}
               <h1
-                className="anim-title hero-title font-bold leading-[1.02] mb-3 tracking-wide text-[#7A3D2A]"
-                style={{ fontFamily: "'Cormorant Garamond',Georgia,serif" }}
-                itemProp="headline"
+                className="anim-title font-semibold mb-2 tracking-wide text-[#7A3D2A]"
+                style={{
+                  fontFamily: "'Jost',sans-serif",
+                  fontSize: "clamp(11px, 1.1vw, 13px)",
+                  letterSpacing: "0.08em",
+                  lineHeight: 1.5,
+                  maxWidth: "560px",
+                  opacity: 0.85,
+                }}
+              >
+                SANWARIYAS — Wholesale Cotton Ethnic Wear Manufacturer, Supplier &amp; Exporter in Jaipur, Rajasthan, India
+              </h1>
+
+              {/* Visual heading — the big styled title, now h2 (still great for SEO as a secondary heading) */}
+              <h2
+                className="anim-title hero-title font-bold leading-[1.02] mb-3 tracking-wide"
+                style={{
+                  fontFamily: "'Cormorant Garamond',Georgia,serif",
+                  color: slide.accentGold,
+                }}
               >
                 <span className="block">{slide.title[0]}</span>
-                <span
-                  className="block italic mt-0.5 text-transparent bg-clip-text"
-                  style={{
-                    backgroundImage: `linear-gradient(110deg, ${slide.accentGold} 0%, #BE6E5B 55%, ${slide.accentGold} 100%)`,
-                    paddingBottom: "2px",
-                  }}
-                >
-                  {slide.title[1]}
-                </span>
-              </h1>
+                <span className="block italic">{slide.title[1]}</span>
+              </h2>
 
               {/* Divider line */}
               <div
@@ -637,7 +629,7 @@ export default function HeroSection() {
                     aria-hidden="true"
                     className="relative transition-transform duration-300 group-hover:translate-x-1"
                   >
-                    →
+                    →    
                   </span>
                 </Link>
 
@@ -692,12 +684,12 @@ export default function HeroSection() {
             <div
               key={`img-${cur}`}
               className="anim-img hero-img-wrap relative flex items-center justify-center order-1 lg:order-2"
-              style={{ height: "clamp(240px, 40vw, 450px)" }}
+              style={{ height: "clamp(220px, 35vw, 420px)" }}
             >
               <div
                 className="relative w-full h-full"
                 style={{
-                  maxWidth: "clamp(240px, 38vw, 430px)",
+                  maxWidth: "clamp(220px, 33vw, 420px)",
                   margin: "0 auto",
                 }}
               >
@@ -786,12 +778,6 @@ export default function HeroSection() {
                     }}
                   />
                 </div>
-
-
-
-
-
-
 
                 {/* "Made in India" tag */}
                 <div
@@ -891,7 +877,7 @@ export default function HeroSection() {
             </div>
 
             {/* Thumbnail cards */}
-            <div className="flex md:justify-center gap-2 lg:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory">
+            <div className="flex md:justify-center gap-2 lg:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory px-2">
               {slides.map((s, index) => (
                 <SlideCard
                   key={s.id}

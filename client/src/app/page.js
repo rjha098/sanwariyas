@@ -12,13 +12,12 @@ import FeaturedProductsSection from "@/components/home/FeaturedProductsSection";
 import ManufacturingInfoSections from "@/components/home/ManufacturingInfoSections";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
-import FaqSection from "@/components/home/FaqSection";
 import { fetchProducts } from "@/lib/api";
 
 export const metadata = {
-  title: "SANWARIYAS — Premium Ethnic Wear Exporter & Wholesale Indian Fashion",
+  title: "Wholesale Cotton Ethnic Wear Manufacturer in Jaipur, Rajasthan | SANWARIYAS",
   description:
-    "Partner with SANWARIYAS for wholesale ethnic wear. Low MOQ, custom manufacturing, and global shipping for boutiques and retailers. Send inquiry for B2B pricing.",
+  "SANWARIYAS is a leading wholesale cotton ethnic wear manufacturer and exporter based in Jaipur, Rajasthan, India. We specialize in cotton suits, kurtis, muslin, mul chandari, kota doria, chinon, mul cotton, organza, flex cotton and silk collections for boutiques, wholesalers and retailers worldwide.",
   alternates: { canonical: "https://sanwariyas.com/" },
   openGraph: {
     title: "SANWARIYAS — Wholesale Ethnic Wear Manufacturer",
@@ -67,14 +66,6 @@ async function getFeaturedProducts() {
 
 
 export default async function HomePage() {
-
-
-  // this is  the  for  dynamic  things 
-  // const [featuredProducts, bestsellingProducts] = await Promise.all([
-  //   getFeaturedProducts(),
-  //   getBestsellingProducts(),
-  // ]);
-
   // this  is  for  the  static  things 
   const [featuredProducts] = await Promise.all([
   getFeaturedProducts(),
@@ -123,7 +114,7 @@ const bestsellingProducts = [];
         <ManufacturingInfoSections />
         <WhyUsSection />
         <InquiryCTASection />
-        <FaqSection faqs={faqSchema.mainEntity} />
+        {/* <FaqSection faqs={faqSchema.mainEntity} /> */}
       </main>
       <Footer />
     </>

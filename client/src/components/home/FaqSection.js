@@ -68,6 +68,49 @@ const BUILT_IN_FAQS = [
     },
     category: "Payment:",
   },
+  // ── NEW FAQS ADDED ──────────────────────────────────────────────────────
+  {
+    name: "Do you provide size charts and grading for bulk orders?",
+    acceptedAnswer: {
+      text: "Yes — every style comes with a detailed size chart and grading breakdown (XS–3XL or custom Asian/Western sizing on request). We can also follow your brand's specific size grading rules for private label orders.",
+    },
+    category: "Products",
+  },
+  {
+    name: "Can I mix multiple styles and sizes in one bulk order?",
+    acceptedAnswer: {
+      text: "Absolutely. As long as the total order meets our 50-piece MOQ per style, you can freely mix designs, colors, and sizes within your container to match your retail demand patterns.",
+    },
+    category: "Ordering",
+  },
+  {
+    name: "Do you offer private labelling and branded packaging?",
+    acceptedAnswer: {
+      text: "Yes, we support full private label programs — custom neck labels, brand tags, poly-bag branding, and tailored hang-tag printing. Share your brand guidelines and we'll handle the rest at no extra design cost above MOQ.",
+    },
+    category: "Customization",
+  },
+  {
+    name: "What quality checks happen before shipping?",
+    acceptedAnswer: {
+      text: "Every lot undergoes a 3-stage QC process: fabric inspection, in-line stitching checks, and a final pre-dispatch audit covering measurements, finishing, and packaging — so what you see in samples is exactly what you receive in bulk.",
+    },
+    category: "Products",
+  },
+  {
+    name: "Can I track my shipment after dispatch?",
+    acceptedAnswer: {
+      text: "Yes. Once your order is dispatched, you'll receive a tracking number and carrier details via email. Our export desk also proactively shares status updates at key milestones — customs clearance, transit, and final delivery.",
+    },
+    category: "Shipping",
+  },
+  {
+    name: "Do you offer repeat-order or long-term partnership pricing?",
+    acceptedAnswer: {
+      text: "Yes — returning partners and high-volume retailers are moved to our preferred pricing tier with priority production slots, locked-in rates, and dedicated account support. Ask your export consultant about long-term partnership terms.",
+    },
+    category: "Payment",
+  },
 ];
 
 const CATEGORY_COLORS = {
@@ -86,7 +129,7 @@ export default function FaqSection({ faqs }) {
   const processedIncoming = (faqs || []).map((f) => {
     let assignedCategory = "Ordering";
     const titleLower = f.name.toLowerCase();
-    
+
     if (titleLower.includes("custom") || titleLower.includes("stitch") || titleLower.includes("design")) {
       assignedCategory = "Customization";
     } else if (titleLower.includes("fabric") || titleLower.includes("material") || titleLower.includes("product")) {
@@ -96,7 +139,7 @@ export default function FaqSection({ faqs }) {
     } else if (titleLower.includes("pay") || titleLower.includes("invoice") || titleLower.includes("price")) {
       assignedCategory = "Payment";
     }
-    
+
     return { ...f, category: assignedCategory };
   });
 
@@ -131,6 +174,10 @@ export default function FaqSection({ faqs }) {
   const leftColumnFaqs = finalFaqsList.filter((_, i) => i % 2 === 0);
   const rightColumnFaqs = finalFaqsList.filter((_, i) => i % 2 !== 0);
 
+  // Distinct category list for the filter strip (purely decorative/informational —
+  // does not change existing toggle logic, just visually groups what's available)
+  const categoryChips = [...new Set(finalFaqsList.map((f) => (f.category || "").replace(":", "")))].filter(Boolean);
+
   return (
     <section
       aria-labelledby="faq-heading"
@@ -157,6 +204,18 @@ export default function FaqSection({ faqs }) {
         </span>
       </div>
 
+      {/* Floating Accent Orbs — subtle extra polish, purely decorative */}
+      <div aria-hidden="true" className="absolute top-1/4 left-[8%] w-2 h-2 rounded-full bg-[#BE6E5B]/40 hidden lg:block" style={{ animation: "faqFloat 5s ease-in-out infinite" }} />
+      <div aria-hidden="true" className="absolute top-1/2 right-[10%] w-1.5 h-1.5 rounded-full bg-[#7A3D2A]/30 hidden lg:block" style={{ animation: "faqFloat 6s ease-in-out 1.2s infinite" }} />
+      <div aria-hidden="true" className="absolute bottom-1/3 left-[14%] w-1 h-1 rounded-full bg-[#a07f61]/40 hidden lg:block" style={{ animation: "faqFloat 4.5s ease-in-out 0.6s infinite" }} />
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes faqFloat {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+          50%      { transform: translateY(-10px) scale(1.15); opacity: 1; }
+        }
+      `}} />
+
       {/* Corner Brackets */}
       {[
         ["top-5 left-5", "rotate-0"],
@@ -178,7 +237,7 @@ export default function FaqSection({ faqs }) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header Block */}
-        <div className="text-center mb-16 md:mb-20">
+        <div className="text-center mb-12 md:mb-14">
           <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
             Commercial Sourcing Help
           </p>
@@ -196,11 +255,28 @@ export default function FaqSection({ faqs }) {
           <p className="font-serif italic text-[#a07f61] mt-6 text-sm md:text-lg max-w-xl mx-auto font-medium">
             Everything you need to verify before placing your international wholesale export inquiry.
           </p>
+
+          {/* Category chips — visual summary of topics covered below */}
+          {categoryChips.length > 0 && (
+            <div aria-hidden="true" className="flex flex-wrap items-center justify-center gap-2 mt-7">
+              {categoryChips.map((cat) => {
+                const c = CATEGORY_COLORS[cat] || CATEGORY_COLORS.Default;
+                return (
+                  <span
+                    key={cat}
+                    className={`inline-flex items-center px-3.5 py-1 rounded-full border text-[9px] font-bold uppercase tracking-[0.18em] ${c.bg} ${c.text} ${c.border}`}
+                  >
+                    {cat}
+                  </span>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* ── Fixed Two-Column Symmetrical Grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-start max-w-6xl mx-auto w-full">
-          
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-start max-w-6xl mx-auto w-full mt-10">
+
           {/* Left Column Stack */}
           <div className="flex flex-col gap-4 md:gap-5 w-full">
             {leftColumnFaqs.map((faq) => {
@@ -280,19 +356,25 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
       aria-expanded={isOpen}
       aria-controls={`faq-answer-${index}`}
       className={`group relative border rounded-xl backdrop-blur-sm overflow-hidden cursor-pointer transition-all duration-500 outline-none focus-visible:ring-2 focus-visible:ring-[#BE6E5B] focus-visible:ring-offset-2 ${
-        isOpen 
-          ? "bg-white/95 border-[#BE6E5B]/50 shadow-[0_15px_40px_rgba(122,61,42,0.12)]" 
-          : "bg-white/60 border-[#BE6E5B]/20 shadow-sm hover:bg-white/85 hover:border-[#BE6E5B]/40 hover:shadow-md"
+        isOpen
+          ? "bg-white/95 border-[#BE6E5B]/50 shadow-[0_15px_40px_rgba(122,61,42,0.12)] -translate-y-0.5"
+          : "bg-white/60 border-[#BE6E5B]/20 shadow-sm hover:bg-white/85 hover:border-[#BE6E5B]/40 hover:shadow-md hover:-translate-y-0.5"
       }`}
     >
       {/* Sliding Active Top Indicator Glow */}
-      <div 
-        aria-hidden="true" 
-        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7A3D2A] via-[#BE6E5B] to-[#a07f61] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`} 
+      <div
+        aria-hidden="true"
+        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7A3D2A] via-[#BE6E5B] to-[#a07f61] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`}
       />
 
-      <div className="flex items-start gap-4 p-6 md:p-7 select-none">
-        
+      {/* Corner glint — extra polish, shows only when open */}
+      <div
+        aria-hidden="true"
+        className={`absolute -top-8 -right-8 w-16 h-16 rounded-full bg-[#BE6E5B]/10 blur-xl transition-opacity duration-700 ${isOpen ? "opacity-100" : "opacity-0"}`}
+      />
+
+      <div className="relative flex items-start gap-4 p-6 md:p-7 select-none">
+
         {/* Left Vertical Dynamic Pillar */}
         <div
           aria-hidden="true"
@@ -315,8 +397,8 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
         <div
           aria-hidden="true"
           className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex-shrink-0 border-2 flex items-center justify-center mt-0.5 transition-all duration-500 ${
-            isOpen 
-              ? "border-[#BE6E5B] bg-[#BE6E5B] rotate-45" 
+            isOpen
+              ? "border-[#BE6E5B] bg-[#BE6E5B] rotate-45 shadow-[0_4px_14px_rgba(190,110,91,0.4)]"
               : "border-[#BE6E5B]/40 bg-transparent rotate-0 group-hover:border-[#BE6E5B]/80"
           }`}
         >
@@ -332,7 +414,7 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
       </div>
 
       {/* Buttery Dynamic Grid Animation Panel */}
-      <div 
+      <div
         id={`faq-answer-${index}`}
         role="region"
         aria-labelledby={`faq-heading-${index}`}

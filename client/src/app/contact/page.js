@@ -57,7 +57,7 @@ const contactItems = [
   {
     label: "Email Us",
     line1: "hrsanwariyas@gmail.com",
-    line2: "We respond within 24 hours",
+    line2: "We respond within 24-48 hours",
     href: "mailto:hrsanwariyas@gmail.com",
     external: false,
     icon: (
@@ -209,9 +209,10 @@ function LoginPromptBanner({ router }) {
 }
 
 // ── Logged in info banner ─────────────────────────────────────────────────────
+
 function LoggedInBanner({ user, router }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-[#6F4E37]/20 bg-[#FAF3E8] p-4 mb-6">
+    <div className="relative overflow-hidden rounded-xl border border-[#6F4E37]/20 bg-[#FAF3E8] p-4 mb-6"> 
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#6F4E37] to-[#C9A84C]" />
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-[#6F4E37] flex items-center justify-center flex-shrink-0">
@@ -647,10 +648,10 @@ export default function ContactPage() {
                   <div className="w-8 h-px bg-[#BE6E5B]" />
                 </div>
                 <p className="font-display text-lg text-[#7A3D2A] font-bold mb-1 relative z-10">
-                  24-Hour Response Guarantee
+                  24-48 Hour Response Guarantee
                 </p>
                 <p className="font-sans text-xs text-[#a07f61] leading-relaxed relative z-10">
-                  We respond to every wholesale inquiry within 24 business
+                  We respond to every wholesale inquiry within 24-48 business
                   hours.
                 </p>
               </aside>
@@ -819,7 +820,7 @@ export default function ContactPage() {
                     <StyledInput
                       id="productCategory"
                       name="productCategory"
-                      placeholder="e.g. Sarees, Kurtis"
+                      placeholder="e.g. Suits, Kurtis"
                       value={formData.productCategory}
                       onChange={handleChange}
                     />
