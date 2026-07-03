@@ -17,7 +17,8 @@ const TOKEN_TIMESTAMP_KEY = 'sanwariyas_token_issued_at';
 // Matches the server's AUTH_TOKEN_EXPIRY (default 7d). Used for a CLIENT-SIDE
 // safety net only — the server JWT itself is the real source of truth for
 // expiry. This just avoids sending an obviously-stale token on app load.
-const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+// const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const MAX_AGE_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
 
 export const tokenStorage = {
   get() {

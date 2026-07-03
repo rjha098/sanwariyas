@@ -1,13 +1,11 @@
 // FILE: client/src/components/ui/WhatsAppWidget.js
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
 
 export default function WhatsAppWidget() {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Delay appearance (no change)
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -19,30 +17,56 @@ export default function WhatsAppWidget() {
 
   return (
     <aside
-      className="fixed bottom-6 right-6 z-50 animate-fade-in group flex flex-col items-end gap-3"
-      aria-label="WhatsApp contact widget"
       role="complementary"
+      aria-label="WhatsApp contact widget"
+      className="fixed
+             bottom-[max(1rem,env(safe-area-inset-bottom))]
+             md:bottom-[max(1.5rem,env(safe-area-inset-bottom))]
+             right-4
+             md:right-6
+             z-50
+             animate-fade-in
+             group
+             flex
+             flex-col
+             items-end
+             gap-3"
     >
-      
-      {/* Tooltip message */}
       <div
-        className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-african border border-brand-gold/40 text-brand-cream text-[10px] tracking-widest uppercase px-4 py-2 rounded-sm shadow-lg pointer-events-none whitespace-nowrap"
-        role="tooltip"
-        aria-hidden="true"
         id="whatsapp-tooltip"
+        aria-hidden="true"
+        className="
+    opacity-0
+    group-hover:opacity-100
+    group-focus-within:opacity-100
+    transition-opacity
+    duration-300
+    bg-brand-african
+    border border-brand-gold/40
+    text-brand-cream
+    text-[10px]
+    tracking-widest
+    uppercase
+    px-4
+    py-2
+    rounded-sm
+    shadow-lg
+    pointer-events-none
+    whitespace-nowrap
+  "
       >
-        Fast Response = Higher Deals <span className="text-brand-gold ml-1">✦</span>
+        Chat with our Ethnic Wear Manufacturing Team
+        <span className="text-brand-gold ml-1">✦</span>
       </div>
 
       {/* WhatsApp Button */}
-      {/* ✅ A11Y FIX: Removed role="button" so it behaves semantically as a native link */}
-      <Link
+      <a
         href="https://wa.me/919680812813?text=Hello!%20I%20am%20interested%20in%20your%20premium%20ethnic%20wear."
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp about premium ethnic wear"
-        aria-describedby="whatsapp-tooltip"
-        title="Start WhatsApp chat"
+        aria-label="Chat with our wholesale ethnic wear manufacturing team on WhatsApp"
+       
+        title="Chat with Wholesale Kurti Supplier on WhatsApp"
         className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]"
       >
         {/* Pulsing rings */}
@@ -52,7 +76,6 @@ export default function WhatsAppWidget() {
         />
 
         {/* WhatsApp Icon */}
-        {/* ✅ A11Y FIX: Added aria-hidden="true" to prevent redundant screen reader announcements */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="30"
@@ -63,9 +86,9 @@ export default function WhatsAppWidget() {
           aria-hidden="true"
           focusable="false"
         >
-          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
         </svg>
-      </Link>
+      </a>
     </aside>
   );
 }

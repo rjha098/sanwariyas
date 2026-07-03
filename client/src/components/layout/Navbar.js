@@ -456,7 +456,6 @@
 
 
 
-
 // FILE: client/src/components/layout/Navbar.js
 "use client";
 import NotificationBell from "@/components/ui/NotificationBell";
@@ -468,7 +467,11 @@ import { useAuth } from "@/hooks/useAuth";
 
 // ✅ Mega Menu Structure updated with Lookbook included inside Discover
 const navLinks = [
-  { href: "/", label: "Home", title: "Sanwariyas Home - Premium Ethnic Wear" },
+  {
+    href: "/",
+    label: "Home",
+    title: "SANWARIYAS Wholesale Ethnic Wear Manufacturer",
+  },
   {
     href: "/contact",
     label: "Inquire",
@@ -477,16 +480,16 @@ const navLinks = [
   {
     href: "/about",
     label: "About",
-    title: "About Sanwariyas - Our Story & Heritage",
+    title: "About SANWARIYAS Manufacturer",
   },
   {
     href: "/exportdocs",
     label: "Export",
-    title: "Sanwariyas Export Documentation & Wholesale",
+    title: "SANWARIYAS Export Documentation for Wholesale Buyers",
   },
   {
     id: "discover",
-    type: "megamenu", 
+    type: "megamenu",
     label: "Discover ▾",
     title: "Discover More",
     columns: [
@@ -615,7 +618,7 @@ export default function Navbar() {
           {/* LOGO */}
           <Link
             href="/"
-            aria-label="Sanwariyas Homepage"
+            aria-label="SANWARIYAS Wholesale Homepage"
             onMouseEnter={() => setLogoHovered(true)}
             onMouseLeave={() => setLogoHovered(false)}
             style={{
@@ -635,14 +638,20 @@ export default function Navbar() {
             >
               <Image
                 src="/images/logooo.png"
-                alt="Sanwariyas Logo"
+                alt="SANWARIYAS Ethnic Wear Manufacturer Logo"
                 fill
                 className="object-contain"
                 priority
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               <span
                 style={{
                   fontFamily: 'Georgia, "Times New Roman", serif',
@@ -709,7 +718,7 @@ export default function Navbar() {
                         color: isHovered ? "#BE6E5B" : "#a07f61",
                         transition: "color 0.2s ease",
                         display: "flex",
-                        alignItems: "center"
+                        alignItems: "center",
                       }}
                     >
                       {link.label}
@@ -728,6 +737,7 @@ export default function Navbar() {
                               <li key={sublink.href}>
                                 <Link
                                   href={sublink.href}
+                                  title={sublink.label}
                                   className="font-sans text-[11px] tracking-[0.1em] text-[#a07f61] hover:text-[#BE6E5B] transition-colors flex items-center gap-2"
                                 >
                                   <span className="w-1 h-1 rounded-full bg-[#E8D5A3] block"></span>
@@ -765,11 +775,11 @@ export default function Navbar() {
                     color: isActive
                       ? "#7A3D2A"
                       : isHovered
-                      ? "#BE6E5B"
-                      : "#a07f61",
+                        ? "#BE6E5B"
+                        : "#a07f61",
                     transition: "color 0.2s ease",
                     display: "flex",
-                    alignItems: "center"
+                    alignItems: "center",
                   }}
                 >
                   {link.label}
@@ -855,7 +865,6 @@ export default function Navbar() {
               Inquire Now
             </Link>
 
-
             {isAuthenticated && (
               <div className="hidden lg:block">
                 <NotificationBell />
@@ -932,7 +941,11 @@ export default function Navbar() {
               // ✅ MEGA MENU RENDERING (Mobile Accordion)
               if (link.type === "megamenu") {
                 return (
-                  <div key={link.id} className="flex flex-col" style={{ borderBottom: "1px solid rgba(190,110,91,0.2)" }}>
+                  <div
+                    key={link.id}
+                    className="flex flex-col"
+                    style={{ borderBottom: "1px solid rgba(190,110,91,0.2)" }}
+                  >
                     <button
                       onClick={() => setMobMegaOpen(!mobMegaOpen)}
                       className="sw-mob-link"
@@ -964,15 +977,23 @@ export default function Navbar() {
                       </span>
                     </button>
                     {/* Mobile Nested Links */}
-                    <div className={`overflow-hidden transition-all duration-300 ${mobMegaOpen ? "max-h-[800px] pb-4" : "max-h-0"}`}>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${mobMegaOpen ? "max-h-[800px] pb-4" : "max-h-0"}`}
+                    >
                       {link.columns.map((col, idx) => (
-                        <div key={idx} className="mb-4 pl-4 border-l border-[#BE6E5B]/20">
-                          <h4 className="text-[#7A3D2A] text-[10px] font-bold uppercase tracking-[0.2em] mb-2">{col.title}</h4>
+                        <div
+                          key={idx}
+                          className="mb-4 pl-4 border-l border-[#BE6E5B]/20"
+                        >
+                          <h4 className="text-[#7A3D2A] text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
+                            {col.title}
+                          </h4>
                           <div className="flex flex-col gap-3 pl-2">
                             {col.links.map((sub) => (
                               <Link
                                 key={sub.href}
                                 href={sub.href}
+                                title={sub.label}
                                 onClick={() => setMenuOpen(false)}
                                 className="text-[#a07f61] text-[10px] uppercase tracking-wider hover:text-[#BE6E5B] transition-colors"
                               >
@@ -991,6 +1012,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                    title={link.title}
                   onClick={() => setMenuOpen(false)}
                   className="sw-mob-link"
                   aria-current={isActive ? "page" : undefined}

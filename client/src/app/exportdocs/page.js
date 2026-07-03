@@ -1,26 +1,48 @@
+// FILE: client/src/app/exportdocs/page.js
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
-// ✅ SEO FIX: Added absolute Canonical URL, Open Graph, Twitter Cards, and explicit Robots indexing.
+// ✅ SEO FIX: Optimized Meta Title, Description, Keywords, and corrected Canonical URLs to absolute paths.
 export const metadata = {
-  title: "Export Documents & Certifications | SANWARIYAS",
+  title: "Export Documents & Certifications | Ethnic Wear Exporter India",
   description:
-    "View our export documentation, international shipping policies, payment terms, and quality certifications for SANWARIYAS Ethnic Luxury.",
-  keywords: "Export documents, quality certifications, international shipping, ethnic wear export, ISO 9001, Silk Mark India, wholesale ethnic wear",
-  alternates: { canonical: "https://www.yourdomain.com/export-documents" },
+    "Access export documentation, international shipping policies, and quality certifications from SANWARIYAS, India's premier B2B ethnic wear supplier and garment exporter.",
+  keywords: [
+    "Ethnic Wear Exporter India",
+    "Cotton Clothing Exporter India",
+    "Jaipur Garment Exporter",
+    "B2B Ethnic Wear Supplier",
+    "Export Documents",
+    "ISO 9001",
+    "Silk Mark India",
+  ],
+  alternates: { canonical: "https://sanwariyas.com/exportdocs" },
   openGraph: {
-    title: "Export Documents & Certifications | SANWARIYAS",
-    description: "View our export documentation, international shipping policies, payment terms, and quality certifications.",
-    url: "https://www.yourdomain.com/export-documents",
+    title: "Export Documents | Ethnic Wear Exporter India | SANWARIYAS",
+    description:
+      "Access export documentation, international shipping policies, and quality certifications from SANWARIYAS, India's leading B2B ethnic wear supplier.",
+    url: "https://sanwariyas.com/exportdocs",
     siteName: "SANWARIYAS",
     locale: "en_IN",
     type: "website",
+
+    images: [
+      {
+        url: "https://sanwariyas.com/images/og-exportdocs.png",
+        width: 1200,
+        height: 630,
+        alt: "SANWARIYAS Export Documents & Certifications",
+      },
+    ],
   },
+
   twitter: {
-    card: "summary",
-    title: "Export Documents & Certifications | SANWARIYAS",
-    description: "View our export documentation, international shipping policies, and quality certifications.",
+    card: "summary_large_image",
+    title: "Export Documents | SANWARIYAS Ethnic Wear Exporter",
+    description:
+      "Access export documentation, international shipping policies, and quality certifications for B2B wholesale.",
+    images: ["https://sanwariyas.com/images/og-exportdocs.png"],
   },
   robots: {
     index: true,
@@ -111,6 +133,55 @@ const documents = [
 export default function ExportDocsPage() {
   return (
     <>
+      {/* ✅ SEO FIX: Injected WebPage, BreadcrumbList, and ItemList Schema for EEAT */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: "Export Documents & Certifications",
+              description:
+                "Export documentation, shipping policies, and quality certifications for SANWARIYAS wholesale ethnic wear.",
+              url: "https://sanwariyas.com/exportdocs",
+              publisher: {
+                "@type": "Organization",
+                name: "SANWARIYAS",
+              },
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://sanwariyas.com/",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Export Documents",
+                  item: "https://sanwariyas.com/exportdocs",
+                },
+              ],
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: "SANWARIYAS Export Documentation Categories",
+              itemListElement: documents.map((docCategory, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: docCategory.category,
+              })),
+            },
+          ]),
+        }}
+      />
+
       <Navbar />
 
       {/* ✅ A11Y: Added id="main-content" for "skip to content" navigation */}
@@ -124,7 +195,10 @@ export default function ExportDocsPage() {
         {/* Header Section */}
         <header className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 md:mb-20">
           {/* ✅ A11Y: Hidden decorative lines from screen readers */}
-          <div aria-hidden="true" className="inline-flex items-center gap-4 mb-6 animate-fade-in opacity-90">
+          <div
+            aria-hidden="true"
+            className="inline-flex items-center gap-4 mb-6 animate-fade-in opacity-90"
+          >
             <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
             <p className="font-sans text-[10px] md:text-xs tracking-[0.6em] md:tracking-[0.7em] uppercase text-[#BE6E5B] font-bold">
               Compliance & Logistics
@@ -135,10 +209,12 @@ export default function ExportDocsPage() {
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-[#7A3D2A] leading-tight mb-6 md:mb-8 drop-shadow-sm font-bold">
             Export Documentation
           </h1>
+          {/* ✅ SEO FIX: Naturally injected priority exporter and B2B keywords into text string without changing HTML/CSS structure */}
           <p className="font-serif text-base md:text-xl text-[#a07f61] max-w-2xl mx-auto leading-relaxed italic">
-            Ensuring global standards for our international clientele. Access
-            our quality certificates, shipping terms, and commercial
-            documentation below.
+            Ensuring global standards for our international clientele. As a
+            premier Indian ethnic wear exporter, access our B2B wholesale
+            quality certificates, shipping terms, and commercial documentation
+            below.
           </p>
         </header>
 
@@ -146,14 +222,24 @@ export default function ExportDocsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 md:space-y-16">
           {documents.map((section, idx) => (
             /* ✅ A11Y & SEO: Wrapped categories in semantic <section> linked to their headings */
-            <section key={idx} aria-labelledby={`section-heading-${idx}`} className="relative">
+            <section
+              key={idx}
+              aria-labelledby={`section-heading-${idx}`}
+              className="relative"
+            >
               {/* Section Header */}
               <div className="flex items-center gap-4 md:gap-6 mb-8">
-                <h2 id={`section-heading-${idx}`} className="font-display text-2xl md:text-4xl text-[#7A3D2A] font-bold">
+                <h2
+                  id={`section-heading-${idx}`}
+                  className="font-display text-2xl md:text-4xl text-[#7A3D2A] font-bold"
+                >
                   {section.category}
                 </h2>
                 {/* ✅ A11Y: Hidden decorative line */}
-                <div aria-hidden="true" className="flex-1 h-px bg-gradient-to-r from-[#BE6E5B]/40 to-transparent" />
+                <div
+                  aria-hidden="true"
+                  className="flex-1 h-px bg-gradient-to-r from-[#BE6E5B]/40 to-transparent"
+                />
               </div>
 
               {/* Cards Grid (Frosted Glass Look) */}
@@ -167,13 +253,17 @@ export default function ExportDocsPage() {
                     <div className="flex justify-between items-start mb-6">
                       {/* Document Icon Box */}
                       {/* ✅ A11Y: Hidden purely visual badge since extension is usually obvious or screen readers can read it normally */}
-                      <div aria-hidden="true" className="w-12 h-12 bg-white/50 border border-[#BE6E5B]/30 rounded-md flex items-center justify-center group-hover:bg-[#BE6E5B]/10 transition-colors duration-300">
+                      <div
+                        aria-hidden="true"
+                        className="w-12 h-12 bg-white/50 border border-[#BE6E5B]/30 rounded-md flex items-center justify-center group-hover:bg-[#BE6E5B]/10 transition-colors duration-300"
+                      >
                         <span className="font-sans text-[10px] font-bold text-[#7A3D2A] tracking-widest">
                           {doc.ext}
                         </span>
                       </div>
                       <span className="font-sans text-[10px] text-[#a07f61] tracking-wider uppercase font-medium">
-                        <span className="sr-only">File size: </span>{doc.size}
+                        <span className="sr-only">File size: </span>
+                        {doc.size}
                       </span>
                     </div>
 
@@ -186,12 +276,15 @@ export default function ExportDocsPage() {
 
                     {/* Download Button (Visual only for now) */}
                     {/* ✅ A11Y: Added aria-label so screen readers announce WHICH document is being viewed */}
-                    <button 
+                    <button
                       aria-label={`View ${doc.name} document`}
                       className="inline-flex items-center gap-3 font-sans text-[10px] tracking-[0.3em] uppercase text-[#BE6E5B] border-t border-[#BE6E5B]/20 pt-4 w-full group-hover:border-[#BE6E5B]/60 font-bold transition-colors duration-300"
                     >
                       {/* ✅ A11Y: Hidden decorative arrow */}
-                      <span aria-hidden="true" className="group-hover:translate-y-1 transition-transform duration-300">
+                      <span
+                        aria-hidden="true"
+                        className="group-hover:translate-y-1 transition-transform duration-300"
+                      >
                         ↓
                       </span>
                       View Document
@@ -205,35 +298,46 @@ export default function ExportDocsPage() {
 
         {/* Global Support Callout (Dark Burnt for high contrast luxury) */}
         {/* ✅ A11Y & SEO: Wrapped callout in semantic <aside> */}
-        <aside aria-labelledby="callout-heading" className="max-w-4xl mx-auto px-4 mt-24 md:mt-32 text-center">
+        <aside
+          aria-labelledby="callout-heading"
+          className="max-w-4xl mx-auto px-4 mt-24 md:mt-32 text-center"
+        >
           <div className="p-8 md:p-12 border border-[#BE6E5B]/40 bg-[#7A3D2A] rounded-lg relative overflow-hidden shadow-2xl">
             {/* Glow effect */}
             {/* ✅ A11Y: Hidden decorative glow */}
-            <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(242,217,195,0.15),transparent_70%)] pointer-events-none" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(242,217,195,0.15),transparent_70%)] pointer-events-none"
+            />
 
-            <h3 id="callout-heading" className="font-display text-2xl md:text-4xl text-[#FDF7F2] mb-4 relative z-10 font-bold">
+            <h3
+              id="callout-heading"
+              className="font-display text-2xl md:text-4xl text-[#FDF7F2] mb-4 relative z-10 font-bold"
+            >
               Need specific documentation?
             </h3>
+            {/* ✅ SEO FIX: Injected priority products into text string cleanly */}
             <p className="font-sans text-xs md:text-sm text-[#FDF7F2]/80 mb-8 max-w-lg mx-auto relative z-10 leading-relaxed">
               If your country's customs require specific regional certifications
-              or fumigation certificates, our export team can arrange them upon
-              request.
+              or fumigation certificates for wholesale cotton suits or kurtis,
+              our export team can arrange them upon request.
             </p>
 
-            {/* ✅ SEO FIX: Added title and aria-label for better link context */}
+            {/* ✅ SEO FIX: Enhanced title and aria-label for robust anchor text signal */}
             <Link
               href="/contact"
-              title="Contact Export Team"
-              aria-label="Contact our export team for specific regional certifications"
+              title="Contact SANWARIYAS Ethnic Wear Export Team"
+              aria-label="Contact our ethnic wear export team for specific regional B2B certifications"
               className="relative z-10 inline-flex items-center gap-3 font-sans text-[10px] md:text-xs tracking-[0.3em] uppercase px-8 py-3.5 md:px-10 md:py-4 rounded-md transition-all duration-300 font-bold hover:shadow-[0_0_20px_rgba(190,110,91,0.4)] hover:-translate-y-1"
               style={{
                 background: "linear-gradient(135deg, #BE6E5B 0%, #a07f61 100%)",
                 color: "#FDF7F2",
               }}
             >
-              Contact Export Team{" "}
-              {/* ✅ A11Y: Hidden decorative arrow */}
-              <span aria-hidden="true" className="text-lg leading-none">→</span>
+              Contact Export Team {/* ✅ A11Y: Hidden decorative arrow */}
+              <span aria-hidden="true" className="text-lg leading-none">
+                →
+              </span>
             </Link>
           </div>
         </aside>

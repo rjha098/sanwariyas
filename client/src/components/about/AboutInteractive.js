@@ -1,3 +1,4 @@
+// FILE: client/src/components/about/AboutInteractive.js
 "use client";
 
 import Image from "next/image";
@@ -57,13 +58,13 @@ const TEAM = [
     image: "/images/team/suraj.png",
     initial: "S",
   },
-  {
-    name: "Manisha",
-    role: "Customer Relationship Manager",
-    bio: "Manisha is the dedicated point of contact for our wholesale partners. She ensures every client receives personalized support, from initial inquiry to post-delivery satisfaction.",
-    image: "/images/team/manisha.png",
-    initial: "M",
-  },
+  // {
+  //   name: "Manisha",
+  //   role: "Customer Relationship Manager",
+  //   bio: "Manisha is the dedicated point of contact for our wholesale partners. She ensures every client receives personalized support, from initial inquiry to post-delivery satisfaction.",
+  //   image: "/images/team/manisha.png",
+  //   initial: "M",
+  // },
   {
     name: "Annu Singh",
     role: "Dispatch Incharge",
@@ -71,33 +72,36 @@ const TEAM = [
     image: "/images/team/annu.png",
     initial: "A",
   },
-  {
-    name: "Geeta Singh",
-    role: "Social Media Manager",
-    bio: "Geeta manages our digital outreach and brand visibility. Her strategic content keeps our wholesale catalogue fresh and showcases our latest export lots to an international audience.",
-    image: "/images/team/geeta.png",
-    initial: "G",
-  },
-  {
-    name: "Ram Kumar  jha",
-    role: "Lead Full Stack Developer",
-    bio: "Managing all technical aspects of the business, Ram engineers the digital infrastructure that connects our factory to the world. He is dedicated to building a robust, user-friendly platform that makes global B2B sourcing effortless and reliable.",
-    image: "/images/team/ram.png",
-    initial: "R",
-  },
-  {
-    name: "Mohit",
-    role: "Accountant",
-    bio: "Mohit manages our financial health, handling everything from factory-direct invoicing to wholesale ledger accounts, ensuring total transparency in our pricing model.",
-    image: "/images/team/mohit.png",
-    initial: "M",
-  }
-];  
+  // {
+  //   name: "Geeta Singh",
+  //   role: "Social Media Manager",
+  //   bio: "Geeta manages our digital outreach and brand visibility. Her strategic content keeps our wholesale catalogue fresh and showcases our latest export lots to an international audience.",
+  //   image: "/images/team/geeta.png",
+  //   initial: "G",
+  // },
+  // {
+  //   name: "Ram Kumar Jha",
+  //   role: "Lead Full Stack Developer",
+  //   bio: "Managing all technical aspects of the business, Ram engineers the digital infrastructure that connects our factory to the world. He is dedicated to building a robust, user-friendly platform that makes global B2B sourcing effortless and reliable.",
+  //   image: "/images/team/ram.png",
+  //   initial: "R",
+  // },
+  // {
+  //   name: "Mohit",
+  //   role: "Accountant",
+  //   bio: "Mohit manages our financial health, handling everything from factory-direct invoicing to wholesale ledger accounts, ensuring total transparency in our pricing model.",
+  //   image: "/images/team/mohit.png",
+  //   initial: "M",
+  // },
+];
 
 // ── Fallback avatar shown if photo file is missing ──
 function AvatarFallback({ initial, size = 120 }) {
   return (
-    <div aria-hidden="true" className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#F2D9C3] to-[#E0BFA2]">
+    <div
+      aria-hidden="true"
+      className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#F2D9C3] to-[#E0BFA2]"
+    >
       <span
         style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -122,9 +126,11 @@ function TeamCard({ member }) {
         {member.image && (
           <Image
             src={member.image}
-            alt={`${member.name} — ${member.role} at SANWARIYAS`}
+            // ✅ SEO FIX: Highly descriptive, keyword-rich Alt text
+            alt={`${member.name}, ${member.role} at SANWARIYAS`}
             fill
-            unoptimized
+            priority={member.name === "Sonali Kanther"}
+            decoding="async"
             sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
             className="relative z-10 object-cover object-top transition-transform duration-700 group-hover:scale-110"
           />
@@ -157,7 +163,10 @@ function TeamCard({ member }) {
           {member.name}
         </h3>
 
-        <div aria-hidden="true" className="h-[2px] w-8 bg-gradient-to-r from-[#BE6E5B] to-transparent rounded-full mb-4 transition-all duration-500 group-hover:w-16" />
+        <div
+          aria-hidden="true"
+          className="h-[2px] w-8 bg-gradient-to-r from-[#BE6E5B] to-transparent rounded-full mb-4 transition-all duration-500 group-hover:w-16"
+        />
 
         <p className="font-sans text-sm text-[#a07f61] leading-relaxed font-medium">
           {member.bio}
@@ -185,7 +194,7 @@ export default function AboutInteractive({ values }) {
             The Visionaries
           </h2>
         </div>
-        
+
         {/* CHANGED: max-w-7xl and lg:grid-cols-4 added to ensure exactly 1 row on desktop */}
         <ul className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20 list-none p-0 m-0">
           {OWNERS.map((owner) => (
@@ -255,22 +264,28 @@ export default function AboutInteractive({ values }) {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 list-none p-0 m-0">
             {displayValues.map((val) => (
               <li key={val.title}>
-                <article
-                  className="group relative rounded-3xl p-8 text-center transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl bg-white/60 backdrop-blur-xl border border-[#BE6E5B]/20 overflow-hidden h-full"
-                >
-                  <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  <div aria-hidden="true" className="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FDF7F2] to-[#E0BFA2] border border-[#BE6E5B]/30 shadow-inner flex items-center justify-center mx-auto mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <article className="group relative rounded-3xl p-8 text-center transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl bg-white/60 backdrop-blur-xl border border-[#BE6E5B]/20 overflow-hidden h-full">
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  />
+
+                  <div
+                    aria-hidden="true"
+                    className="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FDF7F2] to-[#E0BFA2] border border-[#BE6E5B]/30 shadow-inner flex items-center justify-center mx-auto mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+                  >
                     <span className="text-2xl text-[#7A3D2A]">{val.icon}</span>
                   </div>
-                  
+
                   <h3
-                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                    style={{
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    }}
                     className="relative z-10 text-2xl font-bold text-[#7A3D2A] mb-4"
                   >
                     {val.title}
                   </h3>
-                  
+
                   <p className="relative z-10 font-sans text-sm text-[#a07f61] leading-relaxed font-medium">
                     {val.desc}
                   </p>
@@ -281,5 +296,5 @@ export default function AboutInteractive({ values }) {
         </div>
       </section>
     </>
-  );  
+  );
 }

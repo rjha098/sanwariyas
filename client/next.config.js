@@ -2,26 +2,24 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
-      // Allow normal Unsplash image URLs.
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      // Allow newer Unsplash image URLs that come from plus.unsplash.com.
-      {
-        protocol: 'https',
-        hostname: 'plus.unsplash.com',
-      },
-      // Allow Cloudinary images too, in case products use that host later.
-      {
-        protocol: 'https',
-        hostname: '**.cloudinary.com',
-      },
-    ],
-  },
-
+ images: {
+  remotePatterns: [
+    {
+      protocol: "http",
+      hostname: "localhost",
+      port: "5000",
+      pathname: "/uploads/**",
+    },
+    {
+      protocol: "https",
+      hostname: "images.unsplash.com",
+    },
+    {
+      protocol: "https",
+      hostname: "plus.unsplash.com",
+    },
+  ],
+},
   async headers() {
     return [
       {
@@ -40,3 +38,12 @@ const nextConfig = {
 module.exports = nextConfig;
 
 
+
+// production  time  
+
+
+// {
+//   protocol: "https",
+//   hostname: "api.sanwariyas.com",
+//   pathname: "/uploads/**",
+// }

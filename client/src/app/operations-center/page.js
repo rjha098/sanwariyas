@@ -27,6 +27,9 @@
 //     type: "success",
 //   });
 
+//   // State for the auto-refresh countdown timer
+//   const [countdown, setCountdown] = useState(15);
+
 //   const showToast = (message, type = "success") =>
 //     setToast({ isVisible: true, message, type });
 //   const hideToast = () => setToast((t) => ({ ...t, isVisible: false }));
@@ -77,7 +80,29 @@
 //     deleteInquiry,
 //     markAsViewed,
 //     inquiryStats,
+//     loadInquiries, // Required to trigger the background refresh
 //   } = useInquiries(token);
+
+//   // Auto-polling logic for Inquiries
+//   useEffect(() => {
+//     // Only run the timer if the user is authenticated and on the inquiries tab
+//     if (!token || activeTab !== "inquiries") return;
+
+//     const tickInterval = setInterval(() => {
+//       setCountdown((prev) => {
+//         if (prev <= 1) {
+//           // When timer hits 0, fetch inquiries silently (assuming the 3rd parameter handles silent fetching if configured in hook)
+//           if (loadInquiries) {
+//             loadInquiries(inquiryPage, inquiryFilter, false);
+//           }
+//           return 15; // Reset timer
+//         }
+//         return prev - 1;
+//       });
+//     }, 1000);
+
+//     return () => clearInterval(tickInterval);
+//   }, [token, activeTab, inquiryPage, inquiryFilter, loadInquiries]);
 
 //   // Show product messages via Toast
 //   useEffect(() => {
@@ -136,6 +161,7 @@
 //           activeTab={activeTab}
 //           setActiveTab={setActiveTab}
 //           handleLogout={handleLogout}
+//           countdown={countdown} // Pass countdown to header
 //         />
 
 //         <main
@@ -205,8 +231,8 @@
 //                 setInquiryFilter={setInquiryFilter}
 //                 inquiryMessage={inquiryMessage}
 //                 handleInquiryStatus={handleInquiryStatus}
-//                 deleteInquiry={deleteInquiry} // ✅ FIX: Pass as prop
-//                 markAsViewed={markAsViewed} // ✅ FIX: Pass as prop
+//                 deleteInquiry={deleteInquiry}
+//                 markAsViewed={markAsViewed}
 //               />
 //             </section>
 //           )}
@@ -215,6 +241,9 @@
 //     </>
 //   );
 // }
+
+
+
 
 // FILE: client/src/app/operations-center/page.js
 "use client";
@@ -226,7 +255,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { useInquiries } from "@/hooks/useInquiries";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DashboardStats from "@/components/admin/DashboardStats";
-import ProductForm from "@/components/admin/ProductForm";
+// import ProductForm from "@/components/admin/ProductForm";
 // import ProductTable from '@/components/admin/ProductTable';
 import InquiryTable from "@/components/admin/InquiryTable";
 import LookbookManager from "@/components/admin/LookbookManager";
@@ -282,7 +311,7 @@ export default function OperationsCenter() {
     handleEditProduct,
     handleDeleteProduct,
     handleSeedProducts,
-    loadProducts,
+    // loadProducts,
   } = useProducts(token);
 
   const {
@@ -353,11 +382,14 @@ export default function OperationsCenter() {
   // Checking session
   if (authChecking) {
     return (
-      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <p className="font-sans text-sm tracking-[0.3em] uppercase text-brand-coffee/60">
-          Checking session...
-        </p>
-      </div>
+      <>
+       
+        <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+          <p className="font-sans text-sm tracking-[0.3em] uppercase text-brand-coffee/60">
+            Checking session...
+          </p>
+        </div>
+      </>
     );
   }
 
@@ -366,6 +398,8 @@ export default function OperationsCenter() {
 
   return (
     <>
+     
+
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}

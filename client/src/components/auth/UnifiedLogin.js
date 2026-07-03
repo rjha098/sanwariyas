@@ -1,7 +1,7 @@
 // FILE: client/src/components/auth/UnifiedLogin.js
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 /**
  * UNIFIED LOGIN COMPONENT
@@ -13,15 +13,15 @@ export default function UnifiedLogin({
   onSubmit,
   loginError,
   loggingIn,
-  role = 'admin', // 'admin' | 'staff' | 'customer'
+  role = "admin", // 'admin' | 'staff' | 'customer'
 }) {
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
   const headings = {
-    admin: { title: 'Admin Login', subtitle: 'Access the operations center.' },
-    staff: { title: 'Staff Login', subtitle: 'Access your staff dashboard.' },
-    customer: { title: 'Welcome Back', subtitle: 'Sign in to your account.' },
+    admin: { title: "Admin Login", subtitle: "Access the operations center." },
+    staff: { title: "Staff Login", subtitle: "Access your staff dashboard." },
+    customer: { title: "Welcome Back", subtitle: "Sign in to your account." },
   };
 
   const { title, subtitle } = headings[role] || headings.admin;
@@ -63,8 +63,8 @@ export default function UnifiedLogin({
             </label>
             <input
               id="auth-identifier"
-              type="text"
-              inputMode="email"
+                type="text"
+              inputMode="text"
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
@@ -109,12 +109,11 @@ export default function UnifiedLogin({
 
           <button
             type="submit"
-            disabled={loggingIn || !identifier || !password}
+            disabled={loggingIn || !identifier.trim() || !password.trim()}
             className="w-full bg-brand-coffee text-brand-cream py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-brand-african transition-colors disabled:opacity-60"
             aria-busy={loggingIn}
           >
-            {loggingIn ? 'Signing In...' : 'Sign In'}
-            
+            {loggingIn ? "Signing In..." : "Sign In"}
           </button>
         </form>
       </div>

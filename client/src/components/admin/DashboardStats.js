@@ -4,7 +4,7 @@ export default function DashboardStats({ productsTotal, featuredTotal, openInqui
     { label: 'Featured', value: featuredTotal, tone: 'bg-brand-coffee text-white' },
     { label: 'Open Inquiries', value: openInquiriesTotal, tone: 'bg-yellow-600 text-white' },
     { label: 'Resolved', value: resolvedInquiriesTotal, tone: 'bg-green-700 text-white' },
-  ];
+  ];  
 
   return (
     <section aria-label="Quick Stats" className="grid grid-cols-2 lg:grid-cols-4 gap-4">

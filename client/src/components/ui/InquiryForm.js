@@ -1,35 +1,41 @@
-// // PURPOSE: The upgraded B2B wholesale inquiry form
-// 'use client';
-// import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { submitInquiry } from '@/lib/api';
-// import Toast from '@/components/ui/Toast'; // Ensure this path matches where you saved the Toast file
+// // FILE: client/src/components/home/InquiryForm.js
+// "use client";
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { submitInquiry } from "@/lib/api";
+// import Toast from "@/components/ui/Toast";
 
-// export default function InquiryForm({ productId = null, productName = '' }) {
+// export default function InquiryForm({ productId = null, productName = "" }) {
 //   const router = useRouter();
 //   const [form, setForm] = useState({
-//     name: '',
-//     companyName: '',
-//     email: '',
-//     whatsapp: '',
-//     country: '',
-//     productCategory: 'Cotton',
+//     name: "",
+//     companyName: "",
+//     email: "",
+//     whatsapp: "",
+//     country: "",
+//     productCategory: "Cotton",
 //     quantity: 50,
-//     budgetRange: '',
-//     message: productName ? `I am interested in: ${productName}. Please share pricing and availability.` : '',
+//     budgetRange: "",
+//     message: productName
+//       ? `I am interested in: ${productName}. Please share pricing and availability.`
+//       : "",
 //   });
 
-//   const [status, setStatus] = useState('idle'); // idle | loading | success
+//   const [status, setStatus] = useState("idle"); // idle | loading | success
 
 //   // Custom Toast State
-//   const [toast, setToast] = useState({ isVisible: false, message: '', type: 'success' });
+//   const [toast, setToast] = useState({
+//     isVisible: false,
+//     message: "",
+//     type: "success",
+//   });
 
-//   const showToast = (message, type = 'success') => {
+//   const showToast = (message, type = "success") => {
 //     setToast({ isVisible: true, message, type });
 //   };
 
 //   const closeToast = () => {
-//     setToast(prev => ({ ...prev, isVisible: false }));
+//     setToast((prev) => ({ ...prev, isVisible: false }));
 //   };
 
 //   const handleChange = (e) => {
@@ -39,47 +45,40 @@
 //   const handleWhatsAppRedirect = () => {
 //     const adminPhone = "919680812813";
 //     const text = `Hi, I just submitted an inquiry on your website.\n\nCompany: ${form.companyName}\nCategory: ${form.productCategory}\nQuantity: ${form.quantity} pcs\n\nCan we discuss further?`;
-//     window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(text)}`, '_blank');
+//     window.open(
+//       `https://wa.me/${adminPhone}?text=${encodeURIComponent(text)}`,
+//       "_blank",
+//     );
 //   };
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     setStatus('loading');
+//     setStatus("loading");
 
-//     // Custom MOQ Validation with Error Toast
 //     if (form.quantity < 50) {
-//       setStatus('idle');
-//       showToast('Minimum Order Quantity (MOQ) is 50 pieces.', 'error');
-//       return;
-//     }
-
-//     const token = sessionStorage.getItem('sanwariyas_token');
-//     if (!token) {
-//       setStatus('idle');
-//       showToast('Please login first. We will send an OTP to your email.', 'error');
-//       setTimeout(() => router.push('/login'), 1200);
+//       setStatus("idle");
+//       showToast("Minimum Order Quantity (MOQ) is 50 pieces.", "error");
 //       return;
 //     }
 
 //     try {
+//       const token = sessionStorage.getItem("sanwariyas_token");
+
 //       await submitInquiry({ ...form, productId, productName }, token);
-//       setStatus('success');
-//       showToast('Query submitted! Thanks for your valuable time.', 'success');
+
+//       setStatus("success");
 //     } catch (err) {
-//       setStatus('idle');
-//       if (err.response?.status === 401 || err.response?.status === 403) {
-//         sessionStorage.removeItem('sanwariyas_token');
-//         showToast('Please login again before sending an inquiry.', 'error');
-//         setTimeout(() => router.push('/login'), 1200);
-//         return;
-//       }
-//       showToast(err.response?.data?.message || 'Something went wrong. Please try again.', 'error');
+//       setStatus("idle");
+
+//       showToast(
+//         err.response?.data?.message || "Something went wrong.",
+//         "error",
+//       );
 //     }
 //   };
 
 //   return (
 //     <>
-//       {/* Custom Toast Component Rendered Here */}
 //       <Toast
 //         isVisible={toast.isVisible}
 //         message={toast.message}
@@ -87,12 +86,30 @@
 //         onClose={closeToast}
 //       />
 
-//       {status === 'success' ? (
-//         <div role="status" aria-live="polite" className="bg-brand-parchment border border-brand-gold/40 p-8 text-center animate-fade-in">
-//           <div aria-hidden="true" className="text-4xl mb-4 text-brand-gold">✦</div>
-//           <h3 className="font-display text-2xl text-brand-african mb-3">Inquiry Received!</h3>
+//       {status === "success" ? (
+//         <div
+//           role="status"
+//           aria-live="polite"
+//           className="bg-brand-parchment border border-brand-gold/40 p-8 text-center animate-fade-in"
+//         >
+//           <div aria-hidden="true" className="text-4xl mb-4 text-brand-gold">
+//             ✦
+//           </div>
+//           <h3 className="font-display text-2xl text-brand-african mb-3">
+//             Inquiry Received!
+//           </h3>
 //           <p className="font-sans text-sm text-brand-mud leading-relaxed mb-6">
-//             Our wholesale team will review your requirements and contact you within 2 hours.
+//             Our wholesale team will review your requirements and contact you
+//             within 2 hours.
+//             <br />
+//             <br />
+//             <strong>Want to track responses or view custom quotes?</strong>
+//             <br />
+//             Please{" "}
+//             <a href="/login" className="text-brand-coffee underline font-bold">
+//               Login
+//             </a>{" "}
+//             to view your inquiry dashboard.
 //           </p>
 
 //           <button
@@ -105,8 +122,18 @@
 
 //           <button
 //             onClick={() => {
-//               setStatus('idle');
-//               setForm({ name: '', companyName: '', email: '', whatsapp: '', country: '', productCategory: 'Cotton', quantity: 50, budgetRange: '', message: '' });
+//               setStatus("idle");
+//               setForm({
+//                 name: "",
+//                 companyName: "",
+//                 email: "",
+//                 whatsapp: "",
+//                 country: "",
+//                 productCategory: "Cotton",
+//                 quantity: 50,
+//                 budgetRange: "",
+//                 message: "",
+//               });
 //             }}
 //             className="font-sans text-[10px] tracking-widest uppercase text-brand-coffee border-b border-brand-coffee pb-0.5 hover:text-brand-african transition-colors"
 //           >
@@ -114,18 +141,32 @@
 //           </button>
 //         </div>
 //       ) : (
-//         <form onSubmit={handleSubmit} className="space-y-5" aria-label="Wholesale Inquiry Form">
+//         <form
+//           onSubmit={handleSubmit}
+//           className="space-y-5"
+//           aria-label="Wholesale Inquiry Form"
+//         >
 //           {productName && (
 //             <div className="bg-brand-lightgold/20 border-l-2 border-brand-gold px-4 py-3">
-//               <p className="font-sans text-[10px] tracking-widest uppercase text-brand-gold mb-0.5">Inquiring About</p>
-//               <p className="font-display text-brand-african text-lg">{productName}</p>
+//               <p className="font-sans text-[10px] tracking-widest uppercase text-brand-gold mb-0.5">
+//                 Inquiring About
+//               </p>
+//               <p className="font-display text-brand-african text-lg">
+//                 {productName}
+//               </p>
 //             </div>
 //           )}
 
 //           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 //             <div>
-//               <label htmlFor="inquiry-name" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Full Name <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-name"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Full Name{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-name"
@@ -141,8 +182,14 @@
 //               />
 //             </div>
 //             <div>
-//               <label htmlFor="inquiry-company" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Company / Boutique Name <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-company"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Company / Boutique Name{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-company"
@@ -161,8 +208,14 @@
 
 //           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 //             <div>
-//               <label htmlFor="inquiry-email" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Email Address <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-email"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Email Address{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-email"
@@ -173,13 +226,19 @@
 //                 required
 //                 aria-required="true"
 //                 autoComplete="email"
-//                 placeholder="your@email.com"
+//                 placeholder="you@example.com"
 //                 className="w-full bg-white border border-brand-lightgold/60 px-4 py-3 font-sans text-sm text-brand-african placeholder:text-brand-mud/40 focus:outline-none focus:border-brand-coffee transition-colors duration-300"
 //               />
 //             </div>
 //             <div>
-//               <label htmlFor="inquiry-whatsapp" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 WhatsApp Number <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-whatsapp"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 WhatsApp Number{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-whatsapp"
@@ -198,8 +257,14 @@
 
 //           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 //             <div>
-//               <label htmlFor="inquiry-country" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Country <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-country"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Country{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-country"
@@ -215,8 +280,14 @@
 //               />
 //             </div>
 //             <div>
-//               <label htmlFor="inquiry-category" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Product Category <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-category"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Product Category{" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <select
 //                 id="inquiry-category"
@@ -239,8 +310,14 @@
 
 //           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 //             <div>
-//               <label htmlFor="inquiry-qty" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//                 Quantity (MOQ: 50) <span aria-hidden="true" className="text-brand-gold">*</span>
+//               <label
+//                 htmlFor="inquiry-qty"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
+//                 Quantity (MOQ: 50){" "}
+//                 <span aria-hidden="true" className="text-brand-gold">
+//                   *
+//                 </span>
 //               </label>
 //               <input
 //                 id="inquiry-qty"
@@ -255,7 +332,10 @@
 //               />
 //             </div>
 //             <div>
-//               <label htmlFor="inquiry-budget" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
+//               <label
+//                 htmlFor="inquiry-budget"
+//                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//               >
 //                 Target Budget (Optional)
 //               </label>
 //               <input
@@ -271,8 +351,14 @@
 //           </div>
 
 //           <div>
-//             <label htmlFor="inquiry-message" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-//               Message <span aria-hidden="true" className="text-brand-gold">*</span>
+//             <label
+//               htmlFor="inquiry-message"
+//               className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
+//             >
+//               Message{" "}
+//               <span aria-hidden="true" className="text-brand-gold">
+//                 *
+//               </span>
 //             </label>
 //             <textarea
 //               id="inquiry-message"
@@ -289,18 +375,29 @@
 
 //           <button
 //             type="submit"
-//             disabled={status === 'loading'}
-//             aria-busy={status === 'loading'}
+//             disabled={status === "loading"}
+//             aria-busy={status === "loading"}
 //             className="w-full bg-brand-coffee text-brand-cream font-sans text-xs tracking-[0.3em] uppercase py-4 hover:bg-brand-african transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
 //           >
-//             {status === 'loading' ? (
-//               <><span aria-hidden="true" className="w-4 h-4 border-2 border-brand-cream/30 border-t-brand-cream rounded-full animate-spin" /> Sending...</>
+//             {status === "loading" ? (
+//               <>
+//                 <span
+//                   aria-hidden="true"
+//                   className="w-4 h-4 border-2 border-brand-cream/30 border-t-brand-cream rounded-full animate-spin"
+//                 />{" "}
+//                 Sending...
+//               </>
 //             ) : (
-//               <><span aria-hidden="true">✦</span> Send Inquiry</>
+//               <>
+//                 <span aria-hidden="true">✦</span> Send Inquiry
+//               </>
 //             )}
 //           </button>
 
-//           <p className="font-sans text-[10px] text-brand-mud/50 text-center uppercase tracking-widest" aria-live="polite">
+//           <p
+//             className="font-sans text-[10px] text-brand-mud/50 text-center uppercase tracking-widest"
+//             aria-live="polite"
+//           >
 //             Strictly Wholesale Only. Minimum Order Quantity is 50 Pieces.
 //           </p>
 //         </form>
@@ -310,22 +407,24 @@
 // }
 
 
+
 // FILE: client/src/components/home/InquiryForm.js
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { submitInquiry } from "@/lib/api";
 import Toast from "@/components/ui/Toast";
+import Link from "next/link";
 
 export default function InquiryForm({ productId = null, productName = "" }) {
-  const router = useRouter();
+  
   const [form, setForm] = useState({
     name: "",
     companyName: "",
     email: "",
     whatsapp: "",
     country: "",
-    productCategory: "Cotton",
+    productCategory: "Cotton Suits",
     quantity: 50,
     budgetRange: "",
     message: productName
@@ -412,21 +511,20 @@ export default function InquiryForm({ productId = null, productName = "" }) {
           </h3>
           <p className="font-sans text-sm text-brand-mud leading-relaxed mb-6">
             Our wholesale team will review your requirements and contact you
-            within 2 hours.
+            within 24-48 hours.
             <br />
             <br />
             <strong>Want to track responses or view custom quotes?</strong>
             <br />
             Please{" "}
-            <a href="/login" className="text-brand-coffee underline font-bold">
-              Login
-            </a>{" "}
-            to view your inquiry dashboard.
+
+           <Link href="/login">Login</Link>{" "}
+to view your inquiry dashboard.
           </p>
 
           <button
             onClick={handleWhatsAppRedirect}
-            aria-label="Connect with us on WhatsApp now"
+            aria-label="Chat with SANWARIYAS Wholesale Manufacturing Team on WhatsApp"
             className="w-full bg-[#25D366] text-white font-sans text-xs tracking-[0.2em] uppercase py-4 hover:bg-[#1DA851] transition-all duration-300 flex items-center justify-center gap-3 mb-4 shadow-lg"
           >
             <span aria-hidden="true">✦</span> Connect on WhatsApp Now
@@ -441,7 +539,7 @@ export default function InquiryForm({ productId = null, productName = "" }) {
                 email: "",
                 whatsapp: "",
                 country: "",
-                productCategory: "Cotton",
+                productCategory: "Cotton Suits",
                 quantity: 50,
                 budgetRange: "",
                 message: "",
@@ -610,11 +708,13 @@ export default function InquiryForm({ productId = null, productName = "" }) {
                 aria-required="true"
                 className="w-full bg-white border border-brand-lightgold/60 px-4 py-3 font-sans text-sm text-brand-african focus:outline-none focus:border-brand-coffee transition-colors duration-300 appearance-none"
               >
-                <option value="Cotton">Cotton Kurtis</option>
-                <option value="Georgette">Georgette Kurtis</option>
-                <option value="Silk">Silk Kurtis</option>
-                <option value="Rayon">Rayon Kurtis</option>
-                <option value="Mixed">Mixed Blends</option>
+                <option value="Cotton Suits">Cotton Suits</option>
+                <option value="Anarkali">Anarkali</option>
+                <option value="A-Line">A-Line Suits</option>
+                <option value="Straight 3 Piece">Straight 3 Piece</option>
+                <option value="Co-Ord Set">Co-Ord Set</option>
+                <option value="Short Kurti">Short Kurti</option>
+                <option value="Long Kurti">Long Kurti</option>
                 <option value="Other">Other</option>
               </select>
             </div>
@@ -631,6 +731,7 @@ export default function InquiryForm({ productId = null, productName = "" }) {
                   *
                 </span>
               </label>
+              {/* ✅ SEO FIX: Attached aria-describedby to link validation rule directly to the input */}
               <input
                 id="inquiry-qty"
                 type="number"
@@ -640,6 +741,8 @@ export default function InquiryForm({ productId = null, productName = "" }) {
                 onChange={handleChange}
                 required
                 aria-required="true"
+                aria-describedby="moq-warning"
+                aria-invalid={form.quantity < 50}
                 className="w-full bg-white border border-brand-lightgold/60 px-4 py-3 font-sans text-sm text-brand-african placeholder:text-brand-mud/40 focus:outline-none focus:border-brand-coffee transition-colors duration-300"
               />
             </div>
@@ -689,6 +792,7 @@ export default function InquiryForm({ productId = null, productName = "" }) {
             type="submit"
             disabled={status === "loading"}
             aria-busy={status === "loading"}
+            aria-label="Submit Wholesale Ethnic Wear Inquiry to SANWARIYAS"
             className="w-full bg-brand-coffee text-brand-cream font-sans text-xs tracking-[0.3em] uppercase py-4 hover:bg-brand-african transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
           >
             {status === "loading" ? (
@@ -706,7 +810,9 @@ export default function InquiryForm({ productId = null, productName = "" }) {
             )}
           </button>
 
+          {/* ✅ SEO FIX: Linked this text to the quantity input via ID for screen readers */}
           <p
+            id="moq-warning"
             className="font-sans text-[10px] text-brand-mud/50 text-center uppercase tracking-widest"
             aria-live="polite"
           >

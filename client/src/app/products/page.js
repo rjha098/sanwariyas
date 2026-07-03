@@ -9,10 +9,7 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSkeleton";
 import { fetchProducts, fetchProductCategories } from "@/lib/api";
-// FILE: client/src/app/products/page.js
 import { redirect } from 'next/navigation';
-
-
 
 const FABRICS = ["Cotton", "Georgette", "Silk", "Rayon", "Mixed"];
 
@@ -83,10 +80,9 @@ function ProductsContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
-
   return (
     <>
+     
       <div className="pt-[72px] md:pt-[80px]">
         <header
           className="py-16 relative overflow-hidden"
@@ -107,14 +103,14 @@ function ProductsContent() {
               Wholesale Export Catalogue
             </p>
 
-            {/* ✅ SEO FIX: Added a keyword-rich fallback instead of "All Collections" */}
+            {/* ✅ SEO FIX: Enhanced B2B intent on fallback H1 */}
             <h1 className="font-display text-4xl md:text-6xl text-[#7A3D2A] font-bold drop-shadow-sm">
-              {activeCategory || "Wholesale Ethnic Wear Collections"}
+              {activeCategory ? `Wholesale ${activeCategory}` : "Wholesale Ethnic Wear Manufacturer Catalog"}
             </h1>
 
             {pagination.total > 0 && (
               <p aria-live="polite" className="font-serif italic text-[#a07f61] mt-4 text-lg font-medium">
-                {pagination.total} export lots available
+                {pagination.total} wholesale export lots available
               </p>
             )}
           </div>
@@ -128,10 +124,11 @@ function ProductsContent() {
               
               {/* Categories */}
               {/* ✅ A11Y FIX: Added role="group" for better screen reader context */}
-              <nav aria-label="Product Categories" role="group" className="flex flex-wrap justify-center gap-3">
+              <nav aria-label="Wholesale Product Categories" role="group" className="flex flex-wrap justify-center gap-3">
                 <button
                   onClick={() => handleCategoryChange("")}
                   aria-pressed={!activeCategory}
+                  title="View All Wholesale Ethnic Wear"
                   className={`font-sans text-[10px] md:text-xs tracking-widest uppercase px-5 py-2.5 rounded-sm transition-all duration-300 font-bold ${
                     !activeCategory ? "bg-[#7A3D2A] text-[#FDF7F2] shadow-md" : "bg-white/50 backdrop-blur-sm border border-[#BE6E5B]/30 text-[#a07f61] hover:border-[#7A3D2A] hover:text-[#7A3D2A]"
                   }`}
@@ -143,6 +140,7 @@ function ProductsContent() {
                     key={cat}
                     onClick={() => handleCategoryChange(cat)}
                     aria-pressed={activeCategory === cat}
+                    title={`Filter by Wholesale ${cat}`}
                     className={`font-sans text-[10px] md:text-xs tracking-widest uppercase px-5 py-2.5 rounded-sm transition-all duration-300 font-bold ${
                       activeCategory === cat ? "bg-[#7A3D2A] text-[#FDF7F2] shadow-md" : "bg-white/50 backdrop-blur-sm border border-[#BE6E5B]/30 text-[#a07f61] hover:border-[#7A3D2A] hover:text-[#7A3D2A]"
                     }`}
@@ -153,12 +151,12 @@ function ProductsContent() {
               </nav>
 
               {/* Fabrics */}
-              {/* ✅ A11Y FIX: Added role="group" */}
-              <nav aria-label="Fabric Filters" role="group" className="flex flex-wrap justify-center gap-3">
+              <nav aria-label="Wholesale Fabric Filters" role="group" className="flex flex-wrap justify-center gap-3">
                 <span className="font-serif italic text-[#a07f61] self-center mr-2">Filter by Fabric:</span>
                 <button
                   onClick={() => handleFabricChange("")}
                   aria-pressed={!activeFabric}
+                  title="Any Fabric"
                   className={`font-sans text-[9px] md:text-[10px] tracking-widest uppercase px-4 py-1.5 rounded-full transition-all duration-300 font-bold ${
                     !activeFabric ? "bg-[#BE6E5B] text-white" : "bg-transparent border border-[#BE6E5B]/40 text-[#BE6E5B] hover:bg-[#BE6E5B]/10"
                   }`}
@@ -170,6 +168,7 @@ function ProductsContent() {
                     key={fab}
                     onClick={() => handleFabricChange(fab)}
                     aria-pressed={activeFabric === fab}
+                    title={`Filter wholesale products by ${fab} fabric`}
                     className={`font-sans text-[9px] md:text-[10px] tracking-widest uppercase px-4 py-1.5 rounded-full transition-all duration-300 font-bold ${
                       activeFabric === fab ? "bg-[#BE6E5B] text-white" : "bg-transparent border border-[#BE6E5B]/40 text-[#BE6E5B] hover:bg-[#BE6E5B]/10"
                     }`}
@@ -192,6 +191,8 @@ function ProductsContent() {
                   </p>
                   <button
                     onClick={() => updateFilters("", "")}
+                    aria-label="Clear all product filters"
+                    title="Clear Filters"
                     className="font-sans text-xs text-[#BE6E5B] font-bold uppercase tracking-[0.2em] border border-[#BE6E5B] px-6 py-2 rounded-sm hover:bg-[#BE6E5B] hover:text-white transition-colors"
                   >
                     Clear Filters
@@ -208,13 +209,14 @@ function ProductsContent() {
 
             {/* Pagination */}
             {pagination.pages > 1 && (
-              <nav aria-label="Pagination" className="flex justify-center gap-3 mt-16">
+              <nav aria-label="Wholesale Catalog Pagination" className="flex justify-center gap-3 mt-16">
                 {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((pg) => (
                   <button
                     key={pg}
                     onClick={() => handlePageChange(pg)}
                     aria-current={pg === page ? "page" : undefined}
-                    aria-label={`Go to page ${pg}`}
+                    aria-label={`Go to wholesale catalog page ${pg}`}
+                    title={`Page ${pg}`}
                     className={`w-10 h-10 rounded-sm font-sans text-xs font-bold tracking-widest transition-all duration-300 flex items-center justify-center ${
                       pg === page ? "bg-[#7A3D2A] text-[#FDF7F2] shadow-md" : "bg-white/50 backdrop-blur-sm border border-[#BE6E5B]/30 text-[#a07f61] hover:border-[#7A3D2A] hover:text-[#7A3D2A]"
                     }`}
@@ -232,8 +234,10 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-
+  // ✅ SEO APPROVED: Maintenance mode redirect remains intact. 
+  // SEO tags will activate immediately once this redirect is removed.
   redirect('/'); 
+  
   return (
     <>
       <Navbar />
