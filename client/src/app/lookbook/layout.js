@@ -1,44 +1,5 @@
-// // FILE: client/src/app/lookbook/layout.js
-
-// export const metadata = {
-//   title: "Lookbook & Brand Story | SANWARIYAS Ethnic Luxury",
-//   description: "Explore our manufacturing process, seasonal shoots, and trending ethnic wear designs curated for global wholesale boutiques.",
-//   alternates: { canonical: "https://www.sanwariyas.com/lookbook" },
-//   openGraph: {
-//     title: "Lookbook | SANWARIYAS Wholesale Ethnic Wear",
-//     description: "Explore our manufacturing process, seasonal shoots, and trending designs.",
-//     url: "https://www.sanwariyas.com/lookbook",
-//     siteName: "SANWARIYAS",
-//     locale: "en_IN",
-//     type: "website",
-//   },
-//   twitter: {
-//     card: "summary_large_image",
-//     title: "Lookbook | SANWARIYAS Ethnic Luxury",
-//     description: "Explore our manufacturing process and seasonal shoots.",
-//   },
-//   robots: {
-//     index: true,
-//     follow: true,
-//     googleBot: {
-//       index: true,
-//       follow: true,
-//       "max-image-preview": "large",
-//     },
-//   },
-// };
-
-// export default function LookbookLayout({ children }) {
-//   return <>{children}</>;
-// }
-
-
-
-
-
 // FILE: client/src/app/lookbook/layout.js
-
-// ✅ SEO FIX: Optimized Meta Title, Description, and Keywords targeting B2B Wholesale and Boutiques.
+//  Optimized Meta Title, Description, and Keywords targeting B2B Wholesale and Boutiques.
 export const metadata = {
   title: "Wholesale Ethnic Wear Lookbook | SANWARIYAS Manufacturer",
   description:

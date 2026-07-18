@@ -8,7 +8,6 @@ import {
   createLookbookItem,
   deleteLookbookItem,
 } from "@/lib/api";
-import Image from "next/image";
 
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
@@ -236,13 +235,19 @@ export default function LookbookManager({ token }) {
                       className="border-b border-brand-lightgold/20 hover:bg-gray-50/50"
                     >
                       <td className="py-3 px-2">
-                        <Image
+
+
+
+                        <img
                           src={`${BACKEND_URL}${item.image}`}
                           alt={item.title}
                           width={64}
                           height={64}
                           className="w-16 h-16 object-cover border border-brand-lightgold/30 rounded"
                         />
+
+
+
                       </td>
                       <td className="py-3 px-2 font-sans text-sm font-medium text-brand-african">
                         {item.title}

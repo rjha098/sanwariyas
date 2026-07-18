@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FaqSection from "@/components/home/FaqSection";
 
-// ✅ SEO FIX: Highly optimized Meta Title, Description, Canonical URL, OpenGraph, and Twitter Cards
+//  Highly optimized Meta Title, Description, Canonical URL, OpenGraph, and Twitter Cards
 export const metadata = {
   title: "Wholesale Ethnic Wear FAQ | SANWARIYAS B2B Manufacturer",
   description:
@@ -51,7 +51,7 @@ export const metadata = {
 export default function FaqPage() {
   return (
     <>
-      {/* ✅ SEO FIX: Injected BreadcrumbList and FAQPage Schema to trigger Google Rich Snippets */}
+      {/*  Injected BreadcrumbList and FAQPage Schema to trigger Google Rich Snippets */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

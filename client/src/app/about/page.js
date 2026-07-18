@@ -5,9 +5,9 @@ import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import AboutInteractive from "@/components/about/AboutInteractive";
 
-// ✅ SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
+//  SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
 
-// ✅ SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
+//  SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
 export const metadata = {
   title: "About SANWARIYAS | Jaipur Ethnic Wear Manufacturer & Wholesaler",
   description:

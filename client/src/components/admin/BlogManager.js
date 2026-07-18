@@ -7,7 +7,7 @@ import api from "@/lib/api";
 
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
-).replace(/\/api\/?$/, "");
+).replace(/\/api\/?$/, ""); 
 
 export default function BlogManager({ token, showToast }) {
   const router = useRouter();
@@ -201,8 +201,13 @@ export default function BlogManager({ token, showToast }) {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
+                        {/* ✅ YAHAN FIX KIYA GAYA HAI: Ab draft preview=true ke sath khulega */}
                         <a
-                          href={`/blog/${blog.slug}`}
+                          href={
+                            blog.status === "draft"
+                              ? `/blog/${blog.slug}?preview=true`
+                              : `/blog/${blog.slug}`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-sans text-xs text-brand-mud hover:text-brand-coffee transition-colors px-2 py-1"

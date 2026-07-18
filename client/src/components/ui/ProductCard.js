@@ -12,9 +12,9 @@ export default function ProductCard({ product }) {
       : null;
 
   return (
-    // ✅ SEO FIX: Added Schema.org Product itemType for semantic clarity
+    // SEO FIX: Added Schema.org Product itemType for semantic clarity
     <article itemScope itemType="https://schema.org/Product" className="h-full">
-      {/* ✅ SEO FIX: Injected JSON-LD Product Schema for rich snippet eligibility */}
+      {/*  SEO FIX: Injected JSON-LD Product Schema for rich snippet eligibility */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -3,53 +3,84 @@
 
 // import Link from "next/link";
 
+// const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 // const VIDEO_STEPS = [
 //   {
 //     title: "Fabric Selection",
 //     label: "01",
+//     stage: "Fabric Selection",
 //     desc: "Premium fabrics sourced directly from certified mills in Surat, Varanasi & Jaipur.",
-//     src: "/videos/fabricSelection.mp4",
+//     src: "/videos/fabric-selection.mp4",
 //   },
 //   {
 //     title: "Cutting & Stitching",
 //     label: "02",
+//     stage: "Manufacturing",
 //     desc: "CAD-guided precision cutting and skilled artisan stitching for every piece.",
-//     src: "/videos/cutting&stiching.mp4",
+//     src: "/videos/cutting-stitching.mp4",
 //   },
 //   {
 //     title: "Finishing Check",
 //     label: "03",
+//     stage: "Quality Check",
 //     desc: "4-step quality inspection before every order leaves our facility.",
-//     src: "/videos/finishingCheck.mp4",
+//     src: "/videos/finishing-check.mp4",
 //   },
 // ];
 
 // const REVIEWS = [
-//   { quote: "Very good wholesale quality. Stitching and finishing both are neat.",            name: "N P"           },
-//   { quote: "Authentic fabric, reliable team, and smooth online shopping experience.",        name: "Pia Kokare"    },
-//   { quote: "Collection is very good and prices are comfortable for bulk orders.",            name: "Tamil Mathi"   },
-//   { quote: "Affordable fabric with very good customer support for every order.",             name: "Soorya S S"    },
-//   { quote: "SANWARIYAS has vibrant prints, fresh patterns, and great designs.",              name: "Akshay Sharma" },
+//   {
+//     quote:
+//       "Very good wholesale quality. Stitching and finishing both are neat.",
+//     name: "N P",
+//   },
+//   {
+//     quote:
+//       "Authentic fabric, reliable team, and smooth online shopping experience.",
+//     name: "Pia Kokare",
+//   },
+//   {
+//     quote:
+//       "Collection is very good and prices are comfortable for bulk orders.",
+//     name: "Tamil Mathi",
+//   },
+//   {
+//     quote: "Affordable fabric with very good customer support for every order.",
+//     name: "Soorya S S",
+//   },
+//   {
+//     quote: "SANWARIYAS has vibrant prints, fresh patterns, and great designs.",
+//     name: "Akshay Sharma",
+//   },
 // ];
 
 // // ── Video tile — ALL 3 NOW HAVE THE EXACT SAME TALL PORTRAIT (INSTA) SHAPE AND REDUCED SIZE ──
 // function VideoTile({ step }) {
 //   return (
-//     <article
-//       className="group relative overflow-hidden rounded-2xl border border-[#BE6E5B]/25 bg-[#5C3120] shadow-[0_14px_40px_rgba(92,49,32,0.20)] aspect-[3/4] w-full max-w-[200px] md:max-w-[220px] mx-auto"
-//     >
+//     <article className="group relative overflow-hidden rounded-2xl border border-[#BE6E5B]/25 bg-[#5C3120] shadow-[0_14px_40px_rgba(92,49,32,0.20)] aspect-[3/4] w-full max-w-[200px] md:max-w-[220px] mx-auto">
 //       {/* Video */}
+//       {/* ✅ SEO FIX: Added descriptive title and enriched aria-label with B2B keywords */}
 //       <video
-//         aria-label={`Video showing ${step.title}`}
+//         aria-label={`Video showing ${step.title} by SANWARIYAS Jaipur Clothing Manufacturer`}
+//         title={`${step.title} - Wholesale Ethnic Wear Production`}
 //         className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 //         src={step.src}
-//         muted loop playsInline autoPlay preload="auto"
-//         onError={(e) => { e.currentTarget.style.display = "none"; }}
+//         muted
+//         loop
+//         playsInline
+//         autoPlay
+//         preload="auto"
+//         onError={(e) => {
+//           e.currentTarget.style.display = "none";
+//         }}
 //       />
 
 //       {/* Fallback */}
-//       <div aria-hidden="true"
-//         className="absolute inset-0 flex items-center justify-center text-[#F2D9C3]/40 text-xs font-sans tracking-widest uppercase pointer-events-none">
+//       <div
+//         aria-hidden="true"
+//         className="absolute inset-0 flex items-center justify-center text-[#F2D9C3]/40 text-xs font-sans tracking-widest uppercase pointer-events-none"
+//       >
 //         Loading…
 //       </div>
 
@@ -58,7 +89,8 @@
 //         aria-hidden="true"
 //         className="absolute inset-0 pointer-events-none"
 //         style={{
-//           background: "linear-gradient(to top, rgba(92,49,32,0.90) 0%, rgba(92,49,32,0.35) 45%, rgba(92,49,32,0.08) 100%)",
+//           background:
+//             "linear-gradient(to top, rgba(92,49,32,0.90) 0%, rgba(92,49,32,0.35) 45%, rgba(92,49,32,0.08) 100%)",
 //         }}
 //       />
 
@@ -76,14 +108,17 @@
 //             {step.label}
 //           </span>
 //           <div className="h-px w-6 bg-[#BE6E5B]/60 group-hover:w-12 transition-all duration-700" />
+
 //           <p className="font-sans text-[9px] font-bold uppercase tracking-[0.38em] text-[#F2D9C3]/65">
-//             Manufacturing
+//             {step.stage}
 //           </p>
 //         </div>
 
 //         {/* Title */}
-//         <h3 className="font-display font-semibold leading-tight text-[#FDF7F2] drop-shadow-md mb-1.5"
-//           style={{ fontSize: "clamp(1.1rem,2vw,1.5rem)" }}>
+//         <h3
+//           className="font-display font-semibold leading-tight text-[#FDF7F2] drop-shadow-md mb-1.5"
+//           style={{ fontSize: "clamp(1.1rem,2vw,1.5rem)" }}
+//         >
 //           {step.title}
 //         </h3>
 
@@ -99,8 +134,10 @@
 // function StarRating() {
 //   return (
 //     <div className="mb-4 flex justify-center gap-1" aria-label="5 star rating">
-//       {[1,2,3,4,5].map((s) => (
-//         <span key={s} aria-hidden="true" className="text-[#BE6E5B] text-sm">★</span>
+//       {[1, 2, 3, 4, 5].map((s) => (
+//         <span key={s} aria-hidden="true" className="text-[#BE6E5B] text-sm">
+//           ★
+//         </span>
 //       ))}
 //     </div>
 //   );
@@ -110,13 +147,22 @@
 //   return (
 //     <article className="flex flex-col justify-between rounded-2xl border border-[#BE6E5B]/22 bg-[#FDF7F2] px-5 py-6 text-center shadow-[0_6px_20px_rgba(122,61,42,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(122,61,42,0.14)] hover:border-[#BE6E5B]/48 group">
 //       <StarRating />
-//       <div aria-hidden="true" className="text-[#BE6E5B]/18 font-serif text-4xl leading-none mb-2 font-black group-hover:text-[#BE6E5B]/28 transition-colors duration-400">"</div>
+//       <div
+//         aria-hidden="true"
+//         className="text-[#BE6E5B]/18 font-serif text-4xl leading-none mb-2 font-black group-hover:text-[#BE6E5B]/28 transition-colors duration-400"
+//       >
+//         "
+//       </div>
 //       <p className="mx-auto max-w-[13rem] font-sans text-[13px] leading-[1.65] text-[#5C3120] flex-1">
 //         {review.quote}
 //       </p>
 //       <div className="mt-5 pt-4 border-t border-[#BE6E5B]/15">
-//         <p className="font-sans text-[13px] text-[#7A3D2A] font-bold">{review.name}</p>
-//         <p className="font-sans text-[9.5px] text-[#BE6E5B] tracking-[0.22em] uppercase mt-0.5 font-semibold">Verified Buyer</p>
+//         <p className="font-sans text-[13px] text-[#7A3D2A] font-bold">
+//           {review.name}
+//         </p>
+//         <p className="font-sans text-[9.5px] text-[#BE6E5B] tracking-[0.22em] uppercase mt-0.5 font-semibold">
+//           Verified Google Review{" "}
+//         </p>
 //       </div>
 //     </article>
 //   );
@@ -125,28 +171,90 @@
 // export default function ManufacturingInfoSections() {
 //   return (
 //     <>
+//       {/* ✅ SEO FIX: Injected Comprehensive VideoObject, Organization, and AggregateRating Schema */}
+//       <script
+//         type="application/ld+json"
+//         dangerouslySetInnerHTML={{
+//           __html: JSON.stringify([
+//             ...VIDEO_STEPS.map((step) => ({
+//               "@context": "https://schema.org",
+//               "@type": "VideoObject",
+//               name: `${step.title} - Ethnic Wear Manufacturing Process`,
+//               description: step.desc,
+//               thumbnailUrl:
+//                 "https://sanwariyas.com/images/thumbnails/manufacturing-thumbnail.png",
+//               uploadDate: "2025-01-01",
+//               contentUrl: `${SITE_URL}${step.src}`,
+//               publisher: {
+//                 "@type": "Organization",
+//                 name: "SANWARIYAS",
+//                 logo: {
+//                   "@type": "ImageObject",
+//                   url: `${SITE_URL}/images/logooo.png`,
+//                 },
+//               },
+//             })),
+//             {
+//               "@context": "https://schema.org",
+//               "@type": "Organization",
+//               name: "SANWARIYAS",
+//               url: SITE_URL,
+
+//               review: REVIEWS.map((r) => ({
+//                 "@type": "Review",
+//                 author: {
+//                   "@type": "Person",
+//                   name: r.name,
+//                 },
+//                 reviewRating: {
+//                   "@type": "Rating",
+//                   ratingValue: "5",
+//                   bestRating: "5",
+//                 },
+//                 reviewBody: r.quote,
+//               })),
+//             },
+//           ]),
+//         }}
+//       />
 //       {/* ══════════════════════════════════════════
 //           MANUFACTURING SECTION
 //       ══════════════════════════════════════════ */}
 //       <section
 //         aria-labelledby="custom-manufacturing-heading"
 //         className="relative overflow-hidden py-20 md:py-28"
-//         style={{ background: "linear-gradient(135deg, #FDF7F2 0%, #F8EDE6 100%)" }}
+//         style={{
+//           background: "linear-gradient(135deg, #FDF7F2 0%, #F8EDE6 100%)",
+//         }}
 //       >
-//         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/35 to-transparent" />
-//         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/35 to-transparent" />
-//         <div aria-hidden="true" className="absolute inset-0 opacity-[0.035]"
-//           style={{ backgroundImage: "radial-gradient(#7A3D2A 1.5px, transparent 1.5px)", backgroundSize: "34px 34px" }} />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/35 to-transparent"
+//         />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/35 to-transparent"
+//         />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-0 opacity-[0.035]"
+//           style={{
+//             backgroundImage:
+//               "radial-gradient(#7A3D2A 1.5px, transparent 1.5px)",
+//             backgroundSize: "34px 34px",
+//           }}
+//         />
 
 //         {/* Large decorative watermark */}
-//         <div aria-hidden="true"
+//         <div
+//           aria-hidden="true"
 //           className="absolute right-8 bottom-8 font-display font-black text-[#7A3D2A]/[0.025] leading-none select-none pointer-events-none hidden xl:block"
-//           style={{ fontSize: "clamp(10rem, 14vw, 14rem)" }}>
+//           style={{ fontSize: "clamp(10rem, 14vw, 14rem)" }}
+//         >
 //           01
 //         </div>
 
 //         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.92fr_1fr] lg:gap-20 lg:px-8">
-
 //           {/* ── Left: Text ── */}
 //           <div className="lg:sticky lg:top-24">
 //             <p className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.62em] text-[#BE6E5B]">
@@ -160,6 +268,11 @@
 //               <span className="text-[#BE6E5B] italic">imagination</span>
 //               <br />
 //               <span className="text-[#BE6E5B] italic">to reality</span>
+//               {/* ✅ SEO FIX: Visually hidden specific entity and location keywords for Topical Authority */}
+//               <span className="sr-only">
+//                 {" "}
+//                 - Jaipur Ethnic Wear Manufacturer
+//               </span>
 //             </h2>
 
 //             <div aria-hidden="true" className="flex items-center gap-3 mt-7">
@@ -177,27 +290,44 @@
 //             {/* Mini stats */}
 //             <div className="mt-8 grid grid-cols-2 gap-3">
 //               {[
-//                 { v: "10K+",   l: "Pieces / month"   },
-//                 { v: "4-Step", l: "Quality control"  },
-//                 { v: "500+",   l: "Designs / season" },
-//                 { v: "15+",    l: "Fabric types"     },
+//                 { v: "10K+", l: "Pieces / month" },
+//                 { v: "4-Step", l: "Quality control" },
+//                 { v: "500+", l: "Designs / season" },
+//                 { v: "10+", l: "Fabric types" },
 //               ].map((s) => (
-//                 <div key={s.l}
+//                 <div
+//                   key={s.l}
 //                   className="flex flex-col items-center py-4 px-3 rounded-xl text-center border border-[#BE6E5B]/20 bg-white/55 backdrop-blur-sm"
-//                   style={{ boxShadow: "0 3px 12px rgba(122,61,42,0.06)" }}>
-//                   <span className="font-display text-xl font-black text-[#7A3D2A] leading-none">{s.v}</span>
-//                   <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#a07f61] font-bold mt-1">{s.l}</span>
+//                   style={{ boxShadow: "0 3px 12px rgba(122,61,42,0.06)" }}
+//                 >
+//                   <span className="font-display text-xl font-black text-[#7A3D2A] leading-none">
+//                     {s.v}
+//                   </span>
+//                   <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#a07f61] font-bold mt-1">
+//                     {s.l}
+//                   </span>
 //                 </div>
 //               ))}
 //             </div>
 
+//             {/* ✅ SEO FIX: Added Title and aria-label to pass explicit keyword equity */}
 //             <Link
 //               href="/contact"
+//               title="Contact Indian Ethnic Wear Manufacturer"
+//               aria-label="Contact our wholesale ethnic wear manufacturing team"
 //               className="group relative mt-8 inline-flex items-center gap-2.5 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] tracking-[0.3em] uppercase font-bold px-8 py-3.5 rounded-xl hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden"
 //             >
-//               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#7A3D2A] to-[#BE6E5B] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10" />
+//               <span
+//                 aria-hidden="true"
+//                 className="absolute inset-0 bg-gradient-to-r from-[#7A3D2A] to-[#BE6E5B] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-out -z-10"
+//               />
 //               <span className="relative z-10">Shop Wholesale Kurtis</span>
-//               <span aria-hidden="true" className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300">→</span>
+//               <span
+//                 aria-hidden="true"
+//                 className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300"
+//               >
+//                 →
+//               </span>
 //             </Link>
 //           </div>
 
@@ -217,7 +347,6 @@
 //               <VideoTile step={VIDEO_STEPS[2]} />
 //             </div>
 //           </div>
-
 //         </div>
 //       </section>
 
@@ -227,15 +356,29 @@
 //       <section
 //         aria-labelledby="customer-reviews-heading"
 //         className="relative overflow-hidden py-20 md:py-28"
-//         style={{ background: "linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)" }}
+//         style={{
+//           background: "linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)",
+//         }}
 //       >
-//         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
-//         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent" />
-//         <div aria-hidden="true" className="absolute inset-0 opacity-[0.03]"
-//           style={{ backgroundImage: "repeating-linear-gradient(45deg,#BE6E5B 0,#BE6E5B 1px,transparent 0,transparent 36px)", backgroundSize: "36px 36px" }} />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
+//         />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
+//         />
+//         <div
+//           aria-hidden="true"
+//           className="absolute inset-0 opacity-[0.03]"
+//           style={{
+//             backgroundImage:
+//               "repeating-linear-gradient(45deg,#BE6E5B 0,#BE6E5B 1px,transparent 0,transparent 36px)",
+//             backgroundSize: "36px 36px",
+//           }}
+//         />
 
 //         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
 //           {/* Header */}
 //           <header className="mb-12 text-center md:mb-16">
 //             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
@@ -246,39 +389,62 @@
 //               className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#7A3D2A] leading-tight drop-shadow-sm"
 //             >
 //               Customer Reviews for Wholesale Kurtis
+//               {/* ✅ SEO FIX: Visually hidden broader commercial/manufacturer keyword */}
+//               <span className="sr-only">
+//                 {" "}
+//                 &amp; Cotton Suits Manufacturer India
+//               </span>
 //             </h2>
-//             <div aria-hidden="true" className="flex items-center justify-center gap-4 mt-6">
+//             <div
+//               aria-hidden="true"
+//               className="flex items-center justify-center gap-4 mt-6"
+//             >
 //               <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
 //               <span className="text-[#BE6E5B] text-lg animate-pulse">✦</span>
 //               <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
 //             </div>
 //             <p className="font-serif italic text-[#a07f61] mt-5 text-sm md:text-base max-w-lg mx-auto font-medium">
-//               Trusted by wholesale buyers, boutiques and retailers across 50+ countries worldwide.
+//               Trusted by wholesale buyers, boutiques and retailers across 50+
+//               countries worldwide.
 //             </p>
 //           </header>
 
 //           {/* Grid: hero aside + 5 cards */}
 //           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 items-stretch">
-
 //             {/* Stats aside */}
 //             <aside className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-[#7A3D2A] to-[#5C3120] px-6 py-7 text-[#FDF7F2] shadow-[0_18px_48px_rgba(92,49,32,0.22)] border border-[#BE6E5B]/20 sm:col-span-2 md:col-span-1 xl:col-span-1">
 //               <div>
 //                 <p className="font-sans text-[9px] uppercase tracking-[0.4em] text-[#F2D9C3]/65 font-bold mb-4">
-//                   Verified Buyers
+//                   Google Reviews{" "}
 //                 </p>
 //                 <div className="flex gap-1 mb-4">
-//                   {[1,2,3,4,5].map(s => <span key={s} aria-hidden="true" className="text-[#F2D9C3] text-base">★</span>)}
+//                   {[1, 2, 3, 4, 5].map((s) => (
+//                     <span
+//                       key={s}
+//                       aria-hidden="true"
+//                       className="text-[#F2D9C3] text-base"
+//                     >
+//                       ★
+//                     </span>
+//                   ))}
 //                 </div>
 //                 <p className="font-display text-xl font-bold leading-snug">
-//                   Real feedback<br />from global<br />wholesale buyers
+//                   Real feedback
+//                   <br />
+//                   from global
+//                   <br />
+//                   wholesale buyers
 //                 </p>
 //               </div>
 //               <div>
-//                 <div aria-hidden="true" className="my-5 h-px w-10 bg-[#BE6E5B]/55" />
-//                 <p className="font-display text-3xl font-black text-[#F2D9C3]">4.8</p>
-//                 <p className="font-sans text-[10px] font-bold text-[#F2D9C3]/65 uppercase tracking-widest mt-0.5">Average rating</p>
-//                 <p className="font-display text-xl font-black text-[#F2D9C3] mt-3">136+</p>
-//                 <p className="font-sans text-[10px] font-bold text-[#F2D9C3]/65 uppercase tracking-widest mt-0.5">Verified reviews</p>
+//                 <div
+//                   aria-hidden="true"
+//                   className="my-5 h-px w-10 bg-[#BE6E5B]/55"
+//                 />
+
+//                 <p className="font-sans text-[10px] font-bold text-[#F2D9C3]/65 uppercase tracking-widest mt-0.5">
+//                   Verified Google Reviews{" "}
+//                 </p>
 //               </div>
 //             </aside>
 
@@ -286,7 +452,6 @@
 //               <ReviewCard key={review.name} review={review} />
 //             ))}
 //           </div>
-
 //         </div>
 //       </section>
 //     </>
@@ -295,34 +460,33 @@
 
 
 
-
-
 // FILE: client/src/components/home/ManufacturingInfoSections.js
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 const VIDEO_STEPS = [
   {
     title: "Fabric Selection",
     label: "01",
+    stage: "Fabric Selection",
     desc: "Premium fabrics sourced directly from certified mills in Surat, Varanasi & Jaipur.",
     src: "/videos/fabric-selection.mp4",
   },
   {
     title: "Cutting & Stitching",
     label: "02",
+    stage: "Manufacturing",
     desc: "CAD-guided precision cutting and skilled artisan stitching for every piece.",
     src: "/videos/cutting-stitching.mp4",
   },
   {
     title: "Finishing Check",
     label: "03",
+    stage: "Quality Check",
     desc: "4-step quality inspection before every order leaves our facility.",
     src: "/videos/finishing-check.mp4",
   },
@@ -354,14 +518,331 @@ const REVIEWS = [
   },
 ];
 
-// ── Video tile — ALL 3 NOW HAVE THE EXACT SAME TALL PORTRAIT (INSTA) SHAPE AND REDUCED SIZE ──
-function VideoTile({ step }) {
+// ── Premium Video Lightbox ────────────────────────────────────────────────────
+function VideoLightbox({ step, onClose }) {
+  const videoRef = useRef(null);
+  const lightboxRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
+
+  // Mount animation — two-phase: backdrop first, then content scale-in
+  useEffect(() => {
+    // Phase 1: show backdrop
+    requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+    // Phase 2: scale-in content
+    const contentTimer = setTimeout(() => {
+      setIsContentVisible(true);
+    }, 60);
+
+    // Focus the close button for accessibility
+    const focusTimer = setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 120);
+
+    // Lock body scroll
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflowY = "scroll";
+
+    return () => {
+      clearTimeout(contentTimer);
+      clearTimeout(focusTimer);
+      // Restore scroll
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflowY = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  // Play video when lightbox opens
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.muted = false;
+      videoRef.current.play().catch(() => {
+        // Autoplay with sound blocked — fallback to muted
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          videoRef.current.play().catch(() => {});
+        }
+      });
+    }
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsContentVisible(false);
+    setIsVisible(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+    setTimeout(onClose, 300);
+  }, [onClose]);
+
+  // Keyboard handler
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "Escape") handleClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [handleClose]);
+
+  // Backdrop click — only close if clicking the backdrop itself
+  const handleBackdropClick = (e) => {
+    if (e.target === lightboxRef.current) {
+      handleClose();
+    }
+  };
+
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-[#BE6E5B]/25 bg-[#5C3120] shadow-[0_14px_40px_rgba(92,49,32,0.20)] aspect-[3/4] w-full max-w-[200px] md:max-w-[220px] mx-auto">
-      {/* Video */}
-      {/* ✅ SEO FIX: Added descriptive title and enriched aria-label with B2B keywords */}
+    <div
+      ref={lightboxRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${step.title} manufacturing process video`}
+      onClick={handleBackdropClick}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "clamp(16px, 4vw, 48px)",
+        backgroundColor: isVisible ? "rgba(8, 4, 2, 0.88)" : "rgba(8, 4, 2, 0)",
+        backdropFilter: isVisible ? "blur(16px)" : "blur(0px)",
+        WebkitBackdropFilter: isVisible ? "blur(16px)" : "blur(0px)",
+        transition: "background-color 0.3s ease, backdrop-filter 0.3s ease",
+      }}
+    >
+      {/* Modal panel */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+
+          maxWidth: "1100px",
+
+          maxHeight: "90vh",
+
+          display: "flex",
+          flexDirection: "column",
+          background:
+            "linear-gradient(145deg, rgba(20,10,5,0.96) 0%, rgba(35,16,8,0.98) 100%)",
+          border: "1px solid rgba(190,110,91,0.20)",
+          borderRadius: "20px",
+          boxShadow:
+            "0 40px 120px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06)",
+          overflow: "hidden",
+          opacity: isContentVisible ? 1 : 0,
+          transform: isContentVisible
+            ? "scale(1) translateY(0)"
+            : "scale(0.94) translateY(20px)",
+          transition:
+            "opacity 0.32s cubic-bezier(0.16,1,0.3,1), transform 0.32s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        {/* Close button — top right */}
+        <button
+          ref={closeButtonRef}
+          onClick={handleClose}
+          aria-label="Close video"
+          style={{
+            position: "absolute",
+            top: "14px",
+            right: "14px",
+            zIndex: 10,
+            width: "36px",
+            height: "36px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.10)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: "50%",
+            cursor: "pointer",
+            color: "rgba(255,255,255,0.85)",
+            transition: "background 0.2s ease, transform 0.2s ease",
+            backdropFilter: "blur(8px)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.20)";
+            e.currentTarget.style.transform = "scale(1.08)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.10)";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.outline = "2px solid rgba(190,110,91,0.8)";
+            e.currentTarget.style.outlineOffset = "2px";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.outline = "none";
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 2L14 14M14 2L2 14"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+
+        {/* Video — object-fit: contain, never crops */}
+        <div
+          style={{
+            width: "100%",
+            background: "#000",
+            flexShrink: 0,
+            // Let video define height via intrinsic ratio
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            maxHeight: "75vh",
+            overflow: "hidden",
+          }}
+        >
+          <video
+            ref={videoRef}
+            src={step.src}
+            controls
+            playsInline
+            loop
+            preload="metadata"
+            controlsList="nodownload"
+            disablePictureInPicture
+            aria-label={`${step.title} — SANWARIYAS manufacturing process`}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "auto",
+              maxHeight: "75vh",
+              objectFit: "contain",
+              background: "#000",
+            }}
+          />
+        </div>
+
+        {/* Caption panel */}
+        <div
+          style={{
+            padding: "20px 24px 24px",
+            flexShrink: 0,
+            borderTop: "1px solid rgba(190,110,91,0.12)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "14px",
+            }}
+          >
+            {/* Step number pill */}
+            <span
+              style={{
+                flexShrink: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                border: "1px solid rgba(190,110,91,0.45)",
+                background: "rgba(190,110,91,0.10)",
+                fontFamily: "var(--font-display, serif)",
+                fontSize: "12px",
+                fontWeight: "700",
+                color: "#F2D9C3",
+                letterSpacing: "0.02em",
+              }}
+            >
+              {step.label}
+            </span>
+            <div>
+              <p
+                style={{
+                  fontFamily: "var(--font-sans, sans-serif)",
+                  fontSize: "10px",
+                  fontWeight: "700",
+                  letterSpacing: "0.38em",
+                  textTransform: "uppercase",
+                  color: "rgba(190,110,91,0.75)",
+                  marginBottom: "4px",
+                }}
+              >
+                {step.stage}
+              </p>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display, serif)",
+                  fontSize: "clamp(1.1rem, 2.5vw, 1.35rem)",
+                  fontWeight: "700",
+                  color: "#FDF7F2",
+                  lineHeight: "1.2",
+                  marginBottom: "6px",
+                }}
+              >
+                {step.title}
+              </h3>
+              <p
+                style={{
+                  fontFamily: "var(--font-sans, sans-serif)",
+                  fontSize: "13px",
+                  color: "rgba(242,217,195,0.65)",
+                  lineHeight: "1.65",
+                  maxWidth: "520px",
+                }}
+              >
+                {step.desc}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Video tile ────────────────────────────────────────────────────────────────
+function VideoTile({ step, onOpen }) {
+  return (
+    <article
+      className="group relative overflow-hidden rounded-2xl border border-[#BE6E5B]/25 bg-[#5C3120] shadow-[0_14px_40px_rgba(92,49,32,0.20)] aspect-[3/4] w-full max-w-[200px] md:max-w-[220px] mx-auto"
+      style={{ cursor: "pointer" }}
+      onClick={() => onOpen(step)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(step);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Play ${step.title} video`}
+    >
+      {/* Preview video — muted, autoplay, loop, no controls */}
       <video
-        aria-label={`Video showing ${step.title} by SANWARIYAS Jaipur Clothing Manufacturer`}
+        aria-label={`Preview of ${step.title} by SANWARIYAS`}
         title={`${step.title} - Wholesale Ethnic Wear Production`}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         src={step.src}
@@ -383,36 +864,92 @@ function VideoTile({ step }) {
         Loading…
       </div>
 
-      {/* Bottom-to-top gradient overlay */}
+      {/* Base gradient — always present */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
             "linear-gradient(to top, rgba(92,49,32,0.90) 0%, rgba(92,49,32,0.35) 45%, rgba(92,49,32,0.08) 100%)",
+          transition: "opacity 0.45s ease",
         }}
       />
 
-      {/* Inner border on hover */}
+      {/* Hover dark overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-2 border border-[#BE6E5B]/0 group-hover:border-[#BE6E5B]/50 transition-all duration-700 z-20 pointer-events-none rounded-xl"
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
+        style={{
+          background: "rgba(10,4,2,0.45)",
+          transition: "opacity 0.35s ease",
+        }}
       />
+
+      {/* Inner border glow on hover */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-[6px] rounded-xl pointer-events-none border border-transparent group-hover:border-[#BE6E5B]/50 transition-all duration-500"
+      />
+
+      {/* Play button — glassmorphism, bottom-right */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-5 right-5 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 z-20 pointer-events-none"
+      >
+        {/* Pulse ring */}
+        <span
+          style={{
+            position: "absolute",
+            inset: "-6px",
+            borderRadius: "50%",
+            border: "1.5px solid rgba(190,110,91,0.50)",
+            animation: "mfgPulse 1.8s ease-in-out infinite",
+          }}
+        />
+        {/* Button */}
+        <div
+          style={{
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            background: "rgba(253,247,242,0.14)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1.5px solid rgba(253,247,242,0.40)",
+            boxShadow:
+              "0 8px 32px rgba(0,0,0,0.36), 0 0 0 1px rgba(190,110,91,0.20) inset",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path d="M5 3L13 8L5 13V3Z" fill="rgba(253,247,242,0.95)" />
+          </svg>
+        </div>
+      </div>
 
       {/* Content — bottom */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-5 md:p-6 pointer-events-none">
-        {/* Step pill + line */}
         <div className="flex items-center gap-3 mb-3">
           <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[#F2D9C3]/40 bg-[#FDF7F2]/12 font-display text-sm font-bold text-[#FDF7F2] flex-shrink-0">
             {step.label}
           </span>
+
           <div className="h-px w-6 bg-[#BE6E5B]/60 group-hover:w-12 transition-all duration-700" />
+
           <p className="font-sans text-[9px] font-bold uppercase tracking-[0.38em] text-[#F2D9C3]/65">
-            Manufacturing
+            {step.stage}
           </p>
         </div>
 
-        {/* Title */}
         <h3
           className="font-display font-semibold leading-tight text-[#FDF7F2] drop-shadow-md mb-1.5"
           style={{ fontSize: "clamp(1.1rem,2vw,1.5rem)" }}
@@ -420,7 +957,6 @@ function VideoTile({ step }) {
           {step.title}
         </h3>
 
-        {/* Description — only shown on tall tile or on hover for small */}
         <p className="font-sans text-[12px] text-[#F2D9C3]/70 leading-relaxed max-w-xs opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           {step.desc}
         </p>
@@ -428,6 +964,9 @@ function VideoTile({ step }) {
     </article>
   );
 }
+
+// We need the tile to have the group class AND the mfg-video-tile class
+// Wrap the article so group-hover CSS works cleanly
 
 function StarRating() {
   return (
@@ -459,7 +998,7 @@ function ReviewCard({ review }) {
           {review.name}
         </p>
         <p className="font-sans text-[9.5px] text-[#BE6E5B] tracking-[0.22em] uppercase mt-0.5 font-semibold">
-          Verified Google Review{" "}
+          Verified Google Review
         </p>
       </div>
     </article>
@@ -467,9 +1006,24 @@ function ReviewCard({ review }) {
 }
 
 export default function ManufacturingInfoSections() {
+  const [activeVideo, setActiveVideo] = useState(null);
+
+  const handleOpen = useCallback((step) => {
+    setActiveVideo(step);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setActiveVideo(null);
+  }, []);
+
   return (
     <>
-      {/* ✅ SEO FIX: Injected Comprehensive VideoObject, Organization, and AggregateRating Schema */}
+      {/* Video Lightbox — rendered in DOM root via portal-like conditional */}
+      {activeVideo && (
+        <VideoLightbox step={activeVideo} onClose={handleClose} />
+      )}
+
+      {/* ✅ SEO: VideoObject, Organization, AggregateRating Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -482,7 +1036,7 @@ export default function ManufacturingInfoSections() {
               thumbnailUrl:
                 "https://sanwariyas.com/images/thumbnails/manufacturing-thumbnail.png",
               uploadDate: "2025-01-01",
-             contentUrl: `${SITE_URL}${step.src}`,
+              contentUrl: `${SITE_URL}${step.src}`,
               publisher: {
                 "@type": "Organization",
                 name: "SANWARIYAS",
@@ -497,13 +1051,9 @@ export default function ManufacturingInfoSections() {
               "@type": "Organization",
               name: "SANWARIYAS",
               url: SITE_URL,
-
               review: REVIEWS.map((r) => ({
                 "@type": "Review",
-                author: {
-                  "@type": "Person",
-                  name: r.name,
-                },
+                author: { "@type": "Person", name: r.name },
                 reviewRating: {
                   "@type": "Rating",
                   ratingValue: "5",
@@ -515,6 +1065,7 @@ export default function ManufacturingInfoSections() {
           ]),
         }}
       />
+
       {/* ══════════════════════════════════════════
           MANUFACTURING SECTION
       ══════════════════════════════════════════ */}
@@ -543,7 +1094,6 @@ export default function ManufacturingInfoSections() {
           }}
         />
 
-        {/* Large decorative watermark */}
         <div
           aria-hidden="true"
           className="absolute right-8 bottom-8 font-display font-black text-[#7A3D2A]/[0.025] leading-none select-none pointer-events-none hidden xl:block"
@@ -566,7 +1116,6 @@ export default function ManufacturingInfoSections() {
               <span className="text-[#BE6E5B] italic">imagination</span>
               <br />
               <span className="text-[#BE6E5B] italic">to reality</span>
-              {/* ✅ SEO FIX: Visually hidden specific entity and location keywords for Topical Authority */}
               <span className="sr-only">
                 {" "}
                 - Jaipur Ethnic Wear Manufacturer
@@ -585,13 +1134,12 @@ export default function ManufacturingInfoSections() {
               and our team will curate production-ready pieces for your store.
             </p>
 
-            {/* Mini stats */}
             <div className="mt-8 grid grid-cols-2 gap-3">
               {[
                 { v: "10K+", l: "Pieces / month" },
                 { v: "4-Step", l: "Quality control" },
                 { v: "500+", l: "Designs / season" },
-                { v: "15+", l: "Fabric types" },
+                { v: "10+", l: "Fabric types" },
               ].map((s) => (
                 <div
                   key={s.l}
@@ -608,7 +1156,6 @@ export default function ManufacturingInfoSections() {
               ))}
             </div>
 
-            {/* ✅ SEO FIX: Added Title and aria-label to pass explicit keyword equity */}
             <Link
               href="/contact"
               title="Contact Indian Ethnic Wear Manufacturer"
@@ -629,20 +1176,15 @@ export default function ManufacturingInfoSections() {
             </Link>
           </div>
 
-          {/* ── Right: Video tiles — NOW SYMMETRIC + CENTERED ──
-              Both columns share the same grid row-start and gap,
-              so tile 01 (left) and tiles 02 + 03 (right, stacked)
-              line up evenly as one balanced, centered block.
-          ── */}
+          {/* ── Right: Video tiles ── */}
           <div className="grid grid-cols-2 gap-4 items-center justify-center mx-auto w-full max-w-[460px]">
-            {/* Left column — tile 01, vertically centered against the stacked 02+03 */}
             <div className="grid h-full place-items-center">
-              <VideoTile step={VIDEO_STEPS[0]} />
+              <VideoTile step={VIDEO_STEPS[0]} onOpen={handleOpen} />
             </div>
-            {/* Right column — tiles 02 & 03 stacked */}
             <div className="grid gap-4 content-start h-full">
-              <VideoTile step={VIDEO_STEPS[1]} />
-              <VideoTile step={VIDEO_STEPS[2]} />
+              <VideoTile step={VIDEO_STEPS[1]} onOpen={handleOpen} />
+
+              <VideoTile step={VIDEO_STEPS[2]} onOpen={handleOpen} />
             </div>
           </div>
         </div>
@@ -677,7 +1219,6 @@ export default function ManufacturingInfoSections() {
         />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <header className="mb-12 text-center md:mb-16">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
               What Buyers Say
@@ -687,7 +1228,6 @@ export default function ManufacturingInfoSections() {
               className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#7A3D2A] leading-tight drop-shadow-sm"
             >
               Customer Reviews for Wholesale Kurtis
-              {/* ✅ SEO FIX: Visually hidden broader commercial/manufacturer keyword */}
               <span className="sr-only">
                 {" "}
                 &amp; Cotton Suits Manufacturer India
@@ -707,13 +1247,11 @@ export default function ManufacturingInfoSections() {
             </p>
           </header>
 
-          {/* Grid: hero aside + 5 cards */}
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 items-stretch">
-            {/* Stats aside */}
             <aside className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-[#7A3D2A] to-[#5C3120] px-6 py-7 text-[#FDF7F2] shadow-[0_18px_48px_rgba(92,49,32,0.22)] border border-[#BE6E5B]/20 sm:col-span-2 md:col-span-1 xl:col-span-1">
               <div>
                 <p className="font-sans text-[9px] uppercase tracking-[0.4em] text-[#F2D9C3]/65 font-bold mb-4">
-                  Google Reviews{" "}
+                  Google Reviews
                 </p>
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((s) => (
@@ -739,9 +1277,8 @@ export default function ManufacturingInfoSections() {
                   aria-hidden="true"
                   className="my-5 h-px w-10 bg-[#BE6E5B]/55"
                 />
-
                 <p className="font-sans text-[10px] font-bold text-[#F2D9C3]/65 uppercase tracking-widest mt-0.5">
-                  Verified Google Reviews{" "}
+                  Verified Google Reviews
                 </p>
               </div>
             </aside>

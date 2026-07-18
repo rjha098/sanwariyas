@@ -4,14 +4,15 @@
 // import Link from "next/link";
 // import Image from "next/image";
 
-// // ✅ SEO FIX: Enriched imgAlt tags with exact-match priority B2B Manufacturer & Supplier keywords
+// //  SEO FIX: Mapped imgAlt tags to exact-match Top 10 Priority B2B Manufacturer & Supplier keywords
 // const slides = [
 //   {
 //     id: 1,
 //     title: ["Global Wholesale", "Regal Heritage"],
 //     sub: "India's premier export house for high-end ethnic wear. Discover the pinnacle of pure cotton suits and kurti craftsmanship.",
 //     img: "/images/ROLARIMAGES.png",
-//     imgAlt: "Sanwariyas Global Wholesale Hub – Premium Cotton Ethnic Wear Manufacturer India",
+//     imgAlt:
+//       "Wholesale Ethnic Wear Supplier India - Sanwariyas Premium Cotton Ethnic Wear Manufacturer",
 //     bg: "radial-gradient(ellipse at 90% 10%, #F2D9C3 0%, #F2D9C3 25%, #E0BFA2 60%, #C9A485 100%)",
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
@@ -21,8 +22,9 @@
 //     id: 2,
 //     title: ["Exquisite Craftsmanship", "A-Line Masterpieces"],
 //     sub: "Flawlessly stitched A-Line suits crafted for elegance. Experience the perfect blend of comfort and pure luxury in every thread.",
-//     img: "/images/suits/A-line/aline1.png",
-//     imgAlt: "Premium Pure Cotton A-Line Suits Manufacturer Jaipur – Luxury Indian Ethnic Wear",
+//     img: "/images/suits/A-Line/aline1.png",
+//     imgAlt:
+//       "Cotton Suit Manufacturer Jaipur - Premium Pure Cotton A-Line Suits",
 //     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
 //     accentGold: "#996515",
 //     accentLight: "#F8EDD5",
@@ -33,7 +35,8 @@
 //     title: ["Timeless Grace", "Designer Anarkalis"],
 //     sub: "Redefining the standard of ethnic fashion. Beautifully flared Anarkali suits tailored with breathable fabrics for the modern woman.",
 //     img: "/images/suits/Anarkali/anarkali1.png",
-//     imgAlt: "Designer Pure Cotton Anarkali Suits Supplier – Wholesale Indian Fashion",
+//     imgAlt:
+//       "Indian Ethnic Wear Manufacturer - Designer Pure Cotton Anarkali Suits",
 //     bg: "linear-gradient(180deg, #F2D9C3 0%, #EDD0B5 15%, #E0BFA2 45%, #C4A07A 100%)",
 //     accentGold: "#6B4226",
 //     accentLight: "#F3DCC8",
@@ -44,7 +47,7 @@
 //     title: ["Modern Silhouettes", "Chic Cord Sets"],
 //     sub: "Directly sourced from India's master weavers. Trendy, highly demanded, and comfortable cotton Cord sets for everyday luxury.",
 //     img: "/images/suits/cordset/cordset1.png",
-//     imgAlt: "Trendy Cotton Co-ord Sets Manufacturer – Wholesale B2B Indian Fashion",
+//     imgAlt: "B2B Ethnic Wear Supplier - Trendy Cotton Co-ord Sets Manufacturer",
 //     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
@@ -55,7 +58,7 @@
 //     title: ["Everyday Elegance", "Premium Short Kurtis"],
 //     sub: "Versatile and stylish short kurtis at wholesale rates. We ensure perfect fits, breathable fabrics, and vibrant long-lasting prints.",
 //     img: "/images/suits/shortkurti/sortkurti1.png",
-//     imgAlt: "Premium Cotton Short Kurtis – Wholesale Kurti Supplier India",
+//     imgAlt: "Wholesale Kurti Supplier India - Premium Cotton Short Kurtis",
 //     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
 //     accentGold: "#6B4226",
 //     accentLight: "#F3DCC8",
@@ -66,7 +69,8 @@
 //     title: ["Complete Elegance", "Straight 3-Piece Suits"],
 //     sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas. Fully insured, securely packaged, and exported worldwide.",
 //     img: "/images/suits/Straight3piece/straight3piece1.png",
-//     imgAlt: "Straight 3-Piece Cotton Suits Export – Worldwide B2B Ethnic Wear Delivery",
+//     imgAlt:
+//       "Ladies Cotton Suit Manufacturer - Straight 3-Piece Cotton Suits Export",
 //     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
 //     accentGold: "#996515",
 //     accentLight: "#F8EDD5",
@@ -77,7 +81,7 @@
 //     title: ["Graceful Lengths", "Classic Long Kurtis"],
 //     sub: "Elegant long kurtis perfect for retail scaling. Partner with India's most trusted export empire for your bulk requirements.",
 //     img: "/images/suits/longkurti/longkurti1.png",
-//     imgAlt: "Wholesale Long Kurtis – Premium Cotton Ethnic Wear Exporter India",
+//     imgAlt: "Cotton Clothing Exporter India - Wholesale Long Kurtis",
 //     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
@@ -321,9 +325,10 @@
 //     }}
 //   >
 //     <div className="absolute inset-0 z-0">
+//       {/* ✅ SEO FIX: Enriched thumbnail alt text for B2B relevance */}
 //       <Image
 //         src={slide.img}
-//         alt={`Thumbnail for ${slide.title[0]}`}
+//         alt={`Thumbnail - ${slide.title[0]} - Wholesale Ethnic Wear`}
 //         fill
 //         sizes="(max-width: 1024px) 82px, 112px"
 //         className="object-cover"
@@ -414,46 +419,8 @@
 
 //   return (
 //     <>
-//       {/* ✅ SEO FIX: Injected Comprehensive WebSite & Organization Schema to establish entity and location */}
-//       <script
-//         type="application/ld+json"
-//         dangerouslySetInnerHTML={{
-//           __html: JSON.stringify([
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "WebSite",
-//               "name": "SANWARIYAS",
-//               "url": "https://sanwariyas.com",
-//               "description": "Premium Cotton Ethnic Wear Manufacturer & Wholesaler in Jaipur",
-//               "potentialAction": {
-//                 "@type": "SearchAction",
-//                 "target": "https://sanwariyas.com/?s={search_term_string}",
-//                 "query-input": "required name=search_term_string"
-//               }
-//             },
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "Organization",
-//               "name": "SANWARIYAS",
-//               "url": "https://sanwariyas.com",
-//               "logo": "https://sanwariyas.com/images/logooo.png",
-//               "description": "India's premier export house for high-end ethnic wear, cotton suits, and kurtis.",
-//               "contactPoint": {
-//                 "@type": "ContactPoint",
-//                 "contactType": "wholesale",
-//                 "areaServed": "Worldwide",
-//                 "availableLanguage": ["en"]
-//               },
-//               "address": {
-//                 "@type": "PostalAddress",
-//                 "addressLocality": "Jaipur",
-//                 "addressRegion": "Rajasthan",
-//                 "addressCountry": "IN"
-//               }
-//             }
-//           ])
-//         }}
-//       />
+//       {/* ✅ SEO FIX: Enriched Organization Schema with additionalType and location attributes for higher EEAT & Local SEO context */}
+
 //       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 
 //       <section
@@ -597,7 +564,8 @@
 //                   opacity: 0.85,
 //                 }}
 //               >
-//                 SANWARIYAS — Wholesale Cotton Ethnic Wear Manufacturer, Supplier &amp; Exporter in Jaipur, Rajasthan, India
+//                 SANWARIYAS — Wholesale Cotton Ethnic Wear Manufacturer, Supplier
+//                 &amp; Exporter in Jaipur, Rajasthan, India
 //               </h1>
 
 //               {/* Visual heading — the big styled title, now h2 (still great for SEO as a secondary heading) */}
@@ -639,9 +607,9 @@
 
 //               {/* CTA buttons */}
 //               <div className="anim-btns flex flex-wrap gap-2.5 mb-5 lg:mb-6">
-//                 {/* ✅ SEO FIX: Fixed redirect chain, pointed directly to / */}
+//                 {/* ✅ SEO FIX: Avoid circular homepage link, point to /lookbook for better site architecture */}
 //                 <Link
-//                   href="/"
+//                   href="/lookbook"
 //                   title="View Wholesale Cotton Suits & Kurtis Collections"
 //                   aria-label="Explore our wholesale ethnic wear collection"
 //                   className="explore-btn shimmer-btn group relative inline-flex items-center gap-2.5 rounded-xl overflow-hidden"
@@ -946,17 +914,13 @@
 
 
 
-
-
-
-
 // FILE: client/src/components/home/HeroSection.js
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-// ✅ SEO FIX: Mapped imgAlt tags to exact-match Top 10 Priority B2B Manufacturer & Supplier keywords
+//  SEO FIX: Mapped imgAlt tags to exact-match Top 10 Priority B2B Manufacturer & Supplier keywords
 const slides = [
   {
     id: 1,
@@ -969,6 +933,7 @@ const slides = [
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
     badge: "Export House",
+    shape: "circle",
   },
   {
     id: 2,
@@ -981,6 +946,7 @@ const slides = [
     accentGold: "#996515",
     accentLight: "#F8EDD5",
     badge: "A-Line Suits",
+    shape: "squircle",
   },
   {
     id: 3,
@@ -993,6 +959,7 @@ const slides = [
     accentGold: "#6B4226",
     accentLight: "#F3DCC8",
     badge: "Anarkali Collection",
+    shape: "arch",
   },
   {
     id: 4,
@@ -1004,17 +971,19 @@ const slides = [
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
     badge: "Co-ord Sets",
+    shape: "pinwheel",
   },
   {
     id: 5,
     title: ["Everyday Elegance", "Premium Short Kurtis"],
     sub: "Versatile and stylish short kurtis at wholesale rates. We ensure perfect fits, breathable fabrics, and vibrant long-lasting prints.",
-    img: "/images/suits/shortkurti/sortkurti1.png",
+    img: "/images/suits/Straight3piece/straight3piece1.png",
     imgAlt: "Wholesale Kurti Supplier India - Premium Cotton Short Kurtis",
     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
     accentGold: "#6B4226",
     accentLight: "#F3DCC8",
     badge: "Short Kurtis",
+    shape: "petal",
   },
   {
     id: 6,
@@ -1027,19 +996,37 @@ const slides = [
     accentGold: "#996515",
     accentLight: "#F8EDD5",
     badge: "3-Piece Suits",
+    shape: "shield",
   },
   {
     id: 7,
     title: ["Graceful Lengths", "Classic Long Kurtis"],
     sub: "Elegant long kurtis perfect for retail scaling. Partner with India's most trusted export empire for your bulk requirements.",
-    img: "/images/suits/longkurti/longkurti1.png",
+    img: "/images/suits/Straight3piece/straight3piece1.png",
     imgAlt: "Cotton Clothing Exporter India - Wholesale Long Kurtis",
     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
     accentGold: "#8B6508",
     accentLight: "#F5E6CC",
     badge: "Long Kurtis",
+    shape: "blob",
   },
 ];
+
+// Maps each slide's `shape` to a CSS border-radius value.
+// Slide 1 stays a perfect circle; every other slide gets its own silhouette.
+// Applied to the image frame AND the decorative rings/glow around it, so the
+// whole "orb" reads as one consistent shape per slide.
+const SLIDE_RADIUS = {
+  circle: "9999px",
+  squircle: "34%",
+  arch: "50% 50% 14% 14% / 60% 60% 10% 10%",
+  pinwheel: "42% 8% 42% 8%",
+  petal: "50% 50% 50% 0%",
+  shield: "20% 20% 50% 50% / 10% 10% 42% 42%",
+  blob: "63% 37% 54% 46% / 43% 55% 45% 57%",
+};
+
+const getSlideRadius = (shape) => SLIDE_RADIUS[shape] || SLIDE_RADIUS.circle;
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
@@ -1377,7 +1364,6 @@ export default function HeroSection() {
 
       <section
         className="hero-section relative w-full flex flex-col overflow-hidden"
-        style={{ minHeight: "100dvh" }}
         aria-label="Sanwariyas Global Wholesale – Premium Indian Ethnic Wear"
         aria-roledescription="carousel"
         itemScope
@@ -1648,7 +1634,7 @@ export default function HeroSection() {
             {/* ════ RIGHT: Image orb ════ */}
             <div
               key={`img-${cur}`}
-              className="anim-img hero-img-wrap relative flex items-center justify-center order-1 lg:order-2"
+              className="anim-img hero-img-wrap relative flex items-center justify-center order-1 lg:order-2 mb-6 lg:mb-0"
               style={{ height: "clamp(220px, 35vw, 420px)" }}
             >
               <div
@@ -1661,8 +1647,9 @@ export default function HeroSection() {
                 {/* Outer glow */}
                 <div
                   aria-hidden="true"
-                  className="pulse-glow absolute inset-0 rounded-full pointer-events-none"
+                  className="pulse-glow absolute inset-0 pointer-events-none"
                   style={{
+                    borderRadius: getSlideRadius(slide.shape),
                     boxShadow: `0 0 70px 18px ${slide.accentGold}22, inset 0 0 40px ${slide.accentGold}0F`,
                   }}
                 />
@@ -1670,8 +1657,9 @@ export default function HeroSection() {
                 {/* Rings */}
                 <div
                   aria-hidden="true"
-                  className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+                  className="spin-slow absolute inset-0 pointer-events-none"
                   style={{
+                    borderRadius: getSlideRadius(slide.shape),
                     border: `1.5px solid ${slide.accentGold}`,
                     opacity: 0.45,
                     transform: "scale(1.07)",
@@ -1679,8 +1667,9 @@ export default function HeroSection() {
                 />
                 <div
                   aria-hidden="true"
-                  className="spin-slowR absolute inset-0 rounded-full pointer-events-none"
+                  className="spin-slowR absolute inset-0 pointer-events-none"
                   style={{
+                    borderRadius: getSlideRadius(slide.shape),
                     border: `1px dashed ${slide.accentGold}`,
                     opacity: 0.22,
                     transform: "scale(1.13)",
@@ -1688,8 +1677,9 @@ export default function HeroSection() {
                 />
                 <div
                   aria-hidden="true"
-                  className="spin-slow absolute inset-0 rounded-full pointer-events-none"
+                  className="spin-slow absolute inset-0 pointer-events-none"
                   style={{
+                    borderRadius: getSlideRadius(slide.shape),
                     border: `0.5px solid rgba(190,110,91,0.13)`,
                     transform: "scale(1.19)",
                   }}
@@ -1723,8 +1713,11 @@ export default function HeroSection() {
 
                 {/* Image circle — slide 0 rotates (spin-slow), others are still */}
                 <div
-                  className={`absolute inset-3.5 lg:inset-5 rounded-full overflow-hidden transition-all duration-700 bg-transparent ${cur === 0 ? "spin-slow" : ""}`}
-                  style={{ boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}
+                  className={`absolute inset-3.5 lg:inset-5 overflow-hidden transition-all duration-700 bg-transparent ${cur === 0 ? "spin-slow" : ""}`}
+                  style={{
+                    boxShadow: "0 24px 60px rgba(0,0,0,0.18)",
+                    borderRadius: getSlideRadius(slide.shape),
+                  }}
                 >
                   {/* ✅ SEO FIX: Added itemProp for image schema mapping */}
                   <Image
@@ -1739,8 +1732,9 @@ export default function HeroSection() {
                   />
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0 rounded-full"
+                    className="absolute inset-0"
                     style={{
+                      borderRadius: getSlideRadius(slide.shape),
                       boxShadow: `inset 0 0 50px ${slide.accentGold}14`,
                     }}
                   />
@@ -1812,7 +1806,7 @@ export default function HeroSection() {
 
         {/* ── Thumbnail strip ── */}
         <div
-          className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-auto"
+          className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-8 lg:mt-auto"
           style={{
             background:
               "linear-gradient(to top, rgba(0,0,0,0.08), transparent)",

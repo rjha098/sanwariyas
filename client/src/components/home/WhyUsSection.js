@@ -3,8 +3,10 @@
 const USP_ITEMS = [
   {
     number: "01",
-    title: "MOQ as Low as 50 Pieces",
-    desc: "Start small, scale fast. Our flexible minimum order quantity lets boutiques and retailers of every size partner with us without overcommitting inventory.",
+
+    title: "Flexible MOQ",
+    desc: "Ready stock orders start from just 2–3 sets, while custom manufacturing begins from 120–150 pieces per design and color—ideal for retailers, wholesalers, boutiques, and private label brands.",
+
     icon: (
       <svg
         aria-hidden="true"
@@ -107,8 +109,10 @@ const USP_ITEMS = [
   },
   {
     number: "06",
-    title: "Custom OEM & Private Label",
-    desc: "We provide private label ethnic wear manufacturing with custom branding, packaging and exclusive designs for boutiques and retailers.",
+
+    title: "Brand Building Partner",
+    desc: "We help wholesalers, retailers, boutiques, and private label brands create exclusive ethnic wear collections with complete manufacturing and branding support.",
+
     icon: (
       <svg
         aria-hidden="true"
@@ -130,9 +134,8 @@ const USP_ITEMS = [
 
 export default function WhyUsSection() {
   return (
-<>
-
-  {/* JSON-LD Schema */}
+    <>
+      {/* JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -149,126 +152,126 @@ export default function WhyUsSection() {
           }),
         }}
       />
-    
-    <section
-      aria-labelledby="why-us-heading"
-      className="relative py-24 md:py-32 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(160deg,#FDF7F2 0%,#F2D9C3 60%,#EDD0B5 100%)",
-      }}
-    >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-[0.04]"
+
+      <section
+        aria-labelledby="why-us-heading"
+        className="relative py-24 md:py-32 overflow-hidden"
         style={{
-          backgroundImage: "radial-gradient(#7A3D2A 1.5px,transparent 1.5px)",
-          backgroundSize: "30px 30px",
+          background:
+            "linear-gradient(160deg,#FDF7F2 0%,#F2D9C3 60%,#EDD0B5 100%)",
         }}
-      />
-      <div
-        aria-hidden="true"
-        className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute left-6 md:left-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden lg:block"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute right-6 md:right-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden lg:block"
-      />
-
-      {/* watermark */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
       >
-        <span
-          className="font-display font-bold text-[#7A3D2A]/[0.025] tracking-[-0.04em] leading-none"
-          style={{ fontSize: "clamp(8rem,18vw,18rem)" }}
-        >
-          WHY US
-        </span>
-      </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: "radial-gradient(#7A3D2A 1.5px,transparent 1.5px)",
+            backgroundSize: "30px 30px",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute left-6 md:left-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden lg:block"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute right-6 md:right-10 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/18 to-transparent hidden lg:block"
+        />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 md:mb-20">
-          <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
-            Why Choose SANWARIYAS{" "}
-          </p>
-          <h2
-            id="why-us-heading"
-            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
+        {/* watermark */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+        >
+          <span
+            className="font-display font-bold text-[#7A3D2A]/[0.025] tracking-[-0.04em] leading-none"
+            style={{ fontSize: "clamp(8rem,18vw,18rem)" }}
           >
-            Why Choose SANWARIYAS as Your Wholesale Ethnic Wear
-            Manufacturer{" "}
-          </h2>
-          <div
-            aria-hidden="true"
-            className="flex items-center justify-center gap-4 mt-6"
-          >
-            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
-            <span className="text-[#BE6E5B] text-lg animate-pulse">✦</span>
-            <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
-          </div>
-          <p className="font-serif italic text-[#a07f61] mt-6 md:mt-8 text-sm md:text-lg max-w-2xl mx-auto font-medium">
-            Six reasons boutiques, retailers and fashion brands choose
-            SANWARIYAS as their trusted wholesale ethnic wear manufacturer in
-            Jaipur.
-          </p>
+            WHY US
+          </span>
         </div>
 
-        <ul
-          aria-label="Why choose Sanwariyas"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 list-none p-0 m-0"
-        >
-          {USP_ITEMS.map((item) => (
-            <li key={item.number}>
-              <article className="group relative h-full flex flex-col gap-5 p-7 md:p-8 rounded-2xl border border-[#BE6E5B]/20 bg-white/65 backdrop-blur-sm shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_56px_rgba(122,61,42,0.14)] hover:border-[#BE6E5B]/55 hover:bg-white/90 overflow-hidden">
-                {/* top accent bar on hover */}
-                <div
-                  aria-hidden="true"
-                  className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#7A3D2A] via-[#BE6E5B] to-[#a07f61] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 md:mb-20">
+            <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
+              Why Choose SANWARIYAS{" "}
+            </p>
+            <h2
+              id="why-us-heading"
+              className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
+            >
+              Why Choose SANWARIYAS as Your Wholesale Ethnic Wear
+              Manufacturer{" "}
+            </h2>
+            <div
+              aria-hidden="true"
+              className="flex items-center justify-center gap-4 mt-6"
+            >
+              <div className="h-[2px] w-16 md:w-20 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
+              <span className="text-[#BE6E5B] text-lg animate-pulse">✦</span>
+              <div className="h-[2px] w-16 md:w-20 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
+            </div>
+            <p className="font-serif italic text-[#a07f61] mt-6 md:mt-8 text-sm md:text-lg max-w-2xl mx-auto font-medium">
+              Six reasons boutiques, retailers and fashion brands choose
+              SANWARIYAS as their trusted wholesale ethnic wear manufacturer in
+              Jaipur.
+            </p>
+          </div>
 
-                {/* watermark number */}
-                <span
-                  aria-hidden="true"
-                  className="absolute top-4 right-5 font-sans text-6xl font-black leading-none text-[#7A3D2A]/[0.05] select-none pointer-events-none group-hover:text-[#BE6E5B]/[0.08] transition-colors duration-500"
-                >
-                  {item.number}
-                </span>
+          <ul
+            aria-label="Why choose Sanwariyas"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 list-none p-0 m-0"
+          >
+            {USP_ITEMS.map((item) => (
+              <li key={item.number}>
+                <article className="group relative h-full flex flex-col gap-5 p-7 md:p-8 rounded-2xl border border-[#BE6E5B]/20 bg-white/65 backdrop-blur-sm shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_56px_rgba(122,61,42,0.14)] hover:border-[#BE6E5B]/55 hover:bg-white/90 overflow-hidden">
+                  {/* top accent bar on hover */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#7A3D2A] via-[#BE6E5B] to-[#a07f61] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  />
 
-                {/* icon ring */}
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border border-[#BE6E5B]/25 bg-[#BE6E5B]/[0.07] group-hover:bg-[#BE6E5B]/[0.14] group-hover:border-[#BE6E5B]/50 transition-all duration-400 group-hover:scale-110">
-                  {item.icon}
-                </div>
+                  {/* watermark number */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-4 right-5 font-sans text-6xl font-black leading-none text-[#7A3D2A]/[0.05] select-none pointer-events-none group-hover:text-[#BE6E5B]/[0.08] transition-colors duration-500"
+                  >
+                    {item.number}
+                  </span>
 
-                {/* accent line — expands on hover */}
-                <div
-                  aria-hidden="true"
-                  className="h-px w-8 bg-gradient-to-r from-[#BE6E5B] to-transparent group-hover:w-16 transition-all duration-500 rounded-full"
-                />
+                  {/* icon ring */}
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border border-[#BE6E5B]/25 bg-[#BE6E5B]/[0.07] group-hover:bg-[#BE6E5B]/[0.14] group-hover:border-[#BE6E5B]/50 transition-all duration-400 group-hover:scale-110">
+                    {item.icon}
+                  </div>
 
-                <div>
-                  <h3 className="font-display text-xl md:text-2xl text-[#7A3D2A] font-bold mb-3 leading-snug group-hover:text-[#BE6E5B] transition-colors duration-400">
-                    {item.title}
-                  </h3>
-                  <p className="font-sans text-sm md:text-[14.5px] text-[#a07f61] leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+                  {/* accent line — expands on hover */}
+                  <div
+                    aria-hidden="true"
+                    className="h-px w-8 bg-gradient-to-r from-[#BE6E5B] to-transparent group-hover:w-16 transition-all duration-500 rounded-full"
+                  />
+
+                  <div>
+                    <h3 className="font-display text-xl md:text-2xl text-[#7A3D2A] font-bold mb-3 leading-snug group-hover:text-[#BE6E5B] transition-colors duration-400">
+                      {item.title}
+                    </h3>
+                    <p className="font-sans text-sm md:text-[14.5px] text-[#a07f61] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
     </>
   );
 }

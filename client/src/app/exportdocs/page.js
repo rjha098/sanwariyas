@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
-// ✅ SEO FIX: Optimized Meta Title, Description, Keywords, and corrected Canonical URLs to absolute paths.
+//  Optimized Meta Title, Description, Keywords, and corrected Canonical URLs to absolute paths.
 export const metadata = {
   title: "Export Documents & Certifications | Ethnic Wear Exporter India",
   description:

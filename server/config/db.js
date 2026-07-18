@@ -1,29 +1,7 @@
-// import mongoose from 'mongoose';
-
-// const connectDB = async () => {
-//   try {
-//     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/clothing_business');
-//     console.log(`MongoDB Connected: ${conn.connection.host}`);
-//   } catch (error) {
-//     console.error(`MongoDB connection error: ${error.message}`);
-//     process.exit(1);
-//   }
-// };
-
-// export default connectDB;
-
-
-
 // FILE: server/config/db.js
 import mongoose from 'mongoose';
 
-// ── Auto-retry connection logic ───────────────────────────────────────────────
-// WHY THIS CHANGED:
-// The previous version called process.exit(1) on the FIRST connection failure,
-// killing the entire server process. Your logs show MongoDB Atlas doing shard
-// failovers (host changing between -00, -01, -02) — these are normal, brief,
-// and recoverable. A production server must NOT die because of a transient
-// network blip; it should retry and keep serving once the connection returns.
+
 const MAX_RETRIES = 5;
 const RETRY_DELAY_MS = 5000;
 

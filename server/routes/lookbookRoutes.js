@@ -6,7 +6,7 @@ import {
   deleteLookbookItem,
 } from '../controllers/lookbookController.js';
 import { uploadLookbook } from '../middlewares/upload.js';
-import { requireAdmin } from '../utils/authUtils.js'; // ✅ New unified auth
+import { requireAdmin } from '../utils/authUtils.js'; 
 
 const router = express.Router();
 

@@ -149,7 +149,6 @@
 
 // // blog
 
-
 // // Blogs - Public
 // export const fetchBlogs = (params = {}) =>
 //   api.get("/blogs", { params }).then((r) => r.data);
@@ -176,8 +175,8 @@
 
 // export default api;
 
-
 // this  is  the  old  working  code in upper  side   in downside  ot  implemented  to  fix  the  login  problem  of   down  side      fixed  prob
+
 
 
 
@@ -194,13 +193,13 @@ const API_URL = rawApiUrl.endsWith("/api")
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 15000,
+  timeout: 30000, // ✅ FIX: Increased to 30 seconds
   headers: { "Content-Type": "application/json" },
   // withCredentials: true, // Uncomment when you add httpOnly cookie support
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ENTERPRISE GLOBAL INTERCEPTOR (Auto-Logout on Token Expiry)
+// ENTERPRISE GLOBAL INTERCEPTOR (Auto-Logout on Token Expiry with Reason)
 // ═══════════════════════════════════════════════════════════════════════════
 api.interceptors.response.use(
   (response) => {
@@ -208,16 +207,28 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // ✅ FIX: Catch timeouts specifically for frontend UI
+    if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+      error.isTimeout = true;
+      error.userMessage = "Server is taking too long to respond. Please try again.";
+    }
+
     // If the error is 401 Unauthorized (invalid or expired token)
     if (error.response && error.response.status === 401) {
       if (typeof window !== "undefined") {
         // 1. Clear the invalid token from local storage
         tokenStorage.clear();
-        
+
         // 2. Redirect to login page if the user is not already there
         if (window.location.pathname !== "/login") {
-          // Pass a query parameter so the login page knows the session expired
-          window.location.href = "/login?session_expired=true";
+          // Backend se aane wala exact error message nikal rahe hain
+          const backendMessage =
+            error.response.data?.message ||
+            "Your session has expired. Please log in again.";
+          const encodedReason = encodeURIComponent(backendMessage);
+
+          // Pass query parameters so the login page knows the session expired AND the reason
+          window.location.href = `/login?session_expired=true&reason=${encodedReason}`;
         }
       }
     }
@@ -242,15 +253,11 @@ const withAuth = (token) => ({
 export const unifiedLogin = (credentials) =>
   api.post("/auth/login", credentials).then((r) => r.data);
 
-// export const customerSignup = (data) =>
-//   api.post('/auth/customer/signup', data).then((r) => r.data);
-
 /**
  * SESSION CHECK
  * Called on app mount to restore an in-memory session.
  * Returns { token, user } if session is still valid.
  */
-// ✅ Updated checkAuthSession in api.js
 export const checkAuthSession = (token) =>
   api
     .get(
@@ -265,9 +272,6 @@ export const verifyOTP = (data) =>
 export const customerSignup = (data) =>
   api.post("/auth/customer/signup", data).then((r) => r.data);
 
-/**
- * LOGOUT (optional backend invalidation)
- */
 export const authLogout = (token) =>
   api.post("/auth/logout", {}, withAuth(token)).then((r) => r.data);
 
@@ -357,9 +361,6 @@ export const deleteNotifications = (token) =>
 export const clearReadNotifications = (token) =>
   api.delete("/notification/clear-read", withAuth(token)).then((r) => r.data);
 
-// blog
-
-
 // Blogs - Public
 export const fetchBlogs = (params = {}) =>
   api.get("/blogs", { params }).then((r) => r.data);
@@ -382,6 +383,12 @@ export const createBlog = (token, formData) =>
         "Content-Type": "multipart/form-data",
       },
     })
+    .then((r) => r.data);
+
+// this  is  for   auto  delete  the   notification  while  the  time  of  the  reading
+export const deleteNotificationByInquiry = (token, inquiryId) =>
+  api
+    .delete(`/notification/by-inquiry/${inquiryId}`, withAuth(token))
     .then((r) => r.data);
 
 export default api;

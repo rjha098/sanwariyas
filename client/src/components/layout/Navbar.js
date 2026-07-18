@@ -454,8 +454,6 @@
 
 // the  upper  side  dynacic    that  show  the  product  and   the  downside  the    static  that  not  showing  the product  list  in  the  navbar
 
-
-
 // FILE: client/src/components/layout/Navbar.js
 "use client";
 import NotificationBell from "@/components/ui/NotificationBell";
@@ -652,6 +650,7 @@ export default function Navbar() {
                 justifyContent: "center",
               }}
             >
+              {/*               
               <span
                 style={{
                   fontFamily: 'Georgia, "Times New Roman", serif',
@@ -663,8 +662,20 @@ export default function Navbar() {
                   transition: "color 0.3s ease",
                 }}
               >
+                SANWARIYAS    
+              </span> */}
+
+              <span
+                className="font-display text-2xl tracking-widest"
+                style={{
+                  lineHeight: "1",
+                  color: logoHovered ? "#BE6E5B" : "#a07f61",
+                  transition: "color 0.3s ease",
+                }}
+              >
                 SANWARIYAS
               </span>
+
               <span
                 style={{
                   fontFamily: "sans-serif",
@@ -1012,7 +1023,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                    title={link.title}
+                  title={link.title}
                   onClick={() => setMenuOpen(false)}
                   className="sw-mob-link"
                   aria-current={isActive ? "page" : undefined}

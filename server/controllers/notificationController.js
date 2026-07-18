@@ -130,3 +130,26 @@ export const deleteReadNotifications = async (req, res) => {
     });
   }
 };   
+
+
+
+// seen  message  that  time   auto  delete  the  notification 
+
+export const deleteNotificationByInquiry = async (req, res) => {
+  try {
+    const { inquiryId } = req.params;
+    const { role } = req.authUser;
+
+    let query;
+    if (role === 'admin' || role === 'staff') {
+      query = { isGlobalAdmin: true, relatedInquiryId: inquiryId };
+    } else {
+      query = { recipientId: req.authUser.id, relatedInquiryId: inquiryId };
+    }
+
+    await Notification.deleteMany(query);
+    res.json({ success: true, message: 'Notification deleted.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

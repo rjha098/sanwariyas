@@ -3,7 +3,7 @@
 const BADGES = [
   {
     label: "Export-Grade Quality",
-    sub: "4-step QC on every piece",
+    sub: "4-Step Quality Inspection",
     icon: (
       <svg
         aria-hidden="true"
@@ -21,8 +21,8 @@ const BADGES = [
     ),
   },
   {
-    label: "Direct from Manufacturer",
-    sub: "No middlemen, factory pricing",
+    label: "Factory-Direct Supply",
+    sub: "No Middlemen, Better Pricing",
     icon: (
       <svg
         aria-hidden="true"
@@ -41,8 +41,8 @@ const BADGES = [
     ),
   },
   {
-    label: "MOQ 50 Pieces",
-    sub: "Flexible for retailers",
+    label: "Flexible MOQ",
+    sub: "Ready: 2–3 Sets • Custom: 120–150 pcs",
     icon: (
       <svg
         aria-hidden="true"
@@ -62,7 +62,7 @@ const BADGES = [
   },
   {
     label: "Worldwide Shipping",
-    sub: "50+ countries served",
+    sub: "Serving 50+ Countries",
     icon: (
       <svg
         aria-hidden="true"
@@ -82,7 +82,7 @@ const BADGES = [
   },
   {
     label: "24–48 Hour Response",
-    sub: "Dedicated export support",
+    sub: "Dedicated Export Assistance",
     icon: (
       <svg
         aria-hidden="true"
@@ -100,8 +100,8 @@ const BADGES = [
     ),
   },
   {
-    label: "Secure & Private",
-    sub: "Buyer information protected",
+    label: "Secure & Trusted",
+    sub: "Business Data Protected",
     icon: (
       <svg
         aria-hidden="true"
@@ -186,7 +186,7 @@ export default function TrustBadges() {
           {/* Heading — consistent with all other sections */}
           <div className="text-center mb-12 md:mb-16">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
-              Why Retailers Trust Us
+              Why Retailers and Wholesalers Trust Us{" "}
             </p>
             <h2
               id="trust-heading"
@@ -210,10 +210,12 @@ export default function TrustBadges() {
             </div>
 
             <p className="max-w-3xl mx-auto text-[#a07f61] text-base md:text-lg leading-relaxed mt-6 font-serif italic font-medium">
-              SANWARIYAS is a trusted wholesale manufacturer serving boutiques,
-              distributors, private-label brands, and international retailers
-              with premium ethnic wear collections, flexible production
-              capabilities, and export-grade quality standards.
+              SANWARIYAS is a trusted ethnic wear manufacturer serving
+              wholesalers, distributors, retailers, boutiques, private label
+              brands, and international buyers with premium in-house designed
+              and manufactured ethnic wear collections, flexible MOQs,
+              export-grade quality standards, and dependable long-term business
+              partnerships.
             </p>
           </div>
 
@@ -245,7 +247,23 @@ export default function TrustBadges() {
                   {badge.icon}
                 </div>
 
-                <h3 className="relative z-10 font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#5C3120] leading-snug min-h-[42px]">
+                <h3
+                  className="
+                  relative z-10
+                  font-sans
+                  text-[11px]
+                  uppercase
+                  tracking-[0.22em]
+                  font-bold
+                  text-[#5C3120]
+                  leading-snug
+                  min-h-[64px]
+                  flex
+                  items-center
+                  justify-center
+                  text-center
+                  "
+                >
                   {badge.label}
                 </h3>
 

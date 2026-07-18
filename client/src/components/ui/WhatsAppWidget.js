@@ -30,30 +30,31 @@ export default function WhatsAppWidget() {
              flex
              flex-col
              items-end
-             gap-3"
+             gap-3
+             pointer-events-none" 
     >
       <div
         id="whatsapp-tooltip"
         aria-hidden="true"
         className="
-    opacity-0
-    group-hover:opacity-100
-    group-focus-within:opacity-100
-    transition-opacity
-    duration-300
-    bg-brand-african
-    border border-brand-gold/40
-    text-brand-cream
-    text-[10px]
-    tracking-widest
-    uppercase
-    px-4
-    py-2
-    rounded-sm
-    shadow-lg
-    pointer-events-none
-    whitespace-nowrap
-  "
+          opacity-0
+          group-hover:opacity-100
+          group-focus-within:opacity-100
+          transition-opacity
+          duration-300
+          bg-brand-african
+          border border-brand-gold/40
+          text-brand-cream
+          text-[10px]
+          tracking-widest
+          uppercase
+          px-4
+          py-2
+          rounded-sm
+          shadow-lg
+          pointer-events-none
+          whitespace-nowrap
+        "
       >
         Chat with our Ethnic Wear Manufacturing Team
         <span className="text-brand-gold ml-1">✦</span>
@@ -61,13 +62,12 @@ export default function WhatsAppWidget() {
 
       {/* WhatsApp Button */}
       <a
-        href="https://wa.me/919680812813?text=Hello!%20I%20am%20interested%20in%20your%20premium%20ethnic%20wear."
+        href="https://wa.me/919251171306?text=Hello%20SANWARIYAS%20Team!%20I%20am%20interested%20in%20your%20wholesale%20ethnic%20wear,%20Jaipur%20cotton%20suits,%20and%20premium%20kurtis%20for%20my%20business."
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with our wholesale ethnic wear manufacturing team on WhatsApp"
-       
         title="Chat with Wholesale Kurti Supplier on WhatsApp"
-        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]"
+        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] pointer-events-auto" /* 👉 NAYA FIX: Ab click SIF is button par hi hoga */
       >
         {/* Pulsing rings */}
         <div

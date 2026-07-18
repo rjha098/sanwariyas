@@ -57,9 +57,10 @@ export default function Footer() {
               </p>
               {/* ✅ SEO FIX: Removed Sarees/Lehengas to align with strict product rules and keyword map */}
               <p className="font-sans text-sm leading-relaxed text-[#FDF7F2]/60 max-w-xs">
-                SANWARIYAS is a premier Jaipur-based Ethnic Wear Manufacturer
-                and B2B wholesale supplier, curating premium cotton suits,
-                kurtis, and co-ord sets for retailers and boutiques worldwide.
+                SANWARIYAS is a premium Jaipur-based Ethnic Wear Manufacturer
+                and B2B wholesale supplier, serving wholesalers, retailers,
+                distributors, boutiques, private label brands, and international
+                buyers with premium cotton suits, kurtis, and co-ord sets.
               </p>
             </div>
 
@@ -104,8 +105,8 @@ export default function Footer() {
                     ✦
                   </span>
                   <span className="text-[#FDF7F2]/60 leading-relaxed">
-                    Shop no.- 12, 13, 1st floor, Shiv plaza, near HDFC Bank,
-                    Printers Colony, Dada Gurudev Nagar, Sanganer
+                    Shop no.- 10, 14, 1st floor, Shiv plaza, near HDFC Bank,
+                    Sanganer
                     <br />
                     Jaipur, Rajasthan 302029
                   </span>
@@ -118,7 +119,7 @@ export default function Footer() {
                     href="tel:+919680812813"
                     className="text-[#FDF7F2]/60 hover:text-[#FDF7F2] transition-colors"
                   >
-                    +91 96808 12813
+                    +91 9251171306
                   </a>
                 </li>
                 <li className="flex gap-3">
@@ -145,8 +146,9 @@ export default function Footer() {
           {/* Bottom bar */}
           <div className="mt-12 pt-6 border-t border-[#FDF7F2]/10 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="font-sans text-xs text-[#FDF7F2]/40 tracking-widest text-center md:text-left">
-              © {year} SANWARIYAS Ethnic Wear Manufacturer. All rights reserved.
-              Proudly Manufactured in Jaipur, Rajasthan            </p>
+              © {year} SANWARIYAS Ethnic Wear Manufacturer. All Rights Reserved.
+              Proudly Made in Jaipur, Rajasthan, India.
+            </p>
 
             {/* Social Media Logos */}
             <nav
@@ -219,13 +221,13 @@ export default function Footer() {
                 </svg>
               </a>
 
-              {/* Pinterest */}
+              {/* YouTube */}
               <a
-                href="#"
+                href="https://youtube.com/@sanwariyas_?si=vgk2MyaicxGmUJ3Z"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Follow us on Pinterest"
-                className="text-[#E60023] hover:opacity-80 transition-opacity duration-300"
+                aria-label="Subscribe to our YouTube channel"
+                className="text-[#FF0000] hover:opacity-80 transition-opacity duration-300"
               >
                 <svg
                   className="w-4 h-4"
@@ -233,7 +235,7 @@ export default function Footer() {
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.182 0 7.433 2.981 7.433 6.962 0 4.156-2.617 7.502-6.257 7.502-1.22 0-2.368-.633-2.76-1.38l-.752 2.868c-.271 1.042-1.002 2.348-1.492 3.143 1.14.35 2.347.538 3.585.538 6.621 0 11.989-5.368 11.989-11.988C24.006 5.367 18.638 0 12.017 0z" />
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
               </a>
             </nav>
@@ -243,12 +245,6 @@ export default function Footer() {
               aria-label="Legal Policies"
               className="flex gap-6 text-xs text-[#FDF7F2]/40 tracking-widest"
             >
-              <Link
-                href="/privacy"
-                className="hover:text-[#FDF7F2]/70 transition-colors"
-              >
-                Privacy Policy
-              </Link>
               <Link
                 href="/terms"
                 className="hover:text-[#FDF7F2]/70 transition-colors"
