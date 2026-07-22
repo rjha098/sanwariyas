@@ -1,5 +1,4 @@
 // FILE: client/src/app/login/layout.js
-// SEO FIX: Optimized Meta Title, Description, and updated placeholder URLs to absolute production URLs.
 export const metadata = {
   title: "B2B Wholesale Portal Login | SANWARIYAS Ethnic Wear Manufacturer",
   description:

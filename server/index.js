@@ -1,9 +1,12 @@
-// FILE: server/index.js
+// FILE:-   server/index.js  
+
 import dotenv from "dotenv";
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -19,23 +22,33 @@ dotenv.config();
 // ═══════════════════════════════════════════════════════════════════════════
 process.on("uncaughtException", (err) => {
   console.error(
-    "🔴 UNCAUGHT EXCEPTION — server stayed alive, but fix this:",
+    "UNCAUGHT EXCEPTION — server stayed alive, but fix this:",
     err,
   );
 });
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error(
-    "🔴 UNHANDLED PROMISE REJECTION — server stayed alive, but fix this:",
+    "UNHANDLED PROMISE REJECTION — server stayed alive, but fix this:",
     reason,
   );
 });
 
 const app = express();
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
+
+app.use(mongoSanitize());
+app.set("trust proxy", 1);
+
 connectDB();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. CORS MIDDLEWARE (MUST BE FIRST)
+// 1. CORS MIDDLEWARE
 // ═══════════════════════════════════════════════════════════════════════════
 const explicitAllowedOrigins = [
   "http://localhost:3000",
@@ -74,11 +87,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 3. RATE LIMITING
+// 3. RATE LIMITING (ENTERPRISE ISOLATION)
 // ═══════════════════════════════════════════════════════════════════════════
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // 20 attempts per IP per window on auth routes
+  windowMs: 15 * 60 * 1000,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -89,10 +102,28 @@ const authLimiter = rateLimit({
 
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300, // generous — protects against abuse without affecting real users
+  max: 300,
+  skip: (req) => {
+    // Exclude high-frequency background polling from the general bucket
+    return (
+      req.path.includes("/auth/session") || req.path.includes("/auth/heartbeat")
+    );
+  },
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Too many requests. Please slow down." },
+});
+
+// Dedicated relaxed limiter for rapid F5 mashing and dashboard polling
+const highFreqLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many background requests. Please slow down.",
+  },
 });
 
 const notificationLimiter = rateLimit({
@@ -103,10 +134,16 @@ const notificationLimiter = rateLimit({
   message: { success: false, message: "Too many requests. Please slow down." },
 });
 
+// Apply Limiters
 app.use("/api/", generalLimiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
 app.use("/api/auth/customer/signup", authLimiter);
+app.use("/api/auth/forgot-password", authLimiter);
+app.use("/api/auth/reset-password", authLimiter);
+
+app.use("/api/auth/session", highFreqLimiter);
+app.use("/api/auth/heartbeat", highFreqLimiter);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 4. ROUTES
@@ -115,17 +152,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/inquiry", inquiryRoutes);
 app.use("/api/lookbook", lookbookRoutes);
-
 app.use("/api/notification", notificationLimiter, notificationRoutes);
-
 app.use("/api/blogs", blogRoutes);
 
-// Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
@@ -139,9 +172,8 @@ app.use((err, req, res, next) => {
       success: false,
       message: "Photo size is too large! Maximum limit is 2MB.",
     });
-  } 
-  
-  // If CORS throws an error, return a clean 403 instead of crashing
+  }
+
   if (err.message === "Not allowed by CORS") {
     return res.status(403).json({
       success: false,

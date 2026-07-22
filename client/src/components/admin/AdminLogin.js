@@ -1,3 +1,5 @@
+// // client/src/components/admin/AdminLogin.js
+import Link from "next/link";
 
 export default function AdminLogin({ handleLoginSubmit, loginForm, setLoginForm, loginError, loggingIn }) {
   return (
@@ -29,9 +31,17 @@ export default function AdminLogin({ handleLoginSubmit, loginForm, setLoginForm,
           </div>
 
           <div>
-            <label htmlFor="admin-password" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2">
-              Password
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="admin-password" className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud !mb-0">
+                Password
+              </label>
+              <Link
+                href="/login?mode=forgot"
+                className="font-sans text-[10px] text-brand-coffee hover:underline uppercase tracking-wider transition-colors"
+              >
+                Forgot?
+              </Link>
+            </div>
             <input
               id="admin-password"
               type="password"
@@ -63,5 +73,3 @@ export default function AdminLogin({ handleLoginSubmit, loginForm, setLoginForm,
     </main>
   );
 }
-
-

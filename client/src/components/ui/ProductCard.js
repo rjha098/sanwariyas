@@ -59,7 +59,7 @@ export default function ProductCard({ product }) {
       <Link
         href={`/products/${product.slug}`}
         className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#BE6E5B] focus-visible:ring-offset-2 rounded-md"
-        // ✅ SEO FIX: Enriched aria-label with commercial B2B manufacturer keyword
+        // SEO FIX: Enriched aria-label with commercial B2B manufacturer keyword
         aria-label={`View wholesale details for ${product.name} - Ethnic Wear Manufacturer`}
       >
         <div className="overflow-hidden border border-[#BE6E5B]/20 shadow-sm hover:shadow-[0_15px_40px_rgba(190,110,91,0.15)] transition-all duration-500 hover:-translate-y-1 h-full flex flex-col rounded-md bg-white">

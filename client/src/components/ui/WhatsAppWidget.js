@@ -67,7 +67,7 @@ export default function WhatsAppWidget() {
         rel="noopener noreferrer"
         aria-label="Chat with our wholesale ethnic wear manufacturing team on WhatsApp"
         title="Chat with Wholesale Kurti Supplier on WhatsApp"
-        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] pointer-events-auto" /* 👉 NAYA FIX: Ab click SIF is button par hi hoga */
+        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366] pointer-events-auto" 
       >
         {/* Pulsing rings */}
         <div

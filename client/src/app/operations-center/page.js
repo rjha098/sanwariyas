@@ -30,23 +30,12 @@ function OperationsCenterInner() {
     setToast({ isVisible: true, message, type });
   const hideToast = () => setToast((t) => ({ ...t, isVisible: false }));
 
-  const { token, user, authChecking, isAuthenticated, isAdmin, logout } =
-    useAuth();
+  const { token, user, logout } = useAuth();
 
-  useEffect(() => {
-    if (!authChecking && !isAuthenticated) {
-      router.replace("/login");
-    }
-  }, [authChecking, isAuthenticated, router]);
-
-  // ✅ KEY FIX: notification click se aaya URL params read karo
   useEffect(() => {
     const tab = searchParams.get("tab");
     const inquiryId = searchParams.get("id");
-
-    if (tab === "inquiries") {
-      setActiveTab("inquiries");
-    }
+    if (tab === "inquiries") setActiveTab("inquiries");
     if (inquiryId) {
       setHighlightedInquiryId(inquiryId);
       setTimeout(() => setHighlightedInquiryId(null), 3000);
@@ -91,111 +80,28 @@ function OperationsCenterInner() {
     loadInquiries,
   } = useInquiries(token);
 
-
-  // useEffect(() => {
-  //   if (!token || activeTab !== "inquiries") return;
-
-  //   const tickInterval = setInterval(() => {
-  //     setCountdown((prev) => {
-  //       if (prev <= 1) {
-  //         if (loadInquiries) {
-  //           loadInquiries(inquiryPage, inquiryFilter, false);
-  //         }
-  //         return 60;
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000);
-
-  //   return () => clearInterval(tickInterval);
-  // }, [token, activeTab, inquiryPage, inquiryFilter, loadInquiries]);
-
-
-  
-  // useEffect(() => {
-  //   if (!token || activeTab !== "inquiries") return;
-
-  //   const handleGlobalSync = () => {
-  //     if (loadInquiries) {
-  //       loadInquiries(inquiryPage, inquiryFilter, true); // true = silent refresh
-  //     }     
-  //   };
-
-  //   window.addEventListener("global_60s_sync", handleGlobalSync);
-  //   return () =>
-  //     window.removeEventListener("global_60s_sync", handleGlobalSync);
-  // }, [token, activeTab, inquiryPage, inquiryFilter, loadInquiries]);
-
-   // ✅ FIX: UI Countdown (60 to 0) which resets perfectly on Global Sync
-
-
-
-
-  // useEffect(() => {
-  //   if (!token || activeTab !== "inquiries") return;
-
-  //   // 1-second UI countdown
-  //   const tickInterval = setInterval(() => {
-  //     setCountdown((prev) => (prev > 1 ? prev - 1 : 60));
-  //   }, 1000);
-
-  //   // Actual Data Sync
-  //   const handleGlobalSync = () => {
-  //     setCountdown(60); // Reset timer to 60 immediately
-  //     if (loadInquiries) {
-  //       loadInquiries(inquiryPage, inquiryFilter, true); 
-  //     }
-  //   };
-
-  //   window.addEventListener("global_60s_sync", handleGlobalSync);
-    
-  //   return () => {
-  //     clearInterval(tickInterval);
-  //     window.removeEventListener("global_60s_sync", handleGlobalSync);
-  //   };
-  // }, [token, activeTab, inquiryPage, inquiryFilter, loadInquiries]);
-
-
-// ✅ FIX: UI Countdown hamesha chalega (tab change karne par rukega nahi)
+  // ✅ Countdown + global sync — unchanged
   useEffect(() => {
-    if (!token) return; 
+    if (!token) return;
 
-    // 1-second UI countdown
     const tickInterval = setInterval(() => {
       setCountdown((prev) => (prev > 1 ? prev - 1 : 60));
     }, 1000);
 
-    // Actual Data Sync
     const handleGlobalSync = () => {
-      setCountdown(60); // Reset timer to 60 immediately
+      setCountdown(60);
       if (loadInquiries) {
-        loadInquiries(inquiryPage, inquiryFilter, true); 
+        loadInquiries(inquiryPage, inquiryFilter, true);
       }
     };
 
     window.addEventListener("global_60s_sync", handleGlobalSync);
-    
+
     return () => {
       clearInterval(tickInterval);
       window.removeEventListener("global_60s_sync", handleGlobalSync);
     };
   }, [token, inquiryPage, inquiryFilter, loadInquiries]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     if (!productMessage) return;
@@ -223,17 +129,12 @@ function OperationsCenterInner() {
     }, 2000);
   };
 
-  if (authChecking) {
-    return (
-      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <p className="font-sans text-sm tracking-[0.3em] uppercase text-brand-coffee/60">
-          Checking session...
-        </p>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || !isAdmin) return null;
+  // ✅ Sidebar tabs config
+  const tabs = [
+    { id: "blogs",     label: "Blogs",     emoji: "✍️" },
+    { id: "lookbook",  label: "Lookbook",  emoji: "🖼️" },
+    { id: "inquiries", label: "Inquiries", emoji: "📩" },
+  ];
 
   return (
     <>
@@ -244,7 +145,9 @@ function OperationsCenterInner() {
         onClose={hideToast}
       />
 
-      <div className="min-h-screen bg-[#f8f4ec] text-brand-african">
+      <div className="min-h-screen bg-[#f8f4ec] text-brand-african flex flex-col">
+
+        {/* ✅ Top bar — full width, no tabs */}
         <AdminHeader
           admin={user}
           activeTab={activeTab}
@@ -253,60 +156,82 @@ function OperationsCenterInner() {
           countdown={countdown}
         />
 
-        <main
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8"
-          id="main-content"
-        >
+        {/* ✅ Body = Left Sidebar + Right Content */}
+        <div className="flex flex-1">
 
+          {/* LEFT SIDEBAR */}
+          <aside className="w-52 flex-shrink-0 bg-white border-r border-brand-lightgold/40 sticky top-16 self-start min-h-[calc(100vh-64px)]">
+            <nav
+              className="flex flex-col py-6 px-3 gap-1"
+              aria-label="Dashboard sections"
+            >
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg font-sans text-xs tracking-[0.15em] uppercase transition-all duration-150 ${
+                    activeTab === tab.id
+                      ? "bg-brand-cream text-brand-coffee border-l-2 border-brand-coffee font-semibold"
+                      : "text-brand-mud hover:bg-brand-cream/60 hover:text-brand-coffee"
+                  }`}
+                >
+                  <span className="text-sm">{tab.emoji}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </aside>
 
-          <DashboardStats
-            productsTotal={productPagination.total || products.length}
-            featuredTotal={products.filter((p) => p.isFeatured).length}
-            openInquiriesTotal={inquiryStats?.pending || 0}
-            resolvedInquiriesTotal={inquiryStats?.resolved || 0}
-            countdown={countdown}
-          />
+          {/* RIGHT MAIN CONTENT */}
+          <main
+            className="flex-1 px-6 py-8 space-y-8 overflow-auto"
+            id="main-content"
+          >
+            <DashboardStats
+              productsTotal={productPagination.total || products.length}
+              featuredTotal={products.filter((p) => p.isFeatured).length}
+              openInquiriesTotal={inquiryStats?.pending || 0}
+              resolvedInquiriesTotal={inquiryStats?.resolved || 0}
+              countdown={countdown}
+            />
 
+            {activeTab === "blogs" && (
+              <section aria-label="Blog Management">
+                <BlogManager token={token} showToast={showToast} />
+              </section>
+            )}
 
+            {activeTab === "lookbook" && (
+              <section aria-label="Lookbook Management">
+                <LookbookManager token={token} showToast={showToast} />
+              </section>
+            )}
 
-
-          {activeTab === "blogs" && (
-            <section aria-label="Blog Management">
-              <BlogManager token={token} showToast={showToast} />
-            </section>
-          )}
-
-          {activeTab === "lookbook" && (
-            <section aria-label="Lookbook Management">
-              <LookbookManager token={token} showToast={showToast} />
-            </section>
-          )}
-
-          {activeTab === "inquiries" && (
-            <section aria-label="Inquiries Management">
-              <InquiryTable
-                inquiries={inquiries}
-                inquiriesLoading={inquiriesLoading}
-                inquiryPagination={inquiryPagination}
-                inquiryPage={inquiryPage}
-                setInquiryPage={setInquiryPage}
-                inquiryFilter={inquiryFilter}
-                setInquiryFilter={setInquiryFilter}
-                inquiryMessage={inquiryMessage}
-                handleInquiryStatus={handleInquiryStatus}
-                deleteInquiry={deleteInquiry}
-                markAsViewed={markAsViewed}
-                highlightedInquiryId={highlightedInquiryId}
-              />
-            </section>
-          )}
-        </main>
+            {activeTab === "inquiries" && (
+              <section aria-label="Inquiries Management">
+                <InquiryTable
+                  inquiries={inquiries}
+                  inquiriesLoading={inquiriesLoading}
+                  inquiryPagination={inquiryPagination}
+                  inquiryPage={inquiryPage}
+                  setInquiryPage={setInquiryPage}
+                  inquiryFilter={inquiryFilter}
+                  setInquiryFilter={setInquiryFilter}
+                  inquiryMessage={inquiryMessage}
+                  handleInquiryStatus={handleInquiryStatus}
+                  deleteInquiry={deleteInquiry}
+                  markAsViewed={markAsViewed}
+                  highlightedInquiryId={highlightedInquiryId}
+                />
+              </section>
+            )}
+          </main>
+        </div>
       </div>
     </>
   );
 }
 
-// ✅ Suspense wrap — useSearchParams ke liye Next.js 14 mein zaroori
 export default function OperationsCenter() {
   return (
     <Suspense

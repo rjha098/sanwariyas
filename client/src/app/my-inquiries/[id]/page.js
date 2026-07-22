@@ -80,30 +80,15 @@ export default function MyInquiryDetailPage() {
     if (token && params.id) fetchInquiry(false);
   }, [token, params.id, fetchInquiry]);
 
-
-
-
-  // // ✅ FIX: 60s silent auto-refresh
-  // useEffect(() => {
-  //   if (!token || !params.id) return;
-  //   const intervalId = setInterval(() => {
-  //     fetchInquiry(true);
-  //   }, 60000);
-  //   return () => clearInterval(intervalId);
-  // }, [token, params.id, fetchInquiry]);
-
- useEffect(() => {
+  useEffect(() => {
     if (!token || !params.id) return;
- 
-    const handleGlobalSync = () => fetchInquiryDetails(true);
+    const handleGlobalSync = () => fetchInquiry(true);
     window.addEventListener("global_60s_sync", handleGlobalSync);
-    
-    return () => window.removeEventListener("global_60s_sync", handleGlobalSync);
-  }, [token, params.id, fetchInquiryDetails]);
+    return () =>
+      window.removeEventListener("global_60s_sync", handleGlobalSync);
+  }, [token, params.id, fetchInquiry]);
 
-
-
-
+  
   const handleSendReply = async () => {
     if (!replyText.trim() || !token) return;
     setSending(true);

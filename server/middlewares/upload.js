@@ -21,13 +21,10 @@ const storage = multer.diskStorage({
   }
 });
 
-// File filter (Only images allowed)
+const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only images are allowed!'), false);
-  }
+  if (ALLOWED_MIME.has(file.mimetype)) cb(null, true);
+  else cb(new Error('Only JPEG, PNG, WEBP or GIF images are allowed!'), false);
 };
 
 //  ADDED: 2MB File Size Limit (2 * 1024 * 1024 bytes)

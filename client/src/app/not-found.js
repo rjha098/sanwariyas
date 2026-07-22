@@ -9,8 +9,8 @@ export const metadata = {
   description:
     "The page you are looking for does not exist. Explore our premium ethnic wear collections instead.",
   robots: {
-    index: false, // Explicitly tell search engines not to index this error page
-    follow: true, // Allow them to follow the links (Go Home, View Collections) back to the site
+    index: false, 
+    follow: true, 
   },
 };
 

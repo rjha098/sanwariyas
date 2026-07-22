@@ -1,10 +1,10 @@
 // FILE: server/utils/authUtils.js
+
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import User from "../models/User.js";
 
-// track  the  admin  session  in memory   store
-
+// In-Memory Store for ENV-only Root Admins
 export const adminSessionStore = new Map();
 
 const getSecret = () => {
@@ -19,15 +19,16 @@ const getSecret = () => {
 
 const TOKEN_EXPIRY = process.env.AUTH_TOKEN_EXPIRY || "1d";
 
+// Constant-time string comparison to prevent Timing Attacks
 export const safeCompare = (a, b) => {
   const strA = String(a ?? "");
   const strB = String(b ?? "");
-  if (strA.length !== strB.length) return false;
-  try {
-    return crypto.timingSafeEqual(Buffer.from(strA), Buffer.from(strB));
-  } catch {
-    return false;
-  }
+
+  // Hash both to ensure identical buffer lengths before timingSafeEqual
+  const hashA = crypto.createHash("sha256").update(strA).digest();
+  const hashB = crypto.createHash("sha256").update(strB).digest();
+
+  return crypto.timingSafeEqual(hashA, hashB) && strA.length === strB.length;
 };
 
 export const createAuthToken = (payload) => {
@@ -64,32 +65,31 @@ export const requireRole = (allowedRoles) => async (req, res, next) => {
         .json({ success: false, message: "Access denied." });
     }
 
-    // STRICT SINGLE SESSION CHECK
-    if (payload.role === "admin") {
-      const activeSession = adminSessionStore.get(payload.email);
-
-      // if  the   token   is  not  latest  means  the  admin  login   at  another  place
-      if (activeSession && activeSession !== payload.sessionId) {
-        return res.status(401).json({
-          success: false,
-          message: "Session expired.",
-        });
-      }
-    } else if (payload.role === "customer") {
-      // ✅ FIX: Added .maxTimeMS(5000) and .lean() to prevent MongoDB hangs
+    // Hybrid Single Session Architecture
+    if (payload.id) {
+      // 1. DB-Backed Check (For Staff, Customers, and DB Admins)
       const user = await User.findById(payload.id)
         .select("currentSessionId")
         .maxTimeMS(5000)
         .lean();
 
-      // if  db  session  not match  auto  logout
       if (!user || user.currentSessionId !== payload.sessionId) {
         return res.status(401).json({
           success: false,
-          message: "Session expired.",
+          message: "Session expired or logged in from another device.",
+        });
+      }
+    } else if (payload.role === "admin" && !payload.id) {
+      // 2. Memory Fallback Check (For pure ENV-based Root Admins without a DB ID)
+      const activeSession = adminSessionStore.get(payload.email);
+      if (activeSession && activeSession !== payload.sessionId) {
+        return res.status(401).json({
+          success: false,
+          message: "Session expired or logged in from another device.",
         });
       }
     }
+
     req.authUser = payload;
     next();
   } catch (error) {

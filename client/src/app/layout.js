@@ -2,7 +2,7 @@ import "./globals.css";
 import WhatsAppWidget from "@/components/ui/WhatsAppWidget";
 import { AppProviders } from "@/providers/AppProviders";
 import InquiryModal from "@/components/ui/InquiryModal";
-import Navbar from "@/components/layout/Navbar"; // ✅ FIX: Navbar imported here
+import Navbar from "@/components/layout/Navbar"; 
 
 export const viewport = {
   themeColor: "#FAF3E8",

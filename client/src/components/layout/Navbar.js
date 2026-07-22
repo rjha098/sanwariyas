@@ -650,21 +650,6 @@ export default function Navbar() {
                 justifyContent: "center",
               }}
             >
-              {/*               
-              <span
-                style={{
-                  fontFamily: 'Georgia, "Times New Roman", serif',
-                  fontSize: "1.3rem",
-                  letterSpacing: "0.15em",
-                  fontWeight: "700",
-                  lineHeight: "1",
-                  color: logoHovered ? "#BE6E5B" : "#a07f61",
-                  transition: "color 0.3s ease",
-                }}
-              >
-                SANWARIYAS    
-              </span> */}
-
               <span
                 className="font-display text-2xl tracking-widest"
                 style={{

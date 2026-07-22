@@ -18,7 +18,7 @@ export default function InquiryDetailsPage() {
   const [sendingReply, setSendingReply] = useState(false);
   const [flashMessage, setFlashMessage] = useState("");
 
-  // ✅ FIX: State for Admin Visibility
+
   const [adminVisible, setAdminVisible] = useState(true);
 
   const chatContainerRef = useRef(null);

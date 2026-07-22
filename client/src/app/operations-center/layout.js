@@ -1,5 +1,7 @@
 // FILE: client/src/app/operations-center/layout.js
 
+import AdminGuard from "@/components/admin/AdminGuard";
+
 export const metadata = {
   title: "Operations Center | SANWARIYAS",
   description: "Secure administrative dashboard for SANWARIYAS wholesale management.",
@@ -18,7 +20,7 @@ export const metadata = {
 export default function OperationsCenterLayout({ children }) {
   return (
     <div className="admin-wrapper bg-[#f8f4ec] min-h-screen">
-      {children}
+      <AdminGuard>{children}</AdminGuard>
     </div>
   );
 }

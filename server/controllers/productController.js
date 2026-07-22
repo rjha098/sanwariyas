@@ -1,4 +1,5 @@
 // PURPOSE: Receive HTTP request → call service → send response
+
 import * as productService from '../services/productService.js';
 
 const getProducts = async (req, res) => {

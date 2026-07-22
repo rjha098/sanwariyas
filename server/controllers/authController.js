@@ -1,5 +1,6 @@
-import crypto from "crypto"; 
+//FILE: server/controller/authcontroller
 
+import crypto from "crypto";
 import {
   createAuthToken,
   safeCompare,
@@ -10,25 +11,17 @@ import * as authService from "../services/authService.js";
 import User from "../models/User.js";
 import Inquiry from "../models/Inquiry.js";
 
-// ✅ FIX: In-Memory Store for Admin Online Status & Visibility
-global.adminActivity = global.adminActivity || { lastActiveAt: new Date(0), isVisible: true };
-
 export const customerSignup = async (req, res) => {
   try {
     await authService.signupCustomer(req.body);
     return res
       .status(201)
-      .json({
-        success: true,
-        message: "Account created! Sign in to receive your email OTP.",
-      });
+      .json({ success: true, message: "Account created! You can now log in." });
   } catch (error) {
-    return res
-      .status(error.statusCode || 500)
-      .json({
-        success: false,
-        message: error.message || "Server error during signup.",
-      });
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Server error during signup.",
+    });
   }
 };
 
@@ -52,12 +45,11 @@ export const login = async (req, res) => {
     if (!identifier || !password)
       return res
         .status(400)
-        .json({
-          success: false,
-          message: "Email/phone and password are required.",
-        });
+        .json({ success: false, message: "Identifier and password required." });
 
-    const adminUsername = (process.env.ADMIN_USERNAME || "admin").trim();
+    const adminUsername = (process.env.ADMIN_USERNAME || "admin")
+      .trim()
+      .toLowerCase();
     const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
     const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
     const adminPhone = (process.env.ADMIN_PHONE || "")
@@ -67,8 +59,9 @@ export const login = async (req, res) => {
     const id = identifier.trim().toLowerCase();
     const cleanPhoneInput = identifier.trim().replace(/[\s-\+]/g, "");
 
+    // ENV ADMIN CHECK
     const isAdminId =
-      safeCompare(id, adminUsername.toLowerCase()) ||
+      safeCompare(id, adminUsername) ||
       safeCompare(id, adminEmail) ||
       (adminPhone !== "" && cleanPhoneInput === adminPhone);
 
@@ -88,47 +81,60 @@ export const login = async (req, res) => {
       }
     }
 
-    const userExists = await User.findOne({
-      $or: [
-        { email: id },
-        { phone: identifier.trim() },
-        { phone: cleanPhoneInput },
-        { phone: { $regex: new RegExp(cleanPhoneInput + '$') } }
-      ],
-    });
+    // DB USER CHECK
+    const user = await authService.loginUser(identifier, password);
 
-    if (!userExists)
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Account not found. Please create a new account.",
-        });
-
-    const customer = await authService.loginCustomer(userExists.email, password);
-    
-    if (customer)
+    // Admin/Staff 2FA
+    if (user.role === "admin" || user.role === "staff") {
+      const emailHint = await authService.initiateAdminLogin(user.email);
       return res.json({
         success: true,
         requires2FA: true,
-        role: "customer",
-        emailHint: customer.emailHint,
-        devOtp: customer.devOtp,
+        role: user.role,
+        emailHint,
       });
+    }
 
-    return res
-      .status(401)
-      .json({
-        success: false,
-        message: "Incorrect password. Please try again.",
-      });
+    // CUSTOMER DIRECT LOGIN (RFC 4122 Standard UUID)
+    const sessionId = crypto.randomUUID();
+
+    await User.findByIdAndUpdate(user.id, { currentSessionId: sessionId });
+
+    // Background Inquiry Sync (Fire and Forget)
+    Inquiry.updateMany(
+      { email: user.email, userId: null },
+      { userId: user.id },
+    ).catch((err) =>
+      console.error(
+        "[Background Error] Failed to sync inquiries:",
+        err.message,
+      ),
+    );
+
+    const token = createAuthToken({
+      role: user.role,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      sessionId,
+    });
+
+    return res.json({
+      success: true,
+      requires2FA: false,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
-    return res
-      .status(error.statusCode || 500)
-      .json({
-        success: false,
-        message: error.message || "Server error during login.",
-      });
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Server error during login.",
+    });
   }
 };
 
@@ -140,56 +146,99 @@ export const verifyOtp = async (req, res) => {
         .status(400)
         .json({ success: false, message: "OTP and role are required." });
 
-    const sessionId = crypto.randomBytes(16).toString("hex");
+    const sessionId = crypto.randomUUID();
 
-    if (role === "admin") {
+    if (role === "admin" || role === "staff") {
+      let emailForOtp = identifier.trim().toLowerCase();
+      const adminUsername = (process.env.ADMIN_USERNAME || "admin")
+        .trim()
+        .toLowerCase();
       const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-      const adminUsername = (process.env.ADMIN_USERNAME || "admin").trim();
+      const adminPhone = (process.env.ADMIN_PHONE || "")
+        .trim()
+        .replace(/[\s-]/g, "");
 
-      authService.verifyAdminOtp(adminEmail, otp);
+      if (emailForOtp === adminUsername || emailForOtp === adminPhone) {
+        emailForOtp = adminEmail;
+      } else if (emailForOtp !== adminEmail && !emailForOtp.includes("@")) {
+        const dbUser = await User.findOne({
+          phone: emailForOtp,
+          isActive: true,
+        });
+        if (dbUser) emailForOtp = dbUser.email;
+      }
 
-      adminSessionStore.set(adminEmail, sessionId);
+      await authService.verifyAdminOtp(emailForOtp, otp);
 
+      // Hybrid Session Creation
+      let dbUser = await User.findOneAndUpdate(
+        { email: emailForOtp },
+        { currentSessionId: sessionId },
+        { new: true },
+      );
+
+      // If DB User doesn't exist (Pure ENV Admin), store session in Memory Map
+      if (!dbUser) {
+        adminSessionStore.set(emailForOtp, sessionId);
+      }
+
+      const usernameOutput =
+        emailForOtp === adminEmail ? adminUsername : emailForOtp.split("@")[0];
       const token = createAuthToken({
-        role: "admin",
-        username: adminUsername,
-        email: adminEmail,
+        role,
+        id: dbUser ? dbUser._id.toString() : null,
+        username: usernameOutput,
+        email: emailForOtp,
         sessionId,
       });
-      return res.json({
-        success: true,
-        token,
-        user: { username: adminUsername, email: adminEmail, role: "admin" },
-      });
-    }
 
-    if (role === "customer") {
-      const customer = await authService.verifyCustomerOtp(identifier, otp);
-
-      await User.findByIdAndUpdate(customer.id, {
-        currentSessionId: sessionId,
-      });
-
-      const token = createAuthToken({
-        role: "customer",
-        id: customer.id,
-        email: customer.email,
-        name: customer.name,
-        sessionId,
-      });
       return res.json({
         success: true,
         token,
         user: {
-          id: customer.id,
-          name: customer.name,
-          email: customer.email,
-          role: "customer",
+          id: dbUser?._id || null,
+          username: usernameOutput,
+          email: emailForOtp,
+          role,
         },
       });
     }
-
     return res.status(400).json({ success: false, message: "Invalid role." });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message || "Server error." });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { identifier } = req.body;
+    if (!identifier)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email or phone required." });
+    const result = await authService.initiateForgotPassword(identifier);
+    return res.json({ success: true, ...result });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message || "Server error." });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword)
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields required." });
+    await authService.resetUserPassword(email, otp, newPassword);
+    return res.json({
+      success: true,
+      message: "Password updated safely. You can now sign in.",
+    });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
@@ -208,22 +257,22 @@ export const session = async (req, res) => {
 
     const payload = verifyAuthToken(token);
 
-    if (payload.role === "admin") {
+    // Hybrid Session Validation
+    if (payload.id) {
+      const userExists = await User.findById(payload.id).select(
+        "currentSessionId",
+      );
+      if (!userExists || userExists.currentSessionId !== payload.sessionId) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Logged in from another device." });
+      }
+    } else if (payload.role === "admin" && !payload.id) {
       const activeSession = adminSessionStore.get(payload.email);
       if (activeSession && activeSession !== payload.sessionId) {
         return res
           .status(401)
           .json({ success: false, message: "Logged in from another device." });
-      }
-    } else if (payload.role === "customer") {
-      const userExists = await User.findById(payload.id);
-      if (!userExists || userExists.currentSessionId !== payload.sessionId) {
-        return res
-          .status(401)
-          .json({
-            success: false,
-            message: "Logged in from another device or account missing.",
-          });
       }
     }
 
@@ -250,14 +299,13 @@ export const session = async (req, res) => {
   } catch {
     return res
       .status(401)
-      .json({ success: false, message: "Invalid or expired session." });
+      .json({ success: false, message: "Invalid session." });
   }
 };
 
 export const getMe = async (req, res) => {
   try {
-    const userId = req.authUser.id;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(req.authUser.id).select("-password");
     if (!user)
       return res
         .status(404)
@@ -271,9 +319,7 @@ export const getMe = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { name, phone, company, country } = req.body;
-    const userId = req.authUser.id;
-    const user = await User.findById(userId);
-
+    const user = await User.findById(req.authUser.id);
     if (!user)
       return res
         .status(404)
@@ -283,7 +329,6 @@ export const updateProfile = async (req, res) => {
     user.phone = phone || user.phone;
     user.company = company || user.company;
     user.country = country || user.country;
-
     await user.save();
     res.json({
       success: true,
@@ -304,71 +349,98 @@ export const updateProfile = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    if (req.authUser) {
-      if (req.authUser.role === "admin") {
-        adminSessionStore.delete(req.authUser.email);
-      } else if (req.authUser.role === "customer") {
-        await User.findByIdAndUpdate(req.authUser.id, {
-          currentSessionId: null,
-        });
-      }
+    if (req.authUser?.id) {
+      await User.findByIdAndUpdate(req.authUser.id, { currentSessionId: null });
+    } else if (req.authUser?.role === "admin" && !req.authUser?.id) {
+      adminSessionStore.delete(req.authUser.email);
     }
+
     return res.json({ success: true, message: "Logged out." });
   } catch (error) {
-    return res.json({ success: true, message: "Logged out." }); 
+    return res.json({ success: true, message: "Logged out." });
   }
 };
 
 export const deleteAccount = async (req, res) => {
   try {
-    const userId = req.authUser.id;
-    const user = await User.findById(userId);
+    const user = await User.findById(req.authUser.id);
     if (!user)
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
 
     await Inquiry.deleteMany({
-      $or: [{ userId: userId }, { email: user.email }],
+      $or: [{ userId: user._id }, { email: user.email }],
     });
-    await User.findByIdAndDelete(userId);
+    await User.findByIdAndDelete(user._id);
 
-    return res.json({
-      success: true,
-      message: "Account and all associated data deleted permanently.",
-    });
+    return res.json({ success: true, message: "Account deleted." });
   } catch (error) {
     return res
       .status(500)
-      .json({
-        success: false,
-        message: "Failed to delete account. Please try again later.",
-      });
+      .json({ success: false, message: "Failed to delete account." });
   }
 };
 
-// ✅ FIX: ONLINE STATUS APIs (Heartbeat & Toggle)
 export const heartbeat = async (req, res) => {
   try {
-    if (req.authUser.role === 'admin' || req.authUser.role === 'staff') {
-      global.adminActivity.lastActiveAt = new Date();
-      return res.json({ success: true, isVisible: global.adminActivity.isVisible });
-    } else {
-      await User.findByIdAndUpdate(req.authUser.id, { lastActiveAt: new Date() });
-      return res.json({ success: true });
+    if (req.authUser.id) {
+      const twoMinsAgo = new Date(Date.now() - 120 * 1000);
+      await User.updateOne(
+        {
+          _id: req.authUser.id,
+          $or: [{ lastActiveAt: { $lt: twoMinsAgo } }, { lastActiveAt: null }],
+        },
+        { $set: { lastActiveAt: new Date() } },
+      );
+    } else if (req.authUser.role === "admin") {
+      envAdminLastActiveAt = new Date();
     }
+    return res.json({ success: true });
   } catch (error) {
     return res.status(500).json({ success: false });
   }
 };
 
+// ✅ NAYA — inquiryService.js isse use karega Admin/Staff ka real online status check karne ke liye
+export const isAdminCurrentlyOnline = async () => {
+  if (envAdminVisible && envAdminLastActiveAt) {
+    const diffSeconds = (Date.now() - envAdminLastActiveAt.getTime()) / 1000;
+    if (diffSeconds < 120) return true;
+  }
+
+  const twoMinsAgo = new Date(Date.now() - 120 * 1000);
+  const activeStaff = await User.findOne({
+    role: { $in: ["admin", "staff"] },
+    isVisible: { $ne: false },
+    lastActiveAt: { $gte: twoMinsAgo },
+  })
+    .select("_id")
+    .lean();
+
+  return !!activeStaff;
+};
+
+let envAdminVisible = true;
+let envAdminLastActiveAt = null;
+
 export const toggleVisibility = async (req, res) => {
   try {
-    if (req.authUser.role === 'admin' || req.authUser.role === 'staff') {
-      global.adminActivity.isVisible = req.body.isVisible;
-      return res.json({ success: true, isVisible: global.adminActivity.isVisible });
+    if (req.authUser.role !== "admin" && req.authUser.role !== "staff") {
+      return res.status(403).json({ success: false });
     }
-    return res.status(403).json({ success: false });
+
+    if (req.authUser.id) {
+      const user = await User.findByIdAndUpdate(
+        req.authUser.id,
+        { isVisible: req.body.isVisible },
+        { new: true },
+      );
+      return res.json({ success: true, isVisible: user.isVisible });
+    }
+
+    envAdminVisible = !!req.body.isVisible;
+    return res.json({ success: true, isVisible: envAdminVisible });
   } catch (error) {
     return res.status(500).json({ success: false });
   }
@@ -376,22 +448,27 @@ export const toggleVisibility = async (req, res) => {
 
 export const getVisibility = async (req, res) => {
   try {
-    if (req.authUser.role === 'admin' || req.authUser.role === 'staff') {
-      return res.json({ success: true, isVisible: global.adminActivity.isVisible });
+    if (req.authUser.role !== "admin" && req.authUser.role !== "staff") {
+      return res.status(403).json({ success: false });
     }
-    return res.status(403).json({ success: false });
+
+    if (req.authUser.id) {
+      const user = await User.findById(req.authUser.id).select("isVisible");
+      return res.json({ success: true, isVisible: user.isVisible });
+    }
+
+    return res.json({ success: true, isVisible: envAdminVisible });
   } catch (error) {
     return res.status(500).json({ success: false });
   }
 };
 
-// ✅ ADDED: Instantly set user offline
 export const setOffline = async (req, res) => {
   try {
-    if (req.authUser.role === 'admin' || req.authUser.role === 'staff') {
-      global.adminActivity.lastActiveAt = new Date(0); // Past date = offline
-    } else {
-      await User.findByIdAndUpdate(req.authUser.id, { lastActiveAt: new Date(0) });
+    if (req.authUser.id) {
+      await User.findByIdAndUpdate(req.authUser.id, {
+        lastActiveAt: new Date(0),
+      });
     }
     return res.json({ success: true });
   } catch (error) {
