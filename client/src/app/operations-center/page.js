@@ -12,12 +12,16 @@ import InquiryTable from "@/components/admin/InquiryTable";
 import LookbookManager from "@/components/admin/LookbookManager";
 import Toast from "@/components/ui/Toast";
 import BlogManager from "@/components/admin/BlogManager";
+import OrderManager from "@/components/admin/OrderManager";
+import ProductForm from "@/components/admin/ProductForm";
+import ProductTable from "@/components/admin/ProductTable";
 
 function OperationsCenterInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState("blogs");
+  //  UI FIX: Set default tab to products for easier management access
+  const [activeTab, setActiveTab] = useState("products");
   const [highlightedInquiryId, setHighlightedInquiryId] = useState(null);
   const [toast, setToast] = useState({
     isVisible: false,
@@ -42,6 +46,7 @@ function OperationsCenterInner() {
     }
   }, [searchParams]);
 
+  // Hook was already here, just wasn't bound to the UI!
   const {
     products,
     productPagination,
@@ -62,6 +67,7 @@ function OperationsCenterInner() {
     handleEditProduct,
     handleDeleteProduct,
     handleSeedProducts,
+    loadProducts,
   } = useProducts(token);
 
   const {
@@ -80,7 +86,7 @@ function OperationsCenterInner() {
     loadInquiries,
   } = useInquiries(token);
 
-  // ✅ Countdown + global sync — unchanged
+  // Countdown + global sync
   useEffect(() => {
     if (!token) return;
 
@@ -129,11 +135,13 @@ function OperationsCenterInner() {
     }, 2000);
   };
 
-  // ✅ Sidebar tabs config
+  //  UI FIX: Added the Products tab to the sidebar navigation array
   const tabs = [
-    { id: "blogs",     label: "Blogs",     emoji: "✍️" },
-    { id: "lookbook",  label: "Lookbook",  emoji: "🖼️" },
+    { id: "products", label: "Products", emoji: "🛍️" },
+    { id: "blogs", label: "Blogs", emoji: "✍️" },
+    { id: "lookbook", label: "Lookbook", emoji: "🖼️" },
     { id: "inquiries", label: "Inquiries", emoji: "📩" },
+    { id: "orders", label: "Orders", emoji: "📦" },
   ];
 
   return (
@@ -146,8 +154,7 @@ function OperationsCenterInner() {
       />
 
       <div className="min-h-screen bg-[#f8f4ec] text-brand-african flex flex-col">
-
-        {/* ✅ Top bar — full width, no tabs */}
+        {/* Top bar */}
         <AdminHeader
           admin={user}
           activeTab={activeTab}
@@ -156,9 +163,8 @@ function OperationsCenterInner() {
           countdown={countdown}
         />
 
-        {/* ✅ Body = Left Sidebar + Right Content */}
+        {/* Body = Left Sidebar + Right Content */}
         <div className="flex flex-1">
-
           {/* LEFT SIDEBAR */}
           <aside className="w-52 flex-shrink-0 bg-white border-r border-brand-lightgold/40 sticky top-16 self-start min-h-[calc(100vh-64px)]">
             <nav
@@ -195,6 +201,37 @@ function OperationsCenterInner() {
               countdown={countdown}
             />
 
+            {/*  UI FIX: Added the Product Management rendering block */}
+            {activeTab === "products" && (
+              <section aria-label="Product Management" className="space-y-8">
+                <ProductForm
+                  productForm={productForm}
+                  setProductForm={setProductForm}
+                  handleProductSubmit={handleProductSubmit}
+                  productSaving={productSaving}
+                  productMessage={productMessage}
+                  editingProductId={editingProductId}
+                  resetProductForm={resetProductForm}
+                  handleSeedProducts={handleSeedProducts}
+                  seeding={seeding}
+                />
+                <ProductTable
+                  products={products}
+                  productsLoading={productsLoading}
+                  productPagination={productPagination}
+                  productPage={productPage}
+                  setProductPage={setProductPage}
+                  productSearch={productSearch}
+                  setProductSearch={setProductSearch}
+                  handleEditProduct={(p) => handleEditProduct(p, setActiveTab)}
+                  handleDeleteProduct={handleDeleteProduct}
+                  deletingProductId={deletingProductId}
+                  loadProducts={loadProducts}
+                  token={token}
+                />
+              </section>
+            )}
+
             {activeTab === "blogs" && (
               <section aria-label="Blog Management">
                 <BlogManager token={token} showToast={showToast} />
@@ -223,6 +260,12 @@ function OperationsCenterInner() {
                   markAsViewed={markAsViewed}
                   highlightedInquiryId={highlightedInquiryId}
                 />
+              </section>
+            )}
+
+            {activeTab === "orders" && (
+              <section aria-label="Order Management">
+                <OrderManager token={token} showToast={showToast} />
               </section>
             )}
           </main>

@@ -5,7 +5,6 @@ import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import AboutInteractive from "@/components/about/AboutInteractive";
 
-//  SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
 
 //  SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
 export const metadata = {
@@ -72,7 +71,7 @@ const STATS = [
   { value: "50+", label: "Countries exported" },
 ];
 
-// ✅ SEO FIX: Injected natural semantic keywords & contextual internal links seamlessly
+//  SEO FIX: Injected natural semantic keywords & contextual internal links seamlessly
 const TIMELINE = [
   {
     year: "2010",

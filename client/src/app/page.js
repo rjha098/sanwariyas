@@ -12,7 +12,7 @@ import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
 import { fetchProducts } from "@/lib/api";
 
-// ✅ SEO FIX: Highly optimized Metadata for E-commerce B2B Homepage
+// SEO FIX: Highly optimized Metadata for E-commerce B2B Homepage
 export const metadata = {
   title: "Wholesale Ethnic Wear Manufacturer in Jaipur | SANWARIYAS",
   description:

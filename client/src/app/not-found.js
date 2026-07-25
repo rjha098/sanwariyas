@@ -3,7 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-// ✅ SEO FIX: Updated title to align with B2B Wholesale identity
+//  SEO FIX: Updated title to align with B2B Wholesale identity
 export const metadata = {
   title: "Page Not Found | SANWARIYAS Wholesale",
   description:

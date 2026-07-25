@@ -25,10 +25,10 @@ export default function MyInquiryDetailPage() {
   const [sending, setSending] = useState(false);
   const [flash, setFlash] = useState("");
 
-  // ✅ FIX: chatContainerRef — scrollable div pe lagega
+  // FIX: chatContainerRef — scrollable div pe lagega
   const chatContainerRef = useRef(null);
 
-  // ✅ FIX: useLayoutEffect — replies change hone pe direct scrollTop set karo
+  // FIX: useLayoutEffect — replies change hone pe direct scrollTop set karo
   useLayoutEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -47,7 +47,7 @@ export default function MyInquiryDetailPage() {
         const found = all.find((inq) => inq._id === params.id);
         setInquiry(found || null);
 
-        // ✅ ADDED: Only mark as read if the tab is visible
+        //  ADDED: Only mark as read if the tab is visible
         const isTabActive = document.visibilityState === "visible";
 
         if (!isSilent || (isTabActive && found && !found.isViewedByUser)) {
@@ -58,7 +58,7 @@ export default function MyInquiryDetailPage() {
           );
           await deleteNotificationByInquiry(token, params.id).catch(() => {});
 
-          // ✅ ADDED: Sync Notification Bell instantly
+          //  ADDED: Sync Notification Bell instantly
           window.dispatchEvent(new Event("notifications_read"));
         }
       } catch (err) {

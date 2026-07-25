@@ -57,7 +57,7 @@ export default function MyInquiriesPage() {
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
 
-          {/* ✅ Back to Dashboard button */}
+          {/*  Back to Dashboard button */}
           <button
             onClick={() => router.push("/dashboard")}
             className="mb-6 font-sans text-[10px] tracking-widest uppercase text-[#70543E] hover:text-[#574325] border-b border-[#70543E] pb-1 transition-colors"

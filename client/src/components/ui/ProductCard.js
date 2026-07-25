@@ -1,5 +1,6 @@
 // FILE: client/src/components/ui/ProductCard.js
 import Link from "next/link";
+import { getImageUrl } from "@/lib/imageUrl";
 import Image from "next/image";
 
 export default function ProductCard({ product }) {
@@ -64,17 +65,13 @@ export default function ProductCard({ product }) {
       >
         <div className="overflow-hidden border border-[#BE6E5B]/20 shadow-sm hover:shadow-[0_15px_40px_rgba(190,110,91,0.15)] transition-all duration-500 hover:-translate-y-1 h-full flex flex-col rounded-md bg-white">
           {/* Image Section */}
+
           <div className="relative aspect-[3/4] overflow-hidden bg-[#FDF7F2]">
-            <Image
-              src={
-                product.image ||
-                product.images?.[0] ||
-                "/images/placeholder.jpg"
-              }
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={getImageUrl(product.image || product.images?.[0])}
               alt={`Wholesale ${product.name} - Jaipur Ethnic Wear`}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               itemProp="image"
             />
 

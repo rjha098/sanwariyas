@@ -9,7 +9,6 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSkeleton";
 import { fetchProducts, fetchProductCategories } from "@/lib/api";
-import { redirect } from 'next/navigation';
 
 const FABRICS = ["Cotton", "Georgette", "Silk", "Rayon", "Mixed"];
 
@@ -234,9 +233,6 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-  // ✅ SEO APPROVED: Maintenance mode redirect remains intact. 
-  // SEO tags will activate immediately once this redirect is removed.
-  redirect('/'); 
   
   return (
     <>

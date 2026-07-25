@@ -44,11 +44,11 @@ const REVIEWS = [
   {
     quote:
       "Collection is very good and prices are comfortable for bulk orders.",
-    name: "Tamil Mathi",
+    name: "Rupak Kumar",
   },
   {
     quote: "Affordable fabric with very good customer support for every order.",
-    name: "Soorya S S",
+    name: "Deepak Kumar",
   },
   {
     quote: "SANWARIYAS has vibrant prints, fresh patterns, and great designs.",
@@ -503,7 +503,6 @@ function VideoTile({ step, onOpen }) {
   );
 }
 
-
 function StarRating() {
   return (
     <div className="flex justify-center gap-1" aria-label="5 star rating">
@@ -520,7 +519,6 @@ function StarRating() {
 function ReviewCard({ review }) {
   return (
     <article className="flex flex-col justify-between rounded-2xl border border-[#BE6E5B]/22 bg-[#FDF7F2] px-5 py-6 text-center shadow-[0_6px_20px_rgba(122,61,42,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(122,61,42,0.14)] hover:border-[#BE6E5B]/48 group">
-    
       <p className="font-sans text-[15px] text-[#7A3D2A] font-bold mt-1">
         {review.name}
       </p>
@@ -536,7 +534,6 @@ function ReviewCard({ review }) {
         {review.quote}
       </p>
 
-    
       <div className="mt-5 pt-4 border-t border-[#BE6E5B]/15">
         <p className="font-sans text-[9.5px] text-[#BE6E5B] tracking-[0.22em] uppercase mb-2.5 font-semibold">
           Verified Google Review

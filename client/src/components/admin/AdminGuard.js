@@ -1,8 +1,10 @@
 // FILE: client/src/components/admin/AdminGuard.js
 "use client";
 
+import { useEffect } from "react";
 import { notFound } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import api from "@/lib/api";
 
 /**
  * Gate for the entire /operations-center route subtree.
@@ -36,7 +38,30 @@ import { useAuth } from "@/hooks/useAuth";
  * way. Change the condition below if you want admin-only instead.
  */
 export default function AdminGuard({ children }) {
-  const { authChecking, isAuthenticated, isAdmin, isStaff } = useAuth();
+  const { authChecking, isAuthenticated, isAdmin, isStaff, token } = useAuth();
+
+  const isAuthorizedTeamMember = isAuthenticated && (isAdmin || isStaff);
+
+  // ✅ FIX: Heartbeat now runs for the ENTIRE /operations-center subtree,
+  // not just the dashboard page — so admin stays "online" even while
+  // replying to a specific customer inquiry, viewing an order, etc.
+  useEffect(() => {
+    if (!isAuthorizedTeamMember || !token) return;
+
+    const ping = () => {
+      api
+        .post(
+          "/auth/heartbeat",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .catch(() => {});
+    };
+
+    ping(); // fire immediately on mount / route change
+    const intervalId = setInterval(ping, 60000);
+    return () => clearInterval(intervalId);
+  }, [isAuthorizedTeamMember, token]);
 
   if (authChecking) {
     return (
@@ -47,8 +72,6 @@ export default function AdminGuard({ children }) {
       </div>
     );
   }
-
-  const isAuthorizedTeamMember = isAuthenticated && (isAdmin || isStaff);
 
   if (!isAuthorizedTeamMember) {
     notFound();

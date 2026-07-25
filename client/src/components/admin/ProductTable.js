@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getImageUrl } from "@/lib/imageUrl";
 
 export default function ProductTable({
   products,
@@ -91,8 +92,9 @@ export default function ProductTable({
                 <tr key={product._id}>
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={product.image}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getImageUrl(product.image)}
                         alt={`Thumbnail for ${product.name}`}
                         width={56}
                         height={56}

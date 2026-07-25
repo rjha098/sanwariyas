@@ -36,64 +36,43 @@ const OWNERS = [
 ];
 
 // ── TEAM DATA ──
-const TEAM = [
-  {
-    name: "Rahul Soni",
-    role: "Business Growth & Operations Head",
-    bio: "Rahul optimizes our internal human capital and operational workflows, ensuring that our production teams are aligned with strict export deadlines and quality benchmarks.",
-    image: "/images/team/rahul.png",
-    initial: "R",
-  },
-  {
-    name: "Shalvy Sadh",
-    role: "Online Sales Head",
-    bio: "Shalvy leads our digital wholesale operations — building strong relationships with boutique owners and online retailers globally. Her deep product knowledge is key to our consistent order growth.",
-    image: "/images/team/shalvy.png",
-    initial: "S",
-  },
-  {
-    name: "Suraj",
-    role: "Offline Sales Head",
-    bio: "Suraj leads our physical B2B sales channels, managing relationships with prominent boutique owners, distributors, and bulk buyers through face-to-face engagements and trade events.",
-    image: "/images/team/suraj.png",
-    initial: "S",
-  },
-  // {
-  //   name: "Manisha",
-  //   role: "Customer Relationship Manager",
-  //   bio: "Manisha is the dedicated point of contact for our wholesale partners. She ensures every client receives personalized support, from initial inquiry to post-delivery satisfaction.",
-  //   image: "/images/team/manisha.png",
-  //   initial: "M",
-  // },
-  {
-    name: "Annu Singh",
-    role: "Dispatch Incharge",
-    bio: "Annu oversees the entire dispatch pipeline — from packaging to international courier handover. She ensures every wholesale consignment is labeled correctly and shipped securely on time.",
-    image: "/images/team/annu.png",
-    initial: "A",
-  },
-  // {
-  //   name: "Geeta Singh",
-  //   role: "Social Media Manager",
-  //   bio: "Geeta manages our digital outreach and brand visibility. Her strategic content keeps our wholesale catalogue fresh and showcases our latest export lots to an international audience.",
-  //   image: "/images/team/geeta.png",
-  //   initial: "G",
-  // },
-  // {
-  //   name: "Ram Kumar Jha",
-  //   role: "Lead Full Stack Developer",
-  //   bio: "Managing all technical aspects of the business, Ram engineers the digital infrastructure that connects our factory to the world. He is dedicated to building a robust, user-friendly platform that makes global B2B sourcing effortless and reliable.",
-  //   image: "/images/team/ram.png",
-  //   initial: "R",
-  // },
-  // {
-  //   name: "Mohit",
-  //   role: "Accountant",
-  //   bio: "Mohit manages our financial health, handling everything from factory-direct invoicing to wholesale ledger accounts, ensuring total transparency in our pricing model.",
-  //   image: "/images/team/mohit.png",
-  //   initial: "M",
-  // },
-];
+// const TEAM = [
+//   {
+//     name: "Rahul Soni",
+//     role: "Business Growth & Operations Head",
+//     bio: "Rahul optimizes our internal human capital and operational workflows, ensuring that our production teams are aligned with strict export deadlines and quality benchmarks.",
+//     image: "/images/team/rahul.png",
+//     initial: "R",
+//   },
+//   {
+//     name: "Shalvy Sadh",
+//     role: "Online Sales Head",
+//     bio: "Shalvy leads our digital wholesale operations — building strong relationships with boutique owners and online retailers globally. Her deep product knowledge is key to our consistent order growth.",
+//     image: "/images/team/shalvy.png",
+//     initial: "S",
+//   },
+//   {
+//     name: "Suraj",
+//     role: "Offline Sales Head",
+//     bio: "Suraj leads our physical B2B sales channels, managing relationships with prominent boutique owners, distributors, and bulk buyers through face-to-face engagements and trade events.",
+//     image: "/images/team/suraj.png",
+//     initial: "S",
+//   },
+//   // {
+//   //   name: "Manisha",
+//   //   role: "Customer Relationship Manager",
+//   //   bio: "Manisha is the dedicated point of contact for our wholesale partners. She ensures every client receives personalized support, from initial inquiry to post-delivery satisfaction.",
+//   //   image: "/images/team/manisha.png",
+//   //   initial: "M",
+//   // },
+//   // {
+//   //   name: "Mohit",
+//   //   role: "Accountant",
+//   //   bio: "Mohit manages our financial health, handling everything from factory-direct invoicing to wholesale ledger accounts, ensuring total transparency in our pricing model.",
+//   //   image: "/images/team/mohit.png",
+//   //   initial: "M",
+//   // },
+// ];    
 
 // ── Fallback avatar shown if photo file is missing ──
 function AvatarFallback({ initial, size = 120 }) {
@@ -206,7 +185,7 @@ export default function AboutInteractive({ values }) {
       </section>
 
       {/* ══ TEAM SECTION ══ */}
-      <section
+      {/* <section
         aria-labelledby="team-heading"
         className="relative overflow-hidden bg-gradient-to-b from-[#FDF7F2] to-[#F8EDE6] pt-12 pb-32"
       >
@@ -240,7 +219,7 @@ export default function AboutInteractive({ values }) {
             ))}
           </ul>
         </div>
-      </section>
+      </section> */}
 
       {/* ══ VALUES SECTION ══ */}
       <section

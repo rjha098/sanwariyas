@@ -26,6 +26,8 @@ const emptyProductForm = {
   metaDescription: "",
   isFeatured: false,
   isAvailable: true,
+  imageFile: null,
+  galleryFiles: [],
 };
 
 const toProductForm = (product) => ({
@@ -45,6 +47,8 @@ const toProductForm = (product) => ({
   metaDescription: product.metaDescription || "",
   isFeatured: Boolean(product.isFeatured),
   isAvailable: product.isAvailable !== false,
+  imageFile: null,
+  galleryFiles: [],
 });
 
 const productPayloadFromForm = (form) => ({
@@ -52,6 +56,28 @@ const productPayloadFromForm = (form) => ({
   price: form.price === "" ? "" : Number(form.price),
   originalPrice: form.originalPrice === "" ? "" : Number(form.originalPrice),
 });
+
+// ✅ Directory Upload — builds multipart FormData so image files are
+// actually uploaded (via multer) instead of being submitted as URL text.
+const buildProductFormData = (form) => {
+  const fd = new FormData();
+  const payload = productPayloadFromForm(form);
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (key === "imageFile" || key === "galleryFiles") return;
+    if (value === null || typeof value === "undefined") return;
+    fd.append(key, value);
+  });
+
+  if (form.imageFile) {
+    fd.append("image", form.imageFile);
+  }
+  if (form.galleryFiles?.length) {
+    form.galleryFiles.forEach((file) => fd.append("images", file));
+  }
+
+  return fd;
+};
 
 export function useProducts(token) {
   const [products, setProducts] = useState([]);
@@ -103,13 +129,13 @@ export function useProducts(token) {
       } catch (error) {
         setFlash(
           setProductMessage,
-          error.response?.data?.message || "Unable to load products"
+          error.response?.data?.message || "Unable to load products",
         );
       } finally {
         setProductsLoading(false);
       }
     },
-    [setFlash]
+    [setFlash],
   );
 
   // Fetch products on mount or when page/search changes
@@ -127,23 +153,30 @@ export function useProducts(token) {
     async (e) => {
       e.preventDefault();
       if (!token) return;
+
+      if (!editingProductId && !productForm.imageFile) {
+        setFlash(setProductMessage, "Please upload a main product image.");
+        return;
+      }
+
       setProductSaving(true);
       try {
-        const payload = productPayloadFromForm(productForm);
+        const formData = buildProductFormData(productForm);
         if (editingProductId) {
-          await updateAdminProduct(token, editingProductId, payload);
+          await updateAdminProduct(token, editingProductId, formData);
           setFlash(setProductMessage, "Product updated successfully");
         } else {
-          await createAdminProduct(token, payload);
+          await createAdminProduct(token, formData);
           setFlash(setProductMessage, "Product created successfully");
         }
+
         resetProductForm();
         setProductPage(1);
         await loadProducts(token, 1, productSearch);
       } catch (error) {
         setFlash(
           setProductMessage,
-          error.response?.data?.message || "Unable to save product"
+          error.response?.data?.message || "Unable to save product",
         );
       } finally {
         setProductSaving(false);
@@ -157,7 +190,7 @@ export function useProducts(token) {
       loadProducts,
       resetProductForm,
       setFlash,
-    ]
+    ],
   );
 
   const handleEditProduct = useCallback((product, setActiveTab) => {
@@ -170,7 +203,8 @@ export function useProducts(token) {
   const handleDeleteProduct = useCallback(
     async (id) => {
       if (!token) return;
-      if (!window.confirm("Delete this product? This cannot be undone.")) return;
+      if (!window.confirm("Delete this product? This cannot be undone."))
+        return;
       setDeletingProductId(id);
       try {
         await deleteAdminProduct(token, id);
@@ -180,7 +214,7 @@ export function useProducts(token) {
       } catch (error) {
         setFlash(
           setProductMessage,
-          error.response?.data?.message || "Unable to delete product"
+          error.response?.data?.message || "Unable to delete product",
         );
       } finally {
         setDeletingProductId("");
@@ -194,7 +228,7 @@ export function useProducts(token) {
       loadProducts,
       resetProductForm,
       setFlash,
-    ]
+    ],
   );
 
   const handleSeedProducts = useCallback(async () => {
@@ -204,13 +238,13 @@ export function useProducts(token) {
       const data = await seedAdminProducts(token);
       setFlash(
         setProductMessage,
-        data.message || "Sample products seeded successfully"
+        data.message || "Sample products seeded successfully",
       );
       await loadProducts(token, 1, productSearch);
     } catch (error) {
       setFlash(
         setProductMessage,
-        error.response?.data?.message || "Unable to seed products"
+        error.response?.data?.message || "Unable to seed products",
       );
     } finally {
       setSeeding(false);

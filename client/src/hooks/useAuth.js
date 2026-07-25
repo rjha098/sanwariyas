@@ -1,6 +1,6 @@
 // FILE: client/src/hooks/useAuth.js
-"use client";
 
+"use client";
 import { useContext } from "react";
 import { AuthContext } from "@/providers/AuthProvider";
 

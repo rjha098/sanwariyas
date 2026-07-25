@@ -113,8 +113,8 @@
 // upperside  code  is  dynamic   downside  code  is  satatic
 
 
-// FILE: client/src/components/home/CategoriesSection.js
 import Image from "next/image";
+import Link from "next/link";
 
 // ✅ SEO FIX: Mapped exact-match primary B2B/Manufacturer keywords to each category to maximize topical authority in Image SEO
 const categories = [
@@ -250,11 +250,22 @@ export default function CategoriesSection() {
           {/* ✅ SEMANTIC HTML: Unordered list grid */}
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 list-none p-0 m-0">
             {categories.map((cat, index) => (
-              <li key={cat.slug}>
-                <div
-                  className="group relative overflow-hidden shadow-lg hover:shadow-[0_28px_60px_rgba(122,61,42,0.30)] hover:-translate-y-3 transition-all duration-700 bg-[#7A3D2A] rounded-2xl block h-full cursor-default"
+
+
+
+             <li key={cat.slug}>
+                <Link
+                  href={`/products?category=${cat.slug}`}
+                  aria-label={`View ${cat.name} wholesale collection`}
+                  className="group relative overflow-hidden shadow-lg hover:shadow-[0_28px_60px_rgba(122,61,42,0.30)] hover:-translate-y-3 transition-all duration-700 bg-[#7A3D2A] rounded-2xl block h-full"
                   style={{ aspectRatio: "3/4" }}
                 >
+
+
+
+
+
+
                   {/* ✅ SEO FIX: Dynamic, highly relevant B2B keyword alt text applied here */}
                   <Image
                     src={cat.image}
@@ -305,7 +316,7 @@ export default function CategoriesSection() {
                     <h3 className="font-display text-lg md:text-xl text-[#FDF7F2] mb-3 drop-shadow-md font-semibold leading-tight">
                       {cat.name}
                     </h3>
-                    {/* <span className="inline-flex items-center gap-1.5 font-sans text-[9px] tracking-widest uppercase text-[#BE6E5B] border-b border-[#BE6E5B]/0 group-hover:border-[#BE6E5B] pb-0.5 opacity-0 group-hover:opacity-100 transition-all duration-700 font-bold">
+                    <span className="inline-flex items-center gap-1.5 font-sans text-[9px] tracking-widest uppercase text-[#BE6E5B] border-b border-[#BE6E5B]/0 group-hover:border-[#BE6E5B] pb-0.5 opacity-0 group-hover:opacity-100 transition-all duration-700 font-bold">
                       View Collection
                       <span
                         aria-hidden="true"
@@ -313,9 +324,9 @@ export default function CategoriesSection() {
                       >
                         →
                       </span>
-                    </span> */}
+                    </span>
                   </div>
-                </div>
+                </Link>
               </li>
             ))}
           </ul>

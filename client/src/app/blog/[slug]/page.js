@@ -15,10 +15,8 @@ const IMAGE_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 ).replace(/\/api\/?$/, "");
 
-// 👉 NAYA FIX: isPreview parameter function signature mein add kiya
 async function getBlog(slug, isPreview = false) {
   try {
-    // ✅ BACKEND_URL use karo fetch ke liye, aur preview true ho toh URL mein lagao
     const url = isPreview
       ? `${BACKEND_URL}/api/blogs/${slug}?preview=true`
       : `${BACKEND_URL}/api/blogs/${slug}`;

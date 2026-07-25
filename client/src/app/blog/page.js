@@ -7,7 +7,7 @@ const BACKEND_URL = (
   "http://127.0.0.1:5000/api"
 ).replace(/\/api\/?$/, "");
 
-// ✅ SEO FIX: Next.js 14 Server-Side Metadata API
+//  SEO FIX: Next.js 14 Server-Side Metadata API
 export const metadata = {
   title: "Wholesale Ethnic Wear Journal & Blog | SANWARIYAS",
   description:

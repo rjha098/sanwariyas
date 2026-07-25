@@ -151,10 +151,8 @@
 
 // the  upper  side  code  is the   dynamic  code  and  the  down  side    code is  the  static    only  for  the  1  mnth   after  i  would   like  to  making  the  changes
 
-
-
 import Image from "next/image";
-import Link from "next/link"; // ✅ SEO FIX: Imported Link for crawlability
+import Link from "next/link";
 
 const BADGES = [
   "Best Seller",
@@ -165,7 +163,6 @@ const BADGES = [
   "Staff Pick",
 ];
 
-// ✅ SEO FIX: Replaced Sarees/Lehengas/Gowns with core product keywords to preserve Topical Authority & match brand rules.
 const PLACEHOLDER = [
   {
     _id: "p1",
@@ -247,7 +244,11 @@ function Card({ product, rank }) {
 
   return (
     <li className="group relative flex-shrink-0 snap-start shrink-0 w-[210px] sm:w-[235px] md:w-[260px]">
-      <div className="block rounded-2xl overflow-hidden border border-[#BE6E5B]/20 bg-white/80 backdrop-blur-sm shadow-md transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_28px_60px_rgba(122,61,42,0.22)] hover:border-[#BE6E5B]/60 hover:bg-white">
+      <Link
+        href={`/products/${product.slug}`}
+        aria-label={`View wholesale details for ${product.name}`}
+        className="block rounded-2xl overflow-hidden border border-[#BE6E5B]/20 bg-white/80 backdrop-blur-sm shadow-md transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_28px_60px_rgba(122,61,42,0.22)] hover:border-[#BE6E5B]/60 hover:bg-white"
+      >
         {/* Image */}
         <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#F2D9C3]">
           {/* ✅ SEO FIX: Enriched Alt Text with Commercial/Manufacturer Intent */}
@@ -332,7 +333,7 @@ function Card({ product, rank }) {
             </p>
           )}
         </div>
-      </div>
+      </Link>
     </li>
   );
 }
@@ -427,7 +428,7 @@ export default function BestsellingKurtis() {
             {/* View All Button — consistent style */}
             {/* ✅ SEO FIX: Converted <div> to <Link> for internal link equity. Pointed to /lookbook since /products does not exist */}
             <Link
-              href="/lookbook"
+              href="/products"
               title="View All Wholesale Ethnic Wear"
               aria-label="View all wholesale kurti and suit collections"
               className="group relative self-start md:self-auto inline-flex items-center gap-2.5 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] tracking-[0.3em] uppercase font-bold px-8 py-3.5 rounded-xl hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden"

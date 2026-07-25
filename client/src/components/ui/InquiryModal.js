@@ -694,3 +694,15 @@ export default function InquiryModal() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

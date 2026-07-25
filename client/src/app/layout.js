@@ -1,8 +1,9 @@
 import "./globals.css";
 import WhatsAppWidget from "@/components/ui/WhatsAppWidget";
 import { AppProviders } from "@/providers/AppProviders";
+import { CartProvider } from "@/providers/CartProvider";
 import InquiryModal from "@/components/ui/InquiryModal";
-import Navbar from "@/components/layout/Navbar"; 
+import Navbar from "@/components/layout/Navbar";
 
 export const viewport = {
   themeColor: "#FAF3E8",
@@ -16,7 +17,8 @@ export const metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://sanwariyas.com",
   ),
   title: {
-    default: "SANWARIYAS — Premium Ethnic Wear Manufacturer & Wholesale Supplier",
+    default:
+      "SANWARIYAS — Premium Ethnic Wear Manufacturer & Wholesale Supplier",
     template: "%s | SANWARIYAS Wholesale",
   },
   description:
@@ -156,17 +158,15 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
 
-        {/* ✅ FIX: AppProviders properly wrapping EVERYTHING that needs Auth */}
+        {/*  FIX: AppProviders properly wrapping EVERYTHING that needs Auth */}
+
         <AppProviders>
-          <Navbar /> 
-          {/* Navbar added here so it receives useAuth context perfectly */}
-          
-          <div className="flex-grow pt-[80px]">{/* Added padding top so navbar doesn't overlap content */}
-            {children}
-          </div>
-          
-          <WhatsAppWidget />
-          <InquiryModal />
+          <CartProvider>
+            <Navbar />
+            <div className="flex-grow pt-[80px]">{children}</div>
+            <WhatsAppWidget />
+            <InquiryModal />
+          </CartProvider>
         </AppProviders>
       </body>
     </html>

@@ -164,10 +164,26 @@ export const fetchAdminProducts = (token, params = {}) =>
     .then((r) => r.data);
 export const fetchAdminProductById = (token, id) =>
   api.get(`/products/admin/${id}`, withAuth(token)).then((r) => r.data);
-export const createAdminProduct = (token, data) =>
-  api.post("/products", data, withAuth(token)).then((r) => r.data);
-export const updateAdminProduct = (token, id, data) =>
-  api.patch(`/products/${id}`, data, withAuth(token)).then((r) => r.data);
+
+export const createAdminProduct = (token, formData) =>
+  api
+    .post("/products", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((r) => r.data);
+export const updateAdminProduct = (token, id, formData) =>
+  api
+    .patch(`/products/${id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((r) => r.data);
+
 export const deleteAdminProduct = (token, id) =>
   api.delete(`/products/${id}`, withAuth(token)).then((r) => r.data);
 export const seedAdminProducts = (token) =>
@@ -229,5 +245,19 @@ export const createBlog = (token, formData) =>
       },
     })
     .then((r) => r.data);
+
+// ORDERS —  Wholesale Ordering System
+export const placeOrder = (token, data) =>
+  api.post("/orders", data, withAuth(token)).then((r) => r.data);
+export const fetchMyOrders = (token) =>
+  api.get("/orders/my-orders", withAuth(token)).then((r) => r.data);
+export const fetchOrderById = (token, id) =>
+  api.get(`/orders/${id}`, withAuth(token)).then((r) => r.data);
+export const fetchAdminOrders = (token, params = {}) =>
+  api.get("/orders", { ...withAuth(token), params }).then((r) => r.data);
+export const updateAdminOrderStatus = (token, id, data) =>
+  api.patch(`/orders/${id}/status`, data, withAuth(token)).then((r) => r.data);
+export const fetchOrderAnalytics = (token) =>
+  api.get("/orders/analytics", withAuth(token)).then((r) => r.data);
 
 export default api;

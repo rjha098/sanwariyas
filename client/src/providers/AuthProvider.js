@@ -1,21 +1,28 @@
 // // FILE: client/src/providers/AuthProvider.js
 "use client";
 
-import { useState, useEffect, useCallback, createContext, useMemo } from "react";
 import {
+  useState,
+  useEffect,
+  useCallback,
+  createContext,
+  useMemo,
+} from "react";
+import api, {
   unifiedLogin,
   verifyOTP,
   checkAuthSession,
   customerSignup,
   authLogout,
 } from "@/lib/api";
+
 import { tokenStorage } from "@/lib/tokenStorage";
 
 export const AuthContext = createContext(null);
 
 const CACHE_KEY = "sanwariyas_session_verified";
 const USER_KEY = "sanwariyas_user";
-const CACHE_TTL_MS = 60 * 1000; 
+const CACHE_TTL_MS = 60 * 1000;
 
 // Request Promise Deduplication with TTL Safety
 let activeSessionValidationPromise = null;
@@ -57,7 +64,7 @@ export function AuthProvider({ children }) {
     let isMounted = true;
     const savedToken = tokenStorage.get();
     const savedUserStr = localStorage.getItem(USER_KEY);
-    
+
     if (!savedToken) {
       if (isMounted) setAuthChecking(false);
       return;
@@ -81,7 +88,10 @@ export function AuthProvider({ children }) {
         setUser(parsedUser);
 
         const lastVerified = sessionStorage.getItem(CACHE_KEY);
-        if (lastVerified && Date.now() - parseInt(lastVerified, 10) < CACHE_TTL_MS) {
+        if (
+          lastVerified &&
+          Date.now() - parseInt(lastVerified, 10) < CACHE_TTL_MS
+        ) {
           if (isMounted) setAuthChecking(false);
           return;
         }
@@ -93,10 +103,12 @@ export function AuthProvider({ children }) {
 
     // Safe Promise Deduplication with TTL
     if (!activeSessionValidationPromise) {
-      activeSessionValidationPromise = checkAuthSession(savedToken).finally(() => {
-        activeSessionValidationPromise = null;
-        if (activeValidationTimeout) clearTimeout(activeValidationTimeout);
-      });
+      activeSessionValidationPromise = checkAuthSession(savedToken).finally(
+        () => {
+          activeSessionValidationPromise = null;
+          if (activeValidationTimeout) clearTimeout(activeValidationTimeout);
+        },
+      );
 
       activeValidationTimeout = setTimeout(() => {
         activeSessionValidationPromise = null;
@@ -119,7 +131,11 @@ export function AuthProvider({ children }) {
       })
       .catch((err) => {
         if (!isMounted) return;
-        if (err.isLocalPreflightReject || err.response?.status === 401 || err.response?.status === 403) {
+        if (
+          err.isLocalPreflightReject ||
+          err.response?.status === 401 ||
+          err.response?.status === 403
+        ) {
           tokenStorage.clear();
           localStorage.removeItem(USER_KEY);
           setToken(null);
@@ -146,7 +162,9 @@ export function AuthProvider({ children }) {
         setToken(e.newValue);
         const storedUser = localStorage.getItem(USER_KEY);
         if (storedUser) {
-          try { setUser(JSON.parse(storedUser)); } catch (err) {}
+          try {
+            setUser(JSON.parse(storedUser));
+          } catch (err) {}
         }
       }
     };
@@ -178,12 +196,21 @@ export function AuthProvider({ children }) {
         sessionStorage.setItem(CACHE_KEY, Date.now().toString());
         setToken(data.token);
         setUser(data.user);
-        return { success: true, requires2FA: false, role: data.user.role, token: data.token, user: data.user };
+        return {
+          success: true,
+          requires2FA: false,
+          role: data.user.role,
+          token: data.token,
+          user: data.user,
+        };
       } else {
-         throw new Error("Invalid authentication response received.");
+        throw new Error("Invalid authentication response received.");
       }
     } catch (err) {
-      const message = err.response?.data?.message || err.message || "Login failed. Please check your credentials.";
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Login failed. Please check your credentials.";
       setLoginError(message);
       return { success: false, error: message };
     } finally {
@@ -201,14 +228,14 @@ export function AuthProvider({ children }) {
           role: otpRole || "admin",
           identifier: otpIdentifier,
         });
-        
+
         if (data && data.success && data.token && data.user) {
           tokenStorage.set(data.token);
           localStorage.setItem(USER_KEY, JSON.stringify(data.user));
           sessionStorage.setItem(CACHE_KEY, Date.now().toString());
           setToken(data.token);
           setUser(data.user);
-          
+
           setOtpPending(false);
           setOtpRole("");
           setOtpIdentifier("");
@@ -218,14 +245,15 @@ export function AuthProvider({ children }) {
           throw new Error("Invalid backend token response.");
         }
       } catch (err) {
-        const message = err.response?.data?.message || "Invalid OTP. Please try again.";
+        const message =
+          err.response?.data?.message || "Invalid OTP. Please try again.";
         setOtpError(message);
         return { success: false, error: message };
       } finally {
         setVerifyingOtp(false);
       }
     },
-    [otpRole, otpIdentifier]
+    [otpRole, otpIdentifier],
   );
 
   const cancelOtp = useCallback(() => {
@@ -246,7 +274,8 @@ export function AuthProvider({ children }) {
       setSignupDone(true);
       return { success: true };
     } catch (err) {
-      const message = err.response?.data?.message || "Signup failed. Please try again.";
+      const message =
+        err.response?.data?.message || "Signup failed. Please try again.";
       setSignupError(message);
       return { success: false, error: message };
     } finally {
@@ -273,16 +302,72 @@ export function AuthProvider({ children }) {
     setSignupDone(false);
   }, [token]);
 
+
+  //Universal heartbeat — fires for EVERY authenticated user (customer
+  // or admin) on EVERY page, regardless of screen size.
+  useEffect(() => {
+    if (!token) return;
+
+    const ping = () => {
+      api.post("/auth/heartbeat", {}, { headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    };
+
+    ping();
+    const intervalId = setInterval(ping, 60000);
+    return () => clearInterval(intervalId);
+  }, [token]);
+
+
   const contextValue = useMemo(
     () => ({
-      token, user, authChecking, isAuthenticated: !!token && !!user,
-      isAdmin: user?.role === "admin", isStaff: user?.role === "staff", isCustomer: user?.role === "customer",
-      login, loginError, setLoginError, loggingIn,
-      otpPending, emailHint, devOtp, otpError, verifyingOtp, submitOtp, cancelOtp,
-      signup, signupError, setSignupError, signingUp, signupDone, logout,
+      token,
+      user,
+      authChecking,
+      isAuthenticated: !!token && !!user,
+      isAdmin: user?.role === "admin",
+      isStaff: user?.role === "staff",
+      isCustomer: user?.role === "customer",
+      login,
+      loginError,
+      setLoginError,
+      loggingIn,
+      otpPending,
+      emailHint,
+      devOtp,
+      otpError,
+      verifyingOtp,
+      submitOtp,
+      cancelOtp,
+      signup,
+      signupError,
+      setSignupError,
+      signingUp,
+      signupDone,
+      logout,
     }),
-    [ token, user, authChecking, loginError, loggingIn, otpPending, emailHint, devOtp, otpError, verifyingOtp, signupError, signingUp, signupDone, login, submitOtp, cancelOtp, signup, logout ]
+    [
+      token,
+      user,
+      authChecking,
+      loginError,
+      loggingIn,
+      otpPending,
+      emailHint,
+      devOtp,
+      otpError,
+      verifyingOtp,
+      signupError,
+      signingUp,
+      signupDone,
+      login,
+      submitOtp,
+      cancelOtp,
+      signup,
+      logout,
+    ],
   );
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
 }

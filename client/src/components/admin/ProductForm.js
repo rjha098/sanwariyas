@@ -73,24 +73,99 @@ export default function ProductForm({
           />
         </div>
 
-        <input
-          type="url"
-          aria-label="Main image URL"
-          placeholder="Main image URL"
-          value={productForm.image}
-          onChange={(e) => setProductForm((prev) => ({ ...prev, image: e.target.value }))}
-          className="w-full border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee"
-          required
-        />
 
-        <textarea
-          rows={3}
-          aria-label="More image URLs, one per line"
-          placeholder="More image URLs, one per line"
-          value={productForm.images}
-          onChange={(e) => setProductForm((prev) => ({ ...prev, images: e.target.value }))}
-          className="w-full border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee resize-none"
-        />
+
+
+
+
+{/* ✅ Directory Upload — Main Image */}
+        <div>
+          <label className="block font-sans text-xs text-brand-mud mb-1">
+            Main Image {!editingProductId && "*"}
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            aria-label="Upload main product image"
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              if (file && file.size > 2 * 1024 * 1024) {
+                alert("Image size must be under 2MB.");
+                e.target.value = "";
+                return;
+              }
+              setProductForm((prev) => ({ ...prev, imageFile: file }));
+            }}
+            className="w-full border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee bg-white"
+          />
+          {(productForm.imageFile || productForm.image) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={
+                productForm.imageFile
+                  ? URL.createObjectURL(productForm.imageFile)
+                  : productForm.image
+              }
+              alt="Main image preview"
+              className="mt-2 w-28 h-28 object-cover rounded-md border border-brand-lightgold/40"
+            />
+          )}
+        </div>
+
+        {/* ✅ Directory Upload — Gallery Images */}
+        <div>
+          <label className="block font-sans text-xs text-brand-mud mb-1">
+            Gallery Images (optional, up to 8)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            aria-label="Upload additional gallery images"
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []).slice(0, 8);
+              const tooBig = files.find((f) => f.size > 2 * 1024 * 1024);
+              if (tooBig) {
+                alert("Each image must be under 2MB.");
+                e.target.value = "";
+                return;
+              }
+              setProductForm((prev) => ({ ...prev, galleryFiles: files }));
+            }}
+            className="w-full border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee bg-white"
+          />
+          {productForm.galleryFiles?.length > 0 ? (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {productForm.galleryFiles.map((file, idx) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={idx}
+                  src={URL.createObjectURL(file)}
+                  alt={`Gallery preview ${idx + 1}`}
+                  className="w-16 h-16 object-cover rounded-md border border-brand-lightgold/40"
+                />
+              ))}
+            </div>
+          ) : (
+            productForm.images && (
+              <p className="font-sans text-[11px] text-brand-mud mt-1">
+                Existing gallery images will be kept unless you upload new ones.
+              </p>
+            )
+          )}
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
         <input
           type="text"
