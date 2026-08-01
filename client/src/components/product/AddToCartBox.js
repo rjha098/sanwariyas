@@ -13,6 +13,9 @@ export default function AddToCartBox({ product }) {
 
   const meta = computeMoq(pieces);
 
+  //  CHECK IF OUT OF STOCK OR INSUFFICIENT STOCK FOR MOQ
+  const isOutOfStock = typeof product.stock === 'number' && product.stock < MIN_PIECES;
+
   const addSet = () => setPieces((p) => p + SET_SIZE);
   const removeSet = () => setPieces((p) => Math.max(0, p - SET_SIZE));
   const handleManual = (e) => {
@@ -33,6 +36,20 @@ export default function AddToCartBox({ product }) {
     router.push("/cart");
   };
 
+  //  IF OUT OF STOCK, SHOW THIS BEAUTIFUL PREMIUM CARD INSTEAD
+  if (isOutOfStock) {
+    return (
+      <div className="bg-[#FAF3E8] p-6 rounded-xl border border-red-300 shadow-sm mb-8 text-center flex flex-col items-center justify-center">
+        <h3 className="font-display text-2xl font-bold text-red-600 mb-2 tracking-wide">
+          OUT OF STOCK
+        </h3>
+        <p className="font-sans text-xs text-[#a07f61] max-w-[250px]">
+          We are currently completely sold out of this design. Please inquire below for restock dates.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white/80 p-6 rounded-xl border border-[#C9A84C]/30 shadow-sm mb-8">
       <h3 className="font-display text-lg font-bold text-[#7A3D2A] mb-1">
@@ -40,6 +57,9 @@ export default function AddToCartBox({ product }) {
       </h3>
       <p className="font-sans text-xs text-[#a07f61] mb-5">
         1 Set = {SET_SIZE} pieces. Minimum order = 2 Sets ({MIN_PIECES} pieces).
+        {typeof product.stock === 'number' && (
+          <span className="block mt-1 font-bold text-green-700">✓ {product.stock} pieces available in stock.</span>
+        )}
       </p>
 
       <div className="flex items-center gap-3 mb-4">
@@ -109,7 +129,7 @@ export default function AddToCartBox({ product }) {
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={!meta.moqMet}
+          disabled={!meta.moqMet || (typeof product.stock === 'number' && pieces > product.stock)}
           className="flex-1 bg-white border-2 border-[#7A3D2A] text-[#7A3D2A] py-3 font-sans text-xs tracking-[0.2em] uppercase font-bold rounded-md hover:bg-[#FDF7F2] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {added ? "Added ✓" : "Add to Cart"}
@@ -117,12 +137,18 @@ export default function AddToCartBox({ product }) {
         <button
           type="button"
           onClick={handleBuyNow}
-          disabled={!meta.moqMet}
+          disabled={!meta.moqMet || (typeof product.stock === 'number' && pieces > product.stock)}
           className="flex-1 bg-[#7A3D2A] text-white py-3 font-sans text-xs tracking-[0.2em] uppercase font-bold rounded-md hover:bg-[#5c2d1f] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Buy Now
         </button>
       </div>
+      
+      {typeof product.stock === 'number' && pieces > product.stock && (
+        <p className="text-center font-sans text-[11px] text-red-600 mt-3 font-bold">
+          Cannot order more than available stock ({product.stock} pieces).
+        </p>
+      )}
     </div>
   );
 }

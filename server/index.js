@@ -1,4 +1,4 @@
-// FILE:-   server/index.js  
+// FILE:-   server/index.js
 
 import dotenv from "dotenv";
 import express from "express";
@@ -14,6 +14,7 @@ import inquiryRoutes from "./routes/inquiryRoutes.js";
 import lookbookRoutes from "./routes/lookbookRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -21,10 +22,7 @@ dotenv.config();
 // PROCESS-LEVEL SAFETY NET
 // ═══════════════════════════════════════════════════════════════════════════
 process.on("uncaughtException", (err) => {
-  console.error(
-    "UNCAUGHT EXCEPTION — server stayed alive, but fix this:",
-    err,
-  );
+  console.error("UNCAUGHT EXCEPTION — server stayed alive, but fix this:", err);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
@@ -102,11 +100,13 @@ const authLimiter = rateLimit({
 
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 1000,
   skip: (req) => {
-    // Exclude high-frequency background polling from the general bucket
     return (
-      req.path.includes("/auth/session") || req.path.includes("/auth/heartbeat")
+      req.path.includes("/auth/session") ||
+      req.path.includes("/auth/heartbeat") ||
+      req.path.includes("/notification/unread-count") ||
+      req.path.includes("/auth/visibility")
     );
   },
   standardHeaders: true,
@@ -154,6 +154,7 @@ app.use("/api/inquiry", inquiryRoutes);
 app.use("/api/lookbook", lookbookRoutes);
 app.use("/api/notification", notificationLimiter, notificationRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });

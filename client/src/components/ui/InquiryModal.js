@@ -426,7 +426,7 @@ export default function InquiryModal() {
                   <p className="font-sans text-sm text-[#7A3D2A] font-bold tracking-[0.1em] uppercase">
                     Sign in to view admin response
                   </p>
-                  {/* ✅ FIX: Clear instruction text added here */}
+                  {/*  FIX: Clear instruction text added here */}
                   <p className="font-sans text-xs text-[#a07f61] mt-2 leading-relaxed">
                     Please log in or create an account with the{" "}
                     <strong>exact same Email or Phone Number</strong> used in

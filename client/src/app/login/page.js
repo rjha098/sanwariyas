@@ -14,6 +14,7 @@ const lbl =
 const btn =
   "w-full bg-brand-coffee text-brand-cream py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-brand-african transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
+
 // ── OTP Screen (Used for Admin login) ─────────────────────────────────────────
 function OtpScreen({ emailHint, devOtp, verifyingOtp, onSubmit, onBack }) {
   const [otp, setOtp] = useState("");
@@ -75,7 +76,8 @@ function OtpScreen({ emailHint, devOtp, verifyingOtp, onSubmit, onBack }) {
   );
 }
 
-// ── Forgot Password Screen ────────────────────────────────────────────────────
+// ── Forgot Password Screen
+
 function ForgotPasswordScreen({ onBack, onResetSuccess }) {
   const [step, setStep] = useState(1);
   const [identifier, setIdentifier] = useState("");
@@ -463,7 +465,9 @@ export default function LoginPage() {
     type: "success",
   });
   const [redirecting, setRedirecting] = useState(false);
+    const [returnTo, setReturnTo] = useState("/");   
   const redirectTimeoutRef = useRef(null);
+  
 
   const showToast = (message, type = "success") =>
     setToast({ isVisible: true, message, type });
@@ -512,6 +516,14 @@ export default function LoginPage() {
         setMode(queryMode);
       }
 
+      //  FIX: honor ?redirect=/cart (or /checkout) so a guest who tried to
+      // Buy Now / go to checkout lands back where they were after logging in.
+
+      const redirectParam = urlParams.get("redirect");
+      if (redirectParam && redirectParam.startsWith("/")) {
+        setReturnTo(redirectParam);
+      }
+
       if (urlParams.get("session_expired") === "true") {
         const reason = urlParams.get("reason");
         showToast(
@@ -556,9 +568,17 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!authChecking && isAuthenticated && !redirecting) {
-      router.replace(isAdmin || isStaff ? "/operations-center" : "/");
+      router.replace(isAdmin || isStaff ? "/operations-center" : returnTo);
     }
-  }, [authChecking, isAuthenticated, isAdmin, isStaff, redirecting, router]);
+  }, [
+    authChecking,
+    isAuthenticated,
+    isAdmin,
+    isStaff,
+    redirecting,
+    router,
+    returnTo,
+  ]);
 
   const switchMode = (m) => {
     setMode(m);
@@ -580,11 +600,11 @@ export default function LoginPage() {
       setRedirecting(true);
       showToast("Login successful. Welcome!", "success");
 
-      redirectTimeoutRef.current = setTimeout(() => {
+     redirectTimeoutRef.current = setTimeout(() => {
         if (result.role === "admin" || result.role === "staff") {
           router.push("/operations-center");
         } else {
-          router.push("/");
+          router.push(returnTo);
         }
       }, 2000);
     }
@@ -600,7 +620,7 @@ export default function LoginPage() {
         if (result.role === "admin" || result.role === "staff") {
           router.push("/operations-center");
         } else {
-          router.push("/");
+          router.push(returnTo); 
         }
       }, 2000);
     }

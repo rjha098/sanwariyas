@@ -1,4 +1,5 @@
-// // FILE: server/models/User.js
+// FILE: server/models/User.js
+
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -42,12 +43,18 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "staff", "customer"],
       default: "customer",
     },
+    // ✅ NEW: Added department for Phase 2 Staff Management
+    department: {
+      type: String,
+      enum: ["Sales", "Digital Marketing", "Support", "Accounts", "Management", "General"],
+      default: "General",
+    },
     isActive: { type: Boolean, default: true },
 
     // Single Device Session Tracking
     currentSessionId: { type: String, default: null },
 
-    //  Added to track when the user was last active
+    // Track when the user was last active
     lastActiveAt: { type: Date, default: Date.now },
 
     // Email verification / login OTP (for customers)

@@ -11,16 +11,22 @@ import Toast from "@/components/ui/Toast";
 export default function CheckoutPage() {
   const router = useRouter();
   const { token, user, isAuthenticated, authChecking } = useAuth();
-  const { items, totalPieces, totalAmount, allMoqMet, clearCart, hydrated } = useCart();
+  const { items, totalPieces, totalAmount, allMoqMet, clearCart, hydrated } =
+    useCart();
 
   const [placing, setPlacing] = useState(false);
-  const [toast, setToast] = useState({ isVisible: false, message: "", type: "success" });
-  const showToast = (message, type = "success") => setToast({ isVisible: true, message, type });
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: "",
+    type: "success",
+  });
+  const showToast = (message, type = "success") =>
+    setToast({ isVisible: true, message, type });
   const hideToast = () => setToast((t) => ({ ...t, isVisible: false }));
 
   useEffect(() => {
     if (!authChecking && !isAuthenticated) {
-      router.replace("/login?mode=signin");
+      router.replace("/login?mode=signin&redirect=/checkout");
     }
   }, [authChecking, isAuthenticated, router]);
 
@@ -41,7 +47,11 @@ export default function CheckoutPage() {
         buyerName: user?.name,
         buyerEmail: user?.email,
         buyerCompany: user?.company || "",
-        items: items.map((i) => ({ productId: i.productId, name: i.name, pieces: i.pieces })),
+        items: items.map((i) => ({
+          productId: i.productId,
+          name: i.name,
+          pieces: i.pieces,
+        })),
       };
       const res = await placeOrder(token, payload);
       clearCart();
@@ -50,7 +60,10 @@ export default function CheckoutPage() {
         router.push(`/my-orders/${res.order._id}`);
       }, 1200);
     } catch (err) {
-      showToast(err.response?.data?.message || "Failed to place order.", "error");
+      showToast(
+        err.response?.data?.message || "Failed to place order.",
+        "error",
+      );
     } finally {
       setPlacing(false);
     }
@@ -68,9 +81,16 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#f5efe4] px-4 sm:px-6 lg:px-8 py-12">
-      <Toast isVisible={toast.isVisible} message={toast.message} type={toast.type} onClose={hideToast} />
+      <Toast
+        isVisible={toast.isVisible}
+        message={toast.message}
+        type={toast.type}
+        onClose={hideToast}
+      />
       <div className="max-w-3xl mx-auto">
-        <h1 className="font-display text-3xl text-[#7A3D2A] mb-8">Review &amp; Place Order</h1>
+        <h1 className="font-display text-3xl text-[#7A3D2A] mb-8">
+          Review &amp; Place Order
+        </h1>
 
         <div className="bg-white/80 border border-[#BE6E5B]/20 rounded-xl p-6 mb-6">
           <h2 className="font-sans text-[11px] uppercase tracking-widest text-[#a07f61] mb-3">
@@ -78,7 +98,9 @@ export default function CheckoutPage() {
           </h2>
           <p className="font-sans text-sm text-[#7A3D2A]">{user?.name}</p>
           <p className="font-sans text-sm text-[#a07f61]">{user?.email}</p>
-          {user?.company && <p className="font-sans text-sm text-[#a07f61]">{user.company}</p>}
+          {user?.company && (
+            <p className="font-sans text-sm text-[#a07f61]">{user.company}</p>
+          )}
         </div>
 
         <div className="bg-white/80 border border-[#BE6E5B]/20 rounded-xl p-6 mb-6">
@@ -87,10 +109,17 @@ export default function CheckoutPage() {
           </h2>
           <div className="divide-y divide-[#BE6E5B]/10">
             {items.map((item) => (
-              <div key={item.productId} className="py-3 flex justify-between items-center">
+              <div
+                key={item.productId}
+                className="py-3 flex justify-between items-center"
+              >
                 <div>
-                  <p className="font-sans text-sm text-[#7A3D2A]">{item.name}</p>
-                  <p className="font-sans text-xs text-[#a07f61]">{item.pieces} pieces</p>
+                  <p className="font-sans text-sm text-[#7A3D2A]">
+                    {item.name}
+                  </p>
+                  <p className="font-sans text-xs text-[#a07f61]">
+                    {item.pieces} pieces
+                  </p>
                 </div>
                 <p className="font-sans text-sm font-bold text-[#7A3D2A]">
                   ₹{(item.pieces * item.price).toLocaleString("en-IN")}

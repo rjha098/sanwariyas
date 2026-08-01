@@ -20,7 +20,6 @@ function OperationsCenterInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  //  UI FIX: Set default tab to products for easier management access
   const [activeTab, setActiveTab] = useState("products");
   const [highlightedInquiryId, setHighlightedInquiryId] = useState(null);
   const [toast, setToast] = useState({
@@ -39,14 +38,13 @@ function OperationsCenterInner() {
   useEffect(() => {
     const tab = searchParams.get("tab");
     const inquiryId = searchParams.get("id");
-    if (tab === "inquiries") setActiveTab("inquiries");
+    if (tab) setActiveTab(tab);
     if (inquiryId) {
       setHighlightedInquiryId(inquiryId);
       setTimeout(() => setHighlightedInquiryId(null), 3000);
     }
   }, [searchParams]);
 
-  // Hook was already here, just wasn't bound to the UI!
   const {
     products,
     productPagination,
@@ -86,7 +84,6 @@ function OperationsCenterInner() {
     loadInquiries,
   } = useInquiries(token);
 
-  // Countdown + global sync
   useEffect(() => {
     if (!token) return;
 
@@ -135,7 +132,6 @@ function OperationsCenterInner() {
     }, 2000);
   };
 
-  //  UI FIX: Added the Products tab to the sidebar navigation array
   const tabs = [
     { id: "products", label: "Products", emoji: "🛍️" },
     { id: "blogs", label: "Blogs", emoji: "✍️" },
@@ -154,7 +150,6 @@ function OperationsCenterInner() {
       />
 
       <div className="min-h-screen bg-[#f8f4ec] text-brand-african flex flex-col">
-        {/* Top bar */}
         <AdminHeader
           admin={user}
           activeTab={activeTab}
@@ -163,9 +158,7 @@ function OperationsCenterInner() {
           countdown={countdown}
         />
 
-        {/* Body = Left Sidebar + Right Content */}
         <div className="flex flex-1">
-          {/* LEFT SIDEBAR */}
           <aside className="w-52 flex-shrink-0 bg-white border-r border-brand-lightgold/40 sticky top-16 self-start min-h-[calc(100vh-64px)]">
             <nav
               className="flex flex-col py-6 px-3 gap-1"
@@ -188,7 +181,6 @@ function OperationsCenterInner() {
             </nav>
           </aside>
 
-          {/* RIGHT MAIN CONTENT */}
           <main
             className="flex-1 px-6 py-8 space-y-8 overflow-auto"
             id="main-content"
@@ -201,7 +193,6 @@ function OperationsCenterInner() {
               countdown={countdown}
             />
 
-            {/*  UI FIX: Added the Product Management rendering block */}
             {activeTab === "products" && (
               <section aria-label="Product Management" className="space-y-8">
                 <ProductForm

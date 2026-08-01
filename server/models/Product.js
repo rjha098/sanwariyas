@@ -1,12 +1,12 @@
 // PURPOSE: Define the SHAPE of a Product in MongoDB
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Product name is required'],
+      required: [true, "Product name is required"],
       trim: true,
     },
     slug: {
@@ -17,15 +17,15 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Description is required'],
+      required: [true, "Description is required"],
     },
     shortDescription: {
       type: String,
-      default: '',
+      default: "",
     },
     price: {
       type: Number,
-      required: [true, 'Price is required'],
+      required: [true, "Price is required"],
       min: 0,
     },
     originalPrice: {
@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: [true, 'Image URL is required'],
+      required: [true, "Image URL is required"],
     },
     images: {
       type: [String],
@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      default: 'General',
+      default: "General",
       trim: true,
     },
     tags: {
@@ -51,11 +51,11 @@ const productSchema = new mongoose.Schema(
     },
     fabric: {
       type: String,
-      default: '',
+      default: "",
     },
     occasion: {
       type: String,
-      default: '',
+      default: "",
     },
     isAvailable: {
       type: Boolean,
@@ -67,18 +67,33 @@ const productSchema = new mongoose.Schema(
     },
     metaTitle: {
       type: String,
-      default: '',
+      default: "",
     },
+
     metaDescription: {
       type: String,
-      default: '',
+      default: "",
+    },
+    // ✅ Stock Ready Architecture — optional. null = stock not tracked (unlimited), matches existing behavior.
+    stock: {
+      type: Number,
+      default: null,
+    },
+    // ✅ Bulk Discount (Future Ready) — optional, empty by default, does not affect existing products.
+    bulkDiscountTiers: {
+      type: [
+        {
+          minPieces: { type: Number, required: true, min: 1 },
+          discountPercent: { type: Number, required: true, min: 0, max: 100 },
+        },
+      ],
+      default: [],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 productSchema.index({ category: 1 });
 productSchema.index({ isFeatured: 1 });
 
-export default mongoose.model('Product', productSchema);
-
+export default mongoose.model("Product", productSchema);

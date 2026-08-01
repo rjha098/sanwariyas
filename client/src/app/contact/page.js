@@ -10,7 +10,7 @@ import Toast from "@/components/ui/Toast";
 
 // ── Contact info ──────────────────────────────────────────────────────────────
 
-const contactItems = [
+const contactItems = [ 
   {
     label: "Visit Us",
     line1:
@@ -350,7 +350,7 @@ export default function ContactPage() {
     validateField(name, value);
   };
 
-  // ✅ Added robust email regex validation
+  //  Added robust email regex validation
   const validateField = (name, value) => {
     let error = "";
     if (name === "name" && !value.trim()) {
@@ -368,8 +368,8 @@ export default function ContactPage() {
     }
     if (name === "quantity") {
       const num = parseInt(value);
-      if (value && (isNaN(num) || num < 50)) {
-        error = "Minimum order quantity is 50 pieces.";
+      if (value && (isNaN(num) || num < 10)) {
+        error = "Minimum order quantity is 10 pieces (2 Sets).";
       }
     }
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
@@ -393,8 +393,8 @@ export default function ContactPage() {
       errors.message = "Please describe your requirements.";
     if (formData.quantity) {
       const num = parseInt(formData.quantity);
-      if (isNaN(num) || num < 50)
-        errors.quantity = "Minimum order quantity is 50 pieces.";
+      if (isNaN(num) || num < 10)
+        errors.quantity = "Minimum order quantity is 10 pieces (2 Sets).";
     }
     setFieldErrors(errors);
 
@@ -474,7 +474,7 @@ export default function ContactPage() {
       let cleanError = rawError;
       if (rawError.includes("validation failed")) {
         if (rawError.includes("quantity") && rawError.includes("minimum"))
-          cleanError = "Quantity must be at least 50.";
+          cleanError = "Quantity must be at least 10.";
         else
           cleanError =
             "Please check your form inputs. Some required fields are empty or contain invalid data.";
@@ -847,7 +847,9 @@ export default function ContactPage() {
                     className="block text-xs font-bold tracking-widest uppercase text-[#7A3D2A] mb-2"
                   >
                     Estimated Quantity{" "}
-                    <span className="text-[#BE6E5B]">(Min. 50 pieces)</span>
+                    <span className="text-[#BE6E5B]">
+                      (Min. 10 Pieces / 2 Sets)
+                    </span>
                   </label>
                   <div className="relative">
                     <StyledInput
@@ -863,7 +865,7 @@ export default function ContactPage() {
                         touchedFields.quantity &&
                         !fieldErrors.quantity &&
                         formData.quantity &&
-                        parseInt(formData.quantity) >= 50
+                        parseInt(formData.quantity) >= 10
                       }
                     />
                     {/* Suffix label */}
@@ -874,7 +876,7 @@ export default function ContactPage() {
                   <FieldError message={fieldErrors.quantity} />
                   {!fieldErrors.quantity && (
                     <p className="font-sans text-[11px] text-[#a07f61] mt-1.5">
-                      Minimum wholesale order is 50 pieces per category.
+                      Minimum wholesale order is 10 Pieces (2 Sets).{" "}
                     </p>
                   )}
                 </div>

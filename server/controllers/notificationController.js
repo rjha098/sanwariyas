@@ -1,12 +1,12 @@
 // FILE: server/controllers/notificationController.js
-import Notification from '../models/Notification.js';
+import Notification from "../models/Notification.js";
 
 export const getUnreadCount = async (req, res) => {
   try {
     const { role, id } = req.authUser;
     let query;
 
-    if (role === 'admin' || role === 'staff') {  
+    if (role === "admin" || role === "staff") {
       query = { isGlobalAdmin: true, isRead: false };
     } else {
       query = { recipientId: id, isRead: false };
@@ -24,7 +24,7 @@ export const getNotifications = async (req, res) => {
     const { role, id } = req.authUser;
     let query;
 
-    if (role === 'admin' || role === 'staff') {
+    if (role === "admin" || role === "staff") {
       query = { isGlobalAdmin: true };
     } else {
       query = { recipientId: id };
@@ -46,14 +46,14 @@ export const markAllRead = async (req, res) => {
     const { role, id } = req.authUser;
     let query;
 
-    if (role === 'admin' || role === 'staff') {
+    if (role === "admin" || role === "staff") {
       query = { isGlobalAdmin: true, isRead: false };
     } else {
       query = { recipientId: id, isRead: false };
     }
 
     await Notification.updateMany(query, { isRead: true });
-    res.json({ success: true, message: 'All notifications marked as read.' });
+    res.json({ success: true, message: "All notifications marked as read." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -65,7 +65,7 @@ export const clearReadNotifications = async (req, res) => {
 
     let query;
 
-    if (role === 'admin' || role === 'staff') {
+    if (role === "admin" || role === "staff") {
       query = {
         isGlobalAdmin: true,
         isRead: true,
@@ -81,7 +81,7 @@ export const clearReadNotifications = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Notifications cleared',
+      message: "Notifications cleared",
     });
   } catch (error) {
     res.status(500).json({
@@ -90,29 +90,27 @@ export const clearReadNotifications = async (req, res) => {
     });
   }
 };
- 
 
 export const deleteReadNotifications = async (req, res) => {
   try {
-
-      console.log("DELETE CALLED");
+    console.log("DELETE CALLED");
 
     const { role, id } = req.authUser;
 
-      console.log(role);
+    console.log(role);
     console.log(id);
-    
+
     let query;
 
-    if (role === 'admin' || role === 'staff') {
+    if (role === "admin" || role === "staff") {
       query = {
         isGlobalAdmin: true,
-        isRead: true
+        isRead: true,
       };
     } else {
       query = {
         recipientId: id,
-        isRead: true
+        isRead: true,
       };
     }
 
@@ -120,20 +118,17 @@ export const deleteReadNotifications = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Notifications deleted'
+      message: "Notifications deleted",
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
-};   
+};
 
-
-
-// seen  message  that  time   auto  delete  the  notification 
+// seen  message that  time   auto  delete  the  notification
 
 export const deleteNotificationByInquiry = async (req, res) => {
   try {
@@ -141,14 +136,14 @@ export const deleteNotificationByInquiry = async (req, res) => {
     const { role } = req.authUser;
 
     let query;
-    if (role === 'admin' || role === 'staff') {
+    if (role === "admin" || role === "staff") {
       query = { isGlobalAdmin: true, relatedInquiryId: inquiryId };
     } else {
       query = { recipientId: req.authUser.id, relatedInquiryId: inquiryId };
     }
 
     await Notification.deleteMany(query);
-    res.json({ success: true, message: 'Notification deleted.' });
+    res.json({ success: true, message: "Notification deleted." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

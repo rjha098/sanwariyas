@@ -11,12 +11,10 @@ const getAllProducts = async ({ category, featured, page = 1, limit = 12 }) => {
     // Start with: only show products that are in stock
   const query = { isAvailable: true };
     // If category filter sent, add it to the query
-  if (category) query.category = category;
+  if (category) query.category = category;     
    // If featured=true sent, only show featured products
   // String 'true' not Boolean — URL params are always strings
   if (featured === 'true') query.isFeatured = true;
-
-
 
     // PAGINATION math:
   // Page 1 → skip 0  (show products 1–12)
@@ -137,8 +135,25 @@ const normalizeProductPayload = (payload = {}, { isUpdate = false } = {}) => {
     occasion: cleanString(payload.occasion),
     isAvailable: typeof payload.isAvailable === 'boolean' ? payload.isAvailable : payload.isAvailable === 'true',
     isFeatured: typeof payload.isFeatured === 'boolean' ? payload.isFeatured : payload.isFeatured === 'true',
-    metaTitle: cleanString(payload.metaTitle),
+
+
+
+   metaTitle: cleanString(payload.metaTitle),
     metaDescription: cleanString(payload.metaDescription),
+    //  Stock Ready Architecture — optional; blank/undefined = stock not tracked (unlimited), same as before
+    stock:
+      payload.stock === '' || payload.stock === null || typeof payload.stock === 'undefined'
+        ? null
+        : cleanNumber(payload.stock, null),
+    //  Bulk Discount (Future Ready) — optional tiers array
+    bulkDiscountTiers: Array.isArray(payload.bulkDiscountTiers)
+      ? payload.bulkDiscountTiers
+          .filter((t) => t && t.minPieces && t.discountPercent !== undefined)
+          .map((t) => ({
+            minPieces: Number(t.minPieces),
+            discountPercent: Number(t.discountPercent),
+          }))
+      : [],
   };
 
   if (!data.images.length && data.image) {

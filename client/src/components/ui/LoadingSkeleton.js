@@ -27,7 +27,7 @@ export function ProductGridSkeleton({ count = 8 }) {
       aria-busy="true"
       className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
     >
-      {/* ✅ SEO FIX: Enriched screen reader announcement with B2B wholesale entity keywords */}
+      {/*  SEO FIX: Enriched screen reader announcement with B2B wholesale entity keywords */}
       <span className="sr-only">Loading wholesale ethnic wear collections, please wait.</span>
       
       {Array.from({ length: count }).map((_, i) => (

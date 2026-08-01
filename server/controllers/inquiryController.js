@@ -4,37 +4,9 @@ import * as inquiryService from '../services/inquiryService.js';
 import User from '../models/User.js';
 import { verifyAuthToken } from '../utils/authUtils.js';
 
-
-// export const submitInquiry = async (req, res) => {
-//   try {
-//     let userId = req.body.userId || null;    
-
-//     if (!userId) {
-//       const authHeader = req.headers.authorization;
-//       if (authHeader && authHeader.startsWith('Bearer ')) {
-//         const token = authHeader.slice(7);
-//         try {
-//           const decoded = verifyAuthToken(token);
-//           userId = decoded.id || decoded._id || decoded.userId; 
-//         } catch (err) {
-//           console.log("Invalid token, proceeding as guest.");
-//         }
-//       }
-//     }
-
-//     const inquiry = await inquiryService.createInquiry(req.body, userId);
-//     res.status(201).json({ success: true, inquiry });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-
-
-
-// server/controllers/inquiryController.js — submitInquiry
 export const submitInquiry = async (req, res) => {
   try {
-    let userId = null;   // ← never read from req.body
+    let userId = null;   
 
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -115,7 +87,7 @@ export const replyToInquiry = async (req, res) => {
 
     if (!senderId) senderId = '000000000000000000000000';
 
-    // ✅ Ownership check for customers
+    //  Ownership check for customers
     if (role === 'customer') {
       const owned = await inquiryService.isInquiryOwnedByUser(req.params.id, senderId, userObj.email);
       if (!owned) {
@@ -130,11 +102,6 @@ export const replyToInquiry = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
-
-
-
 
 export const markViewed = async (req, res) => {
   try {
@@ -191,3 +158,4 @@ export const deleteInquiry = async (req,res) => {
   }
 };
 
+ 

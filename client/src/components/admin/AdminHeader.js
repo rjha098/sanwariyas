@@ -14,7 +14,6 @@ export default function AdminHeader({
     <header className="bg-white border-b border-brand-lightgold/40 sticky top-0 z-40">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-
           {/* Brand */}
           <div className="flex items-center gap-4">
             <span className="font-display text-xl text-brand-african">

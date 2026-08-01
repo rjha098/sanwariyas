@@ -5,8 +5,6 @@ import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import AboutInteractive from "@/components/about/AboutInteractive";
 
-
-//  SEO FIX: Expanded Keywords Array with all requested B2B/Manufacturer/Exporter combinations
 export const metadata = {
   title: "About SANWARIYAS | Jaipur Ethnic Wear Manufacturer & Wholesaler",
   description:
@@ -64,173 +62,95 @@ export const metadata = {
   },
 };
 
-const STATS = [
-  { value: "2010", label: "Founded" },
-  { value: "500+", label: "Designs per season" },
-  { value: "15K+", label: "B2B Orders delivered" },
-  { value: "50+", label: "Countries exported" },
-];
-
-//  SEO FIX: Injected natural semantic keywords & contextual internal links seamlessly
+// Pura Timeline text yahan map kiya gaya hai
 const TIMELINE = [
   {
-    year: "2010",
-    title: "The Beginning",
-    desc: (
-      <>
-        SANWARIYAS was founded in a small workshop in Sanganer, Jaipur — the
-        heart of India's textile belt. We started our journey as a dedicated{" "}
-        <strong>Jaipur Kurti Manufacturer</strong>, offering a single product
-        line of hand-block printed Cotton Kurtis, sold locally to boutiques
-        across Rajasthan.
-      </>
-    ),
-  },
-  {
-    year: "2014",
-    title: "Scaling Production",
-    desc: (
-      <>
-        Demand grew rapidly. We expanded our workshop into a fully equipped{" "}
-        <strong>Indian Ethnic Wear Manufacturer</strong> unit, added a dedicated
-        stitching floor, and launched our first catalogue of wholesale Anarkalis
-        and straight-cut suits.
-      </>
-    ),
-  },
-  {
     year: "2017",
-    title: "Export House Status",
-    desc: (
-      <>
-        SANWARIYAS received its export house certification and began operating
-        as a premier <strong>Cotton Clothing Exporter India</strong>. Our
-        quality-first approach earned repeat wholesale orders from global
-        boutiques and distributors.
-      </>
-    ),
+    title: "The Beginning",
+    desc: "SANWARIYAS began its journey with customised ethnic wear, crafting garments tailored to the unique requirements of retailers and laying the foundation for lasting partnerships.",
+  },
+  {
+    year: "2018",
+    title: "Fabrication & Expansion",
+    desc: "We expanded our fabrication capabilities, offering a wider range of fabrics while strengthening our production process.",
   },
   {
     year: "2020",
-    title: "Digital Expansion",
-    desc: (
-      <>
-        We launched our online B2B platform, cementing our position as a leading{" "}
-        <strong>Wholesale Ethnic Wear Supplier India</strong>. This enabled
-        global retailers to browse collections, review our{" "}
-        <Link
-          href="/faq"
-          className="underline hover:text-[#7A3D2A] transition-colors"
-        >
-          B2B guidelines
-        </Link>
-        , and track manufacturing orders seamlessly as their trusted{" "}
-        <strong>B2B Ethnic Wear Supplier</strong>.
-      </>
-    ),
+    title: "Rebuilding & Scaling",
+    desc: "Following the pandemic we rebuilt with renewed focus, introducing more designs, expanding our production capacity, and reinforcing our bulk manufacturing capabilities to meet the evolving needs of the market.",
   },
   {
-    year: "2024",
-    title: "Today & Beyond",
-    desc: (
-      <>
-        With 500+ fresh designs every season and a robust 4-step quality control
-        process, our <strong>Jaipur Garment Factory</strong> operates at peak
-        capacity. As a top <strong>Ladies Cotton Suit Manufacturer</strong>,
-        SANWARIYAS continues to set the standard for wholesale ethnic wear
-        suppliers globally.
-      </>
-    ),
+    year: "2023",
+    title: "In-House Operations",
+    desc: "We established our own manufacturing and wholesale operations, enabling greater control over quality, consistency, and timely deliveries.",
+  },
+  {
+    year: "2025",
+    title: "Digital Presence",
+    desc: "We expanded our presence online, making it easier for retailers and wholesalers to explore our collections and connect with us from anywhere.",
+  },
+  {
+    year: "2026",
+    title: "A Trusted Global Partner",
+    desc: "Today, we're more than a manufacturer; we're a trusted partner for wholesalers & retailers across the globe, delivering trend-led collections, premium quality, and the confidence to grow together.",
   },
 ];
 
+// "The Craft Behind the Catalogue" ko design grid ke 6 boxes mein fit kiya gaya hai
 const MANUFACTURING = [
   {
     step: "01",
-    title: "Fabric Sourcing",
-    desc: (
-      <>
-        As a leading <strong>Jaipur Clothing Manufacturer</strong>, we source
-        directly from certified mills in Surat, Varanasi, and Jaipur. Every
-        fabric batch is tested for GSM, color-fastness, shrinkage, and tensile
-        strength before entering production.
-      </>
-    ),
+    title: "Meticulous Process",
+    desc: "Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali, A-Line Suit, or Co-ord Set, passes through a meticulous four-step quality process before it leaves our factory.",
   },
   {
     step: "02",
-    title: "Design & Pattern Making",
-    desc: "Our in-house design team creates seasonal catalogues with 500+ original styles. Each design goes through a meticulous pattern-making process with precise size grading across XS–3XL.",
+    title: "Individual Inspection",
+    desc: "Every garment is individually inspected before dispatch, ensuring consistent quality across every order.",
   },
   {
     step: "03",
-    title: "Cutting & Stitching",
-    desc: (
-      <>
-        Precision cutting is done using CAD-guided machines. Stitching is
-        carried out by skilled artisans on our production floor, showcasing why
-        we are a trusted <strong>Ethnic Wear Manufacturer India</strong>,
-        ensuring consistent quality across every piece in the lot.
-      </>
-    ),
+    title: "Fresh Collections",
+    desc: "With over 500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead.",
   },
   {
     step: "04",
-    title: "Embroidery & Embellishment",
-    desc: "For embroidered pieces, we use a mix of hand-embroidery artisans and computerized embroidery machines — ensuring intricate detailing without compromising on speed or consistency.",
+    title: "Commercially Strong",
+    desc: "We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.",
   },
   {
     step: "05",
-    title: "4-Step Quality Control",
-    desc: "Every garment passes through four QC checkpoints: fabric inspection, mid-production stitch check, finishing review, and a final packing audit — before it ever leaves our facility.",
+    title: "Global Reach",
+    desc: "Today, our garments are trusted across more than 50 countries, yet the philosophy remains unchanged.",
   },
   {
     step: "06",
-    title: "Packing & Dispatch",
-    desc: (
-      <>
-        Orders are individually folded, tagged, and packed as per buyer
-        specifications. Export orders are packed with customs documentation,
-        barcode tagging, and full insurance coverage. Ready to order?{" "}
-        <Link
-          href="/contact"
-          className="underline hover:text-[#7A3D2A] transition-colors"
-        >
-          Contact our wholesale team
-        </Link>
-        .
-      </>
-    ),
+    title: "Our Core Promise",
+    desc: "“Every piece is crafted with the same care, attention, and commitment to quality that shaped our very first workshop.”",
   },
 ];
 
+// "How Trust Gets Built" ko 4 Values ke structure mein fit kiya gaya hai (Passes to interactive component)
 const VALUES = [
   {
-    title: "Premium Quality",
+    title: "Consistent Quality",
     icon: "✦",
-    desc: "Every garment is stitched to meet export standards. No shortcuts, no compromise — only pieces we are proud to put our name on.",
+    desc: "Retailers don't reorder because a brand asks nicely. They reorder because the last shipment matched the first one, and the one before that.",
   },
   {
-    title: "Artisan Heritage",
+    title: "Quiet Discipline",
     icon: "◈",
-    desc: "We work with master weavers and skilled artisans from Rajasthan, preserving centuries-old craft traditions in every cotton suit collection.",
+    desc: "That's the quiet discipline Sanwariyas was built on. Fair pricing that didn't shift with demand. Deliveries that came when promised, not when convenient.",
   },
   {
-    title: "Transparent Pricing",
+    title: "Accountability",
     icon: "◎",
-    desc: (
-      <>
-        Factory-direct means no middlemen. Whether you need a{" "}
-        <strong>Wholesale Cotton Kurti Supplier</strong> or a{" "}
-        <strong>Jaipur Suit Manufacturer</strong>, you get exact B2B wholesale
-        pricing directly from us.
-      </>
-    ),
+    desc: "A willingness to actually listen when a wholesaler said a design wasn't moving, or a fit needed adjusting and to act on it, not just note it down.",
   },
   {
-    title: "Custom Production",
+    title: "Long-Term Trust",
     icon: "⬡",
-    desc: "From private labels to custom embroidery and size grading, we tailor every wholesale order to your exact retail specifications.",
+    desc: "None of this makes headlines. But it's the reason a small workshop kept getting called back, long after the first order was filled.",
   },
 ];
 
@@ -274,7 +194,6 @@ function SectionHeader({ eyebrow, title, subtitle }) {
 export default function AboutPage() {
   return (
     <>
-      {/* ✅ SEO FIX: Injected Comprehensive Schema Array (AboutPage, LocalBusiness, BreadcrumbList, FAQPage) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -288,7 +207,7 @@ export default function AboutPage() {
                 alternateName: "SANWARIYAS Ethnic Wear Manufacturer",
                 description:
                   "B2B Wholesale, Custom Manufacturing, and Global Export of Premium Ethnic Wear including Cotton Suits, Kurtis, and Co-ord Sets.",
-                foundingDate: "2010",
+                foundingDate: "2017",
                 founder: { "@type": "Person", name: "Sonali Kanther" },
                 url: "https://sanwariyas.com",
               },
@@ -386,7 +305,7 @@ export default function AboutPage() {
       <Navbar />
 
       <main id="main-content" className="bg-[#FDF7F2]">
-        {/* ── 1. HERO ── */}
+        {/* ── 1. HERO ("Where It Started") ── */}
         <section
           aria-label="About SANWARIYAS"
           className="relative overflow-hidden pt-40 pb-32 bg-gradient-to-br from-[#FDF7F2] via-[#F5E8D8] to-[#F2D9C3]"
@@ -405,7 +324,6 @@ export default function AboutPage() {
             className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
           />
 
-          {/* Large Watermark 'S' */}
           <div
             aria-hidden="true"
             className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
@@ -419,10 +337,6 @@ export default function AboutPage() {
           </div>
 
           <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="font-sans text-[10px] md:text-xs tracking-[0.65em] uppercase text-[#BE6E5B] font-extrabold mb-6">
-              Our Story
-            </p>
-            {/* ✅ SEO FIX: Visually hidden text in H1 to strictly match target keywords while keeping UI identical */}
             <h1
               className={`${cormorant.className} text-5xl md:text-7xl font-bold text-[#7A3D2A] leading-tight mb-8`}
             >
@@ -441,42 +355,46 @@ export default function AboutPage() {
               <span className="text-[#BE6E5B] text-2xl">✦</span>
               <div className="h-[2px] w-24 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
             </div>
-            <p
-              className={`${cormorant.className} italic text-xl md:text-2xl text-[#a07f61] max-w-3xl mx-auto mb-6 leading-relaxed font-medium`}
-            >
-              From a single workshop in Sanganer, Jaipur — to an ethnic wear
-              export house trusted by retailers across 50+ countries. SANWARIYAS
-              is where Indian craftsmanship meets global wholesale.
-            </p>
-            <p className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto mb-16 leading-relaxed font-medium">
-              We manufacture premium ethnic wear — Kurtis, Anarkalis, Suits,
-              A-Line Suits, and Co-ord Sets — directly in our Jaipur facility,
-              and deliver to boutiques, retailers, and wholesalers worldwide.
+
+            <p className="font-sans text-[10px] md:text-xs tracking-[0.65em] uppercase text-[#BE6E5B] font-extrabold mb-6">
+              Where It Started
             </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              {STATS.map((s) => (
-                <div
-                  key={s.label}
-                  className="flex flex-col items-center py-8 px-4 rounded-2xl bg-white/50 backdrop-blur-md border border-[#BE6E5B]/30 shadow-[0_8px_30px_rgb(122,61,42,0.08)] transition-transform hover:-translate-y-1"
-                >
-                  <span
-                    style={{ fontFamily: "Georgia, serif" }}
-                    className="text-3xl md:text-4xl font-bold text-[#7A3D2A] mb-2"
-                  >
-                    {s.value}
-                  </span>
-                  <span className="font-sans text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-[#a07f61] font-bold">
-                    {s.label}
-                  </span>
-                </div>
-              ))}
+            <p
+              className={`${cormorant.className} italic text-xl md:text-2xl text-[#a07f61] max-w-3xl mx-auto mb-8 leading-relaxed font-medium`}
+            >
+              A Story Stitched with Tradition, Quality, and Trust.
+            </p>
+
+            {/* The exact paragraphs you provided */}
+            <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-4xl mx-auto mb-16 leading-relaxed font-medium space-y-6 text-left md:text-center">
+              <p>
+                Sanganer has always known how to make cloth speak. Long before
+                it had a name for itself, this pocket of Jaipur was where
+                families spent lifetimes perfecting the block, the dye, and the
+                stitch not as a trade taught in a classroom, but as something
+                passed hand to hand, season after season.
+              </p>
+              <p>
+                Sanwariyas grew out of that soil. It started in 2017, as a
+                modest unit making cotton kurtis for local retailers who wanted
+                something better than what the market usually offered. There was
+                no plan to become anything in particular. There was only a habit
+                - do the work properly, every single time and it turned out that
+                habit was enough.
+              </p>
+              <p>
+                What began in Sanganer is now a full-scale garment house in
+                Jaipur - designing, cutting, stitching, and quality-checking
+                every piece under one roof. Over a decade, that single workshop
+                grew into an export house, then into a name wholesalers plan
+                their season around.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* ── 2. EDITORIAL TIMELINE ── */}
+        {/* ── 2. EDITORIAL TIMELINE ("Growing Without Losing the Thread") ── */}
         <section
           aria-labelledby="story-heading"
           className="relative overflow-hidden bg-[#FDF7F2] py-32"
@@ -488,13 +406,23 @@ export default function AboutPage() {
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionHeader
-              eyebrow="Our Journey"
-              title="How We Got Here"
-              subtitle="A 14-year story of craft, growth, and an unwavering commitment to manufacturing quality."
+              eyebrow="Growing Without Losing the Thread"
+              title="Our Journey"
+              subtitle="
+              
+              
+              
+              As confidence grew, so did the work. What started as one product line slowly became something much bigger. Every milestone tells the story of growth, but our constant has always been the same - commitment to reliability, quality & trust.
+              
+              
+              
+              
+              
+              
+              "
             />
 
             <div className="relative mt-20 max-w-5xl mx-auto">
-              {/* Desktop continuous vertical line */}
               <div
                 aria-hidden="true"
                 className="hidden md:block absolute left-[29px] top-6 bottom-12 w-[2px] bg-gradient-to-b from-[#BE6E5B]/50 via-[#BE6E5B]/20 to-transparent"
@@ -506,13 +434,11 @@ export default function AboutPage() {
                     key={item.year}
                     className="relative flex flex-col md:flex-row gap-6 md:gap-16 group"
                   >
-                    {/* Mobile-only vertical line */}
                     <div
                       aria-hidden="true"
                       className="md:hidden absolute left-[29px] top-6 bottom-[-3rem] w-[2px] bg-gradient-to-b from-[#BE6E5B]/40 to-transparent"
                     />
 
-                    {/* Left Side: Glowing Dot + Year */}
                     <div className="flex items-start gap-8 md:w-1/3 shrink-0 z-10">
                       <div className="relative mt-[14px]">
                         <div className="w-[14px] h-[14px] rounded-full bg-[#BE6E5B] ring-4 ring-[#FDF7F2] shadow-[0_0_15px_rgba(190,110,91,0.6)] transition-transform duration-500 group-hover:scale-150" />
@@ -530,9 +456,7 @@ export default function AboutPage() {
                       </div>
                     </div>
 
-                    {/* Right Side: Editorial Content Card */}
                     <div className="md:w-2/3 ml-14 md:ml-0 bg-white/70 backdrop-blur-xl p-8 md:p-10 rounded-[2rem] border border-[#BE6E5B]/20 shadow-[0_8px_30px_rgba(122,61,42,0.06)] hover:shadow-[0_20px_50px_rgba(122,61,42,0.12)] transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
-                      {/* Massive Watermark Year */}
                       <span
                         aria-hidden="true"
                         style={{ fontFamily: "Georgia, serif" }}
@@ -557,7 +481,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── 3. MANUFACTURING ── */}
+        {/* ── 3. MANUFACTURING ("The Craft Behind the Catalogue") ── */}
         <section
           aria-labelledby="manufacturing-heading"
           className="relative overflow-hidden bg-gradient-to-br from-[#FDF7F2] to-[#F2D9C3] py-32"
@@ -581,9 +505,9 @@ export default function AboutPage() {
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionHeader
-              eyebrow="How We Make It"
+              eyebrow="The Craft Behind the Catalogue"
               title="Wholesale Manufacturing Capability"
-              subtitle="A 6-step factory production process built for consistency, export quality, and scale."
+              subtitle="Designing, cutting, stitching, and quality-checking every piece under one roof."
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
@@ -647,10 +571,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── 4. TEAM (Interactive - Client Component) ── */}
+        {/* ── 4. TEAM & VALUES ("How Trust Gets Built") ── */}
         <AboutInteractive values={VALUES} />
 
-        {/* ── 5. CTA ── */}
+        {/* ── 5. CTA ("More Than a Manufacturer" & "Built for Long-Term Partnerships") ── */}
         <section
           aria-label="Get in touch with SANWARIYAS Wholesale Manufacturer"
           className="relative overflow-hidden py-32 bg-gradient-to-br from-[#5C3120] via-[#7A3D2A] to-[#8B4A34]"
@@ -669,21 +593,49 @@ export default function AboutPage() {
             }}
           />
 
-          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#F2D9C3] font-bold opacity-80 mb-6">
-              Partner With Us
+              More Than a Manufacturer
             </p>
-            <h2
-              className={`${cormorant.className} text-4xl md:text-5xl lg:text-6xl font-bold text-[#FDF7F2] mb-8 leading-tight`}
-            >
-              Ready to source premium{" "}
-              <em className="italic text-[#F2D9C3]">ethnic wear?</em>
-            </h2>
-            <p className="font-sans text-base md:text-lg text-[#F2D9C3]/90 leading-relaxed max-w-2xl mx-auto mb-12">
-              Send us a B2B inquiry and our export team will respond within 24
-              hours with pricing, availability, and a curated catalog tailored
-              to your retail boutique.
-            </p>
+
+            <div className="font-sans text-base md:text-lg text-[#F2D9C3]/90 leading-relaxed max-w-4xl mx-auto mb-12 space-y-6 text-left md:text-center">
+              <p>
+                Over the years, SANWARIYAS has grown from a small workshop in
+                Sanganer to a trusted manufacturing partner for retailers,
+                wholesalers, and distributors across 50+ countries. Yet, what
+                our partners value most isn't just the quality of our garments-
+                it's the confidence that every order will arrive exactly as
+                promised. From design consistency and transparent communication
+                to dependable timelines, we've built our reputation on
+                reliability as much as craftsmanship. Every repeat order is a
+                reflection of the trust we've earned, one shipment at a time.
+              </p>
+
+              <h2
+                className={`${cormorant.className} text-4xl md:text-5xl lg:text-6xl font-bold text-[#FDF7F2] mb-8 leading-tight`}
+              >
+                Built for Long-Term{" "}
+                <em className="italic text-[#F2D9C3]">Partnerships</em>
+              </h2>
+
+              <p>
+                Fashion trends evolve, collections change, and businesses grow
+                but trust remains timeless. At SANWARIYAS, every order is
+                approached with the same care and accountability that shaped our
+                earliest days. Our 500+ fresh designs every season, meticulous
+                4-step quality process, and commitment to delivering consistent
+                quality are all guided by one simple belief: when our customers
+                succeed, we succeed alongside them. That philosophy continues to
+                shape every garment we create and every relationship we build-
+                making SANWARIYAS not just a supplier, but a dependable partner
+                in your journey of growth.
+              </p>
+
+              <p className="text-xl font-bold text-[#FDF7F2] pt-4">
+                Because when your business grows, so does ours.
+              </p>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Link
                 href="/contact"

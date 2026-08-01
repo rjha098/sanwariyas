@@ -123,7 +123,7 @@ const BADGES = [
 export default function TrustBadges() {
   return (
     <>
-      {/* ✅ SEO FIX: Injected ItemList Schema to explicitly define B2B value propositions to search engines */}
+      {/*  SEO FIX: Injected ItemList Schema to explicitly define B2B value propositions to search engines */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -193,7 +193,7 @@ export default function TrustBadges() {
               className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
             >
               Trusted Manufacturing &amp; Export Excellence
-              {/* ✅ SEO FIX: Visually hidden core entity modifiers for Topical Authority */}
+              {/*  SEO FIX: Visually hidden core entity modifiers for Topical Authority */}
               <span className="sr-only">
                 {" "}
                 - Jaipur Ethnic Wear Manufacturer
@@ -219,8 +219,8 @@ export default function TrustBadges() {
             </p>
           </div>
 
-          {/* ✅ SEMANTIC: Unordered list */}
-          {/* ✅ SEO FIX: Added Aria-Label for semantic screen-reader context */}
+          {/*  SEMANTIC: Unordered list */}
+          {/*  SEO FIX: Added Aria-Label for semantic screen-reader context */}
           <ul
             aria-label="Wholesale Manufacturing Trust Signals"
             className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5 lg:gap-6 list-none p-0 m-0"

@@ -88,7 +88,7 @@ export default function FeaturedProductsSection({ products }) {
               className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
             >
               Featured Pieces
-              {/* ✅ SEO FIX: Upgraded to Priority #2 Keyword for maximum Semantic relevance */}
+              {/*  SEO FIX: Upgraded to Priority #2 Keyword for maximum Semantic relevance */}
               <span className="sr-only">
                 {" "}
                 - Indian Ethnic Wear Manufacturer

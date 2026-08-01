@@ -35,45 +35,6 @@ const OWNERS = [
   },
 ];
 
-// ── TEAM DATA ──
-// const TEAM = [
-//   {
-//     name: "Rahul Soni",
-//     role: "Business Growth & Operations Head",
-//     bio: "Rahul optimizes our internal human capital and operational workflows, ensuring that our production teams are aligned with strict export deadlines and quality benchmarks.",
-//     image: "/images/team/rahul.png",
-//     initial: "R",
-//   },
-//   {
-//     name: "Shalvy Sadh",
-//     role: "Online Sales Head",
-//     bio: "Shalvy leads our digital wholesale operations — building strong relationships with boutique owners and online retailers globally. Her deep product knowledge is key to our consistent order growth.",
-//     image: "/images/team/shalvy.png",
-//     initial: "S",
-//   },
-//   {
-//     name: "Suraj",
-//     role: "Offline Sales Head",
-//     bio: "Suraj leads our physical B2B sales channels, managing relationships with prominent boutique owners, distributors, and bulk buyers through face-to-face engagements and trade events.",
-//     image: "/images/team/suraj.png",
-//     initial: "S",
-//   },
-//   // {
-//   //   name: "Manisha",
-//   //   role: "Customer Relationship Manager",
-//   //   bio: "Manisha is the dedicated point of contact for our wholesale partners. She ensures every client receives personalized support, from initial inquiry to post-delivery satisfaction.",
-//   //   image: "/images/team/manisha.png",
-//   //   initial: "M",
-//   // },
-//   // {
-//   //   name: "Mohit",
-//   //   role: "Accountant",
-//   //   bio: "Mohit manages our financial health, handling everything from factory-direct invoicing to wholesale ledger accounts, ensuring total transparency in our pricing model.",
-//   //   image: "/images/team/mohit.png",
-//   //   initial: "M",
-//   // },
-// ];    
-
 // ── Fallback avatar shown if photo file is missing ──
 function AvatarFallback({ initial, size = 120 }) {
   return (
@@ -105,7 +66,6 @@ function TeamCard({ member }) {
         {member.image && (
           <Image
             src={member.image}
-            // ✅ SEO FIX: Highly descriptive, keyword-rich Alt text
             alt={`${member.name}, ${member.role} at SANWARIYAS`}
             fill
             priority={member.name === "Sonali Kanther"}
@@ -174,7 +134,6 @@ export default function AboutInteractive({ values }) {
           </h2>
         </div>
 
-        {/* CHANGED: max-w-7xl and lg:grid-cols-4 added to ensure exactly 1 row on desktop */}
         <ul className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20 list-none p-0 m-0">
           {OWNERS.map((owner) => (
             <li key={owner.name}>
@@ -184,43 +143,6 @@ export default function AboutInteractive({ values }) {
         </ul>
       </section>
 
-      {/* ══ TEAM SECTION ══ */}
-      {/* <section
-        aria-labelledby="team-heading"
-        className="relative overflow-hidden bg-gradient-to-b from-[#FDF7F2] to-[#F8EDE6] pt-12 pb-32"
-      >
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 md:mb-20">
-            <p className="font-sans text-[10px] md:text-xs tracking-[0.6em] uppercase text-[#BE6E5B] font-bold mb-4">
-              The People
-            </p>
-            <h2
-              id="team-heading"
-              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#7A3D2A] mb-6"
-            >
-              Meet Our Team
-            </h2>
-            <div
-              aria-hidden="true"
-              className="flex items-center justify-center gap-4 mb-6"
-            >
-              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent to-[#BE6E5B]" />
-              <span className="text-[#BE6E5B] text-xl">✦</span>
-              <div className="h-[2px] w-16 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
-            </div>
-          </div>
-
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 list-none p-0 m-0">
-            {TEAM.map((member) => (
-              <li key={member.name}>
-                <TeamCard member={member} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section> */}
-
       {/* ══ VALUES SECTION ══ */}
       <section
         aria-labelledby="values-heading"
@@ -229,14 +151,14 @@ export default function AboutInteractive({ values }) {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.6em] uppercase text-[#BE6E5B] font-bold mb-4">
-              What We Stand For
+              How Trust Gets Built
             </p>
             <h2
               id="values-heading"
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#7A3D2A] mb-6"
             >
-              Our Core Values
+              Our Core Principles
             </h2>
           </div>
 

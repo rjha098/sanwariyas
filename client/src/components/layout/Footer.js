@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <>
-      {/* ✅ SEO FIX: Injected Sitewide Organization Schema for Entity & Local SEO Verification */}
+      {/*  SEO FIX: Injected Sitewide Organization Schema for Entity & Local SEO Verification */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

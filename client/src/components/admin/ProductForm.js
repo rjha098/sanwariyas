@@ -1,3 +1,5 @@
+// FILE: client/src/components/admin/ProductForm.js
+
 export default function ProductForm({
   productForm, setProductForm, handleProductSubmit, productSaving, productMessage,
   editingProductId, resetProductForm, handleSeedProducts, seeding
@@ -43,7 +45,8 @@ export default function ProductForm({
           />
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-4">
+        {/* ✅ STOCK INPUT ADDED HERE (Changed grid from 3 to 4 columns) */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <input
             type="text"
             aria-label="Product category"
@@ -71,14 +74,18 @@ export default function ProductForm({
             onChange={(e) => setProductForm((prev) => ({ ...prev, originalPrice: e.target.value }))}
             className="border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee"
           />
+          <input
+            type="number"
+            aria-label="Stock quantity"
+            min="0"
+            placeholder="Stock (Empty = Unlimited)"
+            value={productForm.stock}
+            onChange={(e) => setProductForm((prev) => ({ ...prev, stock: e.target.value }))}
+            className="border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee placeholder:text-[11px]"
+          />
         </div>
 
-
-
-
-
-
-{/* ✅ Directory Upload — Main Image */}
+        {/* ✅ Directory Upload — Main Image */}
         <div>
           <label className="block font-sans text-xs text-brand-mud mb-1">
             Main Image {!editingProductId && "*"}
@@ -154,18 +161,6 @@ export default function ProductForm({
             )
           )}
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
         <input
           type="text"

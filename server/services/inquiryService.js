@@ -47,7 +47,7 @@ export const createInquiry = async (data, userId) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from:
-          process.env.RESEND_FROM_EMAIL ||
+          process.env.RESEND_FROM_EMAIL ||   
           "Sanwariyas System <onboarding@resend.dev>",
         to: ADMIN_EMAIL,
         subject: `🔥 New Wholesale Inquiry from ${data.name}`,

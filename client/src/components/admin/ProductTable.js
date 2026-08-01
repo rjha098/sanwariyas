@@ -1,3 +1,5 @@
+// FILE: client/src/components/admin/ProductTable.js
+
 import Image from "next/image";
 import { getImageUrl } from "@/lib/imageUrl";
 
@@ -69,10 +71,12 @@ export default function ProductTable({
           <table className="w-full min-w-[760px]" aria-label="Products Table">
             <thead className="border-b border-brand-lightgold/60">
               <tr>
+                {/* ✅ Added Stock Heading Here */}
                 {[
                   "Product",
                   "Category",
                   "Price",
+                  "Stock",
                   "Status",
                   "Updated",
                   "Actions",
@@ -117,6 +121,20 @@ export default function ProductTable({
                   <td className="py-4 pr-4 font-sans text-sm text-brand-mud">
                     Rs. {Number(product.price || 0).toLocaleString("en-IN")}
                   </td>
+                  
+                  {/* ✅ STOCK COLUMN ADDED HERE */}
+                  <td className="py-4 pr-4 font-sans text-sm">
+                    {typeof product.stock === "number" ? (
+                      product.stock > 0 ? (
+                        <span className="text-brand-coffee font-semibold">{product.stock} pcs</span>
+                      ) : (
+                        <span className="text-red-600 font-bold text-[10px] uppercase tracking-widest bg-red-50 px-2 py-1 rounded">Out of Stock</span>
+                      )
+                    ) : (
+                      <span className="text-brand-mud/50 text-[10px] uppercase tracking-widest italic">Unlimited</span>
+                    )}
+                  </td>
+
                   <td className="py-4 pr-4">
                     <div className="flex flex-wrap gap-2">
                       <span

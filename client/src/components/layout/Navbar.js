@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 
-// Mega Menu Structure updated with Lookbook included inside Discover
+
 const navLinks = [
   {
     href: "/",
@@ -60,6 +60,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobMegaOpen, setMobMegaOpen] = useState(false); // Mobile dropdown toggle ke liye
   const [hoveredLink, setHoveredLink] = useState(null);
@@ -69,7 +70,8 @@ export default function Navbar() {
   const router = useRouter();
 
   // Auth context and state
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, isCustomer, user, logout } = useAuth();
+
 
   const { itemCount: cartItemCount } = useCart();
 
@@ -339,8 +341,8 @@ export default function Navbar() {
           {/* AUTH, CTA + HAMBURGER */}
           {/* AUTH, CTA + HAMBURGER */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {/* ✅ FIX: Cart is customer-only — hidden before login */}
-            {isAuthenticated && (
+
+           {isCustomer && (
               <Link
                 href="/cart"
                 aria-label="View Cart"

@@ -7,7 +7,6 @@ import Toast from "@/components/ui/Toast";
 import Link from "next/link";
 
 export default function InquiryForm({ productId = null, productName = "" }) {
-  
   const [form, setForm] = useState({
     name: "",
     companyName: "",
@@ -15,7 +14,7 @@ export default function InquiryForm({ productId = null, productName = "" }) {
     whatsapp: "",
     country: "",
     productCategory: "Cotton Suits",
-    quantity: 50,
+    quantity: 10,
     budgetRange: "",
     message: productName
       ? `I am interested in: ${productName}. Please share pricing and availability.`
@@ -56,9 +55,9 @@ export default function InquiryForm({ productId = null, productName = "" }) {
     e.preventDefault();
     setStatus("loading");
 
-    if (form.quantity < 50) {
+    if (form.quantity < 10) {
       setStatus("idle");
-      showToast("Minimum Order Quantity (MOQ) is 50 pieces.", "error");
+      showToast("Minimum Order Quantity (MOQ) is 10 pieces.", "error");
       return;
     }
 
@@ -106,10 +105,8 @@ export default function InquiryForm({ productId = null, productName = "" }) {
             <br />
             <strong>Want to track responses or view custom quotes?</strong>
             <br />
-            Please{" "}
-
-           <Link href="/login">Login</Link>{" "}
-to view your inquiry dashboard.
+            Please <Link href="/login">Login</Link> to view your inquiry
+            dashboard.
           </p>
 
           <button
@@ -130,7 +127,7 @@ to view your inquiry dashboard.
                 whatsapp: "",
                 country: "",
                 productCategory: "Cotton Suits",
-                quantity: 50,
+                quantity: 10,
                 budgetRange: "",
                 message: "",
               });
@@ -316,7 +313,7 @@ to view your inquiry dashboard.
                 htmlFor="inquiry-qty"
                 className="block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2"
               >
-                Quantity (MOQ: 50){" "}
+                Quantity (MOQ: 10){" "}
                 <span aria-hidden="true" className="text-brand-gold">
                   *
                 </span>
@@ -326,13 +323,13 @@ to view your inquiry dashboard.
                 id="inquiry-qty"
                 type="number"
                 name="quantity"
-                min="50"
+                min="10"
                 value={form.quantity}
                 onChange={handleChange}
                 required
                 aria-required="true"
                 aria-describedby="moq-warning"
-                aria-invalid={form.quantity < 50}
+                aria-invalid={form.quantity < 10}
                 className="w-full bg-white border border-brand-lightgold/60 px-4 py-3 font-sans text-sm text-brand-african placeholder:text-brand-mud/40 focus:outline-none focus:border-brand-coffee transition-colors duration-300"
               />
             </div>
@@ -400,13 +397,13 @@ to view your inquiry dashboard.
             )}
           </button>
 
-          {/* ✅ SEO FIX: Linked this text to the quantity input via ID for screen readers */}
+          {/*  SEO FIX: Linked this text to the quantity input via ID for screen readers */}
           <p
             id="moq-warning"
             className="font-sans text-[10px] text-brand-mud/50 text-center uppercase tracking-widest"
             aria-live="polite"
           >
-            Strictly Wholesale Only. Minimum Order Quantity is 50 Pieces.
+            Strictly Wholesale Only. Minimum Order Quantity is 10 Pieces.
           </p>
         </form>
       )}

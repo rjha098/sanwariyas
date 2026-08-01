@@ -19,7 +19,7 @@ export default function NotFound() {
     <>
       <Navbar />
 
-      {/* ✅ A11Y: Added id="main-content" for "skip to content" functionality */}
+      {/*  A11Y: Added id="main-content" for "skip to content" functionality */}
       <main
         id="main-content"
         className="min-h-screen bg-[#FDF7F2] flex items-center justify-center px-4"

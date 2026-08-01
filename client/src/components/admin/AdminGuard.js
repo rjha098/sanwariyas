@@ -42,7 +42,7 @@ export default function AdminGuard({ children }) {
 
   const isAuthorizedTeamMember = isAuthenticated && (isAdmin || isStaff);
 
-  // ✅ FIX: Heartbeat now runs for the ENTIRE /operations-center subtree,
+  //  FIX: Heartbeat now runs for the ENTIRE /operations-center subtree,
   // not just the dashboard page — so admin stays "online" even while
   // replying to a specific customer inquiry, viewing an order, etc.
   useEffect(() => {

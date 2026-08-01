@@ -15,6 +15,7 @@ const emptyProductForm = {
   category: "",
   price: "",
   originalPrice: "",
+  stock: "", //  STOCK ADDED
   image: "",
   images: "",
   shortDescription: "",
@@ -36,6 +37,7 @@ const toProductForm = (product) => ({
   category: product.category || "",
   price: product.price ?? "",
   originalPrice: product.originalPrice ?? "",
+  stock: product.stock ?? "", //  STOCK ADDED
   image: product.image || "",
   images: (product.images || []).join("\n"),
   shortDescription: product.shortDescription || "",
@@ -55,10 +57,9 @@ const productPayloadFromForm = (form) => ({
   ...form,
   price: form.price === "" ? "" : Number(form.price),
   originalPrice: form.originalPrice === "" ? "" : Number(form.originalPrice),
+  stock: form.stock === "" ? "" : Number(form.stock), //  STOCK ADDED
 });
 
-// ✅ Directory Upload — builds multipart FormData so image files are
-// actually uploaded (via multer) instead of being submitted as URL text.
 const buildProductFormData = (form) => {
   const fd = new FormData();
   const payload = productPayloadFromForm(form);
@@ -94,14 +95,11 @@ export function useProducts(token) {
 
   const flashTimeout = useRef(null);
 
-  // Memoize flash setter to prevent recreation on every render
   const setFlash = useCallback((setter, message) => {
     if (flashTimeout.current) {
       clearTimeout(flashTimeout.current);
     }
-
     setter(message);
-
     flashTimeout.current = window.setTimeout(() => {
       setter("");
       flashTimeout.current = null;
@@ -113,7 +111,6 @@ export function useProducts(token) {
     setEditingProductId("");
   }, []);
 
-  // Decoupled loadProducts from state variables to stabilize its reference
   const loadProducts = useCallback(
     async (authToken, page, search) => {
       if (!authToken) return;
@@ -138,7 +135,6 @@ export function useProducts(token) {
     [setFlash],
   );
 
-  // Fetch products on mount or when page/search changes
   useEffect(() => {
     if (!token) {
       setProducts([]);
@@ -251,7 +247,6 @@ export function useProducts(token) {
     }
   }, [token, productSearch, loadProducts, setFlash]);
 
-  // Clean up the timeout if the component unmounts
   useEffect(() => {
     return () => {
       if (flashTimeout.current) {

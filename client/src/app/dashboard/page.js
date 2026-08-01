@@ -15,6 +15,17 @@ import api, { deleteNotificationByInquiry } from "@/lib/api";
 import Toast from "@/components/ui/Toast";
 
 const Icon = {
+  order: () => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="w-5 h-5"
+    >
+      <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+  ),
   inquiry: () => (
     <svg
       viewBox="0 0 24 24"
@@ -134,7 +145,28 @@ function StatusBadge({ status }) {
       label: "Resolved",
       cls: "bg-green-50 text-green-700 border-green-200",
     },
+    confirmed: {
+      label: "Confirmed",
+      cls: "bg-blue-50 text-blue-700 border-blue-200",
+    },
+    processing: {
+      label: "Processing",
+      cls: "bg-purple-50 text-purple-700 border-purple-200",
+    },
+    shipped: {
+      label: "Shipped",
+      cls: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    },
+    delivered: {
+      label: "Delivered",
+      cls: "bg-green-50 text-green-700 border-green-200",
+    },
+    cancelled: {
+      label: "Cancelled",
+      cls: "bg-red-50 text-red-700 border-red-200",
+    },
   };
+
   const { label, cls } = map[status] || {
     label: status,
     cls: "bg-gray-50 text-gray-600 border-gray-200",
@@ -172,7 +204,7 @@ function InquiryCard({ inquiry, onReply, onSelect, isSelected }) {
               {!inquiry.isViewedByUser && hasReplies && (
                 <span className="w-2 h-2 rounded-full bg-[#6F4E37] flex-shrink-0" />
               )}
-              {/* ✅ ADDED: Flex styling and mini-badge for the sidebar list */}
+              {/*  ADDED: Flex styling and mini-badge for the sidebar list */}
               <h3 className="font-sans font-semibold text-[#574325] text-sm truncate flex items-center gap-2">
                 {inquiry.productCategory ||
                   inquiry.productName ||
@@ -248,7 +280,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
     ...(inquiry.replies || []),
   ].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-  // ✅ TASK 1: useLayoutEffect — robust scroll, fires after DOM paint, no setTimeout
+  //  TASK 1: useLayoutEffect — robust scroll, fires after DOM paint, no setTimeout
   useLayoutEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -256,7 +288,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
     }
   }, [allMessages.length]);
 
-  // ✅ TASK 1: Scroll on inquiry switch (when user clicks a different inquiry card)
+  //  TASK 1: Scroll on inquiry switch (when user clicks a different inquiry card)
   useLayoutEffect(() => {
     if (inquiry && chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -302,13 +334,13 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
       {/* Header — same as before, no changes */}
       <div className="px-6 py-4 border-b border-[#E8D5A3]/50 flex items-center justify-between">
         <div>
-          {/* ✅ ADDED: Added flex classes to position the badge next to the title */}
+          {/*  ADDED: Added flex classes to position the badge next to the title */}
           <h3 className="font-display text-lg text-[#574325] flex items-center flex-wrap gap-3">
             {inquiry.productCategory ||
               inquiry.productName ||
               "General Inquiry"}
 
-            {/* ✅ ADDED: The specific Support Online Badge you requested */}
+            {/*  ADDED: The specific Support Online Badge you requested */}
             {inquiry.isAdminOnline && (
               <span className="text-[10px] bg-green-100 border border-green-200 text-green-700 px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 font-sans font-bold tracking-[0.1em] shadow-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>{" "}
@@ -399,7 +431,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
         </span>
       </div>
 
-      {/* ✅ TASK 1: chatContainerRef attached here */}
+      {/*  TASK 1: chatContainerRef attached here */}
       <div
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#fdfbf7]"
@@ -472,8 +504,10 @@ export default function UserDashboard() {
   const { token, user, isAuthenticated, authChecking, logout } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState("inquiries");
+  const [activeTab, setActiveTab] = useState("orders"); // Default tab orders kar diya
   const [inquiries, setInquiries] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [toast, setToast] = useState({
@@ -504,6 +538,21 @@ export default function UserDashboard() {
   useEffect(() => {
     if (!authChecking && !isAuthenticated) router.replace("/login");
   }, [authChecking, isAuthenticated, router]);
+
+  const loadOrders = useCallback(async () => {
+    if (!token) return;
+    setOrdersLoading(true);
+    try {
+      const res = await api.get("/orders/my-orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(res.data.orders || []);
+    } catch (err) {
+      console.error("Failed to load orders", err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, [token]);
 
   const loadInquiries = useCallback(async () => {
     if (!token) return;
@@ -538,25 +587,18 @@ export default function UserDashboard() {
     } catch (err) {}
   }, [token]);
 
-
-
-useEffect(() => {
+  useEffect(() => {
     if (token) {
       loadInquiries();
-      
+      loadOrders();
+
       // NAYA: Listen to global sync
       window.addEventListener("global_60s_sync", silentRefreshInquiries);
-      
-      return () => window.removeEventListener("global_60s_sync", silentRefreshInquiries);
+
+      return () =>
+        window.removeEventListener("global_60s_sync", silentRefreshInquiries);
     }
   }, [token, loadInquiries, silentRefreshInquiries]);
-
-
-
-
-
-
-
 
   // Fetch Profile Data from DB
   const fetchProfile = useCallback(async () => {
@@ -619,7 +661,7 @@ useEffect(() => {
     setTimeout(() => router.replace("/login"), 1500);
   };
 
-  // ✅ Account Deletion Function
+  //  Account Deletion Function
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
@@ -653,6 +695,7 @@ useEffect(() => {
   const resolvedCount = inquiries.filter((i) => i.status === "resolved").length;
 
   const navItems = [
+    { key: "orders", label: "My Orders", icon: <Icon.order /> },
     {
       key: "inquiries",
       label: "My Inquiries",
@@ -679,7 +722,7 @@ useEffect(() => {
 
   return (
     <>
-      {/* ✅ SEO FIX: Injected NoIndex tag and Metadata for Private Dashboard Route */}
+      {/*  SEO FIX: Injected NoIndex tag and Metadata for Private Dashboard Route */}
 
       <Toast
         isVisible={toast.isVisible}
@@ -688,7 +731,7 @@ useEffect(() => {
         onClose={hideToast}
       />
 
-      {/* ✅ DELETION CONFIRMATION MODAL */}
+      {/*  DELETION CONFIRMATION MODAL */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl border border-[#E8D5A3] p-6 max-w-md w-full shadow-2xl">
@@ -725,7 +768,7 @@ useEffect(() => {
         <div className="bg-white border-b border-[#E8D5A3]/60 sticky top-0 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {/* ✅ SEO FIX: Descriptive aria-label for accessibility */}
+              {/*  SEO FIX: Descriptive aria-label for accessibility */}
               <button
                 onClick={() => setSidebarOpen((o) => !o)}
                 aria-label="Toggle Dashboard Sidebar Navigation"
@@ -765,7 +808,7 @@ useEffect(() => {
                   </span>
                 </button>
               )}
-              {/* ✅ SEO FIX: Added titles for accessibility */}
+              {/*  SEO FIX: Added titles for accessibility */}
               <button
                 onClick={() => router.push("/")}
                 aria-label="Return to SANWARIYAS Home"
@@ -868,7 +911,7 @@ useEffect(() => {
 
             {/* Logout */}
             <div className="p-4 border-t border-[#E8D5A3]/40 absolute bottom-0 w-full lg:static">
-              {/* ✅ SEO FIX: Descriptive title attribute */}
+              {/*  SEO FIX: Descriptive title attribute */}
               <button
                 onClick={handleLogout}
                 title="Securely log out of your wholesale account"
@@ -890,6 +933,104 @@ useEffect(() => {
 
           {/* Main content */}
           <main className="flex-1 min-w-0">
+            {activeTab === "orders" && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="font-display text-2xl text-[#574325]">
+                      My Orders
+                    </h1>
+                    <p className="font-sans text-xs text-[#70543E]/60 mt-0.5">
+                      {orders.length} total orders
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => router.push("/products")}
+                    className="font-sans text-xs tracking-[0.2em] uppercase bg-[#6F4E37] text-white px-5 py-2.5 hover:bg-[#574325] transition-colors rounded-lg"
+                  >
+                    Browse Catalog
+                  </button>
+                </div>
+
+                {ordersLoading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="h-28 bg-white rounded-xl border border-[#E8D5A3]/40 animate-pulse"
+                      />
+                    ))}
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="bg-white rounded-xl border border-[#E8D5A3]/60 py-20 text-center">
+                    <div className="w-16 h-16 rounded-full bg-[#FAF3E8] flex items-center justify-center mx-auto mb-4 text-[#C9A84C]">
+                      <Icon.order />
+                    </div>
+                    <h3 className="font-display text-xl text-[#574325] mb-2">
+                      No orders yet.
+                    </h3>
+                    <p className="font-sans text-sm text-[#70543E]/60 mb-6">
+                      You haven't placed any wholesale orders yet.
+                    </p>
+                    <button
+                      onClick={() => router.push("/products")}
+                      className="font-sans text-xs tracking-[0.2em] uppercase bg-[#6F4E37] text-white px-6 py-3 hover:bg-[#574325] transition-colors rounded-lg"
+                    >
+                      Start Shopping
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {orders.map((order) => (
+                      <div
+                        key={order._id}
+                        className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5 hover:shadow-md transition-all hover:border-[#6F4E37]/40 flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="font-sans font-bold text-[#574325] text-base">
+                                {order.orderNumber}
+                              </h3>
+                              <p className="font-sans text-[11px] text-[#70543E]/60 mt-1 uppercase tracking-wider">
+                                {new Date(order.createdAt).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
+                              </p>
+                            </div>
+                            <StatusBadge status={order.status} />
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-end mt-4 pt-4 border-t border-[#E8D5A3]/30">
+                          <div>
+                            <p className="font-sans text-[10px] uppercase tracking-widest text-[#70543E]/50">
+                              Total Amount
+                            </p>
+                            <p className="font-display text-lg text-[#7A3D2A] font-bold mt-0.5">
+                              ₹{order.totalAmount?.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              router.push(`/my-orders/${order._id}`)
+                            }
+                            className="font-sans text-[10px] tracking-widest uppercase text-[#6F4E37] border border-[#6F4E37]/30 px-3 py-1.5 rounded-md hover:bg-[#FAF3E8] transition-colors"
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Inquiries Tab */}
             {activeTab === "inquiries" && (
               <div>
@@ -903,7 +1044,7 @@ useEffect(() => {
                       {unreadCount > 0 ? "🔔" : ""}
                     </p>
                   </div>
-                  {/* ✅ SEO FIX: Descriptive title attribute */}
+                  {/*  SEO FIX: Descriptive title attribute */}
                   <button
                     onClick={() => router.push("/contact")}
                     title="Submit a new B2B Wholesale Inquiry"
@@ -1146,7 +1287,7 @@ useEffect(() => {
                         ))}
                       </div>
 
-                      {/* ✅ DELETE ACCOUNT BUTTON */}
+                      {/*  DELETE ACCOUNT BUTTON */}
                       <div className="pt-6 mt-6 border-t border-red-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                           <h4 className="font-sans text-sm font-semibold text-red-600">

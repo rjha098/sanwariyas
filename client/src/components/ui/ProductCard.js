@@ -1,19 +1,31 @@
 // FILE: client/src/components/ui/ProductCard.js
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/lib/imageUrl";
 import Image from "next/image";
 
 export default function ProductCard({ product }) {
+  const router = useRouter();
+
   const discount =
     product.originalPrice && product.originalPrice > product.price
       ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) *
-            100,
+          ((product.originalPrice - product.price) / product.originalPrice) * 100,
         )
       : null;
 
+  // ✅ FIX: Explicitly handle Inquire to prevent nested <a> tag bugs
+  const handleInquire = (e) => {
+    e.preventDefault(); // Default Link behavior roko
+    e.stopPropagation(); // Event bubbling roko (parent Link par nahi jayega)
+    router.push(`/products/${product.slug}#inquiry-heading`);
+  };
+
+  const safeImageUrl = getImageUrl(product.image || product.images?.[0]);
+
   return (
-    // SEO FIX: Added Schema.org Product itemType for semantic clarity
     <article itemScope itemType="https://schema.org/Product" className="h-full">
       {/*  SEO FIX: Injected JSON-LD Product Schema for rich snippet eligibility */}
       <script
@@ -24,21 +36,9 @@ export default function ProductCard({ product }) {
             "@type": "Product",
             name: product.name,
             description: product.shortDescription || product.description,
-
-            // image:
-            //   product.image || product.images?.[0] || "/images/placeholder.jpg",
-
-            image: (() => {
-              const img =
-                product.image ||
-                product.images?.[0] ||
-                "/images/placeholder.jpg";
-
-              return img.startsWith("http")
-                ? img
-                : `https://sanwariyas.com${img}`;
-            })(),
-
+            image: safeImageUrl.startsWith("http")
+              ? safeImageUrl
+              : `https://sanwariyas.com${safeImageUrl}`,
             brand: { "@type": "Brand", name: "SANWARIYAS" },
             offers: {
               "@type": "Offer",
@@ -64,21 +64,20 @@ export default function ProductCard({ product }) {
         aria-label={`View wholesale details for ${product.name} - Ethnic Wear Manufacturer`}
       >
         <div className="overflow-hidden border border-[#BE6E5B]/20 shadow-sm hover:shadow-[0_15px_40px_rgba(190,110,91,0.15)] transition-all duration-500 hover:-translate-y-1 h-full flex flex-col rounded-md bg-white">
+          
           {/* Image Section */}
-
           <div className="relative aspect-[3/4] overflow-hidden bg-[#FDF7F2]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={getImageUrl(product.image || product.images?.[0])}
+              src={safeImageUrl}
               alt={`Wholesale ${product.name} - Jaipur Ethnic Wear`}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               itemProp="image"
             />
 
-            {/* Top Left Badges (MOQ & Discount) */}
             <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
               <span className="bg-[#FDF7F2]/95 backdrop-blur-sm border border-[#7A3D2A]/20 text-[#7A3D2A] text-[9px] md:text-[10px] tracking-widest uppercase px-2.5 py-1 font-sans font-bold shadow-sm rounded-sm">
-                <span className="sr-only">Requirement: </span>MOQ: 50
+                <span className="sr-only">Requirement: </span>MOQ: 10
               </span>
 
               {discount && (
@@ -89,7 +88,6 @@ export default function ProductCard({ product }) {
               )}
             </div>
 
-            {/* Top Right Badges (Featured) */}
             {product.isFeatured && (
               <div className="absolute top-3 right-3 z-10">
                 <span className="bg-[#BE6E5B] text-[#FDF7F2] text-[8px] md:text-[9px] tracking-widest uppercase px-2 py-0.5 font-sans font-bold shadow-sm rounded-sm">
@@ -98,7 +96,6 @@ export default function ProductCard({ product }) {
               </div>
             )}
 
-            {/* Hover overlay on image */}
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-500 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 z-10"
@@ -109,14 +106,13 @@ export default function ProductCard({ product }) {
             </div>
           </div>
 
-          {/* ── DOWN SIDE DETAILED SECTION ── */}
+          {/* Details Section */}
           <div
             className="p-4 border-t border-[#BE6E5B]/20 flex flex-col flex-grow"
             style={{
               background: "linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)",
             }}
           >
-            {/* Category & Fabric Row */}
             <div className="flex items-center justify-between mb-2">
               {product.category && (
                 <p className="font-sans text-[9px] tracking-[0.25em] text-[#BE6E5B] font-bold uppercase drop-shadow-sm">
@@ -162,11 +158,7 @@ export default function ProductCard({ product }) {
                     <span itemProp="price" content={String(product.price)}>
                       ₹{(product.price || 0).toLocaleString("en-IN")}
                     </span>
-                    <span
-                      itemProp="priceCurrency"
-                      content="INR"
-                      className="sr-only"
-                    >
+                    <span itemProp="priceCurrency" content="INR" className="sr-only">
                       INR
                     </span>
                   </span>
@@ -174,22 +166,20 @@ export default function ProductCard({ product }) {
                     / piece
                   </span>
 
-                  {product.originalPrice &&
-                    product.originalPrice > product.price && (
-                      <span className="font-sans text-[10px] md:text-xs text-[#a07f61]/70 line-through font-medium ml-1">
-                        <span className="sr-only">Original Price: </span>₹
-                        {product.originalPrice.toLocaleString("en-IN")}
-                      </span>
-                    )}
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="font-sans text-[10px] md:text-xs text-[#a07f61]/70 line-through font-medium ml-1">
+                      <span className="sr-only">Original Price: </span>₹
+                      {product.originalPrice.toLocaleString("en-IN")}
+                    </span>
+                  )}
                 </div>
 
-                {/* Inquire Button */}
-                <span
-                  aria-hidden="true"
-                  className="font-sans text-[9px] md:text-[10px] tracking-widest text-[#7A3D2A] font-bold uppercase border border-[#BE6E5B]/60 px-3 py-1.5 rounded-sm group-hover:bg-[#BE6E5B] group-hover:text-[#FDF7F2] group-hover:border-[#BE6E5B] transition-all duration-300"
+                <button
+                  onClick={handleInquire}
+                  className="font-sans text-[9px] md:text-[10px] tracking-widest text-[#7A3D2A] font-bold uppercase border border-[#BE6E5B]/60 px-3 py-1.5 rounded-sm hover:bg-[#BE6E5B] hover:text-[#FDF7F2] transition-all duration-300 relative z-20"
                 >
                   Inquire
-                </span>
+                </button>
               </div>
             </div>
           </div>

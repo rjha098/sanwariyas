@@ -1,4 +1,4 @@
-// // FILE: client/src/lib/api.js
+// FILE: client/src/lib/api.js
 import axios from "axios";
 import { tokenStorage } from "./tokenStorage";
 
@@ -18,10 +18,10 @@ const api = axios.create({
 const isTokenLocallyExpired = (token) => {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    if (!payload.exp) return false; // no exp claim — let the server decide
+    if (!payload.exp) return false; 
     return Date.now() >= payload.exp * 1000;
   } catch {
-    return true; // unparseable token — treat as expired/invalid
+    return true; 
   }
 };
 
@@ -38,11 +38,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-//  ENTERPRISE FIX: Global Request Queue for Rate Limits
 let isRateLimitPaused = false;
 let failedQueue = [];
-
-//  ENTERPRISE FIX: Redirect Lock to prevent Race Condition UI stutter
 let isRedirecting = false;
 
 const processQueue = (error, config = null) => {
@@ -60,6 +57,21 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const { config, response } = error;
+
+    if (!response || error.message === 'Network Error') {
+      error.userMessage = "No internet connection. Please check your network and try again.";
+    } else if (response?.data?.message) {
+      const msg = response.data.message.toLowerCase();
+      if (
+        msg.includes("getaddrinfo") || 
+        msg.includes("enotfound") || 
+        msg.includes("econnrefused") || 
+        msg.includes("mongodb.net")
+      ) {
+        response.data.message = "Network connection lost or something went wrong. Please try again.";
+        error.userMessage = response.data.message;
+      }
+    }
 
     if (error.isLocalPreflightReject) {
       if (typeof window !== "undefined") {
@@ -79,7 +91,15 @@ api.interceptors.response.use(
         "Server is taking too long to respond. Please try again.";
     }
 
-    // Global Retry Queue for 429
+    if (!error.userMessage) {
+      if (!response && error.request) {
+        error.userMessage =
+          "Network Error. Please check your internet connection.";
+      } else if (response && response.status >= 500) {
+        error.userMessage = "Unable to connect. Please try again later.";
+      }
+    }
+
     if (response && response.status === 429) {
       if (isRateLimitPaused) {
         return new Promise((resolve, reject) => {
@@ -132,9 +152,7 @@ const withAuth = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
 
-// ─────────────────────────────────────────
 // AUTH & EXPORTS
-// ─────────────────────────────────────────
 export const unifiedLogin = (credentials) =>
   api.post("/auth/login", credentials).then((r) => r.data);
 export const checkAuthSession = (token) =>
@@ -150,6 +168,16 @@ export const customerSignup = (data) =>
   api.post("/auth/customer/signup", data).then((r) => r.data);
 export const authLogout = (token) =>
   api.post("/auth/logout", {}, withAuth(token)).then((r) => r.data);
+
+// ✅ STAFF MANAGEMENT APIs (PHASE 2)
+export const createStaffAccount = (token, data) =>
+  api.post("/auth/staff", data, withAuth(token)).then((r) => r.data);
+export const fetchStaffList = (token) =>
+  api.get("/auth/staff", withAuth(token)).then((r) => r.data);
+export const updateStaffStatus = (token, id, data) =>
+  api.patch(`/auth/staff/${id}`, data, withAuth(token)).then((r) => r.data);
+export const deleteStaffAccount = (token, id) =>
+  api.delete(`/auth/staff/${id}`, withAuth(token)).then((r) => r.data);
 
 // PRODUCTS
 export const fetchProducts = (params = {}) =>
@@ -246,7 +274,7 @@ export const createBlog = (token, formData) =>
     })
     .then((r) => r.data);
 
-// ORDERS —  Wholesale Ordering System
+// ORDERS — Wholesale Ordering System
 export const placeOrder = (token, data) =>
   api.post("/orders", data, withAuth(token)).then((r) => r.data);
 export const fetchMyOrders = (token) =>

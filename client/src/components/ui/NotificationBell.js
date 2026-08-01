@@ -10,7 +10,7 @@ import api, {
 } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 
-//  Soft "Ting" Sound generator (No external MP3 file needed)
+// Soft "Ting" Sound generator (No external MP3 file needed)
 const playBeep = () => {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();

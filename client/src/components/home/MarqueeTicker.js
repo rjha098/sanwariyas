@@ -2,7 +2,7 @@
 export default function MarqueeTicker() {
   return (
     <section
-      // ✅ SEO FIX: Enriched aria-label with B2B wholesale context
+      //  SEO FIX: Enriched aria-label with B2B wholesale context
       aria-label="Wholesale Ethnic Wear & Cotton Kurti Collections Ticker"
       className="relative overflow-hidden z-20 shadow-[0_8px_32px_rgba(92,49,32,0.28)]"
       style={{
@@ -10,7 +10,7 @@ export default function MarqueeTicker() {
           "linear-gradient(90deg, #5C3120 0%, #7A3D2A 35%, #BE6E5B 60%, #7A3D2A 80%, #5C3120 100%)",
       }}
     >
-      {/* ✅ SEO FIX: Expanded screen reader text with exact-match B2B, Location, and Manufacturer keywords */}
+      {/*  SEO FIX: Expanded screen reader text with exact-match B2B, Location, and Manufacturer keywords */}
       <p className="sr-only">
         SANWARIYAS is a premium Jaipur Ethnic Wear Manufacturer. Explore our wholesale collections including Cotton Short Kurtis, Designer Anarkali Suits, A-Line Suits, Straight 3 Piece Suits, Co-ord Sets, and Long Kurtis. We are India's trusted Wholesale Ethnic Wear Supplier and B2B Kurti Manufacturer.
       </p>

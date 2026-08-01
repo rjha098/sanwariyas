@@ -485,7 +485,7 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
   return (
     <div
       onClick={onToggle}
-      // ✅ A11Y FIX: Make the entire div keyboard accessible as a button
+      //  A11Y FIX: Make the entire div keyboard accessible as a button
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -532,7 +532,7 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
           >
             {faq.category}
           </span>
-          {/* ✅ SEO FIX: Added matching ID to ensure aria-labelledby of the content panel properly maps to this heading for screen readers and Passage Indexing */}
+          {/*  SEO FIX: Added matching ID to ensure aria-labelledby of the content panel properly maps to this heading for screen readers and Passage Indexing */}
           <h3
             id={`faq-heading-${index}`}
             className={`font-display text-base md:text-lg font-bold leading-snug transition-colors duration-300 ${isOpen ? "text-[#BE6E5B]" : "text-[#7A3D2A]"}`}

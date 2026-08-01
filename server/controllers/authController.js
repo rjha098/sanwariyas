@@ -1,5 +1,4 @@
-//FILE: server/controller/authcontroller
-
+// FILE: server/controllers/authController.js
 import crypto from "crypto";
 import {
   createAuthToken,
@@ -91,6 +90,7 @@ export const login = async (req, res) => {
         success: true,
         requires2FA: true,
         role: user.role,
+        department: user.department || "General",
         emailHint,
       });
     }
@@ -116,6 +116,7 @@ export const login = async (req, res) => {
       id: user.id,
       email: user.email,
       name: user.name,
+      department: user.department || "General",
       sessionId,
     });
 
@@ -128,6 +129,7 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        department: user.department || "General",
       },
     });
   } catch (error) {
@@ -189,6 +191,8 @@ export const verifyOtp = async (req, res) => {
         id: dbUser ? dbUser._id.toString() : null,
         username: usernameOutput,
         email: emailForOtp,
+        name: dbUser ? dbUser.name : usernameOutput,
+        department: dbUser?.department || "Management",
         sessionId,
       });
 
@@ -198,8 +202,10 @@ export const verifyOtp = async (req, res) => {
         user: {
           id: dbUser?._id || null,
           username: usernameOutput,
+          name: dbUser ? dbUser.name : usernameOutput,
           email: emailForOtp,
           role,
+          department: dbUser?.department || "Management",
         },
       });
     }
@@ -260,7 +266,7 @@ export const session = async (req, res) => {
     // Hybrid Session Validation
     if (payload.id) {
       const userExists = await User.findById(payload.id).select(
-        "currentSessionId",
+        "currentSessionId role department name email",
       );
       if (!userExists || userExists.currentSessionId !== payload.sessionId) {
         return res
@@ -282,6 +288,7 @@ export const session = async (req, res) => {
       email: payload.email,
       id: payload.id,
       name: payload.name,
+      department: payload.department || "General",
       sessionId: payload.sessionId,
     });
 
@@ -293,6 +300,7 @@ export const session = async (req, res) => {
         name: payload.name,
         email: payload.email,
         role: payload.role,
+        department: payload.department || "General",
         id: payload.id,
       },
     });
@@ -402,7 +410,6 @@ export const heartbeat = async (req, res) => {
   }
 };
 
-// ✅ NAYA — inquiryService.js isse use karega Admin/Staff ka real online status check karne ke liye
 export const isAdminCurrentlyOnline = async () => {
   if (envAdminVisible && envAdminLastActiveAt) {
     const diffSeconds = (Date.now() - envAdminLastActiveAt.getTime()) / 1000;
@@ -473,5 +480,119 @@ export const setOffline = async (req, res) => {
     return res.json({ success: true });
   } catch (error) {
     return res.status(500).json({ success: false });
+  }
+};
+
+// ── ✅ PHASE 2: STAFF MANAGEMENT CONTROLLERS ─────────────────────────────────
+
+export const createStaffAccount = async (req, res) => {
+  try {
+    if (req.authUser.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Only Admin can add staff." });
+    }
+
+    const { name, email, phone, password, department } = req.body;
+    if (!name || !email || !password || !phone) {
+      return res.status(400).json({ success: false, message: "All required fields must be filled." });
+    }
+
+    const existing = await User.findOne({ email: email.toLowerCase().trim() });
+    if (existing) {
+      return res.status(400).json({ success: false, message: "Email already registered." });
+    }
+
+    const staffUser = new User({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone.trim(),
+      password, // Pre-save hook hashes password
+      role: "staff",
+      department: department || "Sales",
+      isVerified: true,
+      isActive: true,
+    });
+
+    await staffUser.save();
+
+    return res.status(201).json({
+      success: true,
+      message: `Staff account created for ${staffUser.name} (${staffUser.department}).`,
+      staff: {
+        id: staffUser._id,
+        name: staffUser.name,
+        email: staffUser.email,
+        phone: staffUser.phone,
+        department: staffUser.department,   
+        role: staffUser.role,
+        isActive: staffUser.isActive,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message || "Failed to create staff account." });
+  }
+};
+
+export const getAllStaff = async (req, res) => {
+  try {
+    if (req.authUser.role !== "admin" && req.authUser.role !== "staff") {
+      return res.status(403).json({ success: false, message: "Access denied." });
+    }
+
+    const staffMembers = await User.find({ role: { $in: ["staff", "admin"] } })
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.json({ success: true, staff: staffMembers });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const updateStaffStatus = async (req, res) => {
+  try {
+    if (req.authUser.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Only Admin can update staff." });
+    }
+
+    const { id } = req.params;
+    const { isActive, department } = req.body;   
+
+    const staff = await User.findById(id);
+    if (!staff) return res.status(404).json({ success: false, message: "Staff not found." });
+
+    if (isActive !== undefined) staff.isActive = isActive;
+    if (department) staff.department = department;
+
+    await staff.save();
+
+    return res.json({
+      success: true,
+      message: "Staff updated successfully.",
+      staff: {
+        id: staff._id,
+        name: staff.name,
+        email: staff.email,
+        department: staff.department,
+        isActive: staff.isActive,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const deleteStaffAccount = async (req, res) => {
+  try {
+    if (req.authUser.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Only Admin can delete staff." });
+    }
+
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+
+    return res.json({ success: true, message: "Staff member removed successfully." });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart, computeMoq, MIN_PIECES } from "@/hooks/useCart";
+import { getImageUrl } from "@/lib/imageUrl";
 
 export default function CartPage() {
   const router = useRouter();
@@ -13,10 +14,10 @@ export default function CartPage() {
   const { items, updatePieces, removeItem, totalPieces, totalAmount, allMoqMet, hydrated } =
     useCart();
 
-  //  FIX: Cart now requires login, matching Checkout's existing guard
+  // FIX: Cart now requires login, matching Checkout's existing guard
   useEffect(() => {
     if (!authChecking && !isAuthenticated) {
-      router.replace("/login?mode=signin");
+     router.replace("/login?mode=signin&redirect=/cart");
     }
   }, [authChecking, isAuthenticated, router]);
 
@@ -65,7 +66,7 @@ export default function CartPage() {
                     {item.image && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={item.image}
+                        src={getImageUrl(item.image)}
                         alt={item.name}
                         className="w-full sm:w-24 h-24 object-cover rounded-lg"
                       />
