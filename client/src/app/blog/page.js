@@ -43,7 +43,7 @@ export const metadata = {
   },
 };
 
-// ✅ APP ROUTER FIX: Converted to a Server Component to pre-render the blog list for SEO
+//  APP ROUTER FIX: Converted to a Server Component to pre-render the blog list for SEO
 
 export default async function BlogListingPage() {
   let blogs = [];

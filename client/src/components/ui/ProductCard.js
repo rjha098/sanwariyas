@@ -5,21 +5,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/lib/imageUrl";
 import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ProductCard({ product }) {
   const router = useRouter();
 
+  const { isAuthenticated } = useAuth();
+
   const discount =
     product.originalPrice && product.originalPrice > product.price
       ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100,
+          ((product.originalPrice - product.price) / product.originalPrice) *
+            100,
         )
       : null;
 
-  // ✅ FIX: Explicitly handle Inquire to prevent nested <a> tag bugs
+  //  FIX: Explicitly handle Inquire to prevent nested <a> tag bugs
+
   const handleInquire = (e) => {
-    e.preventDefault(); // Default Link behavior roko
-    e.stopPropagation(); // Event bubbling roko (parent Link par nahi jayega)
+    e.preventDefault();
+    e.stopPropagation();
     router.push(`/products/${product.slug}#inquiry-heading`);
   };
 
@@ -58,13 +63,16 @@ export default function ProductCard({ product }) {
         }}
       />
       <Link
-        href={`/products/${product.slug}`}
+        href={
+          isAuthenticated
+            ? `/products/${product.slug}`
+            : `/login?mode=signin&redirect=/products/${product.slug}`
+        }
         className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#BE6E5B] focus-visible:ring-offset-2 rounded-md"
         // SEO FIX: Enriched aria-label with commercial B2B manufacturer keyword
         aria-label={`View wholesale details for ${product.name} - Ethnic Wear Manufacturer`}
       >
         <div className="overflow-hidden border border-[#BE6E5B]/20 shadow-sm hover:shadow-[0_15px_40px_rgba(190,110,91,0.15)] transition-all duration-500 hover:-translate-y-1 h-full flex flex-col rounded-md bg-white">
-          
           {/* Image Section */}
           <div className="relative aspect-[3/4] overflow-hidden bg-[#FDF7F2]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,7 +166,11 @@ export default function ProductCard({ product }) {
                     <span itemProp="price" content={String(product.price)}>
                       ₹{(product.price || 0).toLocaleString("en-IN")}
                     </span>
-                    <span itemProp="priceCurrency" content="INR" className="sr-only">
+                    <span
+                      itemProp="priceCurrency"
+                      content="INR"
+                      className="sr-only"
+                    >
                       INR
                     </span>
                   </span>
@@ -166,12 +178,13 @@ export default function ProductCard({ product }) {
                     / piece
                   </span>
 
-                  {product.originalPrice && product.originalPrice > product.price && (
-                    <span className="font-sans text-[10px] md:text-xs text-[#a07f61]/70 line-through font-medium ml-1">
-                      <span className="sr-only">Original Price: </span>₹
-                      {product.originalPrice.toLocaleString("en-IN")}
-                    </span>
-                  )}
+                  {product.originalPrice &&
+                    product.originalPrice > product.price && (
+                      <span className="font-sans text-[10px] md:text-xs text-[#a07f61]/70 line-through font-medium ml-1">
+                        <span className="sr-only">Original Price: </span>₹
+                        {product.originalPrice.toLocaleString("en-IN")}
+                      </span>
+                    )}
                 </div>
 
                 <button

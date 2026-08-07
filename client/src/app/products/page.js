@@ -1,5 +1,6 @@
 // FILE: client/src/app/products/page.js
 // PURPOSE: PRODUCTS LISTING PAGE — shown at URL "/products"
+
 "use client";
 
 import { Suspense, useState, useEffect, useCallback } from "react";
@@ -9,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSkeleton";
 import { fetchProducts, fetchProductCategories } from "@/lib/api";
+import { redirect } from "next/navigation";
 
 const FABRICS = ["Cotton", "Georgette", "Silk", "Rayon", "Mixed"];
 
@@ -111,7 +113,7 @@ function ProductsContent() {
               Wholesale Export Catalogue
             </p>
 
-            {/* ✅ SEO FIX: Enhanced B2B intent on fallback H1 */}
+            {/*  SEO FIX: Enhanced B2B intent on fallback H1 */}
             <h1 className="font-display text-4xl md:text-6xl text-[#7A3D2A] font-bold drop-shadow-sm">
               {activeCategory
                 ? `Wholesale ${activeCategory}`
@@ -140,7 +142,7 @@ function ProductsContent() {
             {/* Filters Section */}
             <div className="flex flex-col gap-6 mb-10 pb-8 border-b border-[#BE6E5B]/20">
               {/* Categories */}
-              {/* ✅ A11Y FIX: Added role="group" for better screen reader context */}
+              {/*  A11Y FIX: Added role="group" for better screen reader context */}
               <nav
                 aria-label="Wholesale Product Categories"
                 role="group"
@@ -282,6 +284,10 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
+
+
+  // redirect("/");
+
   return (
     <>
       <Navbar />

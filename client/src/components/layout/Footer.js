@@ -157,7 +157,7 @@ export default function Footer() {
             >
               {/* Facebook */}
               <a
-                href="#"
+                href="https://www.facebook.com/share/14g2vd4hXdz/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Facebook"
@@ -201,7 +201,7 @@ export default function Footer() {
 
               {/* LinkedIn */}
               <a
-                href="#"
+                href="https://www.linkedin.com/company/sanwariyas/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on LinkedIn"

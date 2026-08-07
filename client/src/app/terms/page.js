@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
-//  SEO FIX: Highly optimized Meta Title, Description, Canonical URL, OpenGraph, and Twitter Cards
+// ✅ SEO FIX: Highly optimized Meta Title, Description, Canonical URL, OpenGraph, and Twitter Cards
 export const metadata = {
   title: "Terms & Conditions | SANWARIYAS Wholesale Manufacturer",
   description:
@@ -48,26 +48,33 @@ export const metadata = {
   },
 };
 
-const LAST_UPDATED = "1 August 2026";
+const LAST_UPDATED = "20 June 2026";
 
-// ── Section data — replaced with SANWARIYAS's actual wholesale/export policies ──
+// ── Section data — numbered clause format used in B2B/export legal docs ──────
 const SECTIONS = [
   {
-    id: "moq",
+    id: "definitions",
     num: "1",
-    title: "Wholesale Model & Minimum Order Quantity (MOQ)",
+    title: "Definitions & Interpretation",
     clauses: [
       {
         num: "1.1",
-        text: "At SANWARIYAS, we are committed to supporting wholesalers, retailers, boutique owners, and fashion businesses with a flexible and reliable wholesale model.",
+        text: (
+          <>
+            In these Terms, <strong>"SANWARIYAS"</strong>, <strong>"we"</strong>
+            , <strong>"us"</strong>, or <strong>"our"</strong> refers to the
+            Sanwariyas export house and its authorized representatives.
+          </>
+        ),
       },
       {
         num: "1.2",
         text: (
           <>
-            <strong>Wholesale Eligibility:</strong> Minimum wholesale order
-            value is <strong>₹10,000–12,000/-</strong>. Orders below ₹10,000
-            may not qualify for wholesale pricing.
+            <strong>"Buyer"</strong>, <strong>"you"</strong>, or{" "}
+            <strong>"Client"</strong> refers to the business entity, retailer,
+            distributor, or individual placing a wholesale or custom
+            manufacturing inquiry.
           </>
         ),
       },
@@ -75,9 +82,9 @@ const SECTIONS = [
         num: "1.3",
         text: (
           <>
-            <strong>Minimum Order Quantity (MOQ):</strong> Our MOQ is designed
-            to help businesses start with low inventory risk —{" "}
-            <strong>2–3 sets per design</strong>.
+            <strong>"Goods"</strong> refers to all ethnic wear products,
+            fabrics, and accessories manufactured, sold, or exported by
+            SANWARIYAS.
           </>
         ),
       },
@@ -85,239 +92,266 @@ const SECTIONS = [
         num: "1.4",
         text: (
           <>
-            Products are supplied in standard wholesale sets. A{" "}
-            <strong>5-Piece Set</strong> includes M ×1, L ×1, XL ×1, XXL ×1,
-            3XL ×1. A <strong>4-Piece Set</strong> includes M ×1, L ×1, XL
-            ×1, XXL ×1.
+            <strong>"MOQ"</strong> means Minimum Order Quantity, the smallest
+            unit volume accepted per style or category.
           </>
         ),
       },
       {
         num: "1.5",
-        text: "The available set configuration depends on the design and will be mentioned in the product catalogue.",
-      },
-      {
-        num: "1.6",
-        text: "Bulk orders are welcomed and may be eligible for additional pricing benefits. For large-volume orders, export inquiries, or custom manufacturing requirements, our sales team will provide dedicated assistance and pricing.",
-      },
-      {
-        num: "1.7",
-        text: "We strive to offer a seamless wholesale experience with premium-quality products, competitive pricing, timely dispatch, and dependable customer support.",
+        text: (
+          <>
+            <strong>"Order Confirmation"</strong> means the written or email
+            acknowledgment issued by SANWARIYAS confirming acceptance of a
+            Buyer's purchase order.
+          </>
+        ),
       },
     ],
   },
   {
-    id: "shipping",
+    id: "general",
     num: "2",
-    title: "Shipping & Delivery Policy",
+    title: "General Agreement & Scope",
     clauses: [
       {
         num: "2.1",
-        text: "At SANWARIYAS, we strive to dispatch every order quickly and safely.",
+        text: "By accessing this website, submitting a wholesale inquiry, or confirming a bulk order, the Buyer agrees to be legally bound by these Terms and Conditions in their entirety.",
       },
       {
         num: "2.2",
-        text: (
-          <>
-            <strong>Domestic Shipping:</strong> We ship across India through
-            trusted logistics partners, including DTDC, Delhivery, Tirupati
-            Courier, and other reliable courier partners as required.
-          </>
-        ),
+        text: "These Terms govern all B2B transactions, international export shipments, and custom/OEM manufacturing engagements between the Buyer and SANWARIYAS.",
       },
       {
         num: "2.3",
-        text: "Standard delivery time is 4–6 business days, depending on the delivery location. Delivery timelines may be affected due to unforeseen circumstances such as weather conditions, natural calamities, transportation delays, public holidays, or other events beyond our control.",
+        text: "SANWARIYAS reserves the right to amend these Terms at any time. Continued use of our services after such amendments constitutes acceptance of the revised Terms.",
       },
       {
         num: "2.4",
-        text: (
-          <>
-            <strong>International Shipping:</strong> International orders are
-            dispatched within 24–48 business hours after completion of our
-            quality inspection and order processing.
-          </>
-        ),
-      },
-      {
-        num: "2.5",
-        text: "We ship through trusted international logistics partners such as Sky Express, Rudransh International, DHL, FedEx, UPS, Aramex, and approved air cargo services. The shipping partner is selected based on the destination country, customs regulations, and shipping requirements.",
-      },
-      {
-        num: "2.6",
-        text: "International shipping charges and customs duties will be communicated before dispatch. Depending on the shipping agreement, customs duties may be either included or payable by the buyer.",
+        text: "These Terms supersede any prior verbal or written agreements unless explicitly stated otherwise in a signed Order Confirmation.",
       },
     ],
   },
   {
-    id: "returns",
+    id: "moq",
     num: "3",
-    title: "Return, Refund & Exchange Policy",
+    title: "Wholesale Model & Minimum Order Quantity",
     clauses: [
       {
         num: "3.1",
-        text: "Customer satisfaction is important to us. Every product undergoes multiple quality inspections before dispatch.",
+        text: "SANWARIYAS operates strictly on a Business-to-Business (B2B) wholesale model and does not service single-unit retail consumers.",
       },
       {
         num: "3.2",
         text: (
           <>
-            <strong>Exchange Policy:</strong> If you receive a product that is
-            damaged or has a manufacturing defect, please notify us within{" "}
-            <strong>48 hours</strong> of receiving the shipment by sharing
-            clear photos or videos. After verification, we will arrange a
-            replacement or exchange for the defective item.
+            The standard Minimum Order Quantity (<strong>MOQ</strong>) is{" "}
+            <strong>50 pieces</strong> per style, design, or category, unless
+            otherwise agreed in writing.
           </>
         ),
       },
       {
         num: "3.3",
-        text: (
-          <>
-            <strong>Return Policy:</strong> As we deal in wholesale and
-            manufactured products, returns are not accepted.
-          </>
-        ),
+        text: "Single-piece or sub-MOQ requests will only be entertained as a paid commercial evaluation sample, subject to Clause 7.",
       },
       {
         num: "3.4",
-        text: (
-          <>
-            <strong>Refund Policy:</strong> Refunds are not applicable once
-            the order has been dispatched. Refunds will only be considered in
-            exceptional cases where SANWARIYAS is unable to fulfil the order,
-            or any other circumstances at our discretion.
-          </>
-        ),
+        text: "Bulk pricing is volume-tiered. Final unit pricing is determined by the total confirmed order quantity and is communicated in the formal quotation.",
       },
     ],
   },
   {
-    id: "export",
+    id: "pricing",
     num: "4",
-    title: "Export Policy",
+    title: "Pricing, Quotations & Payment Terms",
     clauses: [
       {
         num: "4.1",
-        text: "SANWARIYAS proudly supplies premium women's ethnic wear to retailers, wholesalers, distributors, and businesses worldwide.",
+        text: "All prices quoted are Ex-Works (EXW) unless otherwise specified, and are exclusive of international freight, insurance, customs duties, and local taxes.",
       },
       {
         num: "4.2",
-        text: "International orders are dispatched within 24–48 business hours after successful quality inspection and order processing.",
+        text: "Quotations remain valid for 7 business days from the date of issue unless extended in writing by SANWARIYAS.",
       },
       {
         num: "4.3",
-        text: "Export shipments are handled through trusted international logistics partners. Shipping timelines vary depending on the destination country and customs clearance.",
+        text: (
+          <>
+            A minimum advance payment of{" "}
+            <strong>50% of the total order value</strong> is required to
+            initiate production or reserve ready inventory.
+          </>
+        ),
       },
       {
         num: "4.4",
-        text: "Import duties, taxes, and local customs charges are determined by the destination country's regulations and will be communicated where applicable.",
+        text: "The remaining balance, along with finalized shipping and insurance costs, must be cleared in full prior to final dispatch of Goods.",
       },
       {
         num: "4.5",
-        text: "Buyers are responsible for complying with the import regulations of their respective countries unless otherwise agreed in writing.",
+        text: "Accepted payment methods include SWIFT wire transfer, NEFT, RTGS, and other corporate banking instruments as mutually agreed.",
+      },
+      {
+        num: "4.6",
+        text: "Bank transaction charges, currency conversion fees, and intermediary bank costs are borne solely by the Buyer.",
       },
     ],
   },
   {
-    id: "cancellation",
+    id: "shipping",
     num: "5",
-    title: "Cancellation Policy",
+    title: "Shipping, Export & Customs Compliance",
     clauses: [
       {
         num: "5.1",
-        text: "Orders are confirmed only after the required advance payment or token amount is received.",
+        text: "Ready inventory is dispatched within 5–7 business days of payment confirmation. Custom manufacturing orders require 15–21 business days depending on production load and design complexity.",
       },
       {
         num: "5.2",
-        text: "Once an order is confirmed, the token amount is non-refundable.",
+        text: "SANWARIYAS provides standard export documentation including Commercial Invoice, Packing List, and Certificate of Origin.",
       },
       {
         num: "5.3",
-        text: "Confirmed orders cannot be cancelled once production or dispatch processing has started.",
+        text: "The Buyer (importer of record) is solely responsible for import duties, customs clearance procedures, and applicable local taxes in the destination country.",
       },
       {
         num: "5.4",
-        text: (
-          <>
-            Orders may be kept on hold for a maximum of{" "}
-            <strong>2–3 days</strong> if the advance payment has not been
-            received. If payment is not received within this period, the
-            order will be automatically cancelled without prior notice.
-          </>
-        ),
+        text: "Title and risk of loss in the Goods passes to the Buyer upon handover to the designated freight carrier, unless a different Incoterm is agreed in writing.",
+      },
+      {
+        num: "5.5",
+        text: "SANWARIYAS is not liable for delays caused by customs authorities, carrier disruptions, or force majeure events as defined in Clause 10.",
       },
     ],
   },
   {
-    id: "quality",
+    id: "returns",
     num: "6",
-    title: "Quality Assurance Policy",
+    title: "Quality Claims, Returns & Exchanges",
     clauses: [
       {
         num: "6.1",
-        text: "Quality is at the heart of everything we manufacture. Every garment undergoes a rigorous 3-Step Quality Control (QC) Process before dispatch.",
+        text: "Owing to the wholesale and made-to-order nature of our business, SANWARIYAS enforces a strict B2B claims policy in lieu of consumer-style returns.",
       },
       {
         num: "6.2",
-        text: (
-          <>
-            <strong>1. Manufacturing Inspection:</strong> Each product is
-            checked during production to ensure accurate stitching, fabric
-            quality, measurements, and finishing.
-          </>
-        ),
+        text: "Claims are accepted exclusively for verifiable major manufacturing defects affecting stitching integrity, fabric structure, or functional usability.",
       },
       {
         num: "6.3",
         text: (
           <>
-            <strong>2. Packing Inspection:</strong> Before packaging, every
-            piece is inspected again for cleanliness, presentation, and
-            overall quality.
+            All defect claims must be raised in writing with clear photographic
+            or video evidence within <strong>48 hours</strong> of shipment
+            receipt.
           </>
         ),
       },
       {
         num: "6.4",
-        text: (
-          <>
-            <strong>3. Dispatch Inspection:</strong> A final quality check is
-            conducted before shipment to ensure only approved products leave
-            our facility.
-          </>
-        ),
+        text: "Minor color variation arising from digital photography, monitor calibration, or natural dye-lot differences does not constitute a valid defect.",
       },
       {
         num: "6.5",
-        text: "For export shipments, we perform an additional quality inspection before dispatch to ensure international quality standards are met.",
-      },
-      {
-        num: "6.6",
-        text: "Our quality process ensures that every order reflects the craftsmanship and reliability SANWARIYAS is known for.",
+        text: "Approved claims will be resolved via replacement, credit note, or partial refund at SANWARIYAS's sole discretion.",
       },
     ],
   },
   {
-    id: "payment",
+    id: "custom",
     num: "7",
-    title: "Payment Policy",
+    title: "Custom Manufacturing, OEM & Private Label",
     clauses: [
       {
         num: "7.1",
-        text: "SANWARIYAS operates on a 100% advance payment basis unless otherwise agreed in writing.",
+        text: "For custom design, exclusive prints, or private-label production, all tech packs, brand assets, and design files supplied by the Buyer remain the Buyer's intellectual property.",
       },
       {
         num: "7.2",
-        text: "Once your order is confirmed, payment can be made through UPI (PhonePe, Google Pay, Paytm), Bank Transfer (NEFT/RTGS/IMPS), Net Banking, Cash Deposit, Cheque (subject to clearance), International Bank Transfer (Wire Transfer), or Foreign Remittance (credited in INR).",
+        text: "SANWARIYAS will not reproduce, resell, or distribute Buyer-supplied private label designs to any third party.",
       },
       {
         num: "7.3",
-        text: "Orders will be processed only after the payment has been successfully received and verified.",
+        text: "Custom orders are deemed final and non-cancellable once fabric cutting, dyeing, or production has commenced.",
       },
       {
         num: "7.4",
-        text: "For international buyers, all foreign remittances must comply with applicable RBI and banking regulations.",
+        text: "Sample approval timelines, revision rounds, and tooling costs (if applicable) will be communicated separately in the production agreement for each custom order.",
+      },
+    ],
+  },
+  {
+    id: "ip",
+    num: "8",
+    title: "Intellectual Property",
+    clauses: [
+      {
+        num: "8.1",
+        text: "All original designs, catalogues, photography, and branding created by SANWARIYAS remain the exclusive intellectual property of SANWARIYAS.",
+      },
+      {
+        num: "8.2",
+        text: "Buyers may not reproduce, resell, or claim authorship of SANWARIYAS's proprietary designs outside the scope of an agreed private-label arrangement.",
+      },
+    ],
+  },
+  {
+    id: "liability",
+    num: "9",
+    title: "Limitation of Liability",
+    clauses: [
+      {
+        num: "9.1",
+        text: "SANWARIYAS's total liability arising from any order shall not exceed the total invoice value of that specific order.",
+      },
+      {
+        num: "9.2",
+        text: "SANWARIYAS shall not be liable for any indirect, incidental, or consequential losses, including loss of profit, business opportunity, or goodwill, arising from the use or resale of the Goods.",
+      },
+      {
+        num: "9.3",
+        text: "Nothing in these Terms limits liability that cannot lawfully be excluded under applicable Indian law.",
+      },
+    ],
+  },
+  {
+    id: "force-majeure",
+    num: "10",
+    title: "Force Majeure",
+    clauses: [
+      {
+        num: "10.1",
+        text: "SANWARIYAS shall not be held responsible for delays or failure to perform obligations caused by events beyond its reasonable control, including but not limited to natural disasters, strikes, port congestion, customs delays, war, or governmental restrictions.",
+      },
+      {
+        num: "10.2",
+        text: "In such events, delivery timelines will be extended for a reasonable period commensurate with the disruption, and the Buyer will be notified at the earliest opportunity.",
+      },
+    ],
+  },
+  {
+    id: "governing-law",
+    num: "11",
+    title: "Governing Law & Jurisdiction",
+    clauses: [
+      {
+        num: "11.1",
+        text: "These Terms are governed by and construed in accordance with the laws of India.",
+      },
+      {
+        num: "11.2",
+        text: (
+          <>
+            Any disputes arising from these Terms shall be subject to the
+            exclusive jurisdiction of the courts in{" "}
+            <strong>Jaipur, Rajasthan, India</strong>.
+          </>
+        ),
+      },
+      {
+        num: "11.3",
+        text: "Both parties agree to first attempt resolution through good-faith negotiation before pursuing formal legal proceedings.",
       },
     ],
   },
@@ -533,7 +567,7 @@ export default function TermsPage() {
                 <strong className="text-[#7A3D2A]">{LAST_UPDATED}</strong>
               </span>
               <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BE6E5B]/40" />
-              <span>7 Sections</span>
+              <span>11 Sections</span>
               <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BE6E5B]/40" />
               <span>Governing Law: India</span>
             </div>
@@ -681,7 +715,7 @@ export default function TermsPage() {
 
                 {/* ── CTA Block ── */}
                 <div className="mt-12 text-center">
-                  {/* ✅ SEO FIX: Added descriptive title attribute */}
+                  {/*  SEO FIX: Added descriptive title attribute */}
                   <Link
                     href="/contact"
                     title="Contact SANWARIYAS for Wholesale Inquiries"

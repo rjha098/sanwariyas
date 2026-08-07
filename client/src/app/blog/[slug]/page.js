@@ -21,7 +21,7 @@ async function getBlog(slug, isPreview = false) {
       ? `${BACKEND_URL}/api/blogs/${slug}?preview=true`
       : `${BACKEND_URL}/api/blogs/${slug}`;
 
-    console.log(`[Blog SSR] Fetching: ${url}`);
+    // console.log(`[Blog SSR] Fetching: ${url}`);
 
     const res = await fetch(url, {
       cache: "no-store",
@@ -30,18 +30,18 @@ async function getBlog(slug, isPreview = false) {
       },
     });
 
-    console.log(`[Blog SSR] Status: ${res.status} for slug: ${slug}`);
+    // console.log(`[Blog SSR] Status: ${res.status} for slug: ${slug}`);
 
     if (!res.ok) {
-      const text = await res.text();
-      console.error(`[Blog SSR] Backend error body: ${text}`);
+      // const text = await res.text();
+      // console.error(`[Blog SSR] Backend error body: ${text}`);
       return null;
     }
 
     const data = await res.json();
     return data?.data || null;
   } catch (err) {
-    console.error(`[Blog SSR] Fetch exception:`, err.message);
+    // console.error(`[Blog SSR] Fetch exception:`, err.message);
     return null;
   }
 }
@@ -54,7 +54,7 @@ export async function generateMetadata({ params, searchParams }) {
     const resolvedParams = await searchParams;
     isPreview = resolvedParams?.preview === "true";
   } catch (e) {
-    console.error("searchParams issue in metadata");
+    // console.error("searchParams issue in metadata");
   }
 
   const blog = await getBlog(slug, isPreview);
@@ -230,6 +230,7 @@ const ARTICLE_STYLES = `
   }
 `;
 
+
 export default async function SingleBlogPage({ params, searchParams }) {
   const { slug } = await params;
 
@@ -238,12 +239,12 @@ export default async function SingleBlogPage({ params, searchParams }) {
     const resolvedParams = await searchParams;
     isPreview = resolvedParams?.preview === "true";
   } catch (e) {
-    console.error("searchParams issue in component");
+    // console.error("searchParams issue in component");
   }
 
-  console.log(
-    `[Frontend] Loading slug: ${slug}, Preview flag is: ${isPreview}`,
-  );
+  // console.log(
+  //   `[Frontend] Loading slug: ${slug}, Preview flag is: ${isPreview}`,
+  // );
 
   const blog = await getBlog(slug, isPreview);
 
@@ -253,9 +254,9 @@ export default async function SingleBlogPage({ params, searchParams }) {
 
   //  Backend gived  draft  because  of the  vip  pass  but  in  url   not  flag   given  404 
   if (blog.status === "draft" && !isPreview) {
-    console.log(
-      `[Frontend] Blocked Draft rendering because preview param was missing/false.`,
-    );
+    // console.log(
+    //   `[Frontend] Blocked Draft rendering because preview param was missing/false.`,
+    // );
     notFound();
   }
 
@@ -349,7 +350,7 @@ export default async function SingleBlogPage({ params, searchParams }) {
           <span className="px-2.5 py-1 rounded-full bg-[#BE6E5B]/10 font-sans text-[10px] tracking-[0.2em] uppercase text-[#BE6E5B] font-semibold">
             {blog.category?.name || "Uncategorized"}
           </span>
-          {/* 👉 Visual Indicator ki yeh preview mode hai */}
+          {/*  this  is preview mode of the Visual Indicator k */}
           {isPreview && blog.status === "draft" && (
             <>
               <span className="w-1 h-1 rounded-full bg-[#E8D5A3]"></span>

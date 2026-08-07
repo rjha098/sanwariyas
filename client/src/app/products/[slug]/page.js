@@ -5,10 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
+import ProductGallery from "@/components/product/ProductGallery"; 
 import Footer from "@/components/layout/Footer";
 import InquiryForm from "@/components/ui/InquiryForm";
 import AddToCartBox from "@/components/product/AddToCartBox";
-import { getImageUrl } from "@/lib/imageUrl";
 import { fetchProductBySlug, fetchProducts } from "@/lib/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sanwariyas.com";
@@ -159,16 +159,6 @@ export default async function ProductDetailPage({ params }) {
       )
     : null;
 
-  // ✅ STRICT DEDUPLICATION LOGIC:
-  // Remove the main image from the gallery array if it exists there,
-  // then merge it safely to guarantee no duplicates.
-  const galleryImages = (product.images || []).filter(
-    (img) => img !== product.image,
-  );
-  const displayImages = [product.image, ...galleryImages]
-    .filter(Boolean)
-    .slice(0, 4);
-
   return (
     <>
       <script
@@ -231,48 +221,10 @@ export default async function ProductDetailPage({ params }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           {/* ── Top 2-column grid ── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-            {/* LEFT — Image gallery */}
+            
+            {/* ✅ LEFT — Image gallery (Sirf ek line me poora gallery component call ho gaya) */}
             <div className="lg:col-span-5 relative">
-              <div className="lg:sticky lg:top-24 space-y-3">
-                {/* Main image */}
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-white shadow-md border border-[#C9A84C]/20 rounded-lg">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={getImageUrl(product.image)}
-                    alt={`Wholesale ${product.name} - Front Manufacturer View`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  {product.isFeatured && (
-                    <div className="absolute top-4 left-4 bg-[#C9A84C] text-[#574325] text-[10px] tracking-widest uppercase px-3 py-1.5 font-sans font-bold shadow-sm rounded-md">
-                      Featured
-                    </div>
-                  )}
-                </div>
-
-                {/* Thumbnails */}
-                {displayImages.length > 0 && (
-                  <div
-                    className="grid grid-cols-4 gap-2"
-                    role="group"
-                    aria-label={`${product.name} image gallery`}
-                  >
-                    {displayImages.map((img, i) => (
-                      <div
-                        key={i}
-                        className="relative aspect-[3/4] overflow-hidden bg-white cursor-pointer border border-[#C9A84C]/20 rounded-md"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={getImageUrl(img)}
-                          alt={`${product.name} view ${i + 1}`}
-                          decoding="async"
-                          className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <ProductGallery product={product} />
             </div>
 
             {/* RIGHT — Product info */}

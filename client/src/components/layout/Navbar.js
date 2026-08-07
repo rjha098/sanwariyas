@@ -8,18 +8,20 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 
-
 const navLinks = [
   {
     href: "/",
     label: "Home",
     title: "SANWARIYAS Wholesale Ethnic Wear Manufacturer",
   },
-  {
-    href: "/products",
-    label: "Products",
-    title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
-  },
+
+  // {
+  //   href: "/products",
+  //   label: "Products",
+  //   title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
+  // },
+
+
   {
     href: "/contact",
     label: "Inquire",
@@ -29,6 +31,10 @@ const navLinks = [
     href: "/about",
     label: "About",
     title: "About SANWARIYAS Manufacturer",
+  },
+    {
+    href: "/exportdocs",
+    label: "Export",
   },
   {
     id: "discover",
@@ -41,10 +47,6 @@ const navLinks = [
         links: [
           { href: "/lookbook", label: "Our Lookbook" },
           { href: "/blog", label: "Journal & Blog" },
-          {
-            href: "/exportdocs",
-            label: "Export",
-          },
         ],
       },
       {
@@ -60,7 +62,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobMegaOpen, setMobMegaOpen] = useState(false); // Mobile dropdown toggle ke liye
   const [hoveredLink, setHoveredLink] = useState(null);
@@ -71,7 +72,6 @@ export default function Navbar() {
 
   // Auth context and state
   const { isAuthenticated, isCustomer, user, logout } = useAuth();
-
 
   const { itemCount: cartItemCount } = useCart();
 
@@ -341,8 +341,7 @@ export default function Navbar() {
           {/* AUTH, CTA + HAMBURGER */}
           {/* AUTH, CTA + HAMBURGER */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-
-           {isCustomer && (
+            {isCustomer && (
               <Link
                 href="/cart"
                 aria-label="View Cart"
