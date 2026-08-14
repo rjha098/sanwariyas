@@ -93,12 +93,12 @@ export const clearReadNotifications = async (req, res) => {
 
 export const deleteReadNotifications = async (req, res) => {
   try {
-    console.log("DELETE CALLED");
+    // console.log("DELETE CALLED");
 
     const { role, id } = req.authUser;
 
-    console.log(role);
-    console.log(id);
+    // console.log(role);
+    // console.log(id);
 
     let query;
 

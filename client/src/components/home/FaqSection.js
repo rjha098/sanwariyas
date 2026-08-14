@@ -12,6 +12,8 @@ import Link from "next/link";
 // ─────────────────────────────────────────────────
 
 //  SEO FIX: Naturally injected primary B2B and Manufacturer keywords into FAQ answers for Topical Authority
+
+
 const BUILT_IN_FAQS = [
   {
     name: "How do I place an order at SANWARIYAS?",
@@ -223,7 +225,7 @@ export default function FaqSection({ faqs }) {
 
   return (
     <>
-      {/* ✅ SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
+      {/*                                SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

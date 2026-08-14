@@ -320,7 +320,7 @@ export default function ContactPage() {
             ) {
               return;
             }
-            console.error("Failed to fetch full profile", err);
+            // console.error("Failed to fetch full profile", err);
           });
       }
     }

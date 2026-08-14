@@ -42,9 +42,49 @@ export const createLookbookItem = async (req, res) => {
   }
 };
 
+// export const deleteLookbookItem = async (req, res) => {
+//   try {
+    
+//     const item = await Lookbook.findById(req.params.id);
+
+//     if (!item) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Lookbook item not found" });
+//     }
+
+//     const relativePath = item.image.startsWith("/")
+//       ? item.image.slice(1)
+//       : item.image;
+//     const absoluteFilePath = path.resolve(relativePath);
+
+//     if (fs.existsSync(absoluteFilePath)) {
+     
+//       fs.unlinkSync(absoluteFilePath);
+//       console.log(
+//         `Successfully erased lookbook image from folder storage: ${absoluteFilePath}`,
+//       );
+//     } else {
+//       console.log(
+//         `Image asset not found on storage disk path: ${absoluteFilePath}. Database cleanup running anyway.`,
+//       );
+//     }
+
+//     await Lookbook.findByIdAndDelete(req.params.id);
+
+//     res.json({
+//       success: true,
+//       message: "Item successfully deleted from database and storage disk.",
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+
+
 export const deleteLookbookItem = async (req, res) => {
   try {
-    
     const item = await Lookbook.findById(req.params.id);
 
     if (!item) {
@@ -59,15 +99,10 @@ export const deleteLookbookItem = async (req, res) => {
     const absoluteFilePath = path.resolve(relativePath);
 
     if (fs.existsSync(absoluteFilePath)) {
-     
       fs.unlinkSync(absoluteFilePath);
-      console.log(
-        `Successfully erased lookbook image from folder storage: ${absoluteFilePath}`,
-      );
+      // console.log(`Successfully erased lookbook image from folder storage: ${absoluteFilePath}`);
     } else {
-      console.log(
-        `Image asset not found on storage disk path: ${absoluteFilePath}. Database cleanup running anyway.`,
-      );
+      // console.log(`Image asset not found on storage disk path: ${absoluteFilePath}. Database cleanup running anyway.`);
     }
 
     await Lookbook.findByIdAndDelete(req.params.id);

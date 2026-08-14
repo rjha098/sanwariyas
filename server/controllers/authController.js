@@ -101,15 +101,23 @@ export const login = async (req, res) => {
     await User.findByIdAndUpdate(user.id, { currentSessionId: sessionId });
 
     // Background Inquiry Sync (Fire and Forget)
+    // Inquiry.updateMany(
+    //   { email: user.email, userId: null },
+    //   { userId: user.id },
+    // ).catch((err) =>
+    //   console.error(
+    //     "[Background Error] Failed to sync inquiries:",
+    //     err.message,
+    //   ),
+    // );
+
+    // Background Inquiry Sync (Fire and Forget)
     Inquiry.updateMany(
       { email: user.email, userId: null },
       { userId: user.id },
-    ).catch((err) =>
-      console.error(
-        "[Background Error] Failed to sync inquiries:",
-        err.message,
-      ),
-    );
+    ).catch((err) => {
+      // console.error("[Background Error] Failed to sync inquiries:", err.message);
+    });
 
     const token = createAuthToken({
       role: user.role,
@@ -355,17 +363,41 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// export const logout = async (req, res) => {
+//   try {
+//     if (req.authUser?.id) {
+//       await User.findByIdAndUpdate(req.authUser.id, { currentSessionId: null });
+//     } else if (req.authUser?.role === "admin" && !req.authUser?.id) {
+//       adminSessionStore.delete(req.authUser.email);
+//     }
+
+//     return res.json({ success: true, message: "Logged out." });
+//   } catch (error) {
+//     return res.json({ success: true, message: "Logged out." });
+//   }
+// };
+
 export const logout = async (req, res) => {
   try {
     if (req.authUser?.id) {
-      await User.findByIdAndUpdate(req.authUser.id, { currentSessionId: null });
+      await User.findByIdAndUpdate(req.authUser.id, {
+        currentSessionId: null,
+        lastActiveAt: new Date(0),
+      });
     } else if (req.authUser?.role === "admin" && !req.authUser?.id) {
       adminSessionStore.delete(req.authUser.email);
+      envAdminLastActiveAt = null;
     }
 
-    return res.json({ success: true, message: "Logged out." });
+    return res.json({
+      success: true,
+      message: "Logged out.",
+    });
   } catch (error) {
-    return res.json({ success: true, message: "Logged out." });
+    return res.json({
+      success: true,
+      message: "Logged out.",
+    });
   }
 };
 
@@ -390,23 +422,52 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
+// export const heartbeat = async (req, res) => {
+//   try {
+//     if (req.authUser.id) {
+//       const twoMinsAgo = new Date(Date.now() - 120 * 1000);
+//       await User.updateOne(
+//         {
+//           _id: req.authUser.id,
+//           $or: [{ lastActiveAt: { $lt: twoMinsAgo } }, { lastActiveAt: null }],
+//         },
+//         { $set: { lastActiveAt: new Date() } },
+//       );
+//     } else if (req.authUser.role === "admin") {
+//       envAdminLastActiveAt = new Date();
+//     }
+//     return res.json({ success: true });
+//   } catch (error) {
+//     return res.status(500).json({ success: false });
+//   }
+// };
+
 export const heartbeat = async (req, res) => {
   try {
+    const now = new Date();
+
     if (req.authUser.id) {
-      const twoMinsAgo = new Date(Date.now() - 120 * 1000);
       await User.updateOne(
+        { _id: req.authUser.id },
         {
-          _id: req.authUser.id,
-          $or: [{ lastActiveAt: { $lt: twoMinsAgo } }, { lastActiveAt: null }],
+          $set: {
+            lastActiveAt: now,
+          },
         },
-        { $set: { lastActiveAt: new Date() } },
       );
     } else if (req.authUser.role === "admin") {
-      envAdminLastActiveAt = new Date();
+      envAdminLastActiveAt = now;
     }
-    return res.json({ success: true });
+
+    return res.json({
+      success: true,
+      lastActiveAt: now,
+    });
   } catch (error) {
-    return res.status(500).json({ success: false });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update activity.",
+    });
   }
 };
 
@@ -470,35 +531,65 @@ export const getVisibility = async (req, res) => {
   }
 };
 
+// export const setOffline = async (req, res) => {
+//   try {
+//     if (req.authUser.id) {
+//       await User.findByIdAndUpdate(req.authUser.id, {
+//         lastActiveAt: new Date(0),
+//       });
+//     }
+//     return res.json({ success: true });
+//   } catch (error) {
+//     return res.status(500).json({ success: false });
+//   }
+// };
+
+// ── ✅ PHASE 2: STAFF MANAGEMENT CONTROLLERS ─────────────────────────────────
+
 export const setOffline = async (req, res) => {
   try {
     if (req.authUser.id) {
       await User.findByIdAndUpdate(req.authUser.id, {
-        lastActiveAt: new Date(0),
+        $set: {
+          lastActiveAt: new Date(0),
+        },
       });
+    } else if (req.authUser.role === "admin") {
+      envAdminLastActiveAt = null;
     }
-    return res.json({ success: true });
+
+    return res.json({
+      success: true,
+    });
   } catch (error) {
-    return res.status(500).json({ success: false });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to set offline.",
+    });
   }
 };
-
-// ── ✅ PHASE 2: STAFF MANAGEMENT CONTROLLERS ─────────────────────────────────
 
 export const createStaffAccount = async (req, res) => {
   try {
     if (req.authUser.role !== "admin") {
-      return res.status(403).json({ success: false, message: "Only Admin can add staff." });
+      return res
+        .status(403)
+        .json({ success: false, message: "Only Admin can add staff." });
     }
 
     const { name, email, phone, password, department } = req.body;
     if (!name || !email || !password || !phone) {
-      return res.status(400).json({ success: false, message: "All required fields must be filled." });
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be filled.",
+      });
     }
 
     const existing = await User.findOne({ email: email.toLowerCase().trim() });
     if (existing) {
-      return res.status(400).json({ success: false, message: "Email already registered." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already registered." });
     }
 
     const staffUser = new User({
@@ -522,20 +613,25 @@ export const createStaffAccount = async (req, res) => {
         name: staffUser.name,
         email: staffUser.email,
         phone: staffUser.phone,
-        department: staffUser.department,   
+        department: staffUser.department,
         role: staffUser.role,
         isActive: staffUser.isActive,
       },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message || "Failed to create staff account." });
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to create staff account.",
+    });
   }
 };
 
 export const getAllStaff = async (req, res) => {
   try {
     if (req.authUser.role !== "admin" && req.authUser.role !== "staff") {
-      return res.status(403).json({ success: false, message: "Access denied." });
+      return res
+        .status(403)
+        .json({ success: false, message: "Access denied." });
     }
 
     const staffMembers = await User.find({ role: { $in: ["staff", "admin"] } })
@@ -552,14 +648,19 @@ export const getAllStaff = async (req, res) => {
 export const updateStaffStatus = async (req, res) => {
   try {
     if (req.authUser.role !== "admin") {
-      return res.status(403).json({ success: false, message: "Only Admin can update staff." });
+      return res
+        .status(403)
+        .json({ success: false, message: "Only Admin can update staff." });
     }
 
     const { id } = req.params;
-    const { isActive, department } = req.body;   
+    const { isActive, department } = req.body;
 
     const staff = await User.findById(id);
-    if (!staff) return res.status(404).json({ success: false, message: "Staff not found." });
+    if (!staff)
+      return res
+        .status(404)
+        .json({ success: false, message: "Staff not found." });
 
     if (isActive !== undefined) staff.isActive = isActive;
     if (department) staff.department = department;
@@ -585,13 +686,18 @@ export const updateStaffStatus = async (req, res) => {
 export const deleteStaffAccount = async (req, res) => {
   try {
     if (req.authUser.role !== "admin") {
-      return res.status(403).json({ success: false, message: "Only Admin can delete staff." });
+      return res
+        .status(403)
+        .json({ success: false, message: "Only Admin can delete staff." });
     }
 
     const { id } = req.params;
     await User.findByIdAndDelete(id);
 
-    return res.json({ success: true, message: "Staff member removed successfully." });
+    return res.json({
+      success: true,
+      message: "Staff member removed successfully.",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

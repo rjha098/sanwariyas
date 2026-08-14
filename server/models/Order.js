@@ -5,11 +5,11 @@ import mongoose from "mongoose";
 
 const SET_SIZE = 5;
 const MIN_SETS = 2;
-const MIN_PIECES = MIN_SETS * SET_SIZE; 
+const MIN_PIECES = MIN_SETS * SET_SIZE;
 
 const orderItemSchema = new mongoose.Schema(
   {
-    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" }, 
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     name: { type: String, required: true },
     image: { type: String, default: "" },
     pricePerPiece: { type: Number, required: true, min: 0 },
@@ -19,14 +19,33 @@ const orderItemSchema = new mongoose.Schema(
     moqMet: { type: Boolean, required: true },
     subtotal: { type: Number, required: true, min: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new mongoose.Schema(
   {
     orderNumber: { type: String, required: true, unique: true },
-    invoiceNumber: { type: String, unique: true, sparse: true }, 
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
+
+    // FIX: Generate a random string as the default invoice number.
+    // If we leave it blank, MongoDB throws a duplicate key error for "null".
+    // This creates a unique invoice like "INV-202685-ABC12"
+    invoiceNumber: {
+      type: String,
+      unique: true,
+      default: () => {
+        const dateString = new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "");
+        const randomString = Math.random()
+          .toString(36)
+          .substring(2, 7)
+          .toUpperCase();
+        return `INV-${dateString}-${randomString}`;
+      },
+    },
+
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     buyerName: { type: String, required: true },
     buyerEmail: { type: String, lowercase: true, trim: true, default: "" },
     buyerPhone: { type: String, default: "" },
@@ -40,16 +59,23 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"],
+      enum: [
+        "pending",
+        "confirmed",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
+      ],
       default: "pending",
     },
-    
+
     // Courier Fields Maintained
     awbNumber: { type: String, default: "" },
     courierPartner: { type: String, default: "DTDC" },
     adminNotes: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 orderSchema.index({ userId: 1, createdAt: -1 });

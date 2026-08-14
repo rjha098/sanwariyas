@@ -24,10 +24,10 @@ export default function LookbookManager({ token }) {
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
 
-  // ✅ NEW STATE: To toggle between Dropdown and Text Input
+  //  NEW STATE: To toggle between Dropdown and Text Input
   const [isCustomCategory, setIsCustomCategory] = useState(false);
 
-  // ✅ Automatically compute unique categories from database + YOUR SPECIFIC PRODUCTS
+  //  Automatically compute unique categories from database + YOUR SPECIFIC PRODUCTS
   const existingCategories = Array.from(
     new Set([
       "Short Kurti",
@@ -119,7 +119,7 @@ export default function LookbookManager({ token }) {
             className="w-full border border-brand-lightgold/60 px-4 py-3 text-sm focus:outline-none focus:border-brand-coffee"
           />
 
-          {/* ✅ HYBRID CATEGORY INPUT LOGIC */}
+          {/*  HYBRID CATEGORY INPUT LOGIC */}
           {!isCustomCategory ? (
             <select
               value={category}
@@ -161,7 +161,7 @@ export default function LookbookManager({ token }) {
                 type="button"
                 onClick={() => {
                   setIsCustomCategory(false);
-                  // ✅ CHANGED: Fallback to your main category instead of Bridal Export
+                  //  CHANGED: Fallback to your main category instead of Bridal Export
                   setCategory(existingCategories[0] || "Short Kurti");
                 }}
                 className="px-4 py-3 border border-brand-lightgold/60 text-[10px] tracking-[0.2em] uppercase text-brand-mud hover:bg-gray-50 transition-colors"

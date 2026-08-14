@@ -171,7 +171,7 @@ export default function WhyUsSection() {
         />
         <div
           aria-hidden="true"
-          className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
+          className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent "
         />
         <div
           aria-hidden="true"

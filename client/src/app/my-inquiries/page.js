@@ -9,9 +9,18 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const STATUS_MAP = {
-  pending:   { label: "Pending",   cls: "bg-amber-50 text-amber-700 border-amber-200" },
-  contacted: { label: "In Review", cls: "bg-blue-50 text-blue-700 border-blue-200" },
-  resolved:  { label: "Resolved",  cls: "bg-green-50 text-green-700 border-green-200" },
+  pending: {
+    label: "Pending",
+    cls: "bg-amber-50 text-amber-700 border-amber-200",
+  },
+  contacted: {
+    label: "In Review",
+    cls: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+  resolved: {
+    label: "Resolved",
+    cls: "bg-green-50 text-green-700 border-green-200",
+  },
 };
 
 export default function MyInquiriesPage() {
@@ -33,7 +42,7 @@ export default function MyInquiriesPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setInquiries(res.data.inquiries || []))
-      .catch((err) => console.error(err))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [token]);
 
@@ -56,7 +65,6 @@ export default function MyInquiriesPage() {
       <Navbar />
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
-
           {/*  Back to Dashboard button */}
           <button
             onClick={() => router.push("/dashboard")}
@@ -102,7 +110,9 @@ export default function MyInquiriesPage() {
                             <span className="w-2 h-2 rounded-full bg-[#C9A84C] flex-shrink-0" />
                           )}
                           <h3 className="font-sans font-semibold text-[#574325] text-sm">
-                            {inq.productCategory || inq.productName || "General Inquiry"}
+                            {inq.productCategory ||
+                              inq.productName ||
+                              "General Inquiry"}
                           </h3>
                         </div>
                         <p className="font-sans text-xs text-[#70543E]/70 line-clamp-2">

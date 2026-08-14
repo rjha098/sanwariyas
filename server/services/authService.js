@@ -11,7 +11,7 @@ export const adminOtpStore = new Map();
 
 export const sendEmail = async ({ to, subject, html }) => {
   if (!process.env.RESEND_API_KEY) {
-    console.warn("[email] RESEND_API_KEY not set — skipping.");
+    // console.warn("[email] RESEND_API_KEY not set — skipping.");
     return false;
   }
   try {
@@ -25,7 +25,7 @@ export const sendEmail = async ({ to, subject, html }) => {
     });
     return true;
   } catch (error) {
-    console.error("[email] Failed to send email via Resend:", error.message);
+    // console.error("[email] Failed to send email via Resend:", error.message);
     return false;
   }
 };
@@ -226,7 +226,7 @@ export const loginUser = async (identifier, password) => {
   });
 
   if (!user) {
-    const err = new Error("Invalid credentials. Please check your details.");
+    const err = new Error("Account not found. Please check your email or sign up.");
     err.statusCode = 401;
     throw err;
   }
@@ -250,6 +250,53 @@ export const loginUser = async (identifier, password) => {
 // FORGOT PASSWORD FLOW
 // ═════════════════════════════════════════════════════════════════
 
+// export const initiateForgotPassword = async (identifier) => {
+//   const id = identifier.trim().toLowerCase();
+//   const user = await User.findOne({
+//     $or: [{ email: id }, { phone: identifier.trim() }],
+//     isActive: true,
+//   });
+
+//   const genericResponse = {
+//     emailHint: null,
+//     message: "If an account exists, a reset code has been sent.",
+//   };
+
+//   if (!user) return genericResponse; // ← don't reveal admin-vs-missing distinction, don't throw 404
+
+//   const otp = generateOtp();
+//   console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`); //  terminal mein print
+
+//   user.resetOtpHash = hashOtp(otp);
+//   user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+//   await user.save();
+
+//   const sent = await sendEmail({
+//     to: user.email,
+//     subject: "SANWARIYAS — Password Reset OTP",
+//     html: `
+//       <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #E8D5A3">
+//         <p style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin:0 0 16px">Sanwariyas</p>
+//         <h2 style="color:#574325;margin:0 0 8px">Password Reset OTP</h2>
+//         <p style="color:#70543E;font-size:14px;margin:0 0 24px">Your one-time code expires in <strong>10 minutes</strong>.</p>
+//         <div style="background:#f5efe4;border:1px solid #E8D5A3;padding:20px;text-align:center;margin-bottom:24px">
+//           <span style="font-size:40px;font-weight:bold;letter-spacing:14px;color:#574325">${otp}</span>
+//         </div>
+//         <p style="color:#999;font-size:12px">If you did not request this, please ignore this email.</p>
+//       </div>`,
+//   });
+
+//   if (!sent) console.info(`[auth][dev] Reset OTP for ${user.email}: ${otp}`);
+
+//   return { emailHint: maskEmail(user.email), message: genericResponse.message };
+// };
+
+
+
+// ═════════════════════════════════════════════════════════════════
+// FORGOT PASSWORD FLOW
+// ═════════════════════════════════════════════════════════════════
+
 export const initiateForgotPassword = async (identifier) => {
   const id = identifier.trim().toLowerCase();
   const user = await User.findOne({
@@ -257,15 +304,15 @@ export const initiateForgotPassword = async (identifier) => {
     isActive: true,
   });
 
-  const genericResponse = {
-    emailHint: null,
-    message: "If an account exists, a reset code has been sent.",
-  };
 
-  if (!user) return genericResponse; // ← don't reveal admin-vs-missing distinction, don't throw 404
+  if (!user) {
+    const err = new Error("Account not found. Cannot reset password.");
+    err.statusCode = 404;
+    throw err;
+  }
 
   const otp = generateOtp();
-  console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`); //  terminal mein print
+  console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`); 
 
   user.resetOtpHash = hashOtp(otp);
   user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
@@ -288,8 +335,10 @@ export const initiateForgotPassword = async (identifier) => {
 
   if (!sent) console.info(`[auth][dev] Reset OTP for ${user.email}: ${otp}`);
 
-  return { emailHint: maskEmail(user.email), message: genericResponse.message };
+  return { emailHint: maskEmail(user.email), message: "Reset code has been sent." };
 };
+
+
 
 export const resetUserPassword = async (email, otp, newPassword) => {
   const user = await User.findOne({ email });

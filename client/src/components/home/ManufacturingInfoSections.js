@@ -1,4 +1,7 @@
+// the  upper  side  code is the  old  code
+
 // FILE: client/src/components/home/ManufacturingInfoSections.js
+
 "use client";
 
 import Link from "next/link";
@@ -33,26 +36,32 @@ const VIDEO_STEPS = [
 const REVIEWS = [
   {
     quote:
-      "Very good wholesale quality. Stitching and finishing both are neat.",
-    name: "Abhishek Raj",
-  },
-  {
-    quote:
-      "Authentic fabric, reliable team, and smooth online shopping experience.",
-    name: "Pia Kokare",
+      "I am a reseller, I had a very good experience with these people from enquiry to dispatch, very nice products, happy to be a part with them.",
+    name: "Ramya R",
   },
   {
     quote:
       "Collection is very good and prices are comfortable for bulk orders.",
-    name: "Rupak Kumar",
+    name: "Manish Mahawar",
   },
   {
     quote: "Affordable fabric with very good customer support for every order.",
     name: "Deepak Kumar",
   },
   {
-    quote: "SANWARIYAS has vibrant prints, fresh patterns, and great designs.",
-    name: "Akshay Sharma",
+    quote:
+      "Very good wholesale quality. Stitching and finishing both are neat.",
+    name: "Ramlal Kumar",
+  },
+  {
+    quote:
+      "Really happy with our experience with SANWARIYAS. The designs are fresh, the quality is consistent, and the team understands market trends very well. Every collection has something new and attractive for customers.",
+    name: "Simran Saini",
+  },
+  {
+    quote:
+      "Authentic fabric, reliable team , and smooth online shopping experience.",
+    name: "Rajesh Jonwal",
   },
 ];
 
@@ -64,23 +73,18 @@ function VideoLightbox({ step, onClose }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
 
-  // Mount animation — two-phase: backdrop first, then content scale-in
   useEffect(() => {
-    // Phase 1: show backdrop
     requestAnimationFrame(() => {
       setIsVisible(true);
     });
-    // Phase 2: scale-in content
     const contentTimer = setTimeout(() => {
       setIsContentVisible(true);
     }, 60);
 
-    // Focus the close button for accessibility
     const focusTimer = setTimeout(() => {
       closeButtonRef.current?.focus();
     }, 120);
 
-    // Lock body scroll
     const scrollY = window.scrollY;
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
@@ -90,7 +94,6 @@ function VideoLightbox({ step, onClose }) {
     return () => {
       clearTimeout(contentTimer);
       clearTimeout(focusTimer);
-      // Restore scroll
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.width = "";
@@ -99,13 +102,11 @@ function VideoLightbox({ step, onClose }) {
     };
   }, []);
 
-  // Play video when lightbox opens
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.muted = false;
       videoRef.current.play().catch(() => {
-        // Autoplay with sound blocked — fallback to muted
         if (videoRef.current) {
           videoRef.current.muted = true;
           videoRef.current.play().catch(() => {});
@@ -123,7 +124,6 @@ function VideoLightbox({ step, onClose }) {
     setTimeout(onClose, 300);
   }, [onClose]);
 
-  // Keyboard handler
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape") handleClose();
@@ -132,7 +132,6 @@ function VideoLightbox({ step, onClose }) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [handleClose]);
 
-  // Backdrop click — only close if clicking the backdrop itself
   const handleBackdropClick = (e) => {
     if (e.target === lightboxRef.current) {
       handleClose();
@@ -160,16 +159,12 @@ function VideoLightbox({ step, onClose }) {
         transition: "background-color 0.3s ease, backdrop-filter 0.3s ease",
       }}
     >
-      {/* Modal panel */}
       <div
         style={{
           position: "relative",
           width: "100%",
-
           maxWidth: "1100px",
-
           maxHeight: "90vh",
-
           display: "flex",
           flexDirection: "column",
           background:
@@ -187,7 +182,6 @@ function VideoLightbox({ step, onClose }) {
             "opacity 0.32s cubic-bezier(0.16,1,0.3,1), transform 0.32s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        {/* Close button — top right */}
         <button
           ref={closeButtonRef}
           onClick={handleClose}
@@ -242,13 +236,11 @@ function VideoLightbox({ step, onClose }) {
           </svg>
         </button>
 
-        {/* Video — object-fit: contain, never crops */}
         <div
           style={{
             width: "100%",
             background: "#000",
             flexShrink: 0,
-            // Let video define height via intrinsic ratio
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -280,7 +272,6 @@ function VideoLightbox({ step, onClose }) {
           />
         </div>
 
-        {/* Caption panel */}
         <div
           style={{
             padding: "20px 24px 24px",
@@ -295,7 +286,6 @@ function VideoLightbox({ step, onClose }) {
               gap: "14px",
             }}
           >
-            {/* Step number pill */}
             <span
               style={{
                 flexShrink: 0,
@@ -361,7 +351,6 @@ function VideoLightbox({ step, onClose }) {
   );
 }
 
-// ── Video tile ────────────────────────────────────────────────────────────────
 function VideoTile({ step, onOpen }) {
   return (
     <article
@@ -378,7 +367,6 @@ function VideoTile({ step, onOpen }) {
       tabIndex={0}
       aria-label={`Play ${step.title} video`}
     >
-      {/* Preview video — muted, autoplay, loop, no controls */}
       <video
         aria-label={`Preview of ${step.title} by SANWARIYAS`}
         title={`${step.title} - Wholesale Ethnic Wear Production`}
@@ -394,7 +382,6 @@ function VideoTile({ step, onOpen }) {
         }}
       />
 
-      {/* Fallback */}
       <div
         aria-hidden="true"
         className="absolute inset-0 flex items-center justify-center text-[#F2D9C3]/40 text-xs font-sans tracking-widest uppercase pointer-events-none"
@@ -402,7 +389,6 @@ function VideoTile({ step, onOpen }) {
         Loading…
       </div>
 
-      {/* Base gradient — always present */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
@@ -413,7 +399,6 @@ function VideoTile({ step, onOpen }) {
         }}
       />
 
-      {/* Hover dark overlay */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
@@ -423,18 +408,15 @@ function VideoTile({ step, onOpen }) {
         }}
       />
 
-      {/* Inner border glow on hover */}
       <div
         aria-hidden="true"
         className="absolute inset-[6px] rounded-xl pointer-events-none border border-transparent group-hover:border-[#BE6E5B]/50 transition-all duration-500"
       />
 
-      {/* Play button — glassmorphism, bottom-right */}
       <div
         aria-hidden="true"
         className="absolute bottom-5 right-5 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 z-20 pointer-events-none"
       >
-        {/* Pulse ring */}
         <span
           style={{
             position: "absolute",
@@ -444,7 +426,6 @@ function VideoTile({ step, onOpen }) {
             animation: "mfgPulse 1.8s ease-in-out infinite",
           }}
         />
-        {/* Button */}
         <div
           style={{
             width: "44px",
@@ -474,27 +455,22 @@ function VideoTile({ step, onOpen }) {
         </div>
       </div>
 
-      {/* Content — bottom */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-5 md:p-6 pointer-events-none">
         <div className="flex items-center gap-3 mb-3">
           <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[#F2D9C3]/40 bg-[#FDF7F2]/12 font-display text-sm font-bold text-[#FDF7F2] flex-shrink-0">
             {step.label}
           </span>
-
           <div className="h-px w-6 bg-[#BE6E5B]/60 group-hover:w-12 transition-all duration-700" />
-
           <p className="font-sans text-[9px] font-bold uppercase tracking-[0.38em] text-[#F2D9C3]/65">
             {step.stage}
           </p>
         </div>
-
         <h3
           className="font-display font-semibold leading-tight text-[#FDF7F2] drop-shadow-md mb-1.5"
           style={{ fontSize: "clamp(1.1rem,2vw,1.5rem)" }}
         >
           {step.title}
         </h3>
-
         <p className="font-sans text-[12px] text-[#F2D9C3]/70 leading-relaxed max-w-xs opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           {step.desc}
         </p>
@@ -505,9 +481,9 @@ function VideoTile({ step, onOpen }) {
 
 function StarRating() {
   return (
-    <div className="flex justify-center gap-1" aria-label="5 star rating">
+    <div className="flex gap-1" aria-label="5 star rating">
       {[1, 2, 3, 4, 5].map((s) => (
-        <span key={s} aria-hidden="true" className="text-[#BE6E5B] text-sm">
+        <span key={s} aria-hidden="true" className="text-[#BE6E5B] text-xs">
           ★
         </span>
       ))}
@@ -515,32 +491,45 @@ function StarRating() {
   );
 }
 
-// 2. ReviewCard me Name upar aur Stars sabse niche set kar diye hain
+// ✅ DESIGN FIX: Fixed Height, Line Clamp, and Better Visual Alignment applied properly
 function ReviewCard({ review }) {
   return (
-    <article className="flex flex-col justify-between rounded-2xl border border-[#BE6E5B]/22 bg-[#FDF7F2] px-5 py-6 text-center shadow-[0_6px_20px_rgba(122,61,42,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(122,61,42,0.14)] hover:border-[#BE6E5B]/48 group">
-      <p className="font-sans text-[15px] text-[#7A3D2A] font-bold mt-1">
-        {review.name}
-      </p>
-
-      <div
-        aria-hidden="true"
-        className="text-[#BE6E5B]/18 font-serif text-4xl leading-none mt-3 mb-2 font-black group-hover:text-[#BE6E5B]/28 transition-colors duration-400"
-      >
-        "
+    <article className="group relative flex w-[300px] h-[220px] shrink-0 flex-col justify-between rounded-2xl border border-[#BE6E5B]/20 bg-gradient-to-br from-[#F2D9C3]/40 to-[#F2D9C3]/10 backdrop-blur-sm px-6 py-6 text-left shadow-[0_4px_16px_rgba(122,61,42,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_34px_rgba(122,61,42,0.12)] hover:border-[#BE6E5B]/50 hover:bg-[#F2D9C3]/50">
+      {/* Decorative Quote Mark */}
+      <div className="absolute top-2 right-4 font-serif text-[4.5rem] leading-none text-[#BE6E5B]/10 group-hover:text-[#BE6E5B]/20 transition-colors duration-500 select-none">
+        &ldquo;
       </div>
 
-      <p className="mx-auto max-w-[13rem] font-sans text-[13px] leading-[1.65] text-[#5C3120] flex-1">
-        {review.quote}
-      </p>
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-4">
+          {/* Avatar Profile Initials */}
+          <div className="w-8 h-8 rounded-full bg-[#BE6E5B]/15 border border-[#BE6E5B]/30 flex items-center justify-center text-[#7A3D2A] font-bold text-xs font-sans uppercase">
+            {review.name.charAt(0)}
+          </div>
+          <p className="font-sans text-[15px] font-bold text-[#7A3D2A]">
+            {review.name}
+          </p>
+        </div>
 
-      <div className="mt-5 pt-4 border-t border-[#BE6E5B]/15">
-        <p className="font-sans text-[9.5px] text-[#BE6E5B] tracking-[0.22em] uppercase mb-2.5 font-semibold">
-          Verified Google Review
+        {/* Text with Line Clamp to restrict exactly to 4 lines max */}
+        <p
+          className="font-sans text-[13px] leading-[1.65] text-[#5C3120] italic"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          "{review.quote}"
         </p>
+      </div>
 
-        {/* Stars ab ekdum last mein aayenge */}
+      <div className="mt-auto pt-4 border-t border-[#BE6E5B]/15 flex items-center justify-between z-10">
         <StarRating />
+        <p className="font-sans text-[9px] tracking-[0.08em] text-[#a07f61] font-bold uppercase">
+          Google Review
+        </p>
       </div>
     </article>
   );
@@ -559,12 +548,10 @@ export default function ManufacturingInfoSections() {
 
   return (
     <>
-      {/* Video Lightbox — rendered in DOM root via portal-like conditional */}
       {activeVideo && (
         <VideoLightbox step={activeVideo} onClose={handleClose} />
       )}
 
-      {/* ✅ SEO: VideoObject, Organization, AggregateRating Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -607,9 +594,6 @@ export default function ManufacturingInfoSections() {
         }}
       />
 
-      {/* ══════════════════════════════════════════
-          MANUFACTURING SECTION
-      ══════════════════════════════════════════ */}
       <section
         aria-labelledby="custom-manufacturing-heading"
         className="relative overflow-hidden py-20 md:py-28"
@@ -644,7 +628,6 @@ export default function ManufacturingInfoSections() {
         </div>
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.92fr_1fr] lg:gap-20 lg:px-8">
-          {/* ── Left: Text ── */}
           <div className="lg:sticky lg:top-24">
             <p className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.62em] text-[#BE6E5B]">
               Custom Production
@@ -717,26 +700,21 @@ export default function ManufacturingInfoSections() {
             </Link>
           </div>
 
-          {/* ── Right: Video tiles ── */}
           <div className="grid grid-cols-2 gap-4 items-center justify-center mx-auto w-full max-w-[460px]">
             <div className="grid h-full place-items-center">
               <VideoTile step={VIDEO_STEPS[0]} onOpen={handleOpen} />
             </div>
             <div className="grid gap-4 content-start h-full">
               <VideoTile step={VIDEO_STEPS[1]} onOpen={handleOpen} />
-
               <VideoTile step={VIDEO_STEPS[2]} onOpen={handleOpen} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          REVIEWS SECTION
-      ══════════════════════════════════════════ */}
       <section
         aria-labelledby="customer-reviews-heading"
-        className="relative overflow-hidden py-20 md:py-28"
+        className="relative py-20 md:py-28 overflow-hidden flex flex-col items-center"
         style={{
           background: "linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)",
         }}
@@ -759,7 +737,7 @@ export default function ManufacturingInfoSections() {
           }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <header className="mb-12 text-center md:mb-16">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
               What Buyers Say
@@ -787,46 +765,43 @@ export default function ManufacturingInfoSections() {
               countries worldwide.
             </p>
           </header>
+        </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 items-stretch">
-            <aside className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-[#7A3D2A] to-[#5C3120] px-6 py-7 text-[#FDF7F2] shadow-[0_18px_48px_rgba(92,49,32,0.22)] border border-[#BE6E5B]/20 sm:col-span-2 md:col-span-1 xl:col-span-1">
-              <div>
-                <p className="font-sans text-[9px] uppercase tracking-[0.4em] text-[#F2D9C3]/65 font-bold mb-4">
-                  Google Reviews
-                </p>
-                <div className="flex gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <span
-                      key={s}
-                      aria-hidden="true"
-                      className="text-[#F2D9C3] text-base"
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <p className="font-display text-xl font-bold leading-snug">
-                  Real feedback
-                  <br />
-                  from global
-                  <br />
-                  wholesale buyers
-                </p>
-              </div>
-              <div>
-                <div
-                  aria-hidden="true"
-                  className="my-5 h-px w-10 bg-[#BE6E5B]/55"
-                />
-                <p className="font-sans text-[10px] font-bold text-[#F2D9C3]/65 uppercase tracking-widest mt-0.5">
-                  Verified Google Reviews
-                </p>
-              </div>
-            </aside>
+        {/*  FIXED: Smooth Marquee Animation */}
+        <div className="relative overflow-hidden w-full mt-4 py-4">
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+              @keyframes scroll-marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-marquee {
+                display: flex;
+                width: max-content;
+                animation: scroll-marquee 40s linear infinite;
+              }
+              .animate-marquee:hover {
+                animation-play-state: paused;
+              }
+            `,
+            }}
+          />
 
-            {REVIEWS.map((review) => (
-              <ReviewCard key={review.name} review={review} />
-            ))}
+          {/* Marquee Track (Hover karne par pause ho jayega) */}
+          <div className="animate-marquee hover:[animation-play-state:paused] flex gap-6">
+            {/* First Set of 6 Reviews */}
+            <div className="flex gap-6 pr-6">
+              {REVIEWS.map((review, idx) => (
+                <ReviewCard key={`orig-${idx}`} review={review} />
+              ))}
+            </div>
+            {/* Second Duplicate Set for Infinite Loop */}
+            <div className="flex gap-6 pr-6">
+              {REVIEWS.map((review, idx) => (
+                <ReviewCard key={`dup-${idx}`} review={review} />
+              ))}
+            </div>
           </div>
         </div>
       </section>

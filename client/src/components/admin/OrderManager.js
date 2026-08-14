@@ -130,7 +130,7 @@ export default function OrderManager({ token, showToast }) {
             <div className="border border-brand-lightgold/40 rounded-xl overflow-hidden bg-white max-w-2xl">
               <div className="bg-brand-cream/30 px-4 py-3 border-b border-brand-lightgold/40">
                 <h3 className="font-display text-sm text-brand-african">
-                  🔥 Top Selling Products
+                  Top Selling Products
                 </h3>
               </div>
               <div className="p-0">

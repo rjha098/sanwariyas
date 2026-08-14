@@ -201,7 +201,7 @@ export default function BlogManager({ token, showToast }) {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        {/* ✅ YAHAN FIX KIYA GAYA HAI: Ab draft preview=true ke sath khulega */}
+                        {/*  YAHAN FIX KIYA GAYA HAI: Ab draft preview=true ke sath khulega */}
                         <a
                           href={
                             blog.status === "draft"

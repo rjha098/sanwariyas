@@ -70,8 +70,7 @@ export default async function sitemap() {
       priority: 0.8,
     }));
   } catch (error) {
-    // Silently fail if DB is unreachable, but still return static routes to keep SEO intact
-    console.error("Failed to fetch products for sitemap:", error);
+    // console.error("Failed to fetch products for sitemap:", error);
   }
 
   try {
@@ -84,7 +83,7 @@ export default async function sitemap() {
       priority: 0.7,
     }));
   } catch (error) {
-    console.error("Failed to fetch blogs for sitemap:", error);
+    // console.error("Failed to fetch blogs for sitemap:", error);
   }
 
   return [...staticRoutes, ...productRoutes, ...blogRoutes];

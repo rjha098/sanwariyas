@@ -13,11 +13,10 @@ export default function InquiryDetailsPage() {
 
   const [inquiry, setInquiry] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
   const [flashMessage, setFlashMessage] = useState("");
-
 
   const [adminVisible, setAdminVisible] = useState(true);
 
@@ -54,7 +53,7 @@ export default function InquiryDetailsPage() {
         requestAnimationFrame(scrollToBottom);
       }
     },
-    [scrollToBottom]
+    [scrollToBottom],
   );
 
   useEffect(() => {
@@ -69,22 +68,32 @@ export default function InquiryDetailsPage() {
   // ✅ FIX: Fetch Admin Visibility Configuration
   useEffect(() => {
     if (token) {
-      api.get('/auth/visibility', { headers: { Authorization: `Bearer ${token}` } })
-         .then(res => setAdminVisible(res.data.isVisible)).catch(()=>{});
+      api
+        .get("/auth/visibility", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setAdminVisible(res.data.isVisible))
+        .catch(() => {});
     }
   }, [token]);
 
   const toggleAdminVisibility = async () => {
     try {
-      const res = await api.patch('/auth/visibility', { isVisible: !adminVisible }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await api.patch(
+        "/auth/visibility",
+        { isVisible: !adminVisible },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
       setAdminVisible(res.data.isVisible);
-    } catch(err) { console.error(err); }
+    } catch (err) {
+      // console.error(err);
+    }
   };
 
   const fetchInquiryDetails = useCallback(
     async (isSilent = false) => {
       if (!token) return;
-      if (!isSilent) setError(null); 
+      if (!isSilent) setError(null);
 
       try {
         const res = await api.get(`/inquiry/${params.id}`, {
@@ -95,28 +104,34 @@ export default function InquiryDetailsPage() {
         setInquiry(fetchedInquiry);
 
         // ✅ FIX: Only clear notifications if the user is actively viewing this tab
-        const isTabActive = document.visibilityState === 'visible';
-        
+        const isTabActive = document.visibilityState === "visible";
+
         if (!isSilent || isTabActive) {
-          await api.patch(
-            `/inquiry/${params.id}/viewed`,
-            {},
-            { headers: { Authorization: `Bearer ${token}` } }
-          ).catch(() => {});
+          await api
+            .patch(
+              `/inquiry/${params.id}/viewed`,
+              {},
+              { headers: { Authorization: `Bearer ${token}` } },
+            )
+            .catch(() => {});
           await deleteNotificationByInquiry(token, params.id).catch(() => {});
-          
-          // ✅ FIX: Tell NotificationBell to remove the red dot
+
+          //  FIX: Tell NotificationBell to remove the red dot
           window.dispatchEvent(new Event("notifications_read"));
         }
       } catch (err) {
-        console.error("Failed to load inquiry", err);
+        // console.error("Failed to load inquiry", err);
         if (!isSilent) {
-          if (err.isTimeout || err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+          if (
+            err.isTimeout ||
+            err.code === "ECONNABORTED" ||
+            err.message?.includes("timeout")
+          ) {
             setError("timeout");
           } else if (!err.response) {
             setError("network");
           } else if (err.response.status === 404) {
-            setError("notfound"); 
+            setError("notfound");
           } else {
             setError("server");
           }
@@ -125,7 +140,7 @@ export default function InquiryDetailsPage() {
         if (!isSilent) setLoading(false);
       }
     },
-    [token, params.id]
+    [token, params.id],
   );
 
   useEffect(() => {
@@ -150,7 +165,7 @@ export default function InquiryDetailsPage() {
       await api.post(
         `/inquiry/${params.id}/reply`,
         { message: replyText },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setFlashMessage("Reply sent successfully!");
       setReplyText("");
@@ -175,23 +190,47 @@ export default function InquiryDetailsPage() {
 
   if (error) {
     const messages = {
-      timeout: { icon: "⏱️", title: "Request Timed Out", desc: "The server took too long to respond. This is usually temporary." },
-      network: { icon: "📡", title: "No Connection", desc: "Unable to reach the server. Check your internet connection." },
-      server: { icon: "⚠️", title: "Server Error", desc: "Something went wrong on the server. Please try again." },
-      notfound: { icon: "🗑️", title: "Inquiry Not Found", desc: "This inquiry might have been deleted from the database." }, 
+      timeout: {
+        icon: "⏱️",
+        title: "Request Timed Out",
+        desc: "The server took too long to respond. This is usually temporary.",
+      },
+      network: {
+        icon: "📡",
+        title: "No Connection",
+        desc: "Unable to reach the server. Check your internet connection.",
+      },
+      server: {
+        icon: "⚠️",
+        title: "Server Error",
+        desc: "Something went wrong on the server. Please try again.",
+      },
+      notfound: {
+        icon: "🗑️",
+        title: "Inquiry Not Found",
+        desc: "This inquiry might have been deleted from the database.",
+      },
     };
     const { icon, title, desc } = messages[error] || messages.server;
-    
+
     return (
       <div className="max-w-4xl mx-auto p-6 mt-10">
         <div className="bg-white border border-brand-lightgold/50 shadow-sm p-12 text-center">
           <p className="text-4xl mb-4">{icon}</p>
-          <h2 className="font-display text-2xl text-brand-african mb-2">{title}</h2>
-          <p className="font-sans text-sm text-brand-mud/70 mb-8 max-w-sm mx-auto">{desc}</p>
+          <h2 className="font-display text-2xl text-brand-african mb-2">
+            {title}
+          </h2>
+          <p className="font-sans text-sm text-brand-mud/70 mb-8 max-w-sm mx-auto">
+            {desc}
+          </p>
           <div className="flex items-center justify-center gap-4">
             {error !== "notfound" && (
               <button
-                onClick={() => { setLoading(true); setError(null); fetchInquiryDetails(false); }}
+                onClick={() => {
+                  setLoading(true);
+                  setError(null);
+                  fetchInquiryDetails(false);
+                }}
                 className="px-6 py-3 bg-brand-coffee text-brand-cream font-sans text-[10px] tracking-[0.2em] uppercase hover:bg-brand-african transition-colors"
               >
                 🔄 Retry
@@ -232,8 +271,13 @@ export default function InquiryDetailsPage() {
           <span className="text-[10px] uppercase tracking-widest font-bold text-[#7A3D2A]">
             Your Status: {adminVisible ? "VISIBLE" : "HIDDEN"}
           </span>
-          <button onClick={toggleAdminVisibility} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${adminVisible ? 'bg-green-500' : 'bg-gray-400'}`}>
-            <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${adminVisible ? 'translate-x-5' : 'translate-x-1'}`} />
+          <button
+            onClick={toggleAdminVisibility}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${adminVisible ? "bg-green-500" : "bg-gray-400"}`}
+          >
+            <span
+              className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${adminVisible ? "translate-x-5" : "translate-x-1"}`}
+            />
           </button>
         </div>
       </div>
@@ -245,11 +289,13 @@ export default function InquiryDetailsPage() {
           {/* ✅ FIX: Customer Online Indicator */}
           {inquiry.isCustomerOnline ? (
             <span className="text-[10px] bg-green-100 text-green-700 border border-green-200 px-2.5 py-1 rounded-full flex items-center gap-1.5 font-sans font-bold tracking-[0.1em] shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ONLINE
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>{" "}
+              ONLINE
             </span>
           ) : (
             <span className="text-[10px] bg-gray-100 text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full flex items-center gap-1.5 font-sans font-bold tracking-[0.1em] shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span> OFFLINE
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>{" "}
+              OFFLINE
             </span>
           )}
         </h1>

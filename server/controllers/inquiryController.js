@@ -1,21 +1,21 @@
 // FILE: server/controllers/inquiryController.js
-import mongoose from 'mongoose';
-import * as inquiryService from '../services/inquiryService.js';
-import User from '../models/User.js';
-import { verifyAuthToken } from '../utils/authUtils.js';
+import mongoose from "mongoose";
+import * as inquiryService from "../services/inquiryService.js";
+import User from "../models/User.js";
+import { verifyAuthToken } from "../utils/authUtils.js";
 
 export const submitInquiry = async (req, res) => {
   try {
-    let userId = null;   
+    let userId = null;
 
     const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.slice(7);
       try {
         const decoded = verifyAuthToken(token);
         userId = decoded.id || decoded._id || decoded.userId;
       } catch (err) {
-        console.log("Invalid token, proceeding as guest.");
+        // console.log("Invalid token, proceeding as guest.");
       }
     }
 
@@ -38,16 +38,14 @@ export const getInquiries = async (req, res) => {
 export const getMyInquiries = async (req, res) => {
   try {
     const userId =
-      req.authUser?.id ||
-      req.authUser?._id ||
-      req.authUser?.userId;
+      req.authUser?.id || req.authUser?._id || req.authUser?.userId;
 
     const userEmail = req.authUser?.email;
 
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Unauthorized. Please login.'
+        message: "Unauthorized. Please login.",
       });
     }
 
@@ -55,24 +53,23 @@ export const getMyInquiries = async (req, res) => {
 
     res.json({
       success: true,
-      inquiries
+      inquiries,
     });
-
   } catch (error) {
-    console.error("GET MY INQUIRIES ERROR:", error);
+    // console.error("GET MY INQUIRIES ERROR:", error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-
-
-
 export const updateStatus = async (req, res) => {
   try {
-    const inquiry = await inquiryService.updateInquiryStatus(req.params.id, req.body);
+    const inquiry = await inquiryService.updateInquiryStatus(
+      req.params.id,
+      req.body,
+    );
     res.json({ success: true, inquiry });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -83,19 +80,31 @@ export const replyToInquiry = async (req, res) => {
   try {
     const userObj = req.authUser || {};
     let senderId = userObj.id || userObj._id || userObj.userId;
-    const role = userObj.role || 'admin';
+    const role = userObj.role || "admin";
 
-    if (!senderId) senderId = '000000000000000000000000';
+    if (!senderId) senderId = "000000000000000000000000";
 
     //  Ownership check for customers
-    if (role === 'customer') {
-      const owned = await inquiryService.isInquiryOwnedByUser(req.params.id, senderId, userObj.email);
+    if (role === "customer") {
+      const owned = await inquiryService.isInquiryOwnedByUser(
+        req.params.id,
+        senderId,
+        userObj.email,
+      );
       if (!owned) {
-        return res.status(403).json({ success: false, message: 'You do not have access to this inquiry.' });
+        return res.status(403).json({
+          success: false,
+          message: "You do not have access to this inquiry.",
+        });
       }
     }
 
-    const inquiry = await inquiryService.addReplyToInquiry(req.params.id, senderId, role, req.body.message);
+    const inquiry = await inquiryService.addReplyToInquiry(
+      req.params.id,
+      senderId,
+      role,
+      req.body.message,
+    );
     res.json({ success: true, inquiry });
   } catch (error) {
     console.error("Reply Error:", error);
@@ -112,7 +121,7 @@ export const markViewed = async (req, res) => {
       const owned = await inquiryService.isInquiryOwnedByUser(
         req.params.id,
         id,
-        email
+        email,
       );
 
       if (!owned) {
@@ -125,7 +134,7 @@ export const markViewed = async (req, res) => {
 
     const inquiry = await inquiryService.markInquiryAsViewed(
       req.params.id,
-      role
+      role,
     );
 
     res.json({
@@ -149,13 +158,11 @@ export const getSingleInquiry = async (req, res) => {
   }
 };
 
-export const deleteInquiry = async (req,res) => {
-  try{
-   await inquiryService.deleteInquiryById(req.params.id);
-   res.json({success:true,message:'Inquiry deleted successfully'});
-  }catch(error){
-    res.status(500).json({success:false,message:error.message});
+export const deleteInquiry = async (req, res) => {
+  try {
+    await inquiryService.deleteInquiryById(req.params.id);
+    res.json({ success: true, message: "Inquiry deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
-
- 

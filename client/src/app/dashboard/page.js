@@ -308,7 +308,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
       setReplyMsg("");
       onRefresh();
     } catch (err) {
-      console.error("Reply failed", err);
+      // console.error("Reply failed", err);
     } finally {
       setSending(false);
     }
@@ -325,7 +325,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
         .catch(() => {});
       deleteNotificationByInquiry(token, inquiry._id)
         .then(() => onRefresh())
-        .catch((err) => console.error("Notification delete failed", err));
+        .catch(() => {});
     }
   }, [inquiry?._id, token]);
 
@@ -548,7 +548,7 @@ export default function UserDashboard() {
       });
       setOrders(res.data.orders || []);
     } catch (err) {
-      console.error("Failed to load orders", err);
+      // console.error("Failed to load orders", err);
     } finally {
       setOrdersLoading(false);
     }
@@ -616,7 +616,8 @@ export default function UserDashboard() {
         country: userData.country || "",
       });
     } catch (err) {
-      console.error("Failed to fetch profile details", err);
+      // console.error("Failed to fetch profile details", err);
+
       setProfileData({
         name: user?.name || "",
         phone: user?.phone || "",

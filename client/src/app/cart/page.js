@@ -52,7 +52,11 @@ export default function CartPage() {
             }
           });
         } catch (error) {
-          console.error("Failed to verify cart items:", error);
+
+
+          // console.error("Failed to verify cart items:", error);
+
+
         }
       }
       setIsVerifying(false);

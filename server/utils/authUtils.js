@@ -76,7 +76,7 @@ export const requireRole = (allowedRoles) => async (req, res, next) => {
       if (!user || user.currentSessionId !== payload.sessionId) {
         return res.status(401).json({
           success: false,
-          message: "Session expired or logged in from another device.",
+          message: "Session expired",
         });
       }
     } else if (payload.role === "admin" && !payload.id) {

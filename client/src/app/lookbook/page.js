@@ -26,7 +26,7 @@ export default function LookbookPage() {
           setItems(data.items);
         }
       } catch (error) {
-        console.error("Failed to load lookbook:", error);
+        // console.error("Failed to load lookbook:", error);
       } finally {
         setLoading(false);
       }

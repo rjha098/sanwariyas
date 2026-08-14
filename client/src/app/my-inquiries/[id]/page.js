@@ -62,7 +62,7 @@ export default function MyInquiryDetailPage() {
           window.dispatchEvent(new Event("notifications_read"));
         }
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       } finally {
         if (!isSilent) setLoading(false);
       }

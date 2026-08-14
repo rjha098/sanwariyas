@@ -26,7 +26,7 @@ const categories = [
     seoKeyword: "Indian Ethnic Wear Manufacturer",
   },
   {
-    // ✅ SEO FIX: Corrected spelling to match exact high-volume SEO target keyword
+    //  SEO FIX: Corrected spelling to match exact high-volume SEO target keyword
     name: "Co-Ord Sets",
     slug: "co-ord-sets",
     image: "/images/suits/cordset/cordset2.png",
@@ -52,7 +52,7 @@ const categories = [
 export default function CategoriesSection() {
   return (
     <>
-      {/* ✅ SEO FIX: Enriched ItemList Schema with 'Thing' entities and Image URLs for better Knowledge Graph integration */}
+      {/*  SEO FIX: Enriched ItemList Schema with 'Thing' entities and Image URLs for better Knowledge Graph integration */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -113,7 +113,7 @@ export default function CategoriesSection() {
               className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
             >
               Our Signature Collections
-              {/* ✅ SEO FIX: Mapped to #1 Priority B2B Keyword */}
+              {/*  SEO FIX: Mapped to #1 Priority B2B Keyword */}
               <span className="sr-only">
                 {" "}
                 - Wholesale Ethnic Wear Supplier India
@@ -133,26 +133,26 @@ export default function CategoriesSection() {
             </p>
           </div>
 
-          {/* ✅ SEMANTIC HTML: Unordered list grid */}
+          {/*  SEMANTIC HTML: Unordered list grid */}
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 list-none p-0 m-0">
-            {categories.map((cat, index) => (
-
-
-
+            {/* {categories.map((cat, index) => (
              <li key={cat.slug}>
                 <Link
                   href={`/products?category=${cat.slug}`}
                   aria-label={`View ${cat.name} wholesale collection`}
                   className="group relative overflow-hidden shadow-lg hover:shadow-[0_28px_60px_rgba(122,61,42,0.30)] hover:-translate-y-3 transition-all duration-700 bg-[#7A3D2A] rounded-2xl block h-full"
                   style={{ aspectRatio: "3/4" }}
+                > */}
+
+            {categories.map((cat, index) => (
+              <li key={cat.slug}>
+                <Link
+                  href="/contact"
+                  aria-label={`Inquire about ${cat.name} wholesale collection`}
+                  className="group relative overflow-hidden shadow-lg hover:shadow-[0_28px_60px_rgba(122,61,42,0.30)] hover:-translate-y-3 transition-all duration-700 bg-[#7A3D2A] rounded-2xl block h-full"
+                  style={{ aspectRatio: "3/4" }}
                 >
-
-
-
-
-
-
-                  {/* ✅ SEO FIX: Dynamic, highly relevant B2B keyword alt text applied here */}
+                  {/*  SEO FIX: Dynamic, highly relevant B2B keyword alt text applied here */}
                   <Image
                     src={cat.image}
                     alt={`${cat.name} - ${cat.seoKeyword}`}

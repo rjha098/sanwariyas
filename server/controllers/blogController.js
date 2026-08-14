@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url';
 import Blog from '../models/Blog.js';
 import Category from '../models/Category.js';
 
-// ES6 environment mein __dirname setup (sabse upar rahega)
+
+// es6  in  environment  __dirname  setup  is   almost   upper   
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -66,15 +67,15 @@ export const getBlogBySlug = async (req, res) => {
     // Seedha URL se param pakdo
     const preview = req.query.preview === 'true';
 
-    console.log(`[Backend] Hit Slug: "${slug}" | Preview Mode: ${preview}`);
+    // console.log(`[Backend] Hit Slug: "${slug}" | Preview Mode: ${preview}`);
 
     const blog = await Blog.findOne({ slug }).populate('category', 'name slug').lean();
 
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found.' });
     }
+    // if the   blog is  not  published   and   in  the  url preview=true is  not  present then    block the  security 
 
-    // Agar blog published nahi hai AUR URL mein preview=true nahi laga hai, toh security block laga do
     if (blog.status !== 'published' && !preview) {
       console.log(`[Backend] Blocked Draft for Slug: "${slug}"`);
       return res.status(404).json({
@@ -134,7 +135,8 @@ export const getAdminBlogs = async (req, res) => {
   }
 };
 
-// ── CREATE blog ───────────────────────────────────────────────────────────────
+// ── CREATE blog 
+
 export const createBlog = async (req, res) => {
   try {
     const { title, content, category, excerpt, metaTitle, metaDescription, status, tags } = req.body;
@@ -147,6 +149,7 @@ export const createBlog = async (req, res) => {
     }
 
     // Backend ALWAYS regenerates the slug from title
+
     let finalSlug = generateBulletproofSlug(title);
 
     if (!finalSlug) {
@@ -164,7 +167,7 @@ export const createBlog = async (req, res) => {
 
     const featuredImage = req.file ? `/uploads/blogs/${req.file.filename}` : '';
 
-    // ✅ FIX: Sanitize status — empty string from FormData treated as missing
+    //  FIX: Sanitize status — empty string from FormData treated as missing
     const validStatuses = ['published', 'draft'];
     const finalStatus = validStatuses.includes(status) ? status : 'published';
 
@@ -193,6 +196,7 @@ export const createBlog = async (req, res) => {
     return res.status(400).json({ success: false, message: err.message });
   }
 };
+
 // ── UPDATE blog ───────────────────────────────────────────────────────────────
 export const updateBlog = async (req, res) => {
   try {
@@ -200,7 +204,7 @@ export const updateBlog = async (req, res) => {
     
     const cleanSlug = slug ? generateBulletproofSlug(slug) : undefined;
 
-    // ✅ FIX: Same sanitization as createBlog
+    //  FIX: Same sanitization as createBlog
     const validStatuses = ['published', 'draft'];
     const finalStatus = validStatuses.includes(status) ? status : undefined;
 
@@ -212,7 +216,7 @@ export const updateBlog = async (req, res) => {
       excerpt, 
       metaTitle, 
       metaDescription, 
-      ...(finalStatus && { status: finalStatus }), // ✅ only set if valid
+      ...(finalStatus && { status: finalStatus }), //  only set if valid
     };
 
     if (tags) update.tags = JSON.parse(tags);
@@ -241,6 +245,7 @@ export const updateBlog = async (req, res) => {
   }
 };
 
+
 // ── DELETE blog ───────────────────────────────────────────────────────────────
 export const deleteBlog = async (req, res) => {
   try {
@@ -262,6 +267,7 @@ export const deleteBlog = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 export const getCategories = async (req, res) => {

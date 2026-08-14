@@ -58,12 +58,12 @@ export default async function BlogListingPage() {
       blogs = data?.data || [];
     }
   } catch (err) {
-    console.error("Failed to fetch blogs", err);
+    // console.error("Failed to fetch blogs", err);
   }
 
   return (
     <div className="min-h-screen bg-[#FAF3E8] py-16 px-4 sm:px-6 lg:px-8">
-      {/* ✅ SEO FIX: Dynamic CollectionPage and Blog Schema rendered safely on the server */}
+      {/*SEO FIX: Dynamic CollectionPage and Blog Schema rendered safely on the server */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -193,3 +193,6 @@ export default async function BlogListingPage() {
     </div>
   );
 }
+
+
+

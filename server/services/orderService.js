@@ -3,6 +3,7 @@ import Order, { ORDER_CONSTANTS } from "../models/Order.js";
 import Product from "../models/Product.js";
 import Notification from "../models/Notification.js";
 import { Resend } from "resend";
+import crypto from "crypto";
 
 const { SET_SIZE, MIN_PIECES } = ORDER_CONSTANTS;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hrsanwariyas@gmail.com";
@@ -25,6 +26,34 @@ const generateOrderNumber = async () => {
   return `ORD-${nextNum}`;
 };
 
+
+
+
+// 1. BULLETPROOF INVOICE GENERATOR (For Billions of Orders)
+
+const generateInvoiceNumber = async () => {
+  // 1. Date (YYYYMMDD) - unique  for  according  to  day 
+  const dateString = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  
+  // 2. Exact Millisecond Timestamp (Agar 2 order same din aaye)
+
+  const timeMs = Date.now().toString(36).toUpperCase();
+  
+  // 3. Cryptographically Secure Random String (if  2   order  come  in  1 milesecond)
+
+  const randomStr = crypto.randomBytes(2).toString("hex").toUpperCase();
+  
+
+  // Output Format: INV-20260805-LWK1JXYZ-A1B2 
+  // (Here Date + Millisecond Time + Crypto Random all  are  present  it  is  not  dublicate anytime)
+  return `INV-${dateString}-${timeMs}-${randomStr}`;
+};
+
+
+
+
+
+
 const buildOrderItems = async (cartItems) => {
   if (!Array.isArray(cartItems) || cartItems.length === 0) {
     const err = new Error("Cart is empty.");
@@ -41,28 +70,40 @@ const buildOrderItems = async (cartItems) => {
     }
     const product = await Product.findById(raw.productId).lean();
     if (!product || !product.isAvailable) {
-      const err = new Error(`Product no longer available: ${raw.name || raw.productId}`);
+      const err = new Error(
+        `Product no longer available: ${raw.name || raw.productId}`,
+      );
       err.statusCode = 400;
       throw err;
     }
     if (typeof product.stock === "number" && product.stock < pieces) {
-      const err = new Error(`Insufficient stock for ${product.name}. Available: ${product.stock} pieces.`);
+      const err = new Error(
+        `Insufficient stock for ${product.name}. Available: ${product.stock} pieces.`,
+      );
       err.statusCode = 400;
       throw err;
     }
     const meta = computeMoq(pieces);
     if (!meta.moqMet) {
-      const err = new Error(`${product.name}: minimum order is ${MIN_PIECES} pieces (2 sets). You have ${pieces}.`);
+      const err = new Error(
+        `${product.name}: minimum order is ${MIN_PIECES} pieces (2 sets). You have ${pieces}.`,
+      );
       err.statusCode = 400;
       throw err;
     }
     let pricePerPiece = product.price;
-    if (Array.isArray(product.bulkDiscountTiers) && product.bulkDiscountTiers.length > 0) {
+    if (
+      Array.isArray(product.bulkDiscountTiers) &&
+      product.bulkDiscountTiers.length > 0
+    ) {
       const applicable = product.bulkDiscountTiers
         .filter((t) => pieces >= t.minPieces)
         .sort((a, b) => b.minPieces - a.minPieces)[0];
       if (applicable) {
-        pricePerPiece = +(product.price * (1 - applicable.discountPercent / 100)).toFixed(2);
+        pricePerPiece = +(
+          product.price *
+          (1 - applicable.discountPercent / 100)
+        ).toFixed(2);
       }
     }
     items.push({
@@ -87,8 +128,13 @@ export const createOrder = async (userId, buyer, cartItems) => {
   const totalAmount = +items.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2);
   const orderNumber = await generateOrderNumber();
 
+  // 2.here   we  calll  a  function  so    with  the  order  number   invoice  number   is  generated
+
+  const invoiceNumber = await generateInvoiceNumber();
+
   const order = await Order.create({
     orderNumber,
+    invoiceNumber,
     userId,
     buyerName: buyer.name,
     buyerEmail: (buyer.email || "").toLowerCase().trim(),
@@ -104,7 +150,7 @@ export const createOrder = async (userId, buyer, cartItems) => {
   for (const item of items) {
     await Product.updateOne(
       { _id: item.product, stock: { $type: "number" } },
-      { $inc: { stock: -item.pieces } }
+      { $inc: { stock: -item.pieces } },
     );
   }
 
@@ -121,13 +167,16 @@ export const createOrder = async (userId, buyer, cartItems) => {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "Sanwariyas System <onboarding@resend.dev>",
+        from:
+          process.env.RESEND_FROM_EMAIL ||
+          "Sanwariyas System <onboarding@resend.dev>",
         to: ADMIN_EMAIL,
         subject: `🧾 New Order ${order.orderNumber} — ${totalPieces} pcs`,
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
             <h2 style="color: #7A3D2A;">New Wholesale Order</h2>
             <p><strong>Order #:</strong> ${order.orderNumber}</p>
+            <p><strong>Invoice #:</strong> ${order.invoiceNumber}</p> 
             <p><strong>Buyer:</strong> ${buyer.name} (${buyer.email})</p>
             <p><strong>Total Pieces:</strong> ${totalPieces} (${totalSets} sets)</p>
             <p><strong>Total Amount:</strong> ₹${totalAmount.toLocaleString("en-IN")}</p>
@@ -158,11 +207,16 @@ export const isOrderOwnedByUser = async (id, userId) => {
   return String(order.userId) === String(userId);
 };
 
-export const getAllOrdersAdmin = async ({ page = 1, limit = 20, status, search }) => {
+export const getAllOrdersAdmin = async ({
+  page = 1,
+  limit = 20,
+  status,
+  search,
+}) => {
   const query = {};
-  
+
   if (status && status !== "all") query.status = status;
-  
+
   // Search by buyer name or order number remains intact
   if (search) {
     query.$or = [
@@ -190,7 +244,10 @@ export const getAllOrdersAdmin = async ({ page = 1, limit = 20, status, search }
   };
 };
 
-export const updateOrderStatus = async (id, { status, awbNumber, courierPartner, adminNotes }) => {
+export const updateOrderStatus = async (
+  id,
+  { status, awbNumber, courierPartner, adminNotes },
+) => {
   const order = await Order.findById(id);
   if (!order) {
     const err = new Error("Order not found");
@@ -198,7 +255,14 @@ export const updateOrderStatus = async (id, { status, awbNumber, courierPartner,
     throw err;
   }
 
-  const validStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+  const validStatuses = [
+    "pending",
+    "confirmed",
+    "processing",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
   if (status && !validStatuses.includes(status)) {
     const err = new Error("Invalid order status");
     err.statusCode = 400;
@@ -207,7 +271,7 @@ export const updateOrderStatus = async (id, { status, awbNumber, courierPartner,
 
   if (status && status !== order.status) {
     order.status = status;
-    if(order.userId) {
+    if (order.userId) {
       await Notification.create({
         recipientId: order.userId,
         type: "order_status",
@@ -261,6 +325,6 @@ export const getOrderAnalytics = async () => {
     totalPieces: totals?.totalPieces || 0,
     totalRevenue: totals?.totalRevenue || 0,
     byStatus: byStatus.reduce((acc, s) => ({ ...acc, [s._id]: s.count }), {}),
-    topProducts
+    topProducts,
   };
 };

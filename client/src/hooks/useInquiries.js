@@ -129,7 +129,7 @@ export function useInquiries(token, role = "admin") {
         );
         loadInquiries(undefined, undefined, true);
       } catch (error) {
-        console.error("Failed to mark as viewed", error);
+        // console.error("Failed to mark as viewed", error);
       }
     },
     [token, loadInquiries],

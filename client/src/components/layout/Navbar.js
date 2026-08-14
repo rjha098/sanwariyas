@@ -47,6 +47,7 @@ const navLinks = [
         links: [
           { href: "/lookbook", label: "Our Lookbook" },
           { href: "/blog", label: "Journal & Blog" },
+          {href:"/privacy" ,label:"Privacy"}
         ],
       },
       {

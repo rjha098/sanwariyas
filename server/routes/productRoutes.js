@@ -1,8 +1,15 @@
-import express from 'express';
+import express from "express";
 import {
-  createProduct, deleteProduct, getAdminProductById, getAdminProducts,
-  getProducts, getProductBySlug, getCategories, seedData, updateProduct,
-} from '../controllers/productController.js';
+  createProduct,
+  deleteProduct,
+  getAdminProductById,
+  getAdminProducts,
+  getProducts,
+  getProductBySlug,
+  getCategories,
+  seedData,
+  updateProduct,
+} from "../controllers/productController.js";
 
 import { requireAdmin } from "../utils/authUtils.js";
 import { upload } from "../middlewares/upload.js";
@@ -22,16 +29,16 @@ router.post(
   requireAdmin,
   upload.fields([
     { name: "image", maxCount: 1 },
-    { name: "images", maxCount: 8 },
+    { name: "images", maxCount: 4 },
   ]),
   createProduct,
-); 
+);
 router.patch(
   "/:id",
   requireAdmin,
   upload.fields([
     { name: "image", maxCount: 1 },
-    { name: "images", maxCount: 8 },
+    { name: "images", maxCount: 4 },
   ]),
   updateProduct,
 );

@@ -33,7 +33,7 @@ export default function MyOrdersPage() {
     if (!token) return;
     fetchMyOrders(token)
       .then((data) => setOrders(data.orders || []))
-      .catch((err) => console.error(err))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [token]);
 

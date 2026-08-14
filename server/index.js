@@ -22,14 +22,14 @@ dotenv.config();
 // PROCESS-LEVEL SAFETY NET
 // ═══════════════════════════════════════════════════════════════════════════
 process.on("uncaughtException", (err) => {
-  console.error("UNCAUGHT EXCEPTION — server stayed alive, but fix this:", err);
+  // console.error("UNCAUGHT EXCEPTION — server stayed alive, but fix this:", err);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error(
-    "UNHANDLED PROMISE REJECTION — server stayed alive, but fix this:",
-    reason,
-  );
+  // console.error(
+  //   "UNHANDLED PROMISE REJECTION — server stayed alive, but fix this:",
+  //   reason,
+  // );
 });
 
 const app = express();
@@ -182,7 +182,8 @@ app.use((err, req, res, next) => {
     });
   }
 
-  console.error(err.stack);
+  // console.error(err.stack);
+
   res.status(500).json({
     success: false,
     message: "Internal server error",
@@ -192,5 +193,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  
+  // console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -25,7 +25,7 @@ const playBeep = () => {
     gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
     osc.stop(ctx.currentTime + 0.3);
   } catch (e) {
-    console.error("Audio play error:", e);
+    // console.error("Audio play error:", e);
   }
 };
 
@@ -71,7 +71,7 @@ export default function NotificationBell({ showMuteToggle = false }) {
       setNotifications(notifRes.notifications || []);
     } catch (err) {
       if (err.response && err.response.status === 429) return;
-      console.error(err);
+      // console.error(err);
     }
   };
 
@@ -146,7 +146,7 @@ export default function NotificationBell({ showMuteToggle = false }) {
         setCount(0);
         prevCountRef.current = 0;
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     }
   };
@@ -167,7 +167,7 @@ export default function NotificationBell({ showMuteToggle = false }) {
       setCount(0);
       prevCountRef.current = 0;
     } catch (err) {
-      console.error("Failed to clear notifications:", err);
+      // console.error("Failed to clear notifications:", err);
     }
   };
 
