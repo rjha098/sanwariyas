@@ -7,7 +7,7 @@ const categories = [
   {
     name: "Anarkali Kurtis",
     slug: "anarkali-kurti",
-    image: "/images/suits/Anarkali/Anarkali2.png",
+    image: "/images/suits/Anarkali/anarkali2.png",
     count: "Anarkali • Festive • Designer",
     seoKeyword: "Wholesale Ethnic Wear Supplier India",
   },
