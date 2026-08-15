@@ -502,18 +502,23 @@ export default function Footer() {
               </a>
             </nav>
 
-            {/* ✅ UPDATED: Added Privacy Policy Link */}
+            {/*  UPDATED: Added Privacy Policy Link */}
             <nav
               aria-label="Legal Policies"
               className="flex items-center gap-4 text-xs text-[#FDF7F2]/40 tracking-widest"
             >
+              
+            {/* <span aria-hidden="true">•</span> */}
+
               <Link
                 href="/privacy"
                 className="hover:text-[#FDF7F2]/70 transition-colors"
               >
                 Privacy Policy
               </Link>
-              <span aria-hidden="true">•</span>
+
+              {/* <span aria-hidden="true">•</span> */}
+
               <Link
                 href="/terms"
                 className="hover:text-[#FDF7F2]/70 transition-colors"

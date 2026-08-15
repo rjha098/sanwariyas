@@ -1,6 +1,6 @@
-// this is the  first  style
 
-// // FILE: client/src/components/home/HeroSection.js
+// // // FILE: client/src/components/home/HeroSection.js
+
 // "use client";
 // import { useState, useEffect, useCallback, useRef } from "react";
 // import Link from "next/link";
@@ -19,20 +19,20 @@
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
 //     badge: "Export House",
-//     shape: "circle",
+//     imgScale: 1,
 //   },
 //   {
 //     id: 2,
 //     title: ["Exquisite Craftsmanship", "A-Line Masterpieces"],
 //     sub: "Flawlessly stitched A-Line suits crafted for elegance. Experience the perfect blend of comfort and pure luxury in every thread.",
-//     img: "/images/suits/A-Line/aline1.png",
+//     img: "/images/suits/A-Line/a-line.png",
 //     imgAlt:
 //       "Cotton Suit Manufacturer Jaipur - Premium Pure Cotton A-Line Suits",
 //     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
 //     accentGold: "#996515",
 //     accentLight: "#F8EDD5",
 //     badge: "A-Line Suits",
-//     shape: "squircle",
+//     imgScale: 1.22,
 //   },
 //   {
 //     id: 3,
@@ -45,74 +45,59 @@
 //     accentGold: "#6B4226",
 //     accentLight: "#F3DCC8",
 //     badge: "Anarkali Collection",
-//     shape: "arch",
+//     imgScale: 1.22,
 //   },
 //   {
 //     id: 4,
 //     title: ["Modern Silhouettes", "Chic Cord Sets"],
 //     sub: "Directly sourced from India's master weavers. Trendy, highly demanded, and comfortable cotton Cord sets for everyday luxury.",
-//     img: "/images/suits/cordset/cordset1.png",
+//     img: "/images/suits/cordset/co-ordsets.png",
 //     imgAlt: "B2B Ethnic Wear Supplier - Trendy Cotton Co-ord Sets Manufacturer",
 //     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
 //     badge: "Co-ord Sets",
-//     shape: "pinwheel",
+//     imgScale: 1.22,
 //   },
 //   {
 //     id: 5,
 //     title: ["Everyday Elegance", "Premium Short Kurtis"],
 //     sub: "Versatile and stylish short kurtis at wholesale rates. We ensure perfect fits, breathable fabrics, and vibrant long-lasting prints.",
-//     img: "/images/suits/Straight3piece/straight3piece1.png",
+//     img: "/images/suits/short-Kurtis/short-kurtis.png",
 //     imgAlt: "Wholesale Kurti Supplier India - Premium Cotton Short Kurtis",
 //     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
 //     accentGold: "#6B4226",
 //     accentLight: "#F3DCC8",
 //     badge: "Short Kurtis",
-//     shape: "diamond",
+//     imgScale: 1.22,
 //   },
 //   {
 //     id: 6,
 //     title: ["Complete Elegance", "Straight 3-Piece Suits"],
 //     sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas. Fully insured, securely packaged, and exported worldwide.",
-//     img: "/images/suits/Straight3piece/straight3piece1.png",
+//     img: "/images/suits/Straight3piece/3-piece-suit.png",
 //     imgAlt:
 //       "Ladies Cotton Suit Manufacturer - Straight 3-Piece Cotton Suits Export",
 //     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
 //     accentGold: "#996515",
 //     accentLight: "#F8EDD5",
 //     badge: "3-Piece Suits",
-//     shape: "squircle", // ← shield se squircle change kiya
+//     imgScale: 1.22,
 //   },
 //   {
 //     id: 7,
 //     title: ["Graceful Lengths", "Classic Long Kurtis"],
 //     sub: "Elegant long kurtis perfect for retail scaling. Partner with India's most trusted export empire for your bulk requirements.",
-//     img: "/images/suits/Straight3piece/straight3piece1.png",
+//     img: "/images/suits/LongKurtis/long-kurtis.png",
 //     imgAlt: "Cotton Clothing Exporter India - Wholesale Long Kurtis",
 //     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
 //     accentGold: "#8B6508",
 //     accentLight: "#F5E6CC",
 //     badge: "Long Kurtis",
-//     shape: "blob",
+//     imgScale: 1.22,
 //   },
 // ];
 
-// // Maps each slide's `shape` to a CSS border-radius value.
-// // Slide 1 stays a perfect circle; every other slide gets its own silhouette.
-// // Applied to the image frame AND the decorative rings/glow around it, so the
-// // whole "orb" reads as one consistent shape per slide.
-// const SLIDE_RADIUS = {
-//   circle: "9999px",
-//   squircle: "34%",
-//   arch: "50% 50% 14% 14% / 60% 60% 10% 10%",
-//   pinwheel: "42% 8% 42% 8%",
-//   petal: "50% 50% 50% 0%",
-//   shield: "20% 20% 50% 50% / 10% 10% 42% 42%",
-//   blob: "63% 37% 54% 46% / 43% 55% 45% 57%",
-// };
-
-// const getSlideRadius = (shape) => SLIDE_RADIUS[shape] || SLIDE_RADIUS.circle;
 
 // const STYLES = `
 //   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
@@ -130,16 +115,10 @@
 //     65% { transform:translateY(2px) scale(1.02); }
 //     100%{ opacity:1; transform:translateY(0) scale(1); }
 //   }
-//   @keyframes spinSlow  { to { transform:rotate(360deg); } }
-//   @keyframes spinSlowR { to { transform:rotate(-360deg); } }
 //   @keyframes slideProgress { from{width:0%} to{width:100%} }
 //   @keyframes floatOrb {
 //     0%,100%{ transform:translateY(0) scale(1); }
 //     50%    { transform:translateY(-8px) scale(1.06); }
-//   }
-//   @keyframes pulseGlow {
-//     0%,100%{ opacity:0.4; transform:scale(1); }
-//     50%    { opacity:0.75; transform:scale(1.04); }
 //   }
 //   @keyframes lineGrow { from{width:0;opacity:0} to{width:52px;opacity:1} }
 //   @keyframes shimmerSweep {
@@ -155,12 +134,23 @@
 //     33%    { transform:translate(6px,-10px) scale(1.08); }
 //     66%    { transform:translate(-5px,-6px) scale(0.95); }
 //   }
-//   .spin-slow  { animation: spinSlow  32s linear infinite; }
-//   .spin-slowR { animation: spinSlowR 40s linear infinite; }
+  
+//   @keyframes spinSlow {
+//   from {
+//     transform: rotate(0deg);
+//   }
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }
+
+// .spin-slow {
+//   animation: spinSlow 32s linear infinite;
+// }
+
 //   .float-orb  { animation: orbFloat 4.5s ease-in-out infinite; }
 //   .float-orb2 { animation: orbFloat 4.5s ease-in-out 2.2s infinite; }
 //   .float-orb3 { animation: orbFloat 5s ease-in-out 1.1s infinite; }
-//   .pulse-glow { animation: pulseGlow 3.5s ease-in-out infinite; }
 //   .dot-pulse  { animation: dotPulse 2s ease-in-out infinite; }
 
 //   .shimmer-btn { background-size: 200% auto; }
@@ -707,7 +697,7 @@
 //               </div>
 //             </div>
 
-//             {/* ════ RIGHT: Image orb ════ */}
+//             {/* ════ RIGHT: Image ════ */}
 
 //             <div
 //               key={`img-${cur}`}
@@ -721,16 +711,6 @@
 //                   margin: "0 auto",
 //                 }}
 //               >
-//                 {/* Outer glow */}
-//                 <div
-//                   aria-hidden="true"
-//                   className="pulse-glow absolute inset-0 pointer-events-none"
-//                   style={{
-//                     borderRadius: getSlideRadius(slide.shape),
-//                     boxShadow: `0 0 70px 18px ${slide.accentGold}22, inset 0 0 40px ${slide.accentGold}0F`,
-//                   }}
-//                 />
-
 //                 {/* Floating orbs */}
 //                 <div
 //                   aria-hidden="true"
@@ -757,52 +737,45 @@
 //                   }}
 //                 />
 
-//                 {/* Image circle — slide 0 rotates (spin-slow), others are still */}
-//                 <div
-//                   className={`absolute inset-3.5 lg:inset-5 overflow-hidden transition-all duration-700 bg-transparent ${cur === 0 ? "spin-slow" : ""}`}
-//                   style={{
-//                     boxShadow: "0 24px 60px rgba(0,0,0,0.18)",
-//                     borderRadius: getSlideRadius(slide.shape),
-//                   }}
-//                 >
-//                   {/* ✅ SEO FIX: Added itemProp for image schema mapping */}
-//                   <Image
-//                     src={slide.img}
-//                     alt={slide.imgAlt}
-//                     fill
-//                     className="object-cover transition-transform duration-700 hover:scale-[1.04] mix-blend-multiply"
-//                     sizes="(max-width:1024px) 280px, 430px"
-//                     priority
-//                     fetchPriority="high"
-//                     itemProp="image"
-//                   />
-//                   <div
-//                     aria-hidden="true"
-//                     className="absolute inset-0"
-//                     style={{
-//                       borderRadius: getSlideRadius(slide.shape),
-//                       boxShadow: `inset 0 0 50px ${slide.accentGold}14`,
-//                     }}
-//                   />
-//                 </div>
-
-//                 {/* "Made in India" tag */}
 //                 <div
 //                   aria-hidden="true"
-//                   className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full"
+//                   className="absolute inset-[-8%] transition-all duration-700 pointer-events-none"
 //                   style={{
-//                     padding: "5px 18px",
-//                     background: `linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)`,
-//                     fontFamily: "'Jost',sans-serif",
-//                     fontWeight: 700,
-//                     fontSize: "8px",
-//                     letterSpacing: "0.22em",
-//                     textTransform: "uppercase",
-//                     color: "white",
-//                     boxShadow: `0 6px 20px ${slide.accentGold}45`,
+//                     background:
+//                       "radial-gradient(ellipse 60% 68% at 50% 55%, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.16) 35%, rgba(0,0,0,0.05) 60%, transparent 78%)",
+//                     filter: "blur(6px)",
+//                   }}
+//                 />
+
+//                 <div
+//                   className="absolute inset-3.5 lg:inset-5 transition-all duration-700"
+//                   style={{
+//                     transform: `scale(${slide.imgScale || 1})`,
+//                     transformOrigin: "50% 50%",
 //                   }}
 //                 >
-//                   ✦ Made in India ✦
+//                   <div
+//                     className={`absolute inset-0 ${
+//                       cur === 0 ? "spin-slow" : ""
+//                     }`}
+//                     style={{
+//                       transformOrigin: "50% 50%",
+//                     }}
+//                   >
+//                     <Image
+//                       src={slide.img}
+//                       alt={slide.imgAlt}
+//                       fill
+//                       className="object-contain transition-transform duration-700 hover:scale-[1.04]"
+//                       sizes="(max-width:1024px) 280px, 430px"
+//                       priority
+//                       fetchPriority="high"
+//                       itemProp="image"
+//                       style={{
+//                         filter: "drop-shadow(0 18px 26px rgba(0,0,0,0.22))",
+//                       }}
+//                     />
+//                   </div>
 //                 </div>
 
 //                 {/* Nav arrows */}
@@ -907,12 +880,11 @@
 
 
 
-// second  design  code  is this
 
 
 
+// FILE: client/src/components/home/HeroSection.js
 
-// // FILE: client/src/components/home/HeroSection.js
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
@@ -937,7 +909,7 @@ const slides = [
     id: 2,
     title: ["Exquisite Craftsmanship", "A-Line Masterpieces"],
     sub: "Flawlessly stitched A-Line suits crafted for elegance. Experience the perfect blend of comfort and pure luxury in every thread.",
-    img: "/images/suits/A-Line/aline1.png",
+    img: "/images/suits/A-Line/a-line.png",
     imgAlt:
       "Cotton Suit Manufacturer Jaipur - Premium Pure Cotton A-Line Suits",
     bg: "linear-gradient(145deg, #F2D9C3 0%, #F2D9C3 30%, #E0BFA2 55%, #B8996E 100%)",
@@ -950,20 +922,20 @@ const slides = [
     id: 3,
     title: ["Timeless Grace", "Designer Anarkalis"],
     sub: "Redefining the standard of ethnic fashion. Beautifully flared Anarkali suits tailored with breathable fabrics for the modern woman.",
-    img: "/images/suits/Anarkali/anarkali3.png",
+    img: "/images/suits/Anarkali/anarkali1.png",
     imgAlt:
       "Indian Ethnic Wear Manufacturer - Designer Pure Cotton Anarkali Suits",
     bg: "linear-gradient(180deg, #F2D9C3 0%, #EDD0B5 15%, #E0BFA2 45%, #C4A07A 100%)",
     accentGold: "#6B4226",
     accentLight: "#F3DCC8",
     badge: "Anarkali Collection",
-    imgScale: 1.22,
+    imgScale: 0.9,
   },
   {
     id: 4,
     title: ["Modern Silhouettes", "Chic Cord Sets"],
     sub: "Directly sourced from India's master weavers. Trendy, highly demanded, and comfortable cotton Cord sets for everyday luxury.",
-    img: "/images/suits/cordset/cordset1.png",
+    img: "/images/suits/cordset/co-ordsets.png",
     imgAlt: "B2B Ethnic Wear Supplier - Trendy Cotton Co-ord Sets Manufacturer",
     bg: "radial-gradient(circle at 40% 60%, #F2D9C3 0%, #EDD4B8 30%, #E0BFA2 55%, #BEA07A 100%)",
     accentGold: "#8B6508",
@@ -975,7 +947,7 @@ const slides = [
     id: 5,
     title: ["Everyday Elegance", "Premium Short Kurtis"],
     sub: "Versatile and stylish short kurtis at wholesale rates. We ensure perfect fits, breathable fabrics, and vibrant long-lasting prints.",
-    img: "/images/suits/Straight3piece/straight3piece1.png",
+    img: "/images/suits/short-Kurtis/short-kurtis.png",
     imgAlt: "Wholesale Kurti Supplier India - Premium Cotton Short Kurtis",
     bg: "linear-gradient(0deg, #F2D9C3 0%, #EAC9A8 20%, #E0BFA2 50%, #C2956A 100%)",
     accentGold: "#6B4226",
@@ -987,7 +959,7 @@ const slides = [
     id: 6,
     title: ["Complete Elegance", "Straight 3-Piece Suits"],
     sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas. Fully insured, securely packaged, and exported worldwide.",
-    img: "/images/suits/Straight3piece/straight3piece1.png",
+    img: "/images/suits/Straight3piece/3-piece-suit.png",
     imgAlt:
       "Ladies Cotton Suit Manufacturer - Straight 3-Piece Cotton Suits Export",
     bg: "linear-gradient(90deg, #C4A07A 0%, #E0BFA2 40%, #EDD0B5 65%, #F2D9C3 100%)",
@@ -1000,7 +972,7 @@ const slides = [
     id: 7,
     title: ["Graceful Lengths", "Classic Long Kurtis"],
     sub: "Elegant long kurtis perfect for retail scaling. Partner with India's most trusted export empire for your bulk requirements.",
-    img: "/images/suits/Straight3piece/straight3piece1.png",
+    img: "/images/suits/LongKurtis/long-kurtis.png",
     imgAlt: "Cotton Clothing Exporter India - Wholesale Long Kurtis",
     bg: "linear-gradient(225deg, #F2D9C3 0%, #EAC9A8 35%, #E0BFA2 65%, #B8916A 100%)",
     accentGold: "#8B6508",
@@ -1009,11 +981,6 @@ const slides = [
     imgScale: 1.22,
   },
 ];
-
-// ✅ DESIGN FIX: Removed the box/card frame entirely — no border-radius panel,
-// no offset accent panel, no box-shadow rectangle. The photo now sits with no
-// visible container at all; a soft dark radial vignette blends its edges into
-// the slide background so the model looks naturally merged into the scene.
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
@@ -1140,12 +1107,6 @@ const STYLES = `
     .hero-thumb-strip {
       flex-shrink: 0;
     }
-    .hero-img-wrap {
-      height: clamp(280px, 42vh, 420px);
-    }
-    .hero-title {
-      font-size: clamp(2.2rem, 4vw, 3.5rem);
-    }
   }
 `;
 
@@ -1180,7 +1141,7 @@ const CornerOrnament = ({ accentGold, className = "" }) => (
 
 const StatPill = ({ value, label, accentGold }) => (
   <div
-    className="stat-pill flex flex-col items-center px-3 lg:px-4 py-2 lg:py-2.5 rounded-xl"
+    className="stat-pill flex flex-col items-center px-4 py-2 lg:py-3 rounded-xl"
     style={{
       background: `linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.45))`,
       border: `1px solid rgba(255,255,255,0.6)`,
@@ -1193,7 +1154,7 @@ const StatPill = ({ value, label, accentGold }) => (
       style={{
         fontFamily: "'Cinzel',serif",
         fontWeight: 700,
-        fontSize: "clamp(0.95rem, 1.6vw, 1.15rem)",
+        fontSize: "clamp(1.1rem, 1.8vw, 1.3rem)",
         letterSpacing: "0.04em",
         color: accentGold,
       }}
@@ -1204,11 +1165,11 @@ const StatPill = ({ value, label, accentGold }) => (
       style={{
         fontFamily: "'Jost',sans-serif",
         fontWeight: 500,
-        fontSize: "clamp(8px, 0.9vw, 10px)",
+        fontSize: "clamp(9px, 1vw, 11px)",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         color: "#b0895e",
-        marginTop: "1px",
+        marginTop: "2px",
       }}
     >
       {label}
@@ -1230,8 +1191,8 @@ const SlideCard = ({
     aria-label={`View: ${slide.title[0]} ${slide.title[1]}`}
     className="thumb-card relative flex-shrink-0 overflow-hidden snap-start focus:outline-none focus-visible:ring-2 rounded-2xl"
     style={{
-      width: "clamp(82px, 9vw, 112px)",
-      height: "clamp(108px, 12vw, 140px)",
+      width: "clamp(90px, 10vw, 120px)",
+      height: "clamp(120px, 14vw, 150px)",
       margin: isActive ? "0 16px" : "0",
       border: isActive
         ? `2px solid ${accentGold}`
@@ -1246,12 +1207,11 @@ const SlideCard = ({
     }}
   >
     <div className="absolute inset-0 z-0">
-      {/* ✅ SEO FIX: Enriched thumbnail alt text for B2B relevance */}
       <Image
         src={slide.img}
         alt={`Thumbnail - ${slide.title[0]} - Wholesale Ethnic Wear`}
         fill
-        sizes="(max-width: 1024px) 82px, 112px"
+        sizes="(max-width: 1024px) 90px, 120px"
         className="object-cover"
       />
     </div>
@@ -1263,12 +1223,12 @@ const SlideCard = ({
 
     {isActive && (
       <div
-        className="absolute top-1.5 left-1.5 z-20 px-1.5 py-0.5 rounded-md"
+        className="absolute top-1.5 left-1.5 z-20 px-2 py-0.5 rounded-md"
         style={{
           background: accentGold,
           fontFamily: "'Jost',sans-serif",
           fontWeight: 700,
-          fontSize: "7px",
+          fontSize: "8px",
           letterSpacing: "0.18em",
           textTransform: "uppercase",
           color: "white",
@@ -1283,7 +1243,7 @@ const SlideCard = ({
         style={{
           fontFamily: "'Jost',sans-serif",
           fontWeight: 600,
-          fontSize: "9px",
+          fontSize: "10px",
           lineHeight: 1.35,
           color: "white",
           display: "-webkit-box",
@@ -1340,8 +1300,6 @@ export default function HeroSection() {
 
   return (
     <>
-      {/* ✅ SEO FIX: Enriched Organization Schema with additionalType and location attributes for higher EEAT & Local SEO context */}
-
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 
       <section
@@ -1400,7 +1358,7 @@ export default function HeroSection() {
             style={{
               fontFamily: "'Cinzel',serif",
               fontWeight: 600,
-              fontSize: "10px",
+              fontSize: "12px",
               letterSpacing: "0.22em",
               color: "#b0895e",
             }}
@@ -1417,7 +1375,7 @@ export default function HeroSection() {
           <span
             style={{
               fontFamily: "'Cinzel',serif",
-              fontSize: "10px",
+              fontSize: "12px",
               letterSpacing: "0.22em",
               color: "#C9A485",
               opacity: 0.6,
@@ -1428,14 +1386,14 @@ export default function HeroSection() {
         </div>
 
         {/* ── Main content ── */}
-        <div className="hero-main-grid relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-5 lg:px-14 pt-16 lg:pt-20 pb-3 lg:pb-2">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 xl:gap-16 items-center w-full">
+        <div className="hero-main-grid relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-14 pt-20 lg:pt-16 pb-2 lg:pb-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 xl:gap-12 items-center w-full">
+            
             {/* ════ LEFT: Text ════ */}
-
             <div
               aria-live="polite"
               aria-atomic="true"
-              className="flex flex-col justify-center order-2 lg:order-1 mt-2 lg:mt-0"
+              className="flex flex-col justify-center order-2 lg:order-1 mt-4 lg:mt-0"
             >
               {/* Badge row */}
               <div className="anim-badge flex items-center gap-3 mb-4">
@@ -1444,12 +1402,12 @@ export default function HeroSection() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    padding: "5px 14px",
+                    padding: "6px 14px",
                     borderRadius: "999px",
                     background: `linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 100%)`,
                     fontFamily: "'Jost',sans-serif",
                     fontWeight: 700,
-                    fontSize: "8.5px",
+                    fontSize: "9px",
                     letterSpacing: "0.24em",
                     textTransform: "uppercase",
                     color: "white",
@@ -1465,7 +1423,7 @@ export default function HeroSection() {
                 <div
                   className="anim-line h-px rounded-full flex-shrink-0"
                   style={{
-                    width: "52px",
+                    width: "50px",
                     background: `linear-gradient(to right, ${slide.accentGold}, transparent)`,
                     opacity: 0.7,
                   }}
@@ -1474,10 +1432,10 @@ export default function HeroSection() {
 
               {/* SEO H1 — visually a small eyebrow line, semantically the page's main heading */}
               <h1
-                className="anim-title font-semibold mb-2 tracking-wide text-[#7A3D2A]"
+                className="anim-title font-semibold mb-3 tracking-wide text-[#7A3D2A]"
                 style={{
                   fontFamily: "'Jost',sans-serif",
-                  fontSize: "clamp(11px, 1.1vw, 13px)",
+                  fontSize: "clamp(12px, 1.2vw, 13px)",
                   letterSpacing: "0.08em",
                   lineHeight: 1.5,
                   maxWidth: "560px",
@@ -1488,12 +1446,13 @@ export default function HeroSection() {
                 &amp; Exporter in Jaipur, Rajasthan, India
               </h1>
 
-              {/* Visual heading — the big styled title, now h2 (still great for SEO as a secondary heading) */}
+              {/* Visual heading — the big styled title */}
               <h2
-                className="anim-title hero-title font-bold leading-[1.02] mb-3 tracking-wide"
+                className="anim-title text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 tracking-wide"
                 style={{
                   fontFamily: "'Cormorant Garamond',Georgia,serif",
                   color: slide.accentGold,
+                  lineHeight: "1.05",
                 }}
               >
                 <span className="block">{slide.title[0]}</span>
@@ -1503,10 +1462,10 @@ export default function HeroSection() {
               {/* Divider line */}
               <div
                 aria-hidden="true"
-                className="mb-4 rounded-full"
+                className="mb-4 md:mb-5 rounded-full"
                 style={{
-                  height: "1.5px",
-                  width: "48px",
+                  height: "2px",
+                  width: "50px",
                   background: `linear-gradient(to right, ${slide.accentGold}, transparent)`,
                   opacity: 0.55,
                 }}
@@ -1514,11 +1473,11 @@ export default function HeroSection() {
 
               {/* Subtitle */}
               <p
-                className="anim-sub leading-[1.85] mb-5 lg:mb-6 tracking-wide text-[#a07f61] max-w-md"
+                className="anim-sub leading-[1.75] mb-6 tracking-wide text-[#a07f61] max-w-md"
                 style={{
                   fontFamily: "'Jost',sans-serif",
                   fontWeight: 400,
-                  fontSize: "clamp(11.5px, 1.15vw, 13.5px)",
+                  fontSize: "clamp(13px, 1.5vw, 15px)",
                 }}
                 itemProp="description"
               >
@@ -1526,21 +1485,20 @@ export default function HeroSection() {
               </p>
 
               {/* CTA buttons */}
-              <div className="anim-btns flex flex-wrap gap-2.5 mb-5 lg:mb-6">
-                {/* ✅ SEO FIX: Avoid circular homepage link, point to /lookbook for better site architecture */}
+              <div className="anim-btns flex flex-wrap gap-3 mb-6">
                 <Link
                   href="/lookbook"
                   title="View Wholesale Cotton Suits & Kurtis Collections"
                   aria-label="Explore our wholesale ethnic wear collection"
                   className="explore-btn shimmer-btn group relative inline-flex items-center gap-2.5 rounded-xl overflow-hidden"
                   style={{
-                    padding: "10px 22px",
+                    padding: "10px 24px",
                     backgroundImage: `linear-gradient(135deg, ${slide.accentGold} 0%, #BE6E5B 50%, ${slide.accentGold} 100%)`,
                     backgroundSize: "200% auto",
                     color: "#FDF7F2",
                     fontFamily: "'Jost',sans-serif",
                     fontWeight: 700,
-                    fontSize: "10px",
+                    fontSize: "11px",
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
                     boxShadow: `0 6px 24px ${slide.accentGold}38`,
@@ -1564,21 +1522,20 @@ export default function HeroSection() {
                   </span>
                 </Link>
 
-                {/* ✅ SEO FIX: Enriched link attributes for contextual link equity */}
                 <Link
                   href="/contact"
                   title="Contact Jaipur Ethnic Wear Manufacturer"
                   aria-label="Get wholesale pricing directly from the manufacturer"
                   className="outline-btn group inline-flex items-center gap-2 rounded-xl"
                   style={{
-                    padding: "10px 22px",
+                    padding: "10px 24px",
                     background: "rgba(255,255,255,0.65)",
                     backdropFilter: "blur(12px)",
                     border: `1.5px solid ${slide.accentGold}`,
                     color: slide.accentGold,
                     fontFamily: "'Jost',sans-serif",
                     fontWeight: 700,
-                    fontSize: "10px",
+                    fontSize: "11px",
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
                   }}
@@ -1594,7 +1551,7 @@ export default function HeroSection() {
               </div>
 
               {/* Stats */}
-              <div className="anim-stats flex items-center gap-2 lg:gap-3">
+              <div className="anim-stats flex items-center gap-3">
                 <StatPill
                   value="500+"
                   label="Designs"
@@ -1614,16 +1571,15 @@ export default function HeroSection() {
             </div>
 
             {/* ════ RIGHT: Image ════ */}
-
             <div
               key={`img-${cur}`}
-              className="hero-img-wrap relative flex items-center justify-center order-1 lg:order-2 mb-6 lg:mb-0"
-              style={{ height: "clamp(220px, 35vw, 420px)" }}
+              className="hero-img-wrap relative flex items-center justify-center order-1 lg:order-2 mb-8 lg:mb-0 mt-4 lg:mt-0"
+              style={{ height: "clamp(300px, 45vh, 480px)" }}
             >
               <div
                 className="relative w-full h-full"
                 style={{
-                  maxWidth: "clamp(220px, 33vw, 420px)",
+                  maxWidth: "clamp(300px, 45vh, 480px)",
                   margin: "0 auto",
                 }}
               >
@@ -1683,7 +1639,7 @@ export default function HeroSection() {
                       alt={slide.imgAlt}
                       fill
                       className="object-contain transition-transform duration-700 hover:scale-[1.04]"
-                      sizes="(max-width:1024px) 280px, 430px"
+                      sizes="(max-width:1024px) 300px, 480px"
                       priority
                       fetchPriority="high"
                       itemProp="image"
@@ -1694,33 +1650,14 @@ export default function HeroSection() {
                   </div>
                 </div>
 
-                {/* "Made in India" tag */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap rounded-full"
-                  style={{
-                    padding: "5px 18px",
-                    background: `linear-gradient(135deg, ${slide.accentGold}, #BE6E5B)`,
-                    fontFamily: "'Jost',sans-serif",
-                    fontWeight: 700,
-                    fontSize: "8px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "white",
-                    boxShadow: `0 6px 20px ${slide.accentGold}45`,
-                  }}
-                >
-                  ✦ Made in India ✦
-                </div>
-
-                {/* Nav arrows */}
+                {/* Nav arrows - Balanced Size */}
                 <button
                   onClick={() => goTo(cur - 1)}
                   aria-label="Previous slide"
-                  className="nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 lg:-translate-x-9 z-20 rounded-full flex items-center justify-center"
+                  className="nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 lg:-translate-x-6 z-20 rounded-full flex items-center justify-center"
                   style={{
-                    width: "clamp(36px, 3.5vw, 46px)",
-                    height: "clamp(36px, 3.5vw, 46px)",
+                    width: "clamp(36px, 4vw, 48px)",
+                    height: "clamp(36px, 4vw, 48px)",
                     background: "rgba(255,255,255,0.88)",
                     backdropFilter: "blur(12px)",
                     border: "1px solid rgba(255,255,255,0.7)",
@@ -1728,7 +1665,7 @@ export default function HeroSection() {
                     boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
                     fontFamily: "serif",
                     fontWeight: 700,
-                    fontSize: "clamp(14px,1.4vw,18px)",
+                    fontSize: "clamp(16px, 1.8vw, 20px)",
                   }}
                 >
                   ❮
@@ -1737,10 +1674,10 @@ export default function HeroSection() {
                 <button
                   onClick={() => goTo(cur + 1)}
                   aria-label="Next slide"
-                  className="nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 lg:translate-x-9 z-20 rounded-full flex items-center justify-center"
+                  className="nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 lg:translate-x-6 z-20 rounded-full flex items-center justify-center"
                   style={{
-                    width: "clamp(36px, 3.5vw, 46px)",
-                    height: "clamp(36px, 3.5vw, 46px)",
+                    width: "clamp(36px, 4vw, 48px)",
+                    height: "clamp(36px, 4vw, 48px)",
                     background: "rgba(255,255,255,0.88)",
                     backdropFilter: "blur(12px)",
                     border: "1px solid rgba(255,255,255,0.7)",
@@ -1748,7 +1685,7 @@ export default function HeroSection() {
                     boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
                     fontFamily: "serif",
                     fontWeight: 700,
-                    fontSize: "clamp(14px,1.4vw,18px)",
+                    fontSize: "clamp(16px, 1.8vw, 20px)",
                   }}
                 >
                   ❯
@@ -1760,7 +1697,7 @@ export default function HeroSection() {
 
         {/* ── Thumbnail strip ── */}
         <div
-          className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-8 lg:mt-auto"
+          className="hero-thumb-strip relative z-20 w-full pt-3 pb-5 mt-auto"
           style={{
             background:
               "linear-gradient(to top, rgba(0,0,0,0.08), transparent)",
@@ -1773,7 +1710,7 @@ export default function HeroSection() {
             {/* Dot indicators */}
             <div
               aria-hidden="true"
-              className="flex justify-center gap-1.5 mb-2.5"
+              className="flex justify-center gap-2 mb-3"
             >
               {slides.map((s, i) => (
                 <button
@@ -1783,16 +1720,16 @@ export default function HeroSection() {
                   className="rounded-full transition-all duration-400"
                   style={{
                     height: "5px",
-                    width: i === cur ? "26px" : "5px",
+                    width: i === cur ? "28px" : "5px",
                     background: i === cur ? slide.accentGold : "#C9A485",
-                    opacity: i === cur ? 1 : 0.38,
+                    opacity: i === cur ? 1 : 0.4,
                   }}
                 />
               ))}
             </div>
 
             {/* Thumbnail cards */}
-            <div className="flex md:justify-center gap-2 lg:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory px-2">
+            <div className="flex md:justify-center gap-3 lg:gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory px-2">
               {slides.map((s, index) => (
                 <SlideCard
                   key={s.id}
