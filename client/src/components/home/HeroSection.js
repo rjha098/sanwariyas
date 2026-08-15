@@ -1570,19 +1570,33 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* ════ RIGHT: Image ════ */}
+
+
+
+
+
+{/* ════ RIGHT: Image ════ */}
             <div
               key={`img-${cur}`}
               className="hero-img-wrap relative flex items-center justify-center order-1 lg:order-2 mb-8 lg:mb-0 mt-4 lg:mt-0"
-              style={{ height: "clamp(300px, 45vh, 480px)" }}
+              style={{ height: "clamp(320px, 55vh, 560px)" }}
             >
               <div
                 className="relative w-full h-full"
                 style={{
-                  maxWidth: "clamp(300px, 45vh, 480px)",
+                  maxWidth: "clamp(320px, 55vh, 560px)",
                   margin: "0 auto",
                 }}
               >
+
+
+
+
+
+
+
+
+
                 {/* Floating orbs */}
                 <div
                   aria-hidden="true"
