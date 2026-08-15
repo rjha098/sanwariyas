@@ -43,7 +43,7 @@ const categories = [
   {
     name: "A-Line Suits",
     slug: "a-line-suit",
-    image: "/images/suits/anarkali/Anarkali2.png",
+    image: "/images/suits/A-Line/a-line1.png",
     count: "A-Line • Party • Festive",
     seoKeyword: "Jaipur Ethnic Wear Manufacturer",
   },
