@@ -7,7 +7,7 @@ import api from "@/lib/api";
 
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
-).replace(/\/api\/?$/, ""); 
+).replace(/\/api\/?$/, "");
 
 export default function BlogManager({ token, showToast }) {
   const router = useRouter();
@@ -31,7 +31,17 @@ export default function BlogManager({ token, showToast }) {
       setBlogs(res.data.data || []);
       setPagination(res.data.pagination || { total: 0, pages: 1 });
     } catch (err) {
-      showToast?.("Failed to load blogs.", "error");
+      if (err.response && err.response.status === 404) {
+        setBlogs([]);
+        setPagination({ total: 0, pages: 1 });
+      } else {
+        showToast?.(
+          err.userMessage ||
+            err.response?.data?.message ||
+            "Failed to load blogs.",
+          "error",
+        );
+      }
     } finally {
       setLoading(false);
     }

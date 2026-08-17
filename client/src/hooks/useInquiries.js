@@ -59,7 +59,7 @@ export function useInquiries(token, role = "admin") {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // ✅ FIX: Sort logic to bring the latest activity (new inquiry or new reply) to the TOP
+        //  FIX: Sort logic to bring the latest activity (new inquiry or new reply) to the TOP
         const rawInquiries = res.data.inquiries || [];
 
         const sortedInquiries = rawInquiries.sort((a, b) => {
@@ -84,7 +84,16 @@ export function useInquiries(token, role = "admin") {
           setInquiryStats(res.data.stats);
         }
       } catch (error) {
-        setFlash(error.response?.data?.message || "Unable to load inquiries");
+        if (error.response && error.response.status === 404) {
+          setInquiries([]);
+          setInquiryPagination({ pages: 0, total: 0 });
+        } else {
+          setFlash(
+            error.userMessage || 
+            error.response?.data?.message || 
+            "Unable to load inquiries"
+          );
+        }
       } finally {
         if (!isSilent) setInquiriesLoading(false);
       }

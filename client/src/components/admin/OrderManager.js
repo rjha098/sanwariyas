@@ -39,11 +39,21 @@ export default function OrderManager({ token, showToast }) {
         setOrders(data.orders || []);
         setPagination(data.pagination || { total: 0, pages: 1 });
       })
-      .catch(() => {
-        if (typeof showToast === "function") {
-          showToast("Failed to load orders.", "error");
+
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setOrders([]);
+          setPagination({ total: 0, pages: 1 });
+        } else if (typeof showToast === "function") {
+          showToast(
+            error.userMessage ||
+              error.response?.data?.message ||
+              "Failed to load orders.",
+            "error",
+          );
         }
       })
+
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, page, statusFilter, searchTerm]);

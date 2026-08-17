@@ -124,10 +124,17 @@ export function useProducts(token) {
         setProducts(data.products || []);
         setProductPagination(data.pagination || {});
       } catch (error) {
-        setFlash(
-          setProductMessage,
-          error.response?.data?.message || "Unable to load products",
-        );
+        if (error.response && error.response.status === 404) {
+          setProducts([]);
+          setProductPagination({});
+        } else {
+          setFlash(
+            setProductMessage,
+            error.userMessage ||
+              error.response?.data?.message ||
+              "Unable to load products",
+          );
+        }
       } finally {
         setProductsLoading(false);
       }

@@ -45,8 +45,8 @@ const REVIEWS = [
     name: "Manish Mahawar",
   },
   {
-    quote: "Affordable fabric with very good customer support for every order.",
-    name: "Deepak Kumar",
+    quote: "Sanwariyas has vibrant prints ,fresh patterns, and great designs.",
+    name: "RELAXING MUSIC",
   },
   {
     quote:

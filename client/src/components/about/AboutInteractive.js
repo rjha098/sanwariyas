@@ -261,14 +261,14 @@ const OWNERS = [
     name: "Sonali Kanther",
     role: "CEO & Founder",
     bio: "Sonali is the driving force behind SANWARIYAS, setting the strategic vision for our global B2B export operations. Her commitment to authentic craftsmanship and scalable manufacturing has positioned the brand as a trusted partner for retailers worldwide.",
-    image: "/images/team/sonali.png",
+    image: "/images/sonali.png",
     initial: "S",
   },
   {
     name: "Sanyam Kanther",
     role: "Director",
     bio: "Sanyam oversees our overarching business strategy and international expansions. His expertise in supply chain optimization ensures that our wholesale operations run with precision and unmatched reliability.",
-    image: "/images/team/sanyam.png",
+    image: "/images/sanyam.png",
     initial: "S",
   },
 ];
@@ -462,7 +462,7 @@ export default function AboutInteractive() {
               adjusting, and to act on it, not just note it down.
             </p>
 
-            {/* 🚀 FIX: TEXT SIZE REDUCED AND MATCHED TO SCREENSHOT 🚀 */}
+            {/*  FIX: TEXT SIZE REDUCED AND MATCHED TO SCREENSHOT  */}
             <div className="pt-8 pb-4 text-center">
               <p className="font-sans text-[15px] md:text-[17px] font-bold text-[#7A3D2A] leading-relaxed">
                 “None of this makes headlines. But it's the reason a small

@@ -1,4 +1,4 @@
-// FILE: client/src/components/home/InquiryForm.js
+// FILE: client/src/components/ui/InquiryForm.js
 "use client";
 import { useState } from "react";
 

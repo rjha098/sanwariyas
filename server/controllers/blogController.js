@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 // ════════════════════════════════════════════════════════════════
 // BULLETPROOF SLUG GENERATOR (SINGLE SOURCE OF TRUTH)
 // ════════════════════════════════════════════════════════════════
+
 const generateBulletproofSlug = (text) => {
   return text
     .toLowerCase()
