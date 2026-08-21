@@ -1,6 +1,7 @@
 // "use client";
 
-// import { useState, useEffect, useRef } from "react";
+// import { useState, useEffect, useRef, Suspense } from "react";
+// import { useSearchParams } from "next/navigation";
 // import Navbar from "@/components/layout/Navbar";
 // import Footer from "@/components/layout/Footer";
 // import { useAuth } from "@/hooks/useAuth";
@@ -183,7 +184,6 @@
 //           <p className="font-sans text-[11px] tracking-[0.3em] uppercase text-[#C9A84C] font-semibold mb-1">
 //             Track Your Inquiry
 //           </p>
-//           {/* ✅ FIX: Clear instruction text added here */}
 //           <p className="font-sans text-sm text-[#574325] leading-relaxed">
 //             Your inquiry has been submitted! Please log in or create an account
 //             with the <strong>exact same Email or Phone Number</strong> used in
@@ -250,10 +250,27 @@
 //   );
 // }
 
-// // ── Main Page ─────────────────────────────────────────────────────────────────
-// export default function ContactPage() {
+// // ── Product inquiry banner (shown when arriving from lookbook / product page) ─
+// function ProductInquiryBanner({ productName }) {
+//   if (!productName) return null;
+//   return (
+//     <div className="relative overflow-hidden rounded-xl border border-[#BE6E5B]/30 bg-[#FDF1EA] p-4 mb-6">
+//       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#BE6E5B] to-[#7A3D2A]" />
+//       <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#BE6E5B] font-bold mb-1">
+//         Inquiring About
+//       </p>
+//       <p className="font-display text-lg text-[#7A3D2A] font-bold">
+//         {productName}
+//       </p>
+//     </div>
+//   );
+// }
+
+// // ── Main Page (inner, uses useSearchParams) ────────────────────────────────────
+// function ContactPageContent() {
 //   const { isAuthenticated, user, token } = useAuth();
 //   const router = useRouter();
+//   const searchParams = useSearchParams();
 
 //   const [loading, setLoading] = useState(false);
 //   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
@@ -265,6 +282,11 @@
 //   // Refs for scroll-to behaviour
 //   const promptRef = useRef(null);
 //   const formTopRef = useRef(null);
+
+//   // Track whether we've already applied the product prefill (so re-renders /
+//   // user edits don't get overwritten, and normal non-product visits are untouched)
+//   const hasPrefilledProduct = useRef(false);
+//   const [inquiredProduct, setInquiredProduct] = useState("");
 
 //   const [toastConfig, setToastConfig] = useState({
 //     isVisible: false,
@@ -286,6 +308,25 @@
 
 //   // Store full profile data for freeze logic
 //   const [fullProfile, setFullProfile] = useState(null);
+
+//   //  NEW: Prefill product info from ?inquiry= query param (e.g. from Lookbook)
+//   // Runs independently of login state — works for both guests and logged-in users,
+//   // and never touches name/email so it can never break the normal inquiry flow.
+//   useEffect(() => {
+//     const productParam = searchParams.get("inquiry");
+//     if (productParam && !hasPrefilledProduct.current) {
+//       hasPrefilledProduct.current = true;
+//       const cleanName = productParam.trim();
+//       setInquiredProduct(cleanName);
+//       setFormData((prev) => ({
+//         ...prev,
+//         productCategory: prev.productCategory || cleanName,
+//         message:
+//           prev.message ||
+//           `I'm interested in the "${cleanName}" collection from your lookbook. Please share wholesale pricing, available sizes, and MOQ details.`,
+//       }));
+//     }
+//   }, [searchParams]);
 
 //   // Auto-fill when logged in & fetch full profile
 //   useEffect(() => {
@@ -464,6 +505,7 @@
 //       }));
 //       setFieldErrors({});
 //       setTouchedFields({});
+//       setInquiredProduct("");
 
 //       // Show login prompt for guests — useEffect above will scroll to it
 //       if (!isAuthenticated) setShowLoginPrompt(true);
@@ -493,8 +535,7 @@
 //         type={toastConfig.type}
 //         onClose={closeToast}
 //       />
-
-//       <style
+//     <style
 //         dangerouslySetInnerHTML={{
 //           __html: `
 //         .cg-wrap { width:100%;max-width:1280px;margin:0 auto;padding:0 16px;box-sizing:border-box; }
@@ -692,6 +733,9 @@
 //                 aria-hidden="true"
 //                 className="w-12 h-[2px] bg-[#BE6E5B] mt-6 mb-6"
 //               />
+
+//               {/*  NEW: Product context banner — only shows when arriving via ?inquiry= */}
+//               <ProductInquiryBanner productName={inquiredProduct} />
 
 //               {/* Logged in banner */}
 //               {isAuthenticated && (
@@ -927,7 +971,44 @@
 //   );
 // }
 
+// // ── Default export — wraps the client component in Suspense because ─────────
+// // useSearchParams() requires a Suspense boundary in the Next.js App Router.
+// export default function ContactPage() {
+//   return (
+//     <Suspense fallback={null}>
+//       <ContactPageContent />
+//     </Suspense>
+//   );
+// }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FILE: client/src/app/contact/page.js
 
 
 "use client";
@@ -940,6 +1021,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import Toast from "@/components/ui/Toast";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 // ── Contact info ──────────────────────────────────────────────────────────────
 
@@ -1096,7 +1178,7 @@ function StyledInput({
 }
 
 // ── Login prompt banner (shown to guest after submission) ─────────────────────
-function LoginPromptBanner({ router }) {
+function LoginPromptBanner({ router, email, phone }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-[#C9A84C]/40 bg-gradient-to-br from-[#FAF3E8] to-[#FDF7F2] p-5 shadow-sm">
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#C9A84C] via-[#BE6E5B] to-[#C9A84C]" />
@@ -1117,9 +1199,29 @@ function LoginPromptBanner({ router }) {
             Track Your Inquiry
           </p>
           <p className="font-sans text-sm text-[#574325] leading-relaxed">
-            Your inquiry has been submitted! Please log in or create an account
-            with the <strong>exact same Email or Phone Number</strong> used in
-            this inquiry to track its status and view admin responses.
+            Your inquiry has been submitted! To track it, log in or create an
+            account using <strong>both</strong> of these — exactly as
+            entered:
+          </p>
+          {(email || phone) && (
+            <div className="mt-3 bg-white/60 border border-[#C9A84C]/30 rounded-lg px-3 py-2 space-y-1">
+              {email && (
+                <p className="font-sans text-xs text-[#574325]">
+                  <span className="text-[#a07f61]">Email: </span>
+                  <strong>{email}</strong>
+                </p>
+              )}
+              {phone && (
+                <p className="font-sans text-xs text-[#574325]">
+                  <span className="text-[#a07f61]">Phone: </span>
+                  <strong>{phone}</strong>
+                </p>
+              )}
+            </div>
+          )}
+          <p className="font-sans text-[11px] text-[#a07f61] mt-2 leading-relaxed">
+            Using a different email or phone number will not show this
+            inquiry in your dashboard.
           </p>
           <div className="flex flex-col sm:flex-row gap-2 mt-4">
             <button
@@ -1206,6 +1308,14 @@ function ContactPageContent() {
 
   const [loading, setLoading] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  // Snapshot of the email/phone the user actually submitted with — needed
+  // because formData gets reset to blank right after a successful submit,
+  // and the login-prompt banner (which shows below) needs these values.
+  const [submittedContact, setSubmittedContact] = useState({
+    email: "",
+    phone: "",
+  });
 
   // Custom field-level validation errors
   const [fieldErrors, setFieldErrors] = useState({});
@@ -1422,12 +1532,25 @@ function ContactPageContent() {
           : "Inquiry submitted successfully!",
       });
 
+      // Snapshot the submitted email/phone before we blank the form below.
+      setSubmittedContact({
+        email: formData.email,
+        phone: formData.whatsapp,
+      });
+
       // Reset form
       setFormData((prev) => ({
         ...prev,
-        whatsapp: "",
-        country: "",
-        companyName: "",
+        // For a logged-in user, these are locked/read-only fields tied to
+        // their profile — restore them from fullProfile instead of
+        // blanking them, so "Send Another Inquiry" doesn't wipe the
+        // account's own info. Guests still get a clean blank form.
+        whatsapp:
+          isAuthenticated && fullProfile?.phone ? fullProfile.phone : "",
+        country:
+          isAuthenticated && fullProfile?.country ? fullProfile.country : "",
+        companyName:
+          isAuthenticated && fullProfile?.company ? fullProfile.company : "",
         productCategory: "",
         quantity: "",
         message: "",
@@ -1677,7 +1800,11 @@ function ContactPageContent() {
               {/* Guest login prompt — shown after submission, auto-scrolled to */}
               {showLoginPrompt && !isAuthenticated && (
                 <div ref={promptRef} className="mb-6">
-                  <LoginPromptBanner router={router} />
+                  <LoginPromptBanner
+                    router={router}
+                    email={submittedContact.email}
+                    phone={submittedContact.phone}
+                  />
                 </div>
               )}
 
@@ -1757,12 +1884,17 @@ function ContactPageContent() {
                     >
                       WhatsApp Number
                     </label>
-                    <StyledInput
-                      id="whatsapp"
-                      name="whatsapp"
+                    <PhoneInput
                       value={formData.whatsapp}
-                      onChange={handleChange}
+                      onChange={(combined) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          whatsapp: combined,
+                        }))
+                      }
                       readOnly={isAuthenticated && !!fullProfile?.phone}
+                      className="flex items-stretch w-full border text-sm transition-colors duration-200 border-[#a07f61]/30 focus-within:border-[#BE6E5B] bg-[#f8f4ec]"
+                      textClassName="text-[#7A3D2A]"
                     />
                   </div>
                   <div>

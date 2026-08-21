@@ -1,9 +1,11 @@
 // FILE: server/services/inquiryService.js
+
 import { isAdminCurrentlyOnline } from "../controllers/authController.js";
 import Inquiry from "../models/Inquiry.js";
 import Notification from "../models/Notification.js";
-import User from "../models/User.js"; 
+import User from "../models/User.js";
 import { Resend } from "resend";
+import { normalizeEmail, normalizePhone } from "../utils/normalize.js";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hrsanwariyas@gmail.com";
 
@@ -14,12 +16,11 @@ const STATUS_ALIASES = {
 };
 
 export const createInquiry = async (data, userId) => {
-
   const inquiry = await Inquiry.create({
     name: data.name,
     companyName: data.companyName,
-    email: data.email ? data.email.toLowerCase().trim() : "",
-    whatsapp: data.whatsapp,
+    email: data.email ? normalizeEmail(data.email) : "",
+    whatsapp: normalizePhone(data.whatsapp),
     country: data.country,
     productCategory: data.productCategory,
     quantity: data.quantity,
@@ -47,7 +48,7 @@ export const createInquiry = async (data, userId) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from:
-          process.env.RESEND_FROM_EMAIL ||   
+          process.env.RESEND_FROM_EMAIL ||
           "Sanwariyas System <onboarding@resend.dev>",
         to: ADMIN_EMAIL,
         subject: `🔥 New Wholesale Inquiry from ${data.name}`,
@@ -100,7 +101,7 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
 
   const isAdminOnline = await isAdminCurrentlyOnline();
 
-  // ✅ ADDED: Attach Customer Online Status in bulk
+  //  ADDED: Attach Customer Online Status in bulk
   const userIds = inquiries.map((i) => i.userId).filter((id) => id);
   const emails = inquiries.map((i) => i.email).filter((e) => e);
   const activeUsers = await User.find({
@@ -140,10 +141,20 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
   };
 };
 
-export const getUserInquiries = async (userId, email) => {
-  const inquiries = await Inquiry.find({
-    $or: [{ userId }, { email: email?.toLowerCase().trim() }],
-  })
+export const getUserInquiries = async (userId, email, phone) => {
+  const orConditions = [{ userId }];
+
+  // Only match by email+phone together — a single matching field is not
+  // enough. This prevents an inquiry from showing up for someone just
+  // because they happen to share one field (email or phone) with it.
+  if (email && phone) {
+    orConditions.push({
+      email: normalizeEmail(email),
+      whatsapp: normalizePhone(phone),
+    });
+  }
+
+  const inquiries = await Inquiry.find({ $or: orConditions })
     .sort({ createdAt: -1 })
     .lean();
 
@@ -281,13 +292,31 @@ export const addReplyToInquiry = async (id, senderId, role, message) => {
   return inquiry;
 };
 
+
 export const markInquiryAsViewed = async (id, role) => {
   if (role === "customer") {
-    return await Inquiry.findByIdAndUpdate(
+    const inquiry = await Inquiry.findByIdAndUpdate(
       id,
       { isViewedByUser: true },
       { new: true },
     );
+
+    if (inquiry && inquiry.userId) {
+      // customer can  see the  inquiry reply
+      // delete  this inquiry  related notification
+      // NOTE: scoped strictly to this customer's own notifications
+      // (isGlobalAdmin: false) so a guest/null userId can never collide
+      // with the admin's isGlobalAdmin notifications, which also default
+      // to recipientId: null.
+
+      await Notification.deleteMany({
+        recipientId: inquiry.userId,
+        relatedInquiryId: inquiry._id,
+        isGlobalAdmin: false,
+      });
+    }
+
+    return inquiry;
   } else {
     const inquiry = await Inquiry.findById(id);
 
@@ -297,16 +326,30 @@ export const markInquiryAsViewed = async (id, role) => {
       throw error;
     }
 
-    // Mark all customer replies as read directly
+    // Mark all customer replies as read
     inquiry.replies = inquiry.replies.map((reply) => {
       if (reply.role === "customer") {
         reply.isReadByAdmin = true;
       }
       return reply;
     });
+
     inquiry.isViewedByAdmin = true;
 
-    return await inquiry.save();
+    await inquiry.save();
+
+    // Admin/Staff  can  see  the  inquiry
+    // delete  this  inquiry  related notification
+    // NOTE: scoped strictly to isGlobalAdmin: true so this never touches
+    // the customer's own recipientId-based notification for the same
+    // inquiry (e.g. the "New Reply" notification just created above).
+
+    await Notification.deleteMany({
+      isGlobalAdmin: true,
+      relatedInquiryId: inquiry._id,
+    });
+
+    return inquiry;
   }
 };
 
@@ -324,16 +367,28 @@ export const deleteInquiryById = async (id) => {
 };
 
 // server/services/inquiryService.js — add this helper, use it in markInquiryAsViewed too
-export const isInquiryOwnedByUser = async (id, userId, email) => {
-  const inquiry = await Inquiry.findById(id).select("userId email").lean();
+
+export const isInquiryOwnedByUser = async (id, userId, email, phone) => {
+  const inquiry = await Inquiry.findById(id)
+    .select("userId email whatsapp")
+    .lean();
   if (!inquiry) return false;
+
   if (userId && inquiry.userId && String(inquiry.userId) === String(userId))
     return true;
+
+  // Only match by email+phone together — same strict rule as
+  // getUserInquiries, so an inquiry visible in the list is never blocked
+  // (or wrongly allowed) here for a different reason.
   if (
     email &&
+    phone &&
     inquiry.email &&
-    inquiry.email.toLowerCase() === email.toLowerCase()
+    inquiry.whatsapp &&
+    inquiry.email.toLowerCase() === normalizeEmail(email) &&
+    inquiry.whatsapp === normalizePhone(phone)
   )
     return true;
+
   return false;
 };

@@ -1,4 +1,5 @@
 // // FILE: client/src/app/about/page.js
+
 // import { Cormorant_Garamond } from "next/font/google";
 // import Navbar from "@/components/layout/Navbar";
 // import Footer from "@/components/layout/Footer";
@@ -96,64 +97,6 @@
 //   },
 // ];
 
-// // "The Craft Behind the Catalogue" text
-// const MANUFACTURING = [
-//   {
-//     step: "01",
-//     title: "Meticulous Process",
-//     desc: "Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali, A-Line Suit, or Co-ord Set, passes through a meticulous four-step quality process before it leaves our factory.",
-//   },
-//   {
-//     step: "02",
-//     title: "Individual Inspection",
-//     desc: "Every garment is individually inspected before dispatch, ensuring consistent quality across every order.",
-//   },
-//   {
-//     step: "03",
-//     title: "Fresh Collections",
-//     desc: "With over 500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead.",
-//   },
-//   {
-//     step: "04",
-//     title: "Commercially Strong",
-//     desc: "We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.",
-//   },
-//   {
-//     step: "05",
-//     title: "Global Reach",
-//     desc: "Today, our garments are trusted across more than 50 countries, yet the philosophy remains unchanged.",
-//   },
-//   {
-//     step: "06",
-//     title: "Our Core Promise",
-//     desc: "“Every piece is crafted with the same care, attention, and commitment to quality that shaped our very first workshop.”",
-//   },
-// ];
-
-// // "How Trust Gets Built" data — passed into AboutInteractive
-// const VALUES = [
-//   {
-//     title: "Consistent Quality",
-//     icon: "✦",
-//     desc: "Retailers don't reorder because a brand asks nicely. They reorder because the last shipment matched the first one, and the one before that.",
-//   },
-//   {
-//     title: "Quiet Discipline",
-//     icon: "◈",
-//     desc: "That's the quiet discipline Sanwariyas was built on. Fair pricing that didn't shift with demand. Deliveries that came when promised, not when convenient.",
-//   },
-//   {
-//     title: "Accountability",
-//     icon: "◎",
-//     desc: "A willingness to actually listen when a wholesaler said a design wasn't moving, or a fit needed adjusting and to act on it, not just note it down.",
-//   },
-//   {
-//     title: "Long-Term Trust",
-//     icon: "⬡",
-//     desc: "None of this makes headlines. But it's the reason a small workshop kept getting called back, long after the first order was filled.",
-//   },
-// ];
-
 // // ── Shared styles ─────────────────────────────
 // const cormorant = Cormorant_Garamond({
 //   subsets: ["latin"],
@@ -194,114 +137,6 @@
 // export default function AboutPage() {
 //   return (
 //     <>
-//       <script
-//         type="application/ld+json"
-//         dangerouslySetInnerHTML={{
-//           __html: JSON.stringify([
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "AboutPage",
-//               mainEntity: {
-//                 "@type": "Organization",
-//                 name: "SANWARIYAS",
-//                 alternateName: "SANWARIYAS Ethnic Wear Manufacturer",
-//                 description:
-//                   "B2B Wholesale, Custom Manufacturing, and Global Export of Premium Ethnic Wear including Cotton Suits, Kurtis, and Co-ord Sets.",
-//                 foundingDate: "2017",
-//                 founder: { "@type": "Person", name: "Sonali Kanther" },
-//                 url: "https://sanwariyas.com",
-//               },
-//             },
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "LocalBusiness",
-//               name: "SANWARIYAS",
-//               image: "https://sanwariyas.com/images/og-about.png",
-//               "@id": "https://sanwariyas.com",
-//               url: "https://sanwariyas.com",
-//               telephone: "+91-9680812813",
-//               priceRange: "$$",
-//               description:
-//                 "Jaipur Ethnic Wear Manufacturer, Jaipur Kurti Manufacturer, Jaipur Clothing Manufacturer, and Jaipur Garment Factory.",
-//               address: {
-//                 "@type": "PostalAddress",
-//                 addressLocality: "Jaipur",
-//                 addressRegion: "Rajasthan",
-//                 addressCountry: "IN",
-//               },
-//               areaServed: {
-//                 "@type": "Country",
-//                 name: "Global",
-//               },
-//             },
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "BreadcrumbList",
-//               itemListElement: [
-//                 {
-//                   "@type": "ListItem",
-//                   position: 1,
-//                   name: "Home",
-//                   item: "https://sanwariyas.com",
-//                 },
-//                 {
-//                   "@type": "ListItem",
-//                   position: 2,
-//                   name: "About",
-//                   item: "https://sanwariyas.com/about",
-//                 },
-//               ],
-//             },
-//             {
-//               "@context": "https://schema.org",
-//               "@type": "FAQPage",
-//               mainEntity: [
-//                 {
-//                   "@type": "Question",
-//                   name: "Who is SANWARIYAS?",
-//                   acceptedAnswer: {
-//                     "@type": "Answer",
-//                     text: "SANWARIYAS is a Jaipur-based ethnic wear manufacturer specializing in wholesale kurtis, cotton suits, co-ord sets, and export-quality ethnic wear for boutiques and retailers worldwide.",
-//                   },
-//                 },
-//                 {
-//                   "@type": "Question",
-//                   name: "Does SANWARIYAS offer wholesale ethnic wear?",
-//                   acceptedAnswer: {
-//                     "@type": "Answer",
-//                     text: "Yes. SANWARIYAS supplies wholesale ethnic wear to retailers, boutiques, distributors, and fashion businesses across India and international markets.",
-//                   },
-//                 },
-//                 {
-//                   "@type": "Question",
-//                   name: "Does SANWARIYAS provide private label manufacturing?",
-//                   acceptedAnswer: {
-//                     "@type": "Answer",
-//                     text: "Yes. SANWARIYAS offers private label manufacturing, custom branding, custom sizing, and bulk production services.",
-//                   },
-//                 },
-//                 {
-//                   "@type": "Question",
-//                   name: "Does SANWARIYAS export internationally?",
-//                   acceptedAnswer: {
-//                     "@type": "Answer",
-//                     text: "Yes. SANWARIYAS exports premium ethnic wear to multiple countries and supports international wholesale orders.",
-//                   },
-//                 },
-//                 {
-//                   "@type": "Question",
-//                   name: "What products does SANWARIYAS manufacture?",
-//                   acceptedAnswer: {
-//                     "@type": "Answer",
-//                     text: "SANWARIYAS manufactures Cotton Kurtis, Cotton Suits, Muslin Suits, Mulmul Cotton Suits, Co-Ord Sets, Anarkali Suits, Chikankari Suits, and Designer Ethnic Wear.",
-//                   },
-//                 },
-//               ],
-//             },
-//           ]),
-//         }}
-//       />
-
 //       <Navbar />
 
 //       <main id="main-content" className="bg-[#FDF7F2]">
@@ -374,7 +209,6 @@
 //               A Story Stitched with Tradition, Quality, and Trust.
 //             </p>
 
-//             {/* The exact paragraphs you provided */}
 //             <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-4xl mx-auto mb-16 leading-relaxed font-medium space-y-6 text-left md:text-center">
 //               <p>
 //                 Sanganer has always known how to make cloth speak. Long before
@@ -402,7 +236,7 @@
 //           </div>
 //         </section>
 
-//         {/* ── 2. MANUFACTURING ("The Craft Behind the Catalogue") ── */}
+//         {/* ── 2. MANUFACTURING ("The Craft Behind the Catalogue") - Changed to Prose ── */}
 //         <section
 //           aria-labelledby="manufacturing-heading"
 //           className="relative overflow-hidden bg-gradient-to-br from-[#FDF7F2] to-[#F2D9C3] py-24 md:py-28"
@@ -431,50 +265,16 @@
 //               subtitle="Designing, cutting, stitching, and quality-checking every piece under one roof."
 //             />
 
-//             {/* Readable numbered list — no card grid. Text unchanged,
-//                 each row now carries a large translucent watermark numeral
-//                 and a refined hover accent for an editorial feel. */}
-//             <div className="flex flex-col gap-10 md:gap-12">
-//               {MANUFACTURING.map((step, i) => (
-//                 <div key={step.step} className="relative flex gap-5 md:gap-7 group">
-//                   <span
-//                     aria-hidden="true"
-//                     style={{ fontFamily: "Georgia, serif" }}
-//                     className="hidden md:block absolute -top-4 right-0 text-8xl font-bold text-[#7A3D2A]/[0.04] select-none pointer-events-none leading-none transition-transform duration-700 group-hover:scale-110"
-//                   >
-//                     {step.step}
-//                   </span>
-
-//                   <div className="flex-shrink-0 flex flex-col items-center relative z-10">
-//                     <span
-//                       style={{ fontFamily: "Georgia, serif" }}
-//                       className="text-xl md:text-2xl font-bold text-[#BE6E5B] transition-transform duration-500 group-hover:scale-110"
-//                     >
-//                       {step.step}
-//                     </span>
-//                     {i !== MANUFACTURING.length - 1 && (
-//                       <span
-//                         aria-hidden="true"
-//                         className="mt-3 flex-1 w-px bg-gradient-to-b from-[#BE6E5B]/30 to-transparent"
-//                       />
-//                     )}
-//                   </div>
-//                   <div className="pb-2 relative z-10">
-//                     <h3
-//                       className={`${cormorant.className} text-2xl md:text-3xl font-bold text-[#7A3D2A] mb-2`}
-//                     >
-//                       {step.title}
-//                     </h3>
-//                     <div
-//                       aria-hidden="true"
-//                       className="h-[2px] w-8 bg-gradient-to-r from-[#BE6E5B] to-transparent rounded-full mb-3 transition-all duration-500 group-hover:w-16"
-//                     />
-//                     <p className="font-sans text-[15px] md:text-base text-[#a07f61] leading-relaxed font-medium">
-//                       {step.desc}
-//                     </p>
-//                   </div>
-//                 </div>
-//               ))}
+//             <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-left md:text-center mt-8">
+//               <p>
+//                 Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali, A-Line Suit, or Co-ord Set, passes through a meticulous four-step quality process before it leaves our factory. Every garment is individually inspected before dispatch, ensuring consistent quality across every order.
+//               </p>
+//               <p>
+//                 With over 500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead. We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.
+//               </p>
+//               <p>
+//                 Today, our garments are trusted across more than 50 countries, yet the philosophy remains unchanged. <strong className="text-[#7A3D2A] font-bold block mt-3">“Every piece is crafted with the same care, attention, and commitment to quality that shaped our very first workshop.”</strong>
+//               </p>
 //             </div>
 
 //             {/* Capacity strip */}
@@ -505,7 +305,7 @@
 //         </section>
 
 //         {/* ── 3 & 4. LEADERSHIP + VALUES ("The Visionaries" / "How Trust Gets Built") ── */}
-//         <AboutInteractive values={VALUES} />
+//         <AboutInteractive />
 
 //         {/* ── 5. EDITORIAL TIMELINE ("Growing Without Losing the Thread") ── */}
 //         <section
@@ -694,9 +494,8 @@
 
 
 
-
-
 // FILE: client/src/app/about/page.js
+
 import { Cormorant_Garamond } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -800,6 +599,28 @@ const cormorant = Cormorant_Garamond({
   weight: ["400", "500", "600", "700"],
 });
 
+// ── Woven cross-hatch texture — a recurring, subject-true motif (handloom
+// cotton weave) used in place of a generic dot-grid. Opacity/scale is
+// varied per section so the page doesn't read as one pattern stamped
+// repeatedly. ──
+function WeaveTexture({ opacity = 0.03, size = 14 }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        opacity,
+        backgroundImage:
+          "repeating-linear-gradient(45deg, #7A3D2A 0, #7A3D2A 1px, transparent 0, transparent " +
+          size +
+          "px), repeating-linear-gradient(-45deg, #7A3D2A 0, #7A3D2A 1px, transparent 0, transparent " +
+          size +
+          "px)",
+      }}
+    />
+  );
+}
+
 function SectionHeader({ eyebrow, title, subtitle }) {
   return (
     <div className="text-center mb-10 md:mb-14">
@@ -842,15 +663,7 @@ export default function AboutPage() {
           aria-label="About SANWARIYAS"
           className="relative overflow-hidden pt-40 pb-32 bg-gradient-to-br from-[#FDF7F2] via-[#F5E8D8] to-[#F2D9C3]"
         >
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "radial-gradient(#7A3D2A 1.5px, transparent 1.5px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
+          <WeaveTexture opacity={0.035} size={16} />
           <div
             aria-hidden="true"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full blur-3xl opacity-30 pointer-events-none"
@@ -933,7 +746,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── 2. MANUFACTURING ("The Craft Behind the Catalogue") - Changed to Prose ── */}
+        {/* ── 2. MANUFACTURING ("The Craft Behind the Catalogue") ── */}
         <section
           aria-labelledby="manufacturing-heading"
           className="relative overflow-hidden bg-gradient-to-br from-[#FDF7F2] to-[#F2D9C3] py-24 md:py-28"
@@ -946,14 +759,7 @@ export default function AboutPage() {
             aria-hidden="true"
             className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
           />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(45deg, #BE6E5B 0, #BE6E5B 1px, transparent 0, transparent 40px)",
-            }}
-          />
+          <WeaveTexture opacity={0.045} size={40} />
 
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionHeader
@@ -974,29 +780,38 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Capacity strip */}
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { v: "10,000+", l: "Pieces/month" },
-                { v: "4-Step", l: "Quality control" },
-                { v: "500+", l: "Designs per season" },
-                { v: "15+", l: "Fabric categories" },
-              ].map((s) => (
-                <div
-                  key={s.l}
-                  className="flex flex-col items-center py-8 px-4 rounded-2xl text-center bg-[#7A3D2A]/[0.04] border border-[#BE6E5B]/20 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:bg-[#7A3D2A]/[0.06] hover:border-[#BE6E5B]/40"
-                >
-                  <span
-                    style={{ fontFamily: "Georgia, serif" }}
-                    className="text-3xl md:text-4xl font-bold text-[#7A3D2A] mb-2"
+            {/* Capacity strip — reworked as a single stitched ribbon rather
+                than four identical bordered boxes: a continuous strip with
+                dashed thread-dividers between each figure, so it reads as
+                one measured statement instead of a generic stat-card grid. */}
+            <div className="mt-16 relative rounded-2xl border border-[#BE6E5B]/20 bg-white/50 backdrop-blur-sm overflow-hidden">
+              <div
+                aria-hidden="true"
+                className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-[#BE6E5B] to-transparent opacity-60"
+              />
+              <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 divide-x-0 md:divide-x divide-dashed divide-[#BE6E5B]/25">
+                {[
+                  { v: "10,000+", l: "Pieces/month" },
+                  { v: "4-Step", l: "Quality control" },
+                  { v: "500+", l: "Designs per season" },
+                  { v: "15+", l: "Fabric categories" },
+                ].map((s) => (
+                  <div
+                    key={s.l}
+                    className="relative flex flex-col items-center py-8 px-4 text-center transition-colors duration-500 hover:bg-[#7A3D2A]/[0.04]"
                   >
-                    {s.v}
-                  </span>
-                  <span className="font-sans text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-[#a07f61] font-bold">
-                    {s.l}
-                  </span>
-                </div>
-              ))}
+                    <span
+                      style={{ fontFamily: "Georgia, serif" }}
+                      className="text-3xl md:text-4xl font-bold text-[#7A3D2A] mb-2"
+                    >
+                      {s.v}
+                    </span>
+                    <span className="font-sans text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-[#a07f61] font-bold">
+                      {s.l}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -1022,10 +837,31 @@ export default function AboutPage() {
             />
 
             <div className="relative max-w-5xl mx-auto">
+              {/* Signature moment: the connecting line is rendered as an
+                  actual hand-stitch — a dashed thread with small
+                  perpendicular ticks — directly answering the section's
+                  own eyebrow copy ("...Losing the Thread"), rather than a
+                  plain gradient rule. */}
               <div
                 aria-hidden="true"
-                className="hidden md:block absolute left-[29px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#BE6E5B]/50 via-[#BE6E5B]/20 to-transparent"
+                className="hidden md:block absolute left-[29px] top-2 bottom-2 w-[2px]"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(to bottom, #BE6E5B 0, #BE6E5B 8px, transparent 8px, transparent 14px)",
+                  opacity: 0.55,
+                }}
               />
+              <div
+                aria-hidden="true"
+                className="hidden md:flex flex-col absolute left-[23px] top-2 bottom-2 w-[14px] items-center justify-between py-6"
+              >
+                {TIMELINE.slice(1).map((item) => (
+                  <span
+                    key={`tick-${item.year}`}
+                    className="block w-[14px] h-[2px] bg-[#BE6E5B]/40 rotate-45"
+                  />
+                ))}
+              </div>
 
               <div className="flex flex-col">
                 {TIMELINE.map((item, i) => (
@@ -1038,7 +874,12 @@ export default function AboutPage() {
                     {i !== TIMELINE.length - 1 && (
                       <div
                         aria-hidden="true"
-                        className="md:hidden absolute left-[29px] top-6 bottom-[-1rem] w-[2px] bg-gradient-to-b from-[#BE6E5B]/40 to-transparent"
+                        className="md:hidden absolute left-[29px] top-6 bottom-[-1rem] w-[2px]"
+                        style={{
+                          backgroundImage:
+                            "repeating-linear-gradient(to bottom, #BE6E5B 0, #BE6E5B 6px, transparent 6px, transparent 11px)",
+                          opacity: 0.5,
+                        }}
                       />
                     )}
 
@@ -1097,15 +938,7 @@ export default function AboutPage() {
             aria-hidden="true"
             className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
           />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "radial-gradient(#7A3D2A 1.5px, transparent 1.5px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
+          <WeaveTexture opacity={0.03} size={20} />
           <div
             aria-hidden="true"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[640px] rounded-full blur-3xl opacity-25 pointer-events-none"

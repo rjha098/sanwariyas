@@ -18,10 +18,10 @@ const api = axios.create({
 const isTokenLocallyExpired = (token) => {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    if (!payload.exp) return false; 
+    if (!payload.exp) return false;
     return Date.now() >= payload.exp * 1000;
   } catch {
-    return true; 
+    return true;
   }
 };
 
@@ -58,17 +58,19 @@ api.interceptors.response.use(
   async (error) => {
     const { config, response } = error;
 
-    if (!response || error.message === 'Network Error') {
-      error.userMessage = "No internet connection. Please check your network and try again.";
+    if (!response || error.message === "Network Error") {
+      error.userMessage =
+        "No internet connection. Please check your network and try again.";
     } else if (response?.data?.message) {
       const msg = response.data.message.toLowerCase();
       if (
-        msg.includes("getaddrinfo") || 
-        msg.includes("enotfound") || 
-        msg.includes("econnrefused") || 
+        msg.includes("getaddrinfo") ||
+        msg.includes("enotfound") ||
+        msg.includes("econnrefused") ||
         msg.includes("mongodb.net")
       ) {
-        response.data.message = "Network connection lost or something went wrong. Please try again.";
+        response.data.message =
+          "Network connection lost or something went wrong. Please try again.";
         error.userMessage = response.data.message;
       }
     }
@@ -169,7 +171,7 @@ export const customerSignup = (data) =>
 export const authLogout = (token) =>
   api.post("/auth/logout", {}, withAuth(token)).then((r) => r.data);
 
-// ✅ STAFF MANAGEMENT APIs (PHASE 2)
+//  STAFF MANAGEMENT APIs (PHASE 2)
 export const createStaffAccount = (token, data) =>
   api.post("/auth/staff", data, withAuth(token)).then((r) => r.data);
 export const fetchStaffList = (token) =>

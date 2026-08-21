@@ -277,7 +277,7 @@ export default function MyInquiryDetailPage() {
             </button>
           </div>
         </div>
-      </main>
+      </main>    
       <Footer />
     </>
   );

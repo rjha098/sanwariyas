@@ -124,7 +124,7 @@ export default function FaqPage() {
         <Navbar />
 
         {/* 2. Main FAQ Section (Padding added to account for Navbar height) */}
-        <div className="flex-grow pt-20">
+        <div className="flex-grow">
           <FaqSection />
         </div>
 

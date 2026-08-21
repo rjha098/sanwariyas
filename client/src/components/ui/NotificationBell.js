@@ -121,6 +121,7 @@ export default function NotificationBell({ showMuteToggle = false }) {
   }, [token]);
 
   // Custom Event Listener to sync Bell instantly without page reload
+
   useEffect(() => {
     const handleUpdate = () => loadNotifications();
     window.addEventListener("notifications_read", handleUpdate);
