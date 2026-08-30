@@ -144,17 +144,27 @@ export default function CreateBlogPage() {
 
   const [titleValue, setTitleValue] = useState("");
   const [slugValue, setSlugValue] = useState("");
-  // ✅ FIX: useRef declare kiya — slugManuallyEdited track karne ke liye
   const slugManuallyEdited = useRef(false);
 
   const [categories, setCategories] = useState([]);
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
+
+  // States for Thumbnail Image
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  // States for Banner Image
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const [selectedBanner, setSelectedBanner] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [catLoading, setCatLoading] = useState(false);
   const [newCatName, setNewCatName] = useState("");
+
+  // Category Selection State For Deletion
+  const [selectedCatId, setSelectedCatId] = useState("");
+
   const [toast, setToast] = useState({
     isVisible: false,
     message: "",
@@ -186,15 +196,29 @@ export default function CreateBlogPage() {
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-      showToast("This photo size is bigger than the 2MB limit!", "error");
+      showToast("Thumbnail photo size is bigger than the 2MB limit!", "error");
       e.target.value = "";
       return;
     }
 
     if (imagePreview) URL.revokeObjectURL(imagePreview);
-
     setSelectedFile(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      showToast("Banner photo size is bigger than the 2MB limit!", "error");
+      e.target.value = "";
+      return;
+    }
+
+    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    setSelectedBanner(file);
+    setBannerPreview(URL.createObjectURL(file));
   };
 
   const handleCreateCategory = async () => {
@@ -219,6 +243,22 @@ export default function CreateBlogPage() {
     }
   };
 
+  // Delete Category Call
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this category?"))
+      return;
+    try {
+      await api.delete(`/blogs/categories/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(categories.filter((c) => c._id !== id));
+      if (selectedCatId === id) setSelectedCatId("");
+      showToast("Category deleted successfully.", "success");
+    } catch (err) {
+      showToast("Failed to delete category.", "error");
+    }
+  };
+
   const generateSlug = (title) => {
     return title
       .toLowerCase()
@@ -232,52 +272,11 @@ export default function CreateBlogPage() {
   const validateFormBeforeSubmit = () => {
     const errors = [];
     if (!titleValue.trim()) errors.push("Blog title is required.");
-    if (!selectedFile) errors.push("Featured image is required.");
+    if (!selectedFile) errors.push("Featured Thumbnail image is required.");
     if (!content || content === "<br>" || content.trim() === "")
       errors.push("Blog content cannot be empty.");
     return errors;
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const formErrors = validateFormBeforeSubmit();
-  //   if (formErrors.length > 0) {
-  //     showToast(formErrors[0], "error");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   try {
-  //     const formData = new FormData(e.target);
-  //     formData.set("content", content);
-  //     formData.set("tags", JSON.stringify(tags));
-  //     // ✅ slugValue bhejo — backend bhi regenerate karega but frontend hint deta hai
-  //     formData.set("slug", slugValue);
-
-  //     if (selectedFile) {
-  //       formData.set("image", selectedFile);
-  //     }
-
-  //     const response = await api.post("/blogs", formData, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": undefined,
-  //       },
-  //     });
-
-  //     const finalSlug = response.data.data.slug;
-  //     showToast("Blog published successfully!", "success");
-  //     setTimeout(() => router.push(`/blog/${finalSlug}`), 1200);
-  //   } catch (err) {
-  //     showToast(
-  //       err.response?.data?.message || "Failed to publish blog.",
-  //       "error"
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -294,12 +293,11 @@ export default function CreateBlogPage() {
       formData.set("content", content);
       formData.set("tags", JSON.stringify(tags));
       formData.set("slug", slugValue);
+      formData.set("category", selectedCatId);
 
-      if (selectedFile) {
-        formData.set("image", selectedFile);
-      }
+      if (selectedFile) formData.set("image", selectedFile);
+      if (selectedBanner) formData.set("bannerImage", selectedBanner);
 
-      // 👉 NAYA FIX: User ne kya status select kiya hai wo pakdo
       const blogStatus = formData.get("status");
 
       const response = await api.post("/blogs", formData, {
@@ -311,13 +309,12 @@ export default function CreateBlogPage() {
 
       const finalSlug = response.data.data.slug;
 
-      // 👉 NAYA FIX: Status ke hisaab se redirect aur toast message
       if (blogStatus === "draft") {
         showToast("Blog saved as draft successfully!", "success");
-        setTimeout(() => router.push("/operations-center"), 1200); // Draft ko admin page pe wapas bhejo
+        setTimeout(() => router.push("/operations-center"), 1200);
       } else {
         showToast("Blog published successfully!", "success");
-        setTimeout(() => router.push(`/blog/${finalSlug}`), 1200); // Published ko public page par bhejo
+        setTimeout(() => router.push(`/blog/${finalSlug}`), 1200);
       }
     } catch (err) {
       showToast(
@@ -408,7 +405,6 @@ export default function CreateBlogPage() {
                   value={titleValue}
                   onChange={(e) => {
                     setTitleValue(e.target.value);
-                    // ✅ FIX: sirf tab auto-generate karo jab manually edit nahi kiya
                     if (!slugManuallyEdited.current) {
                       setSlugValue(generateSlug(e.target.value));
                     }
@@ -432,7 +428,6 @@ export default function CreateBlogPage() {
                   <input
                     value={slugValue}
                     onChange={(e) => {
-                      // ✅ FIX: user ne manually edit kiya — ab auto-generate band
                       slugManuallyEdited.current = true;
                       setSlugValue(generateSlug(e.target.value));
                     }}
@@ -469,7 +464,7 @@ export default function CreateBlogPage() {
 
             <div className="space-y-5">
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
-                <label className={lbl}>Featured Image *</label>
+                <label className={lbl}>Thumbnail Image (Bahar ke liye) *</label>
                 <div className="relative">
                   <input
                     id="blog-image-upload"
@@ -516,7 +511,7 @@ export default function CreateBlogPage() {
                         <path d="M12 16v-8m0 0l-3 3m3-3l3 3M20 16.5A3.5 3.5 0 0016.5 20H7A5 5 0 117 10h.5A6.5 6.5 0 0120 12.5v4z" />
                       </svg>
                       <span className="font-sans text-xs text-[#a07f61]">
-                        Click to upload image
+                        + Thumbnail Photo (Portrait)
                       </span>
                     </label>
                   )}
@@ -524,15 +519,99 @@ export default function CreateBlogPage() {
               </div>
 
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
+                <label className={lbl}>Banner Image (Andar ke liye)</label>
+                <div className="relative">
+                  <input
+                    id="blog-banner-upload"
+                    name="bannerImage"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleBannerChange}
+                  />
+
+                  {bannerPreview ? (
+                    <div className="relative">
+                      <img
+                        src={bannerPreview}
+                        alt="Banner Preview"
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          URL.revokeObjectURL(bannerPreview);
+                          setBannerPreview(null);
+                          setSelectedBanner(null);
+                          document.getElementById("blog-banner-upload").value =
+                            "";
+                        }}
+                        className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full text-[#574325] text-xs flex items-center justify-center shadow"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="blog-banner-upload"
+                      className="flex flex-col items-center justify-center h-24 border-2 border-dashed border-[#E8D5A3] rounded-lg cursor-pointer hover:border-[#BE6E5B] transition-colors bg-[#FAF3E8]"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#C9A84C"
+                        strokeWidth="1.5"
+                        className="w-6 h-6 mb-1"
+                      >
+                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="font-sans text-xs text-[#a07f61] text-center px-2">
+                        + Banner Photo (Landscape)
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              {/* HERE IS THE NEW UI FOR DELETING A CATEGORY */}
+              <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
                 <label className={lbl}>Category</label>
-                <select name="category" className={inp}>
-                  <option value="">— Select category —</option>
-                  {categories.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-2">
+                  <select
+                    name="category"
+                    className={inp}
+                    value={selectedCatId}
+                    onChange={(e) => setSelectedCatId(e.target.value)}
+                  >
+                    <option value="">— Select category —</option>
+                    {categories.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  {selectedCatId && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCategory(selectedCatId)}
+                      className="px-3 py-2 bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                      title="Delete Selected Category"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
 
                 <div className="flex gap-2 mt-3">
                   <input

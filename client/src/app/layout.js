@@ -1,9 +1,7 @@
 import "./globals.css";
-import WhatsAppWidget from "@/components/ui/WhatsAppWidget";
 import { AppProviders } from "@/providers/AppProviders";
 import { CartProvider } from "@/providers/CartProvider";
-import InquiryModal from "@/components/ui/InquiryModal";
-import Navbar from "@/components/layout/Navbar";
+import AppChrome from "@/components/layout/AppChrome"; 
 
 export const viewport = {
   themeColor: "#FAF3E8",
@@ -162,10 +160,7 @@ export default function RootLayout({ children }) {
 
         <AppProviders>
           <CartProvider>
-            <Navbar />
-            <div className="flex-grow pt-[80px]">{children}</div>
-            <WhatsAppWidget />
-            <InquiryModal />
+            <AppChrome>{children}</AppChrome>
           </CartProvider>
         </AppProviders>
       </body>

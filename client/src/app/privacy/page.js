@@ -1,5 +1,5 @@
 // FILE: client/src/app/privacy/page.js
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PrivacyContent from "./PrivacyContent";
 
@@ -11,7 +11,7 @@ export const metadata = {
 export default function PrivacyPolicy() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <PrivacyContent />
       <Footer />
     </>

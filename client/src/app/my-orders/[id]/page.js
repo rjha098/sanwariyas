@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { fetchOrderById } from "@/lib/api";
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getImageUrl } from "@/lib/imageUrl";
 
@@ -70,7 +70,7 @@ export default function MyOrderDetailPage() {
   if (authChecking || loading) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#70543E]/50">Loading...</p>
         </div>
@@ -82,7 +82,7 @@ export default function MyOrderDetailPage() {
   if (error || !order) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center px-4">
           <p className="font-sans text-sm text-red-600">{error || "Order not found."}</p>
         </div>
@@ -93,7 +93,7 @@ export default function MyOrderDetailPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4 print:pt-4">
         <div className="max-w-3xl mx-auto">
           <button

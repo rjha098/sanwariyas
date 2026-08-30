@@ -1,5 +1,6 @@
 // FILE: server/services/inquiryService.js
 
+import { escapeHtml } from "../utils/escapeHtml.js";
 import { isAdminCurrentlyOnline } from "../controllers/authController.js";
 import Inquiry from "../models/Inquiry.js";
 import Notification from "../models/Notification.js";
@@ -55,15 +56,19 @@ export const createInquiry = async (data, userId) => {
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
             <h2 style="color: #7A3D2A;">New Wholesale Inquiry Received</h2>
-            <p><strong>Name:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>WhatsApp:</strong> ${data.whatsapp || "Not provided"}</p>
-            <p><strong>Company:</strong> ${data.companyName || "Not provided"}</p>
-            <p><strong>Category:</strong> ${data.productCategory || "Not provided"}</p>
+
+
+
+
+           <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+            <p><strong>WhatsApp:</strong> ${escapeHtml(data.whatsapp || "Not provided")}</p>
+            <p><strong>Company:</strong> ${escapeHtml(data.companyName || "Not provided")}</p>
+            <p><strong>Category:</strong> ${escapeHtml(data.productCategory || "Not provided")}</p>
             <hr style="border: 1px solid #E0BFA2; margin: 20px 0;">
             <h3>Message:</h3>
             <p style="background: #FDF7F2; padding: 15px; border-left: 4px solid #7A3D2A;">
-              ${data.message || "No additional message."}
+              ${escapeHtml(data.message || "No additional message.")}
             </p>
           </div>
         `,
@@ -130,7 +135,7 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
   });
 
   return {
-    inquiries: enrichedInquiries, // ✅ Replaced 'inquiries' with 'enrichedInquiries'
+    inquiries: enrichedInquiries, //  Replaced 'inquiries' with 'enrichedInquiries'
     pagination: {
       total,
       page: parseInt(page),
@@ -154,8 +159,15 @@ export const getUserInquiries = async (userId, email, phone) => {
     });
   }
 
+//  MINOR FIX: User Inquiries par limit (Max 50)
+  const page = 1; // Frontend se agar page nahi aa raha toh default 1
+  const limit = 50; 
+  const skip = (page - 1) * limit;
+
   const inquiries = await Inquiry.find({ $or: orConditions })
     .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
     .lean();
 
   const isAdminOnline = await isAdminCurrentlyOnline();
@@ -262,11 +274,11 @@ export const addReplyToInquiry = async (id, senderId, role, message) => {
           subject: `Update on your Sanwariyas Inquiry`,
           html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-              <p>Hello ${inquiry.name},</p>
-              <p>We have replied to your inquiry regarding <strong>${inquiry.productCategory}</strong>.</p>
+              <p>Hello ${escapeHtml(inquiry.name)},</p>
+              <p>We have replied to your inquiry regarding <strong>${escapeHtml(inquiry.productCategory)}</strong>.</p>
               <p style="background: #FDF7F2; padding: 15px; border-left: 4px solid #7A3D2A;">
                 <strong>Admin Reply:</strong><br/><br/>
-                ${message}
+                ${escapeHtml(message)}
               </p>
               <p>Please log in to your dashboard to continue the conversation.</p>
             </div>
@@ -291,7 +303,6 @@ export const addReplyToInquiry = async (id, senderId, role, message) => {
   await inquiry.save();
   return inquiry;
 };
-
 
 export const markInquiryAsViewed = async (id, role) => {
   if (role === "customer") {

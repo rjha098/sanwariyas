@@ -1,0 +1,26 @@
+// FILE: client/src/components/layout/AppChrome.js
+"use client";
+
+import { usePathname } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
+import WhatsAppWidget from "@/components/ui/WhatsAppWidget";
+import InquiryModal from "@/components/ui/InquiryModal";
+
+export default function AppChrome({ children }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/operations-center");
+
+  if (isAdminRoute) {
+    // Operations Center renders its own AdminHeader + NotificationBell.
+    return <>{children}</>;
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div className="flex-grow pt-[80px]">{children}</div>
+      <WhatsAppWidget />
+      <InquiryModal />
+    </>
+  );
+}

@@ -1,4 +1,4 @@
-// // FILE: client/src/providers/AuthProvider.js
+// FILE: client/src/providers/AuthProvider.js
 "use client";
 
 import {
@@ -102,13 +102,13 @@ export function AuthProvider({ children }) {
     }
 
     // Safe Promise Deduplication with TTL
+    // Safe Promise Deduplication with TTL
     if (!activeSessionValidationPromise) {
-      activeSessionValidationPromise = checkAuthSession(savedToken).finally(
-        () => {
-          activeSessionValidationPromise = null;
-          if (activeValidationTimeout) clearTimeout(activeValidationTimeout);
-        },
-      );
+      // Bootstraps session natively relying on the secure Cookie instead of purely saved token
+      activeSessionValidationPromise = checkAuthSession().finally(() => {
+        activeSessionValidationPromise = null;
+        if (activeValidationTimeout) clearTimeout(activeValidationTimeout);
+      });
 
       activeValidationTimeout = setTimeout(() => {
         activeSessionValidationPromise = null;
@@ -149,6 +149,16 @@ export function AuthProvider({ children }) {
     return () => {
       isMounted = false;
     };
+  }, []);
+
+   // Listen for background token refreshes from api.js
+   
+  useEffect(() => {
+    const handleTokenRefresh = (e) => setToken(e.detail);
+    if (typeof window !== "undefined") {
+      window.addEventListener("auth:token_refreshed", handleTokenRefresh);
+      return () => window.removeEventListener("auth:token_refreshed", handleTokenRefresh);
+    }
   }, []);
 
   useEffect(() => {
@@ -302,21 +312,25 @@ export function AuthProvider({ children }) {
     setSignupDone(false);
   }, [token]);
 
-
   //Universal heartbeat — fires for EVERY authenticated user (customer
   // or admin) on EVERY page, regardless of screen size.
   useEffect(() => {
     if (!token) return;
 
     const ping = () => {
-      api.post("/auth/heartbeat", {}, { headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+      api
+        .post(
+          "/auth/heartbeat",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .catch(() => {});
     };
 
     ping();
     const intervalId = setInterval(ping, 60000);
     return () => clearInterval(intervalId);
   }, [token]);
-
 
   const contextValue = useMemo(
     () => ({

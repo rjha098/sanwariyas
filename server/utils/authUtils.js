@@ -17,32 +17,55 @@ const getSecret = () => {
   return secret;
 };
 
-const TOKEN_EXPIRY = process.env.AUTH_TOKEN_EXPIRY || "1d";
+
+const ACCESS_TOKEN_EXPIRY = "15m";
+const REFRESH_TOKEN_EXPIRY = "7d";
 
 // Constant-time string comparison to prevent Timing Attacks
 export const safeCompare = (a, b) => {
   const strA = String(a ?? "");
   const strB = String(b ?? "");
-
-  // Hash both to ensure identical buffer lengths before timingSafeEqual
   const hashA = crypto.createHash("sha256").update(strA).digest();
   const hashB = crypto.createHash("sha256").update(strB).digest();
-
   return crypto.timingSafeEqual(hashA, hashB) && strA.length === strB.length;
 };
 
-export const createAuthToken = (payload) => {
-  return jwt.sign(payload, getSecret(), {
-    expiresIn: TOKEN_EXPIRY,
+export const createAccessToken = (payload) =>
+  jwt.sign({ ...payload, type: "access" }, getSecret(), {
     algorithm: "HS256",
+    expiresIn: ACCESS_TOKEN_EXPIRY, // "15m"
   });
+
+
+
+
+export const createRefreshToken = (payload) =>
+  jwt.sign({ ...payload, type: "refresh" }, getSecret(), {
+    algorithm: "HS256",
+    expiresIn: REFRESH_TOKEN_EXPIRY,
+  });
+
+
+
+export const verifyAccessToken = (token) => {
+  const decoded = jwt.verify(token, getSecret(), { algorithms: ["HS256"] });
+  if (decoded.type !== "access") {
+    const err = new Error("Invalid token type.");
+    err.statusCode = 401;
+    throw err;
+  }
+  return decoded;
 };
 
-export const verifyAuthToken = (token) => {
-  if (!token || typeof token !== "string") {
-    throw new Error("No token provided");
+
+export const verifyRefreshToken = (token) => {
+  const decoded = jwt.verify(token, getSecret(), { algorithms: ["HS256"] });
+  if (decoded.type !== "refresh") {
+    const err = new Error("Invalid token type.");
+    err.statusCode = 401;
+    throw err;
   }
-  return jwt.verify(token, getSecret(), { algorithms: ["HS256"] });
+  return decoded;
 };
 
 // ── Route protection middlewares ─────────────────────────────
@@ -50,13 +73,15 @@ export const requireRole = (allowedRoles) => async (req, res, next) => {
   try {
     const header = req.headers.authorization || "";
     const token = header.startsWith("Bearer ") ? header.slice(7) : null;
+
     if (!token) {
       return res
         .status(401)
         .json({ success: false, message: "Authentication required." });
     }
 
-    const payload = verifyAuthToken(token);
+    // Verify fast, short-lived Access Token purely in memory. NO DATABASE HIT.
+    const payload = verifyAccessToken(token);
     const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
     if (!roles.includes(payload.role)) {
@@ -65,39 +90,11 @@ export const requireRole = (allowedRoles) => async (req, res, next) => {
         .json({ success: false, message: "Access denied." });
     }
 
-    // Hybrid Single Session Architecture
-    if (payload.id) {
-      // 1. DB-Backed Check (For Staff, Customers, and DB Admins)
-      const user = await User.findById(payload.id)
-        .select("currentSessionId")
-        .maxTimeMS(5000)
-        .lean();
-
-      if (!user || user.currentSessionId !== payload.sessionId) {
-        return res.status(401).json({
-          success: false,
-          message: "Session expired",
-        });
-      }
-    } else if (payload.role === "admin" && !payload.id) {
-      // 2. Memory Fallback Check (For pure ENV-based Root Admins without a DB ID)
-      const activeSession = adminSessionStore.get(payload.email);
-      if (activeSession && activeSession !== payload.sessionId) {
-        return res.status(401).json({
-          success: false,
-          message: "Session expired or logged in from another device.",
-        });
-      }
-    }
-
     req.authUser = payload;
     next();
   } catch (error) {
-    const message =
-      error.name === "TokenExpiredError"
-        ? "Your session has expired. Please log in again."
-        : "Invalid or expired session.";
-    return res.status(401).json({ success: false, message });
+    // If Access Token is expired, trigger 401. Frontend interceptor will catch this and call /refresh automatically.
+    return res.status(401).json({ success: false, message: "Token expired" });
   }
 };
 

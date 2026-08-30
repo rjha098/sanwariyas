@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import ProductGallery from "@/components/product/ProductGallery"; 
 import Footer from "@/components/layout/Footer";
 import InquiryForm from "@/components/ui/InquiryForm";
@@ -78,7 +78,7 @@ export default async function ProductDetailPage({ params }) {
     if (err.response?.status === 404) notFound();
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <main className="min-h-screen bg-[#FAF3E8] flex items-center justify-center px-4 pt-32 pb-20">
           <div className="text-center max-w-md">
             <h1 className="font-display text-2xl text-[#574325] mb-3">
@@ -165,7 +165,7 @@ export default async function ProductDetailPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(combinedSchema) }}
       />
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/* ── Breadcrumb bar ── */}
       <div className="bg-[#574325] pt-24 pb-3">

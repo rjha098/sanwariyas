@@ -1,5 +1,5 @@
 // FILE: client/src/app/faq/page.js
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FaqSection from "@/components/home/FaqSection";
 
@@ -121,7 +121,7 @@ export default function FaqPage() {
         className="flex min-h-screen flex-col bg-[#FDF7F2]"
       >
         {/* 1. Navbar */}
-        <Navbar />
+        {/* <Navbar /> */}
 
         {/* 2. Main FAQ Section (Padding added to account for Navbar height) */}
         <div className="flex-grow">

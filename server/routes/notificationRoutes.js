@@ -1,4 +1,5 @@
 // FILE: server/routes/notificationRoutes.js
+
 import express from "express";
 import {
   getUnreadCount,

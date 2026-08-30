@@ -1,4 +1,5 @@
 // FILE: client/src/app/operations-center/blog/edit/[id]/page.js
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -7,10 +8,17 @@ import { useAuth } from "@/hooks/useAuth";
 import api from "@/lib/api";
 import Toast from "@/components/ui/Toast";
 
-
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 ).replace(/\/api\/?$/, "");
+
+// 🔴 NAYA FIX: Smart URL Builder jo galat paths (null, undefined) ko filter karta hai
+const getImageUrl = (path) => {
+  if (!path || path === "undefined" || path === "null" || path.trim() === "")
+    return null;
+  if (path.startsWith("http")) return path;
+  return `${BACKEND_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+};
 
 function RichEditor({ onChange, initialHtml }) {
   const editorRef = useRef(null);
@@ -133,19 +141,19 @@ export default function EditBlogPage() {
   const [categories, setCategories] = useState([]);
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
+
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  useEffect(() => {
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview]);
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const [selectedBanner, setSelectedBanner] = useState(null);
 
   const [catLoading, setCatLoading] = useState(false);
   const [newCatName, setNewCatName] = useState("");
+
+  // 🔴 DELETE CATEGORY STATE
+  const [selectedCatId, setSelectedCatId] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [toast, setToast] = useState({
@@ -155,6 +163,13 @@ export default function EditBlogPage() {
   });
   const showToast = (message, type = "success") =>
     setToast({ isVisible: true, message, type });
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    };
+  }, [imagePreview, bannerPreview]);
 
   useEffect(() => {
     if (!authChecking && !isAdmin) router.replace("/login");
@@ -180,6 +195,10 @@ export default function EditBlogPage() {
           setBlog(foundBlog);
           setContent(foundBlog.content || "");
           setTags(foundBlog.tags || []);
+          // Set initial category for deletion
+          if (foundBlog.category) {
+            setSelectedCatId(foundBlog.category._id || foundBlog.category);
+          }
         } else {
           showToast("Blog not found!", "error");
         }
@@ -196,7 +215,7 @@ export default function EditBlogPage() {
       const r = await api.post(
         "/blogs/categories",
         { name: newCatName.trim() },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setCategories((prev) => [...prev, r.data.data]);
       setNewCatName("");
@@ -204,23 +223,43 @@ export default function EditBlogPage() {
     } catch (err) {
       showToast(
         err.response?.data?.message || "Failed to create category.",
-        "error"
+        "error",
       );
     } finally {
       setCatLoading(false);
     }
   };
 
+  // 🔴 DELETE CATEGORY LOGIC
+  const handleDeleteCategory = async (catId) => {
+    if (!window.confirm("Are you sure you want to delete this category?"))
+      return;
+    try {
+      await api.delete(`/blogs/categories/${catId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(categories.filter((c) => c._id !== catId));
+      if (selectedCatId === catId) setSelectedCatId("");
+      showToast("Category deleted successfully.", "success");
+    } catch (err) {
+      showToast("Failed to delete category.", "error");
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
     setSelectedFile(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    setSelectedBanner(file);
+    setBannerPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
@@ -235,9 +274,11 @@ export default function EditBlogPage() {
       formData.set("content", content);
       formData.set("tags", JSON.stringify(tags));
 
-      if (selectedFile) {
-        formData.set("image", selectedFile);
-      }
+      // Update Category with Local State
+      formData.set("category", selectedCatId);
+
+      if (selectedFile) formData.set("image", selectedFile);
+      if (selectedBanner) formData.set("bannerImage", selectedBanner);
 
       await api.put(`/blogs/${id}`, formData, {
         headers: {
@@ -251,7 +292,7 @@ export default function EditBlogPage() {
     } catch (err) {
       showToast(
         err.response?.data?.message || "Failed to update blog.",
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -380,6 +421,7 @@ export default function EditBlogPage() {
             </div>
 
             <div className="space-y-5">
+              {/* ✅ SMART FIX: FEATURED IMAGE */}
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
                 <label className={lbl}>Featured Image</label>
                 {imagePreview ? (
@@ -402,43 +444,157 @@ export default function EditBlogPage() {
                       ×
                     </button>
                   </div>
-                ) : blog?.featuredImage ? (
-                  // ✅ FIX: next/image ki jagah plain img tag
-                  <img
-                    src={`${BACKEND_URL}${blog.featuredImage}`}
-                    alt="Current Image"
-                    className="w-full h-40 object-cover rounded-lg mb-2"
-                  />
-                ) : null}
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    id="edit-image-upload"
-                    name="image"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                  <span className="font-sans text-xs text-[#BE6E5B] underline">
-                    Change Image
-                  </span>
-                </label>
+                ) : getImageUrl(blog?.featuredImage) ? (
+                  <label
+                    className="cursor-pointer block relative mb-2 group"
+                    title="Click to change image"
+                  >
+                    <img
+                      src={getImageUrl(blog.featuredImage)}
+                      alt="Current Image"
+                      className="w-full h-40 object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://placehold.co/600x400/FAF3E8/a07f61?text=Image+Missing";
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="bg-black/70 text-white px-3 py-1.5 rounded-full font-sans text-[10px] tracking-widest uppercase shadow-lg">
+                        Click to Change
+                      </span>
+                    </div>
+                    <input
+                      id="edit-image-upload"
+                      name="image"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                ) : (
+                  <label className="flex items-center gap-2 cursor-pointer mt-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                    <span className="font-sans text-xs text-[#BE6E5B] underline">
+                      + Upload Featured Image
+                    </span>
+                  </label>
+                )}
               </div>
 
+              {/* ✅ SMART FIX: BANNER IMAGE */}
+              <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
+                <label className={lbl}>Banner Image</label>
+                {bannerPreview ? (
+                  <div className="relative mb-2">
+                    <img
+                      src={bannerPreview}
+                      alt="Banner Preview"
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+                        setBannerPreview(null);
+                        setSelectedBanner(null);
+                        document.getElementById("edit-banner-upload").value =
+                          "";
+                      }}
+                      className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full text-[#574325] text-xs flex items-center justify-center shadow"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : getImageUrl(blog?.bannerImage) ? (
+                  <label
+                    className="cursor-pointer block relative mb-2 group"
+                    title="Click to change banner"
+                  >
+                    <img
+                      src={getImageUrl(blog.bannerImage)}
+                      alt="Current Banner"
+                      className="w-full h-40 object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://placehold.co/800x400/FAF3E8/a07f61?text=Banner+Missing";
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="bg-black/70 text-white px-3 py-1.5 rounded-full font-sans text-[10px] tracking-widest uppercase shadow-lg">
+                        Click to Change
+                      </span>
+                    </div>
+                    <input
+                      id="edit-banner-upload"
+                      name="bannerImage"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleBannerChange}
+                    />
+                  </label>
+                ) : (
+                  <label className="flex items-center gap-2 cursor-pointer mt-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleBannerChange}
+                    />
+                    <span className="font-sans text-xs text-[#BE6E5B] underline">
+                      + Upload Banner Image
+                    </span>
+                  </label>
+                )}
+              </div>
+
+              {/* 🔴 NAYA FIX: Category Selection With Delete Button */}
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
                 <label className={lbl}>Category</label>
-                <select
-                  name="category"
-                  defaultValue={blog?.category?._id || blog?.category || ""}
-                  className={inp}
-                >
-                  <option value="">— No category —</option>
-                  {categories.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-2">
+                  <select
+                    name="category"
+                    value={selectedCatId}
+                    onChange={(e) => setSelectedCatId(e.target.value)}
+                    className={inp}
+                  >
+                    <option value="">— No category —</option>
+                    {categories.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  {selectedCatId && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCategory(selectedCatId)}
+                      className="px-3 py-2 bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                      title="Delete Selected Category"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
 
                 <div className="flex gap-2 mt-3">
                   <input

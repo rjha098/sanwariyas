@@ -1,6 +1,6 @@
 // FILE: client/src/app/not-found.js
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 //  SEO FIX: Updated title to align with B2B Wholesale identity
@@ -17,7 +17,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/*  A11Y: Added id="main-content" for "skip to content" functionality */}
       <main

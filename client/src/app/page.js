@@ -1,5 +1,5 @@
 // FILE: client/src/app/page.js
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import HeroSection from "@/components/home/HeroSection";
@@ -90,7 +90,7 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageSchema) }}
       />
-      <Navbar />
+      {/* <Navbar /> */}
       <main id="main-content">
         <HeroSection />
 

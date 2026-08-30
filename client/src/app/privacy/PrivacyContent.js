@@ -1,15 +1,13 @@
 // FILE: client/src/app/privacy/page.js
 
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
-//  SEO FIX: Highly optimized Meta Title, Description, Canonical URL, OpenGraph, and Twitter Cards
 export const metadata = {
   title: "Privacy Policy | SANWARIYAS Wholesale Manufacturer",
   description:
     "Review the Privacy Policy for SANWARIYAS. Learn how we collect, use, and protect your data on our B2B wholesale platform.",
-
   keywords: [
     "Privacy Policy",
     "Data Protection",
@@ -17,7 +15,6 @@ export const metadata = {
     "B2B Platform Privacy",
     "Wholesale Data Security",
   ],
-
   alternates: { canonical: "https://sanwariyas.com/privacy" },
   openGraph: {
     title: "Privacy Policy | SANWARIYAS Wholesale",
@@ -27,10 +24,9 @@ export const metadata = {
     siteName: "SANWARIYAS",
     locale: "en_IN",
     type: "website",
-
     images: [
       {
-        url: "https://sanwariyas.com/images/og-terms.png", // Using the same legal OG image
+        url: "https://sanwariyas.com/images/og-terms.png",
         width: 1200,
         height: 630,
         alt: "SANWARIYAS Privacy Policy",
@@ -49,9 +45,8 @@ export const metadata = {
   },
 };
 
-const LAST_UPDATED = "14 August 2026";
+const LAST_UPDATED = "25 August 2026";
 
-// ── Section data — Formatted EXACTLY like the Terms page ──
 const SECTIONS = [
   {
     id: "information-we-collect",
@@ -60,54 +55,25 @@ const SECTIONS = [
     clauses: [
       {
         num: "1.1",
-        text: "We may collect the following categories of information when you use our website or interact with us.",
+        text: (
+          <>
+            We may collect:
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
+              <li>Name</li>
+              <li>Mobile and WhatsApp number</li>
+              <li>Email address</li>
+              <li>Business or shop name</li>
+              <li>Billing and shipping address</li>
+              <li>GST details, where required</li>
+              <li>Order and payment-related information</li>
+              <li>Information shared through enquiry or catalogue request forms</li>
+            </ul>
+          </>
+        ),
       },
       {
         num: "1.2",
-        text: (
-          <>
-            <strong>A. Personal Information:</strong> When you create an account, submit an inquiry, place an order, or contact us, we may collect:
-            <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
-              <li>Full name & Email address</li>
-              <li>Phone/mobile number</li>
-              <li>Company or business name & Country</li>
-              <li>Billing, shipping, and delivery information</li>
-              <li>Account login information</li>
-              <li>Information provided in inquiries or messages</li>
-            </ul>
-          </>
-        ),
-      },
-      {
-        num: "1.3",
-        text: (
-          <>
-            <strong>B. Order & Transaction Information:</strong> When you purchase products or submit an order, we collect information necessary to process the transaction, including:
-            <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
-              <li>Products ordered and Quantity</li>
-              <li>Order value and Payment status</li>
-              <li>Shipping, delivery, and billing details</li>
-              <li>Order history and related transaction information</li>
-            </ul>
-            <div className="mt-2 italic">We do not intentionally store your complete payment card, banking, or other sensitive payment credentials on our servers. Payments may be processed through third-party payment providers.</div>
-          </>
-        ),
-      },
-      {
-        num: "1.4",
-        text: (
-          <>
-            <strong>C. Technical Information:</strong> When you visit our website, certain technical information may be collected automatically, such as IP address, Browser type, Device type, Operating system, Pages visited, Referring pages, Approximate usage information, Date and time of website access, and Error/diagnostic information.
-          </>
-        ),
-      },
-      {
-        num: "1.5",
-        text: (
-          <>
-            <strong>D. Cookies & Similar Technologies:</strong> SANWARIYAS may use cookies to keep you signed in, maintain your shopping cart, remember preferences, improve website functionality, and support security and fraud prevention. You can manage or disable cookies through your browser settings.
-          </>
-        ),
+        text: "We may also collect basic website usage information through cookies or analytics tools.",
       },
     ],
   },
@@ -120,209 +86,189 @@ const SECTIONS = [
         num: "2.1",
         text: (
           <>
-            We may use the information we collect to:
+            We use your information to:
             <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
-              <li>Create and manage your customer account & authenticate your login.</li>
-              <li>Process and manage orders, inquiries, and requests.</li>
-              <li>Communicate with you regarding your orders or inquiries.</li>
-              <li>Arrange shipping, delivery, and process payments.</li>
-              <li>Send important account or transaction-related communications.</li>
-              <li>Improve our products, website, services, and maintain security.</li>
-              <li>Prevent fraud, misuse, or unauthorized activity.</li>
-              <li>Comply with applicable legal and regulatory requirements.</li>
+              <li>Respond to your enquiries</li>
+              <li>Share catalogues and product information</li>
+              <li>Process and manage wholesale orders</li>
+              <li>Arrange payment, dispatch, and delivery</li>
+              <li>Provide customer support</li>
+              <li>Send updates about new collections, products, and offers</li>
+              <li>Improve our website and services</li>
+              <li>Meet legal and business requirements</li>
             </ul>
           </>
         ),
       },
-      {
-        num: "2.2",
-        text: "We will use personal information only for legitimate and specified purposes relevant to the services we provide.",
-      },
     ],
   },
   {
-    id: "account-information",
+    id: "sharing-your-information",
     num: "3",
-    title: "Account Information",
+    title: "Sharing Your Information",
     clauses: [
       {
         num: "3.1",
-        text: "If you create an account on SANWARIYAS, we may use your information to maintain your account and provide account-related services.",
+        text: "We do not sell your personal information.",
       },
       {
         num: "3.2",
-        text: "You are responsible for keeping your login credentials confidential and for notifying us if you believe your account has been accessed without authorization.",
+        text: (
+          <>
+            Your information may be shared with trusted service providers when necessary, such as:
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
+              <li>Payment partners</li>
+              <li>Courier and logistics companies</li>
+              <li>Website and technology providers</li>
+              <li>Customer communication or support services</li>
+            </ul>
+          </>
+        ),
+      },
+      {
+        num: "3.3",
+        text: "We may also share information when required by law.",
       },
     ],
   },
   {
-    id: "inquiry-communication",
+    id: "marketing-communication",
     num: "4",
-    title: "Inquiry and Communication Data",
+    title: "Marketing Communication",
     clauses: [
       {
         num: "4.1",
-        text: "When you submit an inquiry, contact request, product inquiry, or message through our website, we may collect the information you provide so that our team can respond to your request.",
+        text: "With your permission or where permitted by applicable law, we may contact you through WhatsApp, phone, SMS, or email regarding our products, collections, catalogues, and offers.",
       },
       {
         num: "4.2",
-        text: "This may include Name, Email, Phone number, Company information, Product/Quantity requirements, Message content, and Related communication history.",
-      },
-      {
-        num: "4.3",
-        text: "We may retain inquiry information for customer-service, business, and record-keeping purposes.",
+        text: "You can request to stop receiving promotional communication at any time.",
       },
     ],
   },
   {
-    id: "order-information",
+    id: "cookies",
     num: "5",
-    title: "Order Information",
+    title: "Cookies",
     clauses: [
       {
         num: "5.1",
-        text: "If you place an order through SANWARIYAS, we use the information associated with the order to confirm and process the order, prepare products, arrange shipment, and provide order updates and tracking information.",
+        text: "Our website may use cookies and similar technologies to improve your browsing experience and understand how visitors use our website.",
       },
       {
         num: "5.2",
-        text: "This information is also used to handle returns, cancellations, or support requests where applicable, and to maintain transaction records.",
+        text: "You can manage or disable cookies through your browser settings.",
       },
     ],
   },
   {
-    id: "sharing-of-information",
+    id: "data-security",
     num: "6",
-    title: "Sharing of Information",
+    title: "Data Security",
     clauses: [
       {
         num: "6.1",
-        text: "We do not sell or rent your personal information to third parties for their own independent marketing purposes.",
+        text: "We take reasonable steps to protect your personal and business information from unauthorised access, misuse, or disclosure.",
       },
       {
         num: "6.2",
-        text: (
-          <>
-            We may share necessary information with trusted service providers when required to operate our business, including:
-            <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
-              <li>Payment, shipping, and courier service providers</li>
-              <li>Website, hosting, cloud, and database service providers</li>
-              <li>Email, communication, analytics, or technical service providers</li>
-              <li>Customer-support or business-management service providers</li>
-            </ul>
-          </>
-        ),
-      },
-      {
-        num: "6.3",
-        text: "These parties receive only information reasonably necessary for the service they provide.",
-      },
-      {
-        num: "6.4",
-        text: "We may also disclose information where required to comply with applicable law, legal process, government requests, court orders, or to protect our legal rights, users, or business.",
+        text: "However, no online system is completely secure, and we cannot guarantee absolute security of information transmitted over the internet.",
       },
     ],
   },
   {
-    id: "payment-information",
+    id: "third-party-services",
     num: "7",
-    title: "Payment Information",
+    title: "Third-Party Services",
     clauses: [
       {
         num: "7.1",
-        text: "Payments may be processed through third-party payment providers. When you make a payment, your payment information may be handled directly by the applicable payment provider according to its own terms and privacy policy.",
+        text: "Our website may contain links or use services provided by third parties, such as payment gateways or social media platforms.",
       },
       {
         num: "7.2",
-        text: "SANWARIYAS does not intentionally store complete card numbers, CVV numbers, or banking passwords on its own servers.",
+        text: "SANWARIYAS is not responsible for the privacy practices of these third-party services. We recommend reviewing their privacy policies separately.",
       },
     ],
   },
   {
-    id: "data-security-retention",
+    id: "your-rights",
     num: "8",
-    title: "Data Security & Retention",
+    title: "Your Rights",
     clauses: [
       {
         num: "8.1",
-        text: "We take reasonable technical and organizational measures to protect personal information against unauthorized access, disclosure, loss, misuse, alteration, or destruction. However, no internet-based system can be guaranteed to be completely secure.",
-      },
-      {
-        num: "8.2",
-        text: "We retain personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy (e.g., providing services, processing orders, meeting legal obligations).",
-      },
-      {
-        num: "8.3",
-        text: "When information is no longer reasonably required, we may delete, anonymize, or securely dispose of it, subject to applicable legal requirements.",
-      },
-    ],
-  },
-  {
-    id: "privacy-choices",
-    num: "9",
-    title: "Your Privacy Choices and Rights",
-    clauses: [
-      {
-        num: "9.1",
         text: (
           <>
-            Depending on applicable law, you may have rights relating to your personal information, including the ability to:
+            You may contact us to:
             <ul className="list-disc pl-5 mt-2 space-y-1 text-[#a07f61]">
-              <li>Request access to personal information we hold about you.</li>
-              <li>Request correction of inaccurate or incomplete information.</li>
-              <li>Request deletion of personal information where legally applicable.</li>
-              <li>Withdraw consent where processing is based on consent.</li>
-              <li>Raise a privacy-related complaint or concern.</li>
+              <li>Request access to your information</li>
+              <li>Correct or update your details</li>
+              <li>Request deletion of information, where applicable</li>
+              <li>Stop receiving promotional messages</li>
             </ul>
           </>
         ),
       },
       {
-        num: "9.2",
-        text: "Requests may be subject to reasonable verification to protect your account and personal information.",
+        num: "8.2",
+        text: "Some information may need to be retained for legal, tax, accounting, or order-related purposes.",
       },
     ],
   },
   {
-    id: "communications-thirdparty",
+    id: "changes-to-policy",
+    num: "9",
+    title: "Changes to This Policy",
+    clauses: [
+      {
+        num: "9.1",
+        text: "SANWARIYAS may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date.",
+      },
+    ],
+  },
+  {
+    id: "grievances",
     num: "10",
-    title: "Communications & Third-Party Websites",
+    title: "Grievances and Privacy Concerns",
     clauses: [
       {
         num: "10.1",
-        text: "Where applicable, we may send promotional or marketing communications about SANWARIYAS products, offers, or business updates. You may request to stop receiving promotional communications by using the available unsubscribe option or by contacting us directly.",
+        text: "If you have any questions, concerns, complaints, or requests regarding your personal information or this Privacy Policy, you may contact us using the details below:",
       },
       {
         num: "10.2",
-        text: "Transactional and service-related communications (order confirmations, security notices, etc.) may still be sent when necessary.",
+        text: (
+          <>
+            <strong>Grievance / Privacy Contact:</strong> SANWARIYAS Administrative Desk<br />
+            <strong>Email:</strong> hrsanwariyas@gmail.com<br />
+            <strong>Phone:</strong> +91 9680812813
+          </>
+        ),
       },
       {
         num: "10.3",
-        text: "Our website may contain links to third-party websites or services. SANWARIYAS is not responsible for the privacy practices, security, or content of third-party websites.",
+        text: "We will review your concern and respond within a reasonable timeframe, in accordance with applicable laws.",
       },
     ],
   },
   {
-    id: "other-policies",
+    id: "governing-law",
     num: "11",
-    title: "Children's Privacy, International Users & Updates",
+    title: "Governing Law and Jurisdiction",
     clauses: [
       {
         num: "11.1",
-        text: "SANWARIYAS is intended primarily for businesses, retailers, and wholesalers capable of entering into commercial transactions. Our website is not knowingly intended to collect personal information from children.",
+        text: "This Privacy Policy shall be governed by and interpreted in accordance with the laws of India.",
       },
       {
         num: "11.2",
-        text: "SANWARIYAS may work with service providers or business partners located in different jurisdictions. Where personal information is processed outside your country, we will take reasonable steps to ensure it complies with applicable data-protection requirements.",
-      },
-      {
-        num: "11.3",
-        text: "We may update this Privacy Policy from time to time to reflect changes in our services, technology, business practices, or laws. When we make changes, we will update the 'Last Updated' date at the top of this page.",
+        text: "Any dispute arising out of or relating to this Privacy Policy, your use of the SANWARIYAS website, or the handling of information by SANWARIYAS shall be subject to the exclusive jurisdiction of the competent courts in Jaipur, Rajasthan, India, subject to applicable law.",
       },
     ],
   },
 ];
 
-// ── Sidebar Table of Contents (sticky, desktop only) ──────────────────────────
 function TableOfContents() {
   return (
     <nav
@@ -369,7 +315,6 @@ function TableOfContents() {
   );
 }
 
-// ── Mobile-only quick jump dropdown (since sidebar TOC is desktop-only) ──────
 function MobileJumpMenu() {
   return (
     <div className="lg:hidden mb-8 rounded-xl border border-[#BE6E5B]/20 bg-[#FAF3E8] p-4">
@@ -407,7 +352,7 @@ export default function PrivacyPage() {
               url: "https://sanwariyas.com/privacy",
               inLanguage: "en-IN",
               datePublished: "2026-08-14",
-              dateModified: "2026-08-14",
+              dateModified: "2026-08-25",
               publisher: {
                 "@type": "Organization",
                 name: "SANWARIYAS",
@@ -444,9 +389,8 @@ export default function PrivacyPage() {
         id="main-content"
         className="flex min-h-screen flex-col bg-[#FDF7F2]"
       >
-        <Navbar />
+        {/* <Navbar /> */}
 
-        {/* ── Page Header ── */}
         <section
           className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden"
           style={{
@@ -467,7 +411,6 @@ export default function PrivacyPage() {
             className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
           />
 
-          {/* Corner brackets */}
           {[
             ["top-5 left-5", "rotate-0"],
             ["top-5 right-5", "rotate-90"],
@@ -506,11 +449,12 @@ export default function PrivacyPage() {
               <span className="text-[#BE6E5B] text-sm animate-pulse">✦</span>
               <div className="h-[2px] w-12 md:w-16 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
             </div>
+            
+            {/* INJECTED YOUR SPECIFIC INTRO TEXT HERE */}
             <p className="font-serif italic text-[#a07f61] mt-6 text-sm md:text-base max-w-2xl mx-auto font-medium">
-              SANWARIYAS ("we", "our", or "us") respects your privacy and is committed to protecting the personal information you provide.
+              At SANWARIYAS, we respect your privacy and are committed to protecting the information you share with us.
             </p>
 
-            {/* Last updated + document meta strip */}
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-7 font-sans text-[11px] text-[#a07f61]">
               <span className="inline-flex items-center gap-1.5">
                 <svg
@@ -528,14 +472,13 @@ export default function PrivacyPage() {
                 <strong className="text-[#7A3D2A]">{LAST_UPDATED}</strong>
               </span>
               <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BE6E5B]/40" />
-              <span>11 Sections</span>
+              <span>{SECTIONS.length} Sections</span>
               <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#BE6E5B]/40" />
               <span>Governing Law: India</span>
             </div>
           </div>
         </section>
 
-        {/* ── Content Section ── */}
         <section className="relative py-16 md:py-20 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-12">
@@ -544,7 +487,7 @@ export default function PrivacyPage() {
               <div className="flex-1 min-w-0 max-w-4xl">
                 <MobileJumpMenu />
 
-                {/* Intro card */}
+                {/* INJECTED THE REST OF YOUR SPECIFIC INTRO TEXT HERE */}
                 <div className="mb-8 p-5 rounded-xl bg-white/70 backdrop-blur-md border border-[#BE6E5B]/20 flex items-start gap-3.5">
                   <svg
                     width="18"
@@ -559,11 +502,10 @@ export default function PrivacyPage() {
                     <path d="M12 16v-4M12 8h.01" />
                   </svg>
                   <p className="font-sans text-[13px] text-[#a07f61] leading-relaxed">
-                    This Privacy Policy explains what information we collect, why we collect it, how we use it, when it may be shared, and the choices available to you. By using the SANWARIYAS website, you acknowledge the practices described below.
+                    SANWARIYAS is a B2B manufacturer and wholesale supplier of women's ethnic wear.
                   </p>
                 </div>
 
-                {/* Numbered sections */}
                 <div className="space-y-10">
                   {SECTIONS.map((section) => (
                     <article
@@ -595,7 +537,6 @@ export default function PrivacyPage() {
                     </article>
                   ))}
 
-                  {/* Contact / closing card */}
                   <article className="bg-[#FAF3E8] border border-[#BE6E5B]/25 rounded-2xl p-7 md:p-9">
                     <div className="flex items-center gap-4 mb-4">
                       <span className="flex-shrink-0 w-10 h-10 rounded-full bg-[#7A3D2A] flex items-center justify-center text-white">
@@ -616,7 +557,10 @@ export default function PrivacyPage() {
                       </h2>
                     </div>
                     <p className="font-sans text-[14px] text-[#a07f61] leading-relaxed mb-4">
-                      If you have any questions, concerns, requests, or complaints regarding this Privacy Policy or the handling of your personal information, please contact SANWARIYAS through:
+                      If you have any questions, concerns, requests, or
+                      complaints regarding this Privacy Policy or the handling
+                      of your personal information, please contact SANWARIYAS
+                      through:
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="flex items-center gap-3 p-3.5 rounded-lg bg-white/70 border border-[#BE6E5B]/15">
@@ -667,12 +611,12 @@ export default function PrivacyPage() {
                       </div>
                     </div>
                     <p className="mt-5 font-sans text-xs text-[#a07f61] italic border-t border-[#BE6E5B]/10 pt-4">
-                      * For privacy-related requests, please include enough information for us to identify your account or request.
+                      * For privacy-related requests, please include enough
+                      information for us to identify your account or request.
                     </p>
                   </article>
                 </div>
 
-                {/* ── CTA Block ── */}
                 <div className="mt-12 text-center">
                   <Link
                     href="/contact"

@@ -74,12 +74,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    // ✅ Stock Ready Architecture — optional. null = stock not tracked (unlimited), matches existing behavior.
+    //  Stock Ready Architecture — optional. null = stock not tracked (unlimited), matches existing behavior.
     stock: {
       type: Number,
       default: null,
     },
-    // ✅ Bulk Discount (Future Ready) — optional, empty by default, does not affect existing products.
+    //  Bulk Discount (Future Ready) — optional, empty by default, does not affect existing products.
     bulkDiscountTiers: {
       type: [
         {

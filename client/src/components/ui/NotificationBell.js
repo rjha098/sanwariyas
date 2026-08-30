@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -10,25 +10,6 @@ import api, {
 } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 
-// Soft "Ting" Sound generator (No external MP3 file needed)
-const playBeep = () => {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(880, ctx.currentTime); // High pitch ting
-    gain.gain.setValueAtTime(0.1, ctx.currentTime); // Volume
-    osc.start();
-    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
-    osc.stop(ctx.currentTime + 0.3);
-  } catch (e) {
-    // console.error("Audio play error:", e);
-  }
-};
-
 export default function NotificationBell({ showMuteToggle = false }) {
   const { token, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -39,7 +20,36 @@ export default function NotificationBell({ showMuteToggle = false }) {
   const dropdownRef = useRef(null);
   const prevCountRef = useRef(0);
 
+  const audioCtxRef = useRef(null);
+
+  const playBeep = () => {
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
+      }
+      const ctx = audioCtxRef.current;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
+      osc.stop(ctx.currentTime + 0.3);
+    } catch (e) {
+      // AudioContext fails gracefully
+    }
+  };
+
   // Load mute preference on mount
+
   useEffect(() => {
     const muted = localStorage.getItem("admin_muted") === "true";
     setIsMuted(muted);
@@ -54,16 +64,21 @@ export default function NotificationBell({ showMuteToggle = false }) {
   const loadNotifications = async () => {
     if (!token) return;
     try {
-      api.post("/auth/heartbeat", {}, { headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+      api
+        .post(
+          "/auth/heartbeat",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .catch(() => {});
 
       const countRes = await fetchUnreadCount(token);
       const newCount = countRes.count || 0;
-
       //  Play Sound ONLY if new notification comes and NOT muted
       if (newCount > prevCountRef.current && !isMuted) {
         playBeep();
       }
-      
+
       prevCountRef.current = newCount;
       setCount(newCount);
 
@@ -93,8 +108,11 @@ export default function NotificationBell({ showMuteToggle = false }) {
     if (!token) return;
 
     const handleSetOffline = () => {
-      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-      const API_URL = rawApiUrl.endsWith("/api") ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, "")}/api`;
+      const rawApiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const API_URL = rawApiUrl.endsWith("/api")
+        ? rawApiUrl
+        : `${rawApiUrl.replace(/\/+$/, "")}/api`;
 
       fetch(`${API_URL}/auth/offline`, {
         method: "POST",
@@ -105,9 +123,15 @@ export default function NotificationBell({ showMuteToggle = false }) {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
-        handleSetOffline(); 
+        handleSetOffline();
       } else {
-        api.post("/auth/heartbeat", {}, { headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+        api
+          .post(
+            "/auth/heartbeat",
+            {},
+            { headers: { Authorization: `Bearer ${token}` } },
+          )
+          .catch(() => {});
       }
     };
 
@@ -178,8 +202,8 @@ export default function NotificationBell({ showMuteToggle = false }) {
     <div className="relative flex items-center gap-2" ref={dropdownRef}>
       {/*  Admin Mute Toggle Button */}
       {showMuteToggle && (
-        <button 
-          onClick={toggleMute} 
+        <button
+          onClick={toggleMute}
           title={isMuted ? "Unmute Notifications" : "Mute Notifications"}
           className="text-[#A67C52] hover:text-[#7A3D2A] transition-colors p-1"
         >
@@ -251,7 +275,9 @@ export default function NotificationBell({ showMuteToggle = false }) {
                   key={n._id}
                   onClick={() => handleNotificationClick(n)}
                   className={`p-3 border-b transition-colors ${
-                    n.link ? "cursor-pointer hover:bg-[#FAF3E8]" : "hover:bg-gray-50"
+                    n.link
+                      ? "cursor-pointer hover:bg-[#FAF3E8]"
+                      : "hover:bg-gray-50"
                   } ${!n.isRead ? "bg-[#FEF9F0] border-l-4 border-l-[#C9A84C]" : ""}`}
                 >
                   <div className="flex items-start justify-between gap-2">

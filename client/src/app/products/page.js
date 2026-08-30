@@ -5,7 +5,7 @@
 
 import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSkeleton";
@@ -290,7 +290,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Suspense
         fallback={
           <div

@@ -15,7 +15,7 @@ const emptyProductForm = {
   category: "",
   price: "",
   originalPrice: "",
-  stock: "", //  STOCK ADDED
+  stock: "", 
   image: "",
   images: "",
   shortDescription: "",
@@ -37,7 +37,7 @@ const toProductForm = (product) => ({
   category: product.category || "",
   price: product.price ?? "",
   originalPrice: product.originalPrice ?? "",
-  stock: product.stock ?? "", //  STOCK ADDED
+  stock: product.stock ?? "", 
   image: product.image || "",
   images: (product.images || []).join("\n"),
   shortDescription: product.shortDescription || "",
@@ -57,7 +57,7 @@ const productPayloadFromForm = (form) => ({
   ...form,
   price: form.price === "" ? "" : Number(form.price),
   originalPrice: form.originalPrice === "" ? "" : Number(form.originalPrice),
-  stock: form.stock === "" ? "" : Number(form.stock), //  STOCK ADDED
+  stock: form.stock === "" ? "" : Number(form.stock), 
 });
 
 const buildProductFormData = (form) => {

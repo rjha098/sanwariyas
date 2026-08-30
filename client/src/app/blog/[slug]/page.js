@@ -21,8 +21,6 @@ async function getBlog(slug, isPreview = false) {
       ? `${BACKEND_URL}/api/blogs/${slug}?preview=true`
       : `${BACKEND_URL}/api/blogs/${slug}`;
 
-    // console.log(`[Blog SSR] Fetching: ${url}`);
-
     const res = await fetch(url, {
       cache: "no-store",
       headers: {
@@ -30,18 +28,13 @@ async function getBlog(slug, isPreview = false) {
       },
     });
 
-    // console.log(`[Blog SSR] Status: ${res.status} for slug: ${slug}`);
-
     if (!res.ok) {
-      // const text = await res.text();
-      // console.error(`[Blog SSR] Backend error body: ${text}`);
       return null;
     }
 
     const data = await res.json();
     return data?.data || null;
   } catch (err) {
-    // console.error(`[Blog SSR] Fetch exception:`, err.message);
     return null;
   }
 }
@@ -54,7 +47,6 @@ export async function generateMetadata({ params, searchParams }) {
     const resolvedParams = await searchParams;
     isPreview = resolvedParams?.preview === "true";
   } catch (e) {
-    // console.error("searchParams issue in metadata");
   }
 
   const blog = await getBlog(slug, isPreview);
@@ -66,6 +58,9 @@ export async function generateMetadata({ params, searchParams }) {
     };
   }
 
+  // Use bannerImage for SEO OG graph if available, else fallback to featuredImage
+  const seoImage = blog.bannerImage ? `${IMAGE_URL}${blog.bannerImage}` : (blog.featuredImage ? `${IMAGE_URL}${blog.featuredImage}` : "");
+
   return {
     title: `${blog.title} | SANWARIYAS Wholesale Ethnic Wear Journal`,
     description: blog.excerpt || `Read ${blog.title} on SANWARIYAS Journal.`,
@@ -75,16 +70,15 @@ export async function generateMetadata({ params, searchParams }) {
       title: `${blog.title} | SANWARIYAS B2B Journal`,
       description: blog.excerpt || `Read ${blog.title} on SANWARIYAS Journal.`,
       type: "article",
-      images: blog.featuredImage ? [`${IMAGE_URL}${blog.featuredImage}`] : [],
+      images: seoImage ? [seoImage] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: `${blog.title} | SANWARIYAS B2B Journal`,
-      images: blog.featuredImage ? [`${IMAGE_URL}${blog.featuredImage}`] : [],
+      images: seoImage ? [seoImage] : [],
     },
   };
 }
-
 
 const ARTICLE_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap');
@@ -230,7 +224,6 @@ const ARTICLE_STYLES = `
   }
 `;
 
-
 export default async function SingleBlogPage({ params, searchParams }) {
   const { slug } = await params;
 
@@ -238,13 +231,7 @@ export default async function SingleBlogPage({ params, searchParams }) {
   try {
     const resolvedParams = await searchParams;
     isPreview = resolvedParams?.preview === "true";
-  } catch (e) {
-    // console.error("searchParams issue in component");
-  }
-
-  // console.log(
-  //   `[Frontend] Loading slug: ${slug}, Preview flag is: ${isPreview}`,
-  // );
+  } catch (e) {}
 
   const blog = await getBlog(slug, isPreview);
 
@@ -252,18 +239,16 @@ export default async function SingleBlogPage({ params, searchParams }) {
     notFound();
   }
 
-  //  Backend gived  draft  because  of the  vip  pass  but  in  url   not  flag   given  404 
   if (blog.status === "draft" && !isPreview) {
-    // console.log(
-    //   `[Frontend] Blocked Draft rendering because preview param was missing/false.`,
-    // );
     notFound();
   }
 
-  // Reading-time estimate for the meta row — pure presentation, ~200wpm.
   const plainText = (blog.content || "").replace(/<[^>]*>/g, " ");
   const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(1, Math.round(wordCount / 200));
+
+  // YAHAN NAYA LOGIC HAI: Agar banner image hai toh wo dikhao, warna fallback purani wali image dikhao
+  const displayImage = blog.bannerImage || blog.featuredImage;
 
   return (
     <article className="min-h-screen bg-[#FAF3E8] pb-24 overflow-x-hidden">
@@ -281,9 +266,7 @@ export default async function SingleBlogPage({ params, searchParams }) {
                 "@id": `https://sanwariyas.com/blog/${slug}`,
               },
               headline: blog.title,
-              image: blog.featuredImage
-                ? [`${IMAGE_URL}${blog.featuredImage}`]
-                : [],
+              image: displayImage ? [`${IMAGE_URL}${displayImage}`] : [],
               datePublished: blog.createdAt,
               dateModified: blog.updatedAt || blog.createdAt,
               author: {
@@ -350,7 +333,6 @@ export default async function SingleBlogPage({ params, searchParams }) {
           <span className="px-2.5 py-1 rounded-full bg-[#BE6E5B]/10 font-sans text-[10px] tracking-[0.2em] uppercase text-[#BE6E5B] font-semibold">
             {blog.category?.name || "Uncategorized"}
           </span>
-          {/*  this  is preview mode of the Visual Indicator k */}
           {isPreview && blog.status === "draft" && (
             <>
               <span className="w-1 h-1 rounded-full bg-[#E8D5A3]"></span>
@@ -383,19 +365,18 @@ export default async function SingleBlogPage({ params, searchParams }) {
         />
       </header>
 
-      {/* Featured image — framed card (no cropping, so full outfit stays visible) */}
-      {blog.featuredImage && (
-        <div className="sw-anim-image max-w-4xl mx-auto px-5 mb-14 md:mb-20">
+      {/* Featured/Banner image — NAYA FIX: Lamba container jisme landscape photo mast lagegi */}
+      {displayImage && (
+        <div className="sw-anim-image max-w-5xl mx-auto px-5 mb-14 md:mb-20">
           <div className="relative rounded-[28px] p-3 md:p-5 bg-gradient-to-br from-white via-[#FBF4E7] to-[#F3E4C8] ring-1 ring-[#E8D5A3]/70 shadow-[0_25px_70px_-20px_rgba(87,67,37,0.35)]">
             <span aria-hidden="true" className="sw-corner sw-corner-tl" />
             <span aria-hidden="true" className="sw-corner sw-corner-br" />
-            {/* plain img tag — next/image nahi, localhost use karo (unchanged) */}
             <img
-              src={`${IMAGE_URL}${blog.featuredImage}`}
+              src={`${IMAGE_URL}${displayImage}`}
               alt={`${blog.title} - SANWARIYAS Ethnic Wear Manufacturer Journal`}
               loading="eager"
               decoding="async"
-              className="relative z-[1] w-full max-h-[50vh] md:max-h-[68vh] object-contain rounded-2xl mx-auto"
+              className="relative z-[1] w-full max-h-[60vh] object-cover rounded-2xl mx-auto"
             />
           </div>
         </div>

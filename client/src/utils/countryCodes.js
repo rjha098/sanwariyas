@@ -1,11 +1,4 @@
 // FILE: client/src/utils/countryCodes.js
-//
-// Every country's international dial code. Used by <PhoneInput> to build
-// the country-code dropdown. Sorted alphabetically by country name for
-// display — the component itself re-sorts a copy by code length
-// (descending) when it needs to match a stored value back to a country,
-// so longer/more-specific codes (e.g. "+1-649" style regional variants)
-// never get shadowed by a shorter generic one (e.g. "+1").
 
 export const countryCodes = [
   { code: "+93", name: "Afghanistan" },

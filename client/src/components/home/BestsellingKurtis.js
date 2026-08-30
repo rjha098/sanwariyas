@@ -100,7 +100,7 @@ function Card({ product, rank }) {
       >
         {/* Image */}
         <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#F2D9C3]">
-          {/* ✅ SEO FIX: Enriched Alt Text with Commercial/Manufacturer Intent */}
+          {/*  SEO FIX: Enriched Alt Text with Commercial/Manufacturer Intent */}
           <Image
             src={product.image}
             alt={`${product.name} - Wholesale Ethnic Wear Manufacturer`}

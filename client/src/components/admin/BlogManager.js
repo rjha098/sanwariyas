@@ -200,15 +200,22 @@ export default function BlogManager({ token, showToast }) {
                       </span>
                     </td>
                     <td className="px-4 py-4">{statusBadge(blog.status)}</td>
+
                     <td className="px-4 py-4">
                       <span className="font-sans text-xs text-brand-mud/60">
-                        {new Date(blog.createdAt).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                        {blog.createdAt
+                          ? new Date(blog.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "N/A"}
                       </span>
                     </td>
+
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         {/*  YAHAN FIX KIYA GAYA HAI: Ab draft preview=true ke sath khulega */}
@@ -255,23 +262,23 @@ export default function BlogManager({ token, showToast }) {
               <p className="font-sans text-xs text-brand-mud/60">
                 Page {page} of {pagination.pages}
               </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="font-sans text-xs px-3 py-1.5 border border-brand-lightgold/50 rounded-lg text-brand-mud hover:bg-brand-parchment transition-colors disabled:opacity-40"
-                >
-                  Prev
-                </button>
-                <button
-                  onClick={() =>
-                    setPage((p) => Math.min(pagination.pages, p + 1))
-                  }
-                  disabled={page === pagination.pages}
-                  className="font-sans text-xs px-3 py-1.5 border border-brand-lightgold/50 rounded-lg text-brand-mud hover:bg-brand-parchment transition-colors disabled:opacity-40"
-                >
-                  Next
-                </button>
+
+              <div className="flex flex-wrap items-center gap-1.5">
+                {Array.from({ length: pagination.pages }, (_, i) => i + 1).map(
+                  (pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-lg border font-sans text-xs transition-colors ${
+                        page === pageNum
+                          ? "bg-brand-coffee text-white border-brand-coffee"
+                          : "bg-white text-brand-mud border-brand-lightgold/50 hover:bg-brand-parchment"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
           )}

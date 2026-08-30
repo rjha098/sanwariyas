@@ -1,5 +1,3 @@
-// the  upper  side  code is the  old  code
-
 // FILE: client/src/components/home/ManufacturingInfoSections.js
 
 "use client";

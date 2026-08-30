@@ -1,48 +1,85 @@
 // FILE: server/controllers/blogController.js
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import Blog from '../models/Blog.js';
-import Category from '../models/Category.js';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import Blog from "../models/Blog.js";
+import Category from "../models/Category.js";
 
+import sanitizeHtml from "sanitize-html";
 
-// es6  in  environment  __dirname  setup  is   almost   upper   
+const sanitizeBlogContent = (html = "") =>
+  sanitizeHtml(html, {
+    allowedTags: [
+      "p",
+      "br",
+      "b",
+      "strong",
+      "i",
+      "em",
+      "u",
+      "s",
+      "blockquote",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "ul",
+      "ol",
+      "li",
+      "a",
+      "img",
+      "figure",
+      "figcaption",
+      "code",
+      "pre",
+      "span",
+    ],
+    allowedAttributes: {
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "width", "height"],
+      "*": ["class"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    transformTags: {
+      a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }),
+    },
+  });
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// ════════════════════════════════════════════════════════════════
-// BULLETPROOF SLUG GENERATOR (SINGLE SOURCE OF TRUTH)
-// ════════════════════════════════════════════════════════════════
 
 const generateBulletproofSlug = (text) => {
   return text
     .toLowerCase()
     .trim()
-    .normalize('NFKD')                 // handles accented characters safely
-    .replace(/[\u0300-\u036f]/g, '')   // strip diacritics
-    .replace(/[^a-z0-9\s-]/g, '')      // remove all non-alphanumeric except space/hyphen
-    .replace(/\s+/g, '-')              // spaces to hyphens
-    .replace(/-+/g, '-')               // collapse multiple hyphens
-    .replace(/^-+|-+$/g, '');          // strip leading/trailing hyphens
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 };
 
-// ── GET all blogs (public) ────────────────────────────────────────────────────
 export const getAllBlogs = async (req, res) => {
   try {
-    const { page = 1, limit = 10, category, status = 'published' } = req.query;
+
+    const { status, category } = req.query;
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
+
     const query = {};
-    if (status)   query.status   = status;
+    if (status) query.status = status;
     if (category) query.category = category;
 
-    const skip  = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     const total = await Blog.countDocuments(query);
     const blogs = await Blog.find(query)
-      .populate('category', 'name slug')
+      .populate("category", "name slug")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .select('-content') // listing mein full content nahi chahiye
+      .select("-content")
       .lean();
 
     res.json({
@@ -60,68 +97,71 @@ export const getAllBlogs = async (req, res) => {
   }
 };
 
-// ── GET single blog by slug (public) ─────────────────────────────────────────
-
 export const getBlogBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
-    // Seedha URL se param pakdo
-    const preview = req.query.preview === 'true';
+    const preview = req.query.preview === "true";
 
-    // console.log(`[Backend] Hit Slug: "${slug}" | Preview Mode: ${preview}`);
-
-    const blog = await Blog.findOne({ slug }).populate('category', 'name slug').lean();
+    const blog = await Blog.findOne({ slug })
+      .populate("category", "name slug")
+      .lean();
 
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found.' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found." });
     }
-    // if the   blog is  not  published   and   in  the  url preview=true is  not  present then    block the  security 
 
-    if (blog.status !== 'published' && !preview) {
-      console.log(`[Backend] Blocked Draft for Slug: "${slug}"`);
+    if (blog.status !== "published" && !preview) {
       return res.status(404).json({
         success: false,
-        message: 'Blog exists but is not published.',
+        message: "Blog exists but is not published.",
       });
     }
 
     res.json({ success: true, data: blog });
   } catch (err) {
-    console.error('[getBlogBySlug] Error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-
-// ── GET all blogs for admin (includes drafts) ─────────────────────────────────
 export const getAdminBlogs = async (req, res) => {
   try {
-    const { page = 1, limit = 20, search, id } = req.query;
+    const { search, id } = req.query;
+    
+    //  FIX 1: Hard cap limit to prevent DB crash (DoS protection)
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 100);
+
     const query = {};
-        
+
     if (id) {
       query._id = id;
     }
 
+    //  FIX 2: Escaped search regex (ReDoS protection)
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    
     if (search) {
+      const safeSearch = escapeRegex(search); // Special characters neutral ho jayenge
       query.$or = [
-        { title:    { $regex: search, $options: 'i' } },
-        { slug:     { $regex: search, $options: 'i' } },
+        { title: { $regex: safeSearch, $options: "i" } },
+        { slug: { $regex: safeSearch, $options: "i" } },
       ];
     }
-    
-    const skip  = (parseInt(page) - 1) * parseInt(limit);
+
+    const skip = (page - 1) * limit;
     const total = await Blog.countDocuments(query);
-    
+
     let dbQuery = Blog.find(query)
-      .populate('category', 'name')
+      .populate("category", "name")
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(limit)
       .lean();
 
     if (!id) {
-      dbQuery = dbQuery.select('-content');
+      dbQuery = dbQuery.select("-content");
     }
 
     const blogs = await dbQuery;
@@ -129,148 +169,217 @@ export const getAdminBlogs = async (req, res) => {
     res.json({
       success: true,
       data: blogs,
-      pagination: { total, page: parseInt(page), limit: parseInt(limit), pages: Math.ceil(total / parseInt(limit)) },
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ── CREATE blog 
-
 export const createBlog = async (req, res) => {
   try {
-    const { title, content, category, excerpt, metaTitle, metaDescription, status, tags } = req.body;
+    const {
+      title,
+      content,
+      category,
+      excerpt,
+      metaTitle,
+      metaDescription,
+      status,
+      tags,
+    } = req.body;
 
     if (!title || !content) {
       return res.status(400).json({
         success: false,
-        message: 'Title and content are required.',
+        message: "Title and content are required.",
       });
     }
-
-    // Backend ALWAYS regenerates the slug from title
 
     let finalSlug = generateBulletproofSlug(title);
 
     if (!finalSlug) {
       return res.status(400).json({
         success: false,
-        message: 'Title must contain at least one valid character to generate a URL.',
+        message:
+          "Title must contain at least one valid character to generate a URL.",
       });
     }
 
-    // Ensure uniqueness
     const existing = await Blog.findOne({ slug: finalSlug });
     if (existing) {
       finalSlug = `${finalSlug}-${Date.now().toString().slice(-5)}`;
     }
 
-    const featuredImage = req.file ? `/uploads/blogs/${req.file.filename}` : '';
+    const featuredImage =
+      req.files && req.files["image"]
+        ? `/uploads/blogs/${req.files["image"][0].filename}`
+        : "";
 
-    //  FIX: Sanitize status — empty string from FormData treated as missing
-    const validStatuses = ['published', 'draft'];
-    const finalStatus = validStatuses.includes(status) ? status : 'published';
+    const bannerImage =
+      req.files && req.files["bannerImage"]
+        ? `/uploads/blogs/${req.files["bannerImage"][0].filename}`
+        : "";
+
+    const validStatuses = ["published", "draft"];
+    const finalStatus = validStatuses.includes(status) ? status : "published";
+
+     let parsedTags = [];
+    if (tags) {
+      try {
+        parsedTags = JSON.parse(tags);
+        if (!Array.isArray(parsedTags)) throw new Error();
+      } catch {
+        return res.status(400).json({ success: false, message: "Tags must be a valid array." });
+      }
+    }
+
 
     const blog = await Blog.create({
       title,
       slug: finalSlug,
-      content,
+      content: sanitizeBlogContent(content),
       category: category || null,
       featuredImage,
-      excerpt: excerpt || '',
+      bannerImage,
+      excerpt: excerpt || "",
       metaTitle: metaTitle || title,
-      metaDescription: metaDescription || '',
+      metaDescription: metaDescription || "",
       status: finalStatus,
-      tags: tags ? JSON.parse(tags) : [],
+      tags: parsedTags,
     });
 
-    // Return the FINAL slug back to frontend
     return res.status(201).json({ success: true, data: blog });
   } catch (err) {
     if (err.code === 11000) {
       return res.status(409).json({
         success: false,
-        message: 'A blog with this slug already exists. Please try again.',
+        message: "A blog with this slug already exists. Please try again.",
       });
     }
     return res.status(400).json({ success: false, message: err.message });
   }
 };
 
-// ── UPDATE blog ───────────────────────────────────────────────────────────────
 export const updateBlog = async (req, res) => {
   try {
-    const { title, slug, content, category, excerpt, metaTitle, metaDescription, status, tags } = req.body;
-    
-    const cleanSlug = slug ? generateBulletproofSlug(slug) : undefined;
+    const {
+      title,
+      slug,
+      content,
+      category,
+      excerpt,
+      metaTitle,
+      metaDescription,
+      status,
+      tags,
+    } = req.body;
 
-    //  FIX: Same sanitization as createBlog
-    const validStatuses = ['published', 'draft'];
+    const cleanSlug = slug ? generateBulletproofSlug(slug) : undefined;
+    const validStatuses = ["published", "draft"];
     const finalStatus = validStatuses.includes(status) ? status : undefined;
 
-    const update = { 
-      title, 
-      slug: cleanSlug, 
-      content, 
-      category: category || null, 
-      excerpt, 
-      metaTitle, 
-      metaDescription, 
-      ...(finalStatus && { status: finalStatus }), //  only set if valid
-    };
+    const update = {};
+    if (title !== undefined) update.title = title;
+    if (cleanSlug !== undefined) update.slug = cleanSlug;
+    if (content !== undefined) update.content = sanitizeBlogContent(content);
+    if (category !== undefined) update.category = category || null;
+    if (excerpt !== undefined) update.excerpt = excerpt;
+    if (metaTitle !== undefined) update.metaTitle = metaTitle;
+    if (metaDescription !== undefined) update.metaDescription = metaDescription;
+    if (finalStatus) update.status = finalStatus;
 
-    if (tags) update.tags = JSON.parse(tags);
+    if (tags) {
+      try {
+        const parsedTags = JSON.parse(tags);
+        if (!Array.isArray(parsedTags)) throw new Error();
+        update.tags = parsedTags;
+      } catch {
+        return res.status(400).json({ success: false, message: "Tags must be a valid array." });
+      }
+    }
+
 
     const oldBlog = await Blog.findById(req.params.id);
-    if (!oldBlog) return res.status(404).json({ success: false, message: 'Blog not found.' });
+    if (!oldBlog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found." });
+    }
 
-    if (req.file) {
-      update.featuredImage = `/uploads/blogs/${req.file.filename}`;
+    if (req.files) {
+      if (req.files["image"]) {
+        update.featuredImage = `/uploads/blogs/${req.files["image"][0].filename}`;
+        if (oldBlog.featuredImage) {
+          const cleanImageName = oldBlog.featuredImage.replace(/^\//, "");
+          const oldImagePath = path.join(__dirname, "..", cleanImageName);
+          if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
+        }
+      }
 
-      if (oldBlog.featuredImage) {
-        const cleanImageName = oldBlog.featuredImage.replace(/^\//, ''); 
-        const oldImagePath = path.join(__dirname, '..', cleanImageName);
-        
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
+      if (req.files["bannerImage"]) {
+        update.bannerImage = `/uploads/blogs/${req.files["bannerImage"][0].filename}`;
+        if (oldBlog.bannerImage) {
+          const cleanBannerName = oldBlog.bannerImage.replace(/^\//, "");
+          const oldBannerPath = path.join(__dirname, "..", cleanBannerName);
+          if (fs.existsSync(oldBannerPath)) fs.unlinkSync(oldBannerPath);
         }
       }
     }
 
-    const blog = await Blog.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
-    
+    const blog = await Blog.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+      runValidators: true,
+    });
+
     res.json({ success: true, data: blog });
-  } catch (err) {
+ } catch (err) {
+    if (err.code === 11000) {  
+      return res.status(409).json({
+        success: false,
+        message: "A blog with this slug already exists. Please try again.",
+      });
+    }
     res.status(400).json({ success: false, message: err.message });
   }
 };
 
-
-// ── DELETE blog ───────────────────────────────────────────────────────────────
 export const deleteBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
-    if (!blog) return res.status(404).json({ success: false, message: 'Blog not found.' });
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found." });
+    }
 
     if (blog.featuredImage) {
-      const cleanImageName = blog.featuredImage.replace(/^\//, ''); 
-      const imagePath = path.join(__dirname, '..', cleanImageName);
-      
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      } 
+      const cleanImageName = blog.featuredImage.replace(/^\//, "");
+      const imagePath = path.join(__dirname, "..", cleanImageName);
+      if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+    }
+
+    if (blog.bannerImage) {
+      const cleanBannerName = blog.bannerImage.replace(/^\//, "");
+      const bannerPath = path.join(__dirname, "..", cleanBannerName);
+      if (fs.existsSync(bannerPath)) fs.unlinkSync(bannerPath);
     }
 
     await Blog.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: 'Blog and its associated image deleted successfully.' });
+    res.json({
+      success: true,
+      message: "Blog and its associated image deleted successfully.",
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-
-// ── CATEGORIES ────────────────────────────────────────────────────────────────
 export const getCategories = async (req, res) => {
   try {
     const cats = await Category.find().lean();
@@ -283,17 +392,42 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name) return res.status(400).json({ success: false, message: 'Category name is required.' });
-    
-    // Use the bulletproof slug generator for categories as well!
+    if (!name) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Category name is required." });
+    }
+
     const slug = generateBulletproofSlug(name);
-    
-    const cat  = await Category.create({ name: name.trim(), slug });
+    const cat = await Category.create({ name: name.trim(), slug });
     res.status(201).json({ success: true, data: cat });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ success: false, message: 'Category already exists.' });
+      return res
+        .status(409)
+        .json({ success: false, message: "Category already exists." });
     }
     res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// NEW FIX: Delete Category Function
+export const deleteCategory = async (req, res) => {
+  try {
+    const cat = await Category.findById(req.params.id);
+    if (!cat) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found." });
+    }
+
+    await Category.findByIdAndDelete(req.params.id);
+
+    // Safely remove this category from any blogs that were using it
+    await Blog.updateMany({ category: req.params.id }, { category: null });
+
+    res.json({ success: true, message: "Category deleted successfully." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };

@@ -11,7 +11,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import api, { deleteNotificationByInquiry } from "@/lib/api";
-import Navbar from "@/components/layout/Navbar";
+// import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export default function MyInquiryDetailPage() {
@@ -113,7 +113,7 @@ export default function MyInquiryDetailPage() {
   if (authChecking || loading) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#70543E]/50">
             Loading...
@@ -127,7 +127,7 @@ export default function MyInquiryDetailPage() {
   if (!inquiry) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-sm text-red-500">Inquiry not found.</p>
         </div>
@@ -138,7 +138,7 @@ export default function MyInquiryDetailPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <button

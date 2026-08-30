@@ -1,5 +1,4 @@
 // FILE: client/src/components/ui/Skeletons.js
-
 export function ProductCardSkeleton() {
   return (
     <div aria-hidden="true" className="bg-white overflow-hidden shadow-sm rounded-2xl border border-[#BE6E5B]/10">

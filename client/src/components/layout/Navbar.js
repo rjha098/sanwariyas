@@ -21,7 +21,6 @@ const navLinks = [
   //   title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
   // },
 
-
   {
     href: "/contact",
     label: "Inquire",
@@ -32,7 +31,7 @@ const navLinks = [
     label: "About",
     title: "About SANWARIYAS Manufacturer",
   },
-    {
+  {
     href: "/exportdocs",
     label: "Export",
   },
@@ -47,7 +46,7 @@ const navLinks = [
         links: [
           { href: "/lookbook", label: "Our Lookbook" },
           { href: "/blog", label: "Journal & Blog" },
-          {href:"/privacy" ,label:"Privacy"}
+          { href: "/privacy", label: "Privacy" },
         ],
       },
       {
@@ -340,7 +339,8 @@ export default function Navbar() {
           </nav>
 
           {/* AUTH, CTA + HAMBURGER */}
-          {/* AUTH, CTA + HAMBURGER */}
+
+          {/* 
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             {isCustomer && (
               <Link
@@ -364,6 +364,7 @@ export default function Navbar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
+                  
                   <circle cx="9" cy="21" r="1" />
                   <circle cx="20" cy="21" r="1" />
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -391,6 +392,64 @@ export default function Navbar() {
                 )}
               </Link>
             )}
+
+        
+            <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5"> */}
+
+          {/* AUTH, CTA + HAMBURGER */}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {/* CART ICON TEMPORARILY HIDDEN
+              {isCustomer && (
+                <Link
+                  href="/cart"
+                  aria-label="View Cart"
+                  title="View Cart"
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#7A3D2A",
+                  }}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                  </svg>
+                  {cartItemCount > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-8px",
+                        right: "-8px",
+                        background: "#7A3D2A",
+                        color: "#fff",
+                        fontSize: "9px",
+                        fontWeight: "bold",
+                        borderRadius: "9999px",
+                        width: "16px",
+                        height: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {cartItemCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+              */}
+              
 
             {/* Desktop Auth */}
             <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">

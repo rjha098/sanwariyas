@@ -1,5 +1,4 @@
 // FILE: client/src/components/ui/Toast.js
-
 "use client";
 
 import { useEffect } from "react";

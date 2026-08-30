@@ -421,7 +421,6 @@
 //   }
 // };
 
-
 // export const heartbeat = async (req, res) => {
 //   try {
 //     const now = new Date();
@@ -510,7 +509,6 @@
 //     return res.status(500).json({ success: false });
 //   }
 // };
-
 
 // export const setOffline = async (req, res) => {
 //   try {
@@ -670,14 +668,46 @@
 // };
 
 
+
 // FILE: server/controllers/authController.js
 import crypto from "crypto";
 import {
-  createAuthToken,
+  createAccessToken,
+  createRefreshToken,
   safeCompare,
-  verifyAuthToken,
+  verifyRefreshToken,
   adminSessionStore,
 } from "../utils/authUtils.js";
+
+// Helper to set HTTP-Only cookie for cross-origin domains
+
+const setRefreshTokenCookie = (res, token, role) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Admin/Staff cookies  is  deleted in  7 days , for  customer  30  days
+
+  const days = role === "admin" || role === "staff" ? 7 : 30;
+  const maxAgeMs = days * 24 * 60 * 60 * 1000;
+
+  res.cookie("refreshToken", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: maxAgeMs,
+  });
+};
+
+// for  delete the  cookies  in correct  method
+
+const clearRefreshTokenCookie = (res) => {
+  const isProduction = process.env.NODE_ENV === "production";
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+};
+
 import * as authService from "../services/authService.js";
 import User from "../models/User.js";
 import Inquiry from "../models/Inquiry.js";
@@ -739,7 +769,7 @@ export const login = async (req, res) => {
     const id = identifier.trim().toLowerCase();
     const cleanPhoneInput = identifier.trim().replace(/[\s-\+]/g, "");
 
-    // ENV ADMIN CHECK
+    // ENV ADMIN CHECK     
     const isAdminId =
       safeCompare(id, adminUsername) ||
       safeCompare(id, adminEmail) ||
@@ -782,20 +812,10 @@ export const login = async (req, res) => {
     await User.findByIdAndUpdate(user.id, { currentSessionId: sessionId });
 
     // Background Inquiry Sync (Fire and Forget)
-    // Inquiry.updateMany(
-    //   { email: user.email, userId: null },
-    //   { userId: user.id },
-    // ).catch((err) =>
-    //   console.error(
-    //     "[Background Error] Failed to sync inquiries:",
-    //     err.message,
-    //   ),
-    // );
-
-    // Background Inquiry Sync (Fire and Forget)
     // Matches only when BOTH email AND phone (whatsapp) are the exact same
     // — a single matching field is not enough, to avoid linking someone
     // else's inquiry just because a number or email was reused.
+
     Inquiry.updateMany(
       {
         userId: null,
@@ -807,19 +827,24 @@ export const login = async (req, res) => {
       // console.error("[Background Error] Failed to sync inquiries:", err.message);
     });
 
-    const token = createAuthToken({
+    const payload = {
       role: user.role,
       id: user.id,
       email: user.email,
       name: user.name,
       department: user.department || "General",
       sessionId,
-    });
+    };
+
+    const accessToken = createAccessToken(payload);
+    const refreshToken = createRefreshToken(payload);
+
+    setRefreshTokenCookie(res, refreshToken, payload.role);
 
     return res.json({
       success: true,
       requires2FA: false,
-      token,
+      token: accessToken,
       user: {
         id: user.id,
         name: user.name,
@@ -882,7 +907,8 @@ export const verifyOtp = async (req, res) => {
 
       const usernameOutput =
         emailForOtp === adminEmail ? adminUsername : emailForOtp.split("@")[0];
-      const token = createAuthToken({
+
+      const payload = {
         role,
         id: dbUser ? dbUser._id.toString() : null,
         username: usernameOutput,
@@ -890,11 +916,16 @@ export const verifyOtp = async (req, res) => {
         name: dbUser ? dbUser.name : usernameOutput,
         department: dbUser?.department || "Management",
         sessionId,
-      });
+      };
+
+      const accessToken = createAccessToken(payload);
+      const refreshToken = createRefreshToken(payload);
+
+      setRefreshTokenCookie(res, refreshToken, payload.role);
 
       return res.json({
         success: true,
-        token,
+        token: accessToken,
         user: {
           id: dbUser?._id || null,
           username: usernameOutput,
@@ -931,12 +962,17 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
-    if (!email || !otp || !newPassword)
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields required." });
-    await authService.resetUserPassword(email, otp, newPassword);
+  
+    // resetPassword function mein
+const { email, otp, newPassword } = req.body;
+
+// Strict string check taaki hacker object/code na bhej sake
+if (!email || !otp || !newPassword || typeof email !== "string" || typeof otp !== "string") {
+  return res.status(400).json({ success: false, message: "All fields required and must be valid text." });
+}
+
+await authService.resetUserPassword(email, otp, newPassword);
+
     return res.json({
       success: true,
       message: "Password updated safely. You can now sign in.",
@@ -950,47 +986,53 @@ export const resetPassword = async (req, res) => {
 
 export const session = async (req, res) => {
   try {
-    const header = req.headers.authorization || "";
-    const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-    if (!token)
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
       return res
         .status(401)
-        .json({ success: false, message: "Authentication required." });
+        .json({ success: false, message: "No refresh token provided." });
+    }
 
-    const payload = verifyAuthToken(token);
+    const payload = verifyRefreshToken(refreshToken);
 
-    // Hybrid Session Validation
+    // Single Device Login Logic / Session Validation is evaluated ONLY during refresh
     if (payload.id) {
       const userExists = await User.findById(payload.id).select(
         "currentSessionId role department name email",
       );
       if (!userExists || userExists.currentSessionId !== payload.sessionId) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Logged in from another device." });
+        clearRefreshTokenCookie(res);
+        return res.status(401).json({
+          success: false,
+          message: "Session revoked or logged in from another device.",
+        });
       }
     } else if (payload.role === "admin" && !payload.id) {
       const activeSession = adminSessionStore.get(payload.email);
       if (activeSession && activeSession !== payload.sessionId) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Logged in from another device." });
+        clearRefreshTokenCookie(res);
+        return res.status(401).json({
+          success: false,
+          message: "Session revoked or logged in from another device.",
+        });
       }
     }
 
-    const freshToken = createAuthToken({
+    const newPayload = {
       role: payload.role,
       username: payload.username,
       email: payload.email,
       id: payload.id,
       name: payload.name,
       department: payload.department || "General",
-      sessionId: payload.sessionId,
-    });
+      sessionId: payload.sessionId, // Keep same session ID to maintain active device tie
+    };
+
+    const newAccessToken = createAccessToken(newPayload);
 
     return res.json({
       success: true,
-      token: freshToken,
+      token: newAccessToken,
       user: {
         username: payload.username,
         name: payload.name,
@@ -1000,10 +1042,12 @@ export const session = async (req, res) => {
         id: payload.id,
       },
     });
-  } catch {
+  } catch (error) {
+    clearRefreshTokenCookie(res);
+
     return res
       .status(401)
-      .json({ success: false, message: "Invalid session." });
+      .json({ success: false, message: "Invalid or expired refresh token." });
   }
 };
 
@@ -1057,22 +1101,13 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// export const logout = async (req, res) => {
-//   try {
-//     if (req.authUser?.id) {
-//       await User.findByIdAndUpdate(req.authUser.id, { currentSessionId: null });
-//     } else if (req.authUser?.role === "admin" && !req.authUser?.id) {
-//       adminSessionStore.delete(req.authUser.email);
-//     }
-
-//     return res.json({ success: true, message: "Logged out." });
-//   } catch (error) {
-//     return res.json({ success: true, message: "Logged out." });
-//   }
-// };
 
 export const logout = async (req, res) => {
   try {
+    // Clear the HTTP Only cookie
+    clearRefreshTokenCookie(res);
+
+    // Ensure backend knows it's clearing the DB session if token was still valid
     if (req.authUser?.id) {
       await User.findByIdAndUpdate(req.authUser.id, {
         currentSessionId: null,
@@ -1115,26 +1150,6 @@ export const deleteAccount = async (req, res) => {
       .json({ success: false, message: "Failed to delete account." });
   }
 };
-
-// export const heartbeat = async (req, res) => {
-//   try {
-//     if (req.authUser.id) {
-//       const twoMinsAgo = new Date(Date.now() - 120 * 1000);
-//       await User.updateOne(
-//         {
-//           _id: req.authUser.id,
-//           $or: [{ lastActiveAt: { $lt: twoMinsAgo } }, { lastActiveAt: null }],
-//         },
-//         { $set: { lastActiveAt: new Date() } },
-//       );
-//     } else if (req.authUser.role === "admin") {
-//       envAdminLastActiveAt = new Date();
-//     }
-//     return res.json({ success: true });
-//   } catch (error) {
-//     return res.status(500).json({ success: false });
-//   }
-// };
 
 export const heartbeat = async (req, res) => {
   try {
@@ -1225,20 +1240,6 @@ export const getVisibility = async (req, res) => {
   }
 };
 
-// export const setOffline = async (req, res) => {
-//   try {
-//     if (req.authUser.id) {
-//       await User.findByIdAndUpdate(req.authUser.id, {
-//         lastActiveAt: new Date(0),
-//       });
-//     }
-//     return res.json({ success: true });
-//   } catch (error) {
-//     return res.status(500).json({ success: false });
-//   }
-// };
-
-// ── ✅ PHASE 2: STAFF MANAGEMENT CONTROLLERS ─────────────────────────────────
 
 export const setOffline = async (req, res) => {
   try {

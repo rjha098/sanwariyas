@@ -59,7 +59,7 @@ export function CartProvider({ children }) {
           productId: product._id,
           name: product.name,
           slug: product.slug,
-          image: getImageUrl(product.image), // 🔴 FIX: Force absolute URL 
+          image: getImageUrl(product.image), 
           price: product.price,
           pieces: parseInt(pieces, 10),
         },
@@ -71,7 +71,7 @@ export function CartProvider({ children }) {
     setItems((prev) =>
       prev.map((i) => {
         if (i.productId === productId) {
-          // 🔴 FIX: Allow empty string to live in state so user can type freely
+          //  Allow empty string to live in state so user can type freely
           if (pieces === "") return { ...i, pieces: "" };
           const safePieces = Math.max(0, parseInt(pieces, 10) || 0);
           return { ...i, pieces: safePieces };
@@ -88,7 +88,7 @@ export function CartProvider({ children }) {
   const clearCart = useCallback(() => setItems([]), []);
   const loadItems = useCallback((newItems) => setItems(newItems), []);
 
-  // 🔴 FIX: Handle empty strings gracefully in reduce functions
+  //  Handle empty strings gracefully in reduce functions
   const totalPieces = items.reduce((sum, i) => sum + (parseInt(i.pieces, 10) || 0), 0);
   const totalAmount = items.reduce((sum, i) => sum + (parseInt(i.pieces, 10) || 0) * i.price, 0);
   const allMoqMet = items.length > 0 && items.every((i) => computeMoq(i.pieces).moqMet);
@@ -107,7 +107,7 @@ export function CartProvider({ children }) {
         totalAmount,
         allMoqMet,
         itemCount: items.length,
-        MIN_PIECES, // 🔴 FIX: Exposing constants for checkout page to consume safely
+        MIN_PIECES, 
         SET_SIZE
       }}
     >
