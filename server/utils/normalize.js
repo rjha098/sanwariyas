@@ -1,19 +1,3 @@
-// // FILE: server/utils/normalize.js
-
-// // Removes spaces, dashes, and leading "+" so the same phone number
-// // entered in different formats (e.g. "+91 5489657895", "3697-468-579",
-// // "4596874535") always compares equal.
-// export const normalizePhone = (phone) => {
-//   if (!phone) return "";
-//   return String(phone).trim().replace(/[\s\-+]/g, "");
-// };
-
-// export const normalizeEmail = (email) => {
-//   if (!email) return "";
-//   return String(email).trim().toLowerCase();
-// };
-
-
 // FILE: server/utils/normalize.js
 
 // Plain digit cleanup — used everywhere a phone is WRITTEN (signup,

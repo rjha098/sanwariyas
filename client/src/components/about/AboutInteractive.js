@@ -15,7 +15,7 @@ const OWNERS = [
     name: "Sonali Kanther",
     role: "CEO & Founder",
     bio: "Sonali is the driving force behind SANWARIYAS, setting the strategic vision for our global B2B export operations. Her commitment to authentic craftsmanship and scalable manufacturing has positioned the brand as a trusted partner for retailers worldwide.",
-    image: "/images/sonali.png",
+    image: "/images/sonali.jpeg",
     initial: "S",
   },
   {

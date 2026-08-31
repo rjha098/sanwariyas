@@ -1,4 +1,4 @@
-// PURPOSE: Define the SHAPE of a Product in MongoDB
+// server/models/product.js
 
 import mongoose from "mongoose";
 

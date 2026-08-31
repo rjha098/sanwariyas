@@ -63,6 +63,40 @@ export const createLookbookItem = async (req, res) => {
   }
 };
 
+// export const deleteLookbookItem = async (req, res) => {
+
+//   try {
+//     const item = await Lookbook.findById(req.params.id);
+
+//     if (!item) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Lookbook item not found" });
+//     }
+
+//     const relativePath = item.image.startsWith("/")
+//       ? item.image.slice(1)
+//       : item.image;
+//     // const absoluteFilePath = path.resolve(relativePath);
+
+//     const absoluteFilePath = path.join(__dirname, "..", relativePath);
+
+//     if (fs.existsSync(absoluteFilePath)) {
+//       fs.unlinkSync(absoluteFilePath);
+//     }
+
+//     await Lookbook.findByIdAndDelete(req.params.id);
+
+//     res.json({
+//       success: true,
+//       message: "Item successfully deleted from database and storage disk.",
+//     });
+//  } catch (error) {
+//     const status = error.name === "CastError" ? 400 : 500;
+//     res.status(status).json({ success: false, message: error.message });
+//   }
+// };
+
 export const deleteLookbookItem = async (req, res) => {
   try {
     const item = await Lookbook.findById(req.params.id);
@@ -73,15 +107,10 @@ export const deleteLookbookItem = async (req, res) => {
         .json({ success: false, message: "Lookbook item not found" });
     }
 
-    const relativePath = item.image.startsWith("/")
-      ? item.image.slice(1)
-      : item.image;
-    // const absoluteFilePath = path.resolve(relativePath);
-
-    const absoluteFilePath = path.join(__dirname, "..", relativePath);
-
-    if (fs.existsSync(absoluteFilePath)) {
-      fs.unlinkSync(absoluteFilePath);
+    if (item.image) {
+      const relativePath = item.image.startsWith("/") ? item.image.slice(1) : item.image;
+      const absoluteFilePath = path.join(__dirname, "..", relativePath);
+      if (fs.existsSync(absoluteFilePath)) fs.unlinkSync(absoluteFilePath);
     }
 
     await Lookbook.findByIdAndDelete(req.params.id);

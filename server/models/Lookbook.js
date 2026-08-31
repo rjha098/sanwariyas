@@ -4,16 +4,13 @@ import mongoose from "mongoose";
 const lookbookSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true, maxlength: 150 },
+
+    image: { type: String, required: true },
     category: {
       type: String,
       required: true,
       trim: true,
       maxlength: 80,
-      enum: ["Kurti", "Saree", "Suit Set", "Co-ord Set", "Dress Material"],
-    },
-    image: { type: String, required: true },
-    badge: {
-      type: String,
       enum: [
         "Anarkali",
         "Short Kurtis",
@@ -22,6 +19,10 @@ const lookbookSchema = new mongoose.Schema(
         "Straight Kurti Set",
         "A-line Suit",
       ],
+    },
+    badge: {
+      type: String,
+      enum: ["None", "Bestseller", "Trending", "New Arrival"],
       default: "None",
     },
 

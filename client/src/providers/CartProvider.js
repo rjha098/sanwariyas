@@ -8,7 +8,7 @@ export const CartContext = createContext(null);
 const STORAGE_KEY = "sanwariyas_cart";
 export const SET_SIZE = 5;
 export const MIN_SETS = 2;
-export const MIN_PIECES = MIN_SETS * SET_SIZE; // 10
+export const MIN_PIECES = MIN_SETS * SET_SIZE; //  10 
 
 // Smart Set Calculator
 export function computeMoq(pieces) {

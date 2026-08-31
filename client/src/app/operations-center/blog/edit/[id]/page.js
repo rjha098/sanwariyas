@@ -12,7 +12,6 @@ const BACKEND_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 ).replace(/\/api\/?$/, "");
 
-// 🔴 NAYA FIX: Smart URL Builder jo galat paths (null, undefined) ko filter karta hai
 const getImageUrl = (path) => {
   if (!path || path === "undefined" || path === "null" || path.trim() === "")
     return null;
