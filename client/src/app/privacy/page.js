@@ -2,6 +2,7 @@
 // import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PrivacyContent from "./PrivacyContent";
+import Navbar from "@/components/layout/Navbar";
 
 export const metadata = {
   title: "Privacy Policy | SANWARIYAS",
@@ -12,8 +13,10 @@ export default function PrivacyPolicy() {
   return (
     <>
       {/* <Navbar /> */}
-      <PrivacyContent />
+      <PrivacyContent /> 
       <Footer />
     </>
   );
 }
+
+

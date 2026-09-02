@@ -67,7 +67,7 @@ const USP_ITEMS = [
   },
   {
     number: "04",
-    title: "500+ New Designs Every Season",
+    title: "1500+ New Designs Every Season",
     desc: "Our in-house team launches new wholesale kurti, cotton suit and co-ord set collections every season, helping boutiques stay ahead of fashion trends.",
     icon: (
       <svg
@@ -204,13 +204,32 @@ export default function WhyUsSection() {
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
               Why Choose SANWARIYAS{" "}
             </p>
+
             <h2
               id="why-us-heading"
-              className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
+              className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight drop-shadow-sm font-bold"
             >
-              Why Choose SANWARIYAS as Your Wholesale Ethnic Wear
-              Manufacturer{" "}
+              <span className="text-[#7A3D2A]">
+                Why Choose SANWARIYAS as Your Wholesale
+              </span>
+              <br />
+              <span
+                className="italic bg-gradient-to-r from-[#7A3D2A] via-[#D8956B] via-[#BE6E5B] to-[#7A3D2A] bg-clip-text text-transparent bg-[length:200%_auto]"
+                style={{ animation: "wuGradientShift 6s ease-in-out infinite" }}
+              >
+                Ethnic Wear Manufacturer?
+              </span>
+              <style>{`
+                @keyframes wuGradientShift {
+                  0%, 100% { background-position: 0% center; }
+                  50% { background-position: 100% center; }
+                }
+                @media (prefers-reduced-motion: reduce) {
+                  h2 span[style] { animation: none !important; }
+                }
+              `}</style>
             </h2>
+
             <div
               aria-hidden="true"
               className="flex items-center justify-center gap-4 mt-6"

@@ -4,7 +4,7 @@ import Link from "next/link";
 const CONTACT_CARDS = [
   {
     label: "Visit Us",
-    line1: "Shiv Plaza, 1st Floor, Shop 12–13",
+    line1: "Shiv Plaza, 1st Floor, Shop 10–12",
     line2: "Sanganer, Jaipur, Rajasthan 302029",
     href: "https://maps.google.com/?q=Shiv+Plaza+Sanganer+Jaipur",
     external: true,
@@ -29,7 +29,7 @@ const CONTACT_CARDS = [
   },
   {
     label: "Call Us",
-    line1: "+91 9251171306",
+    line1: "+91 9352111306",
     line2: "Mon – Sat · 10 am – 7 pm",
     href: "tel:+919251171306",
     external: false,
@@ -107,11 +107,12 @@ const CONTACT_CARDS = [
   },
 ];
 
-const STATS = [
-  { value: "500+", label: "Designs" },
-  { value: "50+", label: "Countries" },
-  { value: "15K+", label: "Orders" },
-  { value: "24h", label: "Reply Time" },
+export const TRUST_BADGES = [
+  { label: "100% Factory Direct" },
+  { label: "Complete Export Documentation" },
+  { label: "Low MOQ, Boutique Friendly" },
+  { label: "100% GST Invoiced" },
+  { label: "Ships Across India & Worldwide" },
 ];
 
 const STYLES = `
@@ -157,24 +158,56 @@ const STYLES = `
   .btn-secondary-cta { transition:background 0.3s ease,border-color 0.3s ease,box-shadow 0.3s ease,transform 0.3s ease; }
   .btn-secondary-cta:hover { background:rgba(190,110,91,0.08); box-shadow:0 6px 24px rgba(190,110,91,0.14); transform:translateY(-2px); border-color:rgba(190,110,91,0.55) !important; }
   @media (prefers-reduced-motion:reduce) { .cta-rise,.cc-card,.cc-icon { transition:none; animation:none; opacity:1; } }
+
+  @keyframes trustScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .trust-track { animation:trustScroll 22s linear infinite; }
+  .trust-track:hover { animation-play-state:paused; }
+  @media (prefers-reduced-motion:reduce) { .trust-track { animation:none; } }
+
+  @keyframes accentShimmer { 0%{background-position:0% 0} 100%{background-position:200% 0} }
+  .accent-shimmer { animation:accentShimmer 6s linear infinite; }
+  @media (prefers-reduced-motion:reduce) { .accent-shimmer { animation:none; } }
 `;
 
-function StatPill({ value, label }) {
+function TrustMarquee({ items }) {
+  // Duplicated once so the CSS-only marquee loops seamlessly with no
+  // visible seam or JS-driven interval — pure decorative animation,
+  // doesn't touch any state/functionality.
+  const loop = [...items, ...items];
   return (
     <div
-      className="flex flex-col items-center px-3 py-3 rounded-xl"
+      aria-hidden="true"
+      className="relative w-full overflow-hidden rounded-xl py-3"
       style={{
-        background: "rgba(255,255,255,0.52)",
+        background: "rgba(255,255,255,0.42)",
         backdropFilter: "blur(10px)",
-        border: "1px solid rgba(190,110,91,0.18)",
+        border: "1px solid rgba(190,110,91,0.16)",
+        maskImage:
+          "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
       }}
     >
-      <span className="font-display text-lg font-black text-[#7A3D2A]">
-        {value}
-      </span>
-      <span className="font-sans text-[8.5px] uppercase tracking-widest text-[#a07f61] font-semibold mt-0.5">
-        {label}
-      </span>
+      <div className="trust-track flex items-center gap-3 w-max">
+        {loop.map((item, i) => (
+          <span
+            key={i}
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full whitespace-nowrap"
+            style={{
+              background: "rgba(190,110,91,0.07)",
+              border: "1px solid rgba(190,110,91,0.20)",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+              style={{ background: "#BE6E5B" }}
+            />
+            <span className="font-sans text-[10.5px] font-bold tracking-wide text-[#7A3D2A]">
+              {item.label}
+            </span>
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -411,9 +444,9 @@ export default function InquiryCTASection() {
                 />
                 <p className="font-sans text-xs leading-relaxed text-[#a07f61]">
                   <span className="font-bold text-[#7A3D2A]">
-                    24-Hour Reply Guarantee
+                    Fast, Personal Response
                   </span>{" "}
-                  — We respond to every inquiry within one business day.
+                  — Every inquiry is reviewed and replied to directly by our team.
                 </p>
               </div>
             </div>
@@ -430,13 +463,15 @@ export default function InquiryCTASection() {
                   "0 32px 80px rgba(122,61,42,0.12),0 8px 24px rgba(122,61,42,0.07)",
               }}
             >
-              {/* top accent bar */}
+              {/* top accent bar — subtle animated sheen instead of a static
+                  gradient, gives the card a quiet "alive" feel on load */}
               <div
                 aria-hidden="true"
-                className="h-[3px] w-full"
+                className="h-[3px] w-full accent-shimmer"
                 style={{
                   background:
                     "linear-gradient(to right,#7A3D2A,#BE6E5B,#a07f61,#BE6E5B,#7A3D2A)",
+                  backgroundSize: "200% 100%",
                 }}
               />
 
@@ -497,12 +532,9 @@ export default function InquiryCTASection() {
                   </p>
                 </div>
 
-                {/* stats */}
-                <div className="grid grid-cols-4 gap-2 w-full">
-                  {STATS.map((s) => (
-                    <StatPill key={s.label} value={s.value} label={s.label} />
-                  ))}
-                </div>
+                {/* trust marquee — replaces vanity stat numbers with a
+                    scrolling strip of real, verifiable value props */}
+                <TrustMarquee items={TRUST_BADGES} />
 
                 <div aria-hidden="true" className="h-rule w-full" />
 
@@ -514,7 +546,7 @@ export default function InquiryCTASection() {
                 >
                   {[
                     "Custom B2B pricing for bulk & wholesale orders",
-                    "Manufacturing availability across 500+ designs",
+                    "Manufacturing availability across our full catalogue",
                     "Dedicated export consultant assigned",
                     "Premium cotton suits & kurtis creation",
                   ].map((point) => (

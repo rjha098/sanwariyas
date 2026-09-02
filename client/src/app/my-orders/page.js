@@ -41,6 +41,7 @@ export default function MyOrdersPage() {
     return (
       <>
         {/* <Navbar /> */}
+        
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#70543E]/50">
             Loading...

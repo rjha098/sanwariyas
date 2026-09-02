@@ -13,7 +13,6 @@ import Link from "next/link";
 
 //  SEO FIX: Naturally injected primary B2B and Manufacturer keywords into FAQ answers for Topical Authority
 
-
 const BUILT_IN_FAQS = [
   {
     name: "How do I place an order at SANWARIYAS?",
@@ -39,14 +38,14 @@ const BUILT_IN_FAQS = [
   {
     name: "What is the minimum order quantity (MOQ)?",
     acceptedAnswer: {
-      text: "Our wholesale MOQ starts strictly at 50 pieces per style. This helps boutique owners, international retailers, and commercial distributors scale up inventory efficiently. Better container pricing applies to larger order volumes.",
+      text: "Our minimum wholesale order value is ₹10,000–12,000/-. To help businesses start with low inventory risk, our Minimum Order Quantity (MOQ) is just 2–3 sets per design. Better pricing and benefits apply to larger bulk container volumes.",
     },
     category: "Ordering",
   },
   {
     name: "What fabrics do you work with?",
     acceptedAnswer: {
-      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, Rayon, Chanderi, Tussar Silk, Velvet, Net, and high-durability mixed blends perfect for B2B Ethnic Wear Suppliers. Every lot is checked thoroughly for colorfastness and stitching tensile strength.",
+      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, and high-durability mixed blends perfect for B2B Ethnic Wear Suppliers. Every lot is checked thoroughly for colorfastness and stitching tensile strength.",
     },
     category: "Products",
   },
@@ -225,7 +224,8 @@ export default function FaqSection({ faqs }) {
 
   return (
     <>
-      {/*                                SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
+      {/* SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -252,6 +252,7 @@ export default function FaqSection({ faqs }) {
         }}
       >
         {/* Dot Grid Background */}
+
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-[0.035] pointer-events-none"
@@ -263,6 +264,7 @@ export default function FaqSection({ faqs }) {
         />
 
         {/* Frame Decorative Lines */}
+
         <div
           aria-hidden="true"
           className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#BE6E5B]/30 to-transparent"
@@ -281,6 +283,7 @@ export default function FaqSection({ faqs }) {
         />
 
         {/* Giant Background Watermark */}
+
         <div
           aria-hidden="true"
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
@@ -294,6 +297,7 @@ export default function FaqSection({ faqs }) {
         </div>
 
         {/* Floating Accent Orbs — subtle extra polish, purely decorative */}
+
         <div
           aria-hidden="true"
           className="absolute top-1/4 left-[8%] w-2 h-2 rounded-full bg-[#BE6E5B]/40 hidden lg:block"
@@ -359,7 +363,7 @@ export default function FaqSection({ faqs }) {
               className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold leading-tight"
             >
               Frequently Asked:
-              {/* ✅ SEO FIX: Injected visually hidden primary priority keyword */}
+              {/* SEO FIX: Injected visually hidden primary priority keyword */}
               <span className="sr-only">
                 {" "}
                 - Wholesale Ethnic Wear Supplier India
@@ -409,7 +413,7 @@ export default function FaqSection({ faqs }) {
                 const globalIndex = finalFaqsList.findIndex(
                   (f) => f.name === faq.name,
                 );
-                return (
+                return (  
                   <FaqItem
                     key={globalIndex}
                     index={globalIndex}
@@ -454,7 +458,7 @@ export default function FaqSection({ faqs }) {
             {/* ✅ SEO FIX: Maintained Title and Aria-Label for contextual link equity */}
             <Link
               href="/contact"
-               prefetch={false}
+              prefetch={false}
               title="Contact Wholesale Ethnic Wear Manufacturer"
               aria-label="Contact SANWARIYAS wholesale export team"
               className="group relative inline-flex items-center justify-center gap-3 border-2 border-[#7A3D2A] text-[#7A3D2A] font-sans text-[10px] md:text-xs tracking-[0.3em] uppercase font-bold px-8 py-4 rounded-md hover:text-[#FDF7F2] transition-colors duration-500 overflow-hidden flex-shrink-0 w-full sm:w-auto"

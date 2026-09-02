@@ -103,10 +103,12 @@ const cormorant = Cormorant_Garamond({
   weight: ["400", "500", "600", "700"],
 });
 
+
 // ── Woven cross-hatch texture — a recurring, subject-true motif (handloom
 // cotton weave) used in place of a generic dot-grid. Opacity/scale is
 // varied per section so the page doesn't read as one pattern stamped
 // repeatedly. ──
+
 function WeaveTexture({ opacity = 0.03, size = 14 }) {
   return (
     <div
@@ -277,7 +279,7 @@ export default function AboutPage() {
                 Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali, A-Line Suit, or Co-ord Set, passes through a meticulous four-step quality process before it leaves our factory. Every garment is individually inspected before dispatch, ensuring consistent quality across every order.
               </p>
               <p>
-                With over 500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead. We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.
+                With over 1500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead. We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.
               </p>
               <p>
                 Today, our garments are trusted across more than 50 countries, yet the philosophy remains unchanged. <strong className="text-[#7A3D2A] font-bold block mt-3">“Every piece is crafted with the same care, attention, and commitment to quality that shaped our very first workshop.”</strong>
@@ -288,6 +290,7 @@ export default function AboutPage() {
                 than four identical bordered boxes: a continuous strip with
                 dashed thread-dividers between each figure, so it reads as
                 one measured statement instead of a generic stat-card grid. */}
+
             <div className="mt-16 relative rounded-2xl border border-[#BE6E5B]/20 bg-white/50 backdrop-blur-sm overflow-hidden">
               <div
                 aria-hidden="true"
@@ -297,7 +300,7 @@ export default function AboutPage() {
                 {[
                   { v: "10,000+", l: "Pieces/month" },
                   { v: "4-Step", l: "Quality control" },
-                  { v: "500+", l: "Designs per season" },
+                  { v: "1500+", l: "Designs per season" },
                   { v: "15+", l: "Fabric categories" },
                 ].map((s) => (
                   <div
@@ -481,7 +484,7 @@ export default function AboutPage() {
                 Fashion trends evolve, collections change, and businesses grow
                 but trust remains timeless. At SANWARIYAS, every order is
                 approached with the same care and accountability that shaped our
-                earliest days. Our 500+ fresh designs every season, meticulous
+                earliest days. Our 1500+ fresh designs every season, meticulous
                 4-step quality process, and commitment to delivering consistent
                 quality are all guided by one simple belief: when our customers
                 succeed, we succeed alongside them. That philosophy continues to

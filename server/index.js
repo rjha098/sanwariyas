@@ -282,6 +282,7 @@ const isAllowedOrigin = (origin) => {
   return vercelPreviewPattern.test(origin);
 };
 
+
 app.use(
   cors({
     origin: (origin, callback) => {

@@ -668,7 +668,7 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="anim-stats flex items-center gap-3">
                 <StatPill
-                  value="500+"
+                  value="1500+"
                   label="Designs"
                   accentGold={slide.accentGold}
                 />
