@@ -1,4 +1,5 @@
 // FILE: client/src/components/layout/Navbar.js
+
 "use client";
 import NotificationBell from "@/components/ui/NotificationBell";
 import { useState, useEffect } from "react";
@@ -207,7 +208,7 @@ export default function Navbar() {
                 className="font-display text-2xl tracking-widest"
                 style={{
                   lineHeight: "1",
-                  color: logoHovered ? "#BE6E5B" : "#a07f61",
+                  color: logoHovered ? "#7A3D2A" : "#BE6E5B",
                   transition: "color 0.3s ease",
                 }}
               >
@@ -221,7 +222,7 @@ export default function Navbar() {
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   marginTop: "4px",
-                  color: logoHovered ? "#BE6E5B" : "#a07f61",
+                  color: logoHovered ? "#7A3D2A" : "#BE6E5B",
                   transition: "color 0.3s ease",
                 }}
               >
@@ -231,6 +232,7 @@ export default function Navbar() {
           </Link>
 
           {/* DESKTOP NAV */}
+          
           <nav
             aria-label="Main Navigation"
             className="hidden lg:flex"
@@ -240,7 +242,7 @@ export default function Navbar() {
               const isActive = pathname === link.href;
               const isHovered = hoveredLink === (link.href || link.id);
 
-              // ✅ MEGA MENU RENDERING (Desktop)
+              // MEGA MENU RENDERING (Desktop)
               if (link.type === "megamenu") {
                 return (
                   <div
@@ -339,117 +341,7 @@ export default function Navbar() {
           </nav>
 
           {/* AUTH, CTA + HAMBURGER */}
-
-          {/* 
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {isCustomer && (
-              <Link
-                href="/cart"
-                aria-label="View Cart"
-                title="View Cart"
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "#7A3D2A",
-                }}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                {cartItemCount > 0 && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: "-8px",
-                      right: "-8px",
-                      background: "#7A3D2A",
-                      color: "#fff",
-                      fontSize: "9px",
-                      fontWeight: "bold",
-                      borderRadius: "9999px",
-                      width: "16px",
-                      height: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {cartItemCount}
-                  </span>
-                )}
-              </Link>
-            )}
-
-        
-            <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5"> */}
-
-          {/* AUTH, CTA + HAMBURGER */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {/* CART ICON TEMPORARILY HIDDEN
-              {isCustomer && (
-                <Link
-                  href="/cart"
-                  aria-label="View Cart"
-                  title="View Cart"
-                  style={{
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#7A3D2A",
-                  }}
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                  </svg>
-                  {cartItemCount > 0 && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: "-8px",
-                        right: "-8px",
-                        background: "#7A3D2A",
-                        color: "#fff",
-                        fontSize: "9px",
-                        fontWeight: "bold",
-                        borderRadius: "9999px",
-                        width: "16px",
-                        height: "16px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {cartItemCount}
-                    </span>
-                  )}
-                </Link>
-              )}
-              */}
-              
 
             {/* Desktop Auth */}
             <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
@@ -598,7 +490,7 @@ export default function Navbar() {
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
 
-              // ✅ MEGA MENU RENDERING (Mobile Accordion)
+              // MEGA MENU RENDERING (Mobile Accordion)
               if (link.type === "megamenu") {
                 return (
                   <div

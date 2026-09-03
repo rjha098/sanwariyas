@@ -9,12 +9,30 @@ import { fetchMyOrders } from "@/lib/api";
 import Footer from "@/components/layout/Footer";
 
 const STATUS_MAP = {
-  pending:    { label: "Pending",    cls: "bg-amber-50 text-amber-700 border-amber-200" },
-  confirmed:  { label: "Confirmed",  cls: "bg-blue-50 text-blue-700 border-blue-200" },
-  processing: { label: "Processing", cls: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-  shipped:    { label: "Shipped",    cls: "bg-purple-50 text-purple-700 border-purple-200" },
-  delivered:  { label: "Delivered",  cls: "bg-green-50 text-green-700 border-green-200" },
-  cancelled:  { label: "Cancelled",  cls: "bg-red-50 text-red-700 border-red-200" },
+  pending: {
+    label: "Pending",
+    cls: "bg-amber-50 text-amber-700 border-amber-200",
+  },
+  confirmed: {
+    label: "Confirmed",
+    cls: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+  processing: {
+    label: "Processing",
+    cls: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  },
+  shipped: {
+    label: "Shipped",
+    cls: "bg-purple-50 text-purple-700 border-purple-200",
+  },
+  delivered: {
+    label: "Delivered",
+    cls: "bg-green-50 text-green-700 border-green-200",
+  },
+  cancelled: {
+    label: "Cancelled",
+    cls: "bg-red-50 text-red-700 border-red-200",
+  },
 };
 
 export default function MyOrdersPage() {
@@ -40,7 +58,6 @@ export default function MyOrdersPage() {
   if (authChecking || loading) {
     return (
       <>
-        {/* <Navbar /> */}
         
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#70543E]/50">
@@ -55,6 +72,7 @@ export default function MyOrdersPage() {
   return (
     <>
       {/* <Navbar /> */}
+
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <button
@@ -64,11 +82,15 @@ export default function MyOrdersPage() {
             ← Back to Dashboard
           </button>
 
-          <h1 className="font-display text-3xl text-[#574325] mb-8">My Orders</h1>
+          <h1 className="font-display text-3xl text-[#574325] mb-8">
+            My Orders
+          </h1>
 
           {orders.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-xl border border-[#E8D5A3]/40">
-              <p className="font-sans text-sm text-[#a07f61] mb-4">No orders yet.</p>
+              <p className="font-sans text-sm text-[#a07f61] mb-4">
+                No orders yet.
+              </p>
               <button
                 onClick={() => router.push("/products")}
                 className="inline-block bg-[#7A3D2A] text-white px-6 py-3 font-sans text-xs tracking-[0.2em] uppercase font-bold rounded-md hover:bg-[#5c2d1f] transition-colors"
@@ -95,15 +117,18 @@ export default function MyOrdersPage() {
                           {order.orderNumber}
                         </h3>
                         <p className="font-sans text-xs text-[#70543E]/70">
-                          {order.totalPieces} pieces ({order.totalSets} sets) · ₹
-                          {order.totalAmount.toLocaleString("en-IN")}
+                          {order.totalPieces} pieces ({order.totalSets} sets) ·
+                          ₹{order.totalAmount.toLocaleString("en-IN")}
                         </p>
                         <p className="font-sans text-[10px] text-[#a07f61] mt-2">
-                          {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {new Date(order.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )}
                         </p>
                       </div>
                       <span
