@@ -51,7 +51,43 @@ export const metadata = {
 export default function FaqPage() {
   return (
     <>
-      {/*  Injected BreadcrumbList and FAQPage Schema to trigger Google Rich Snippets */}
+     
+     
+     
+     
+     
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* Injected BreadcrumbList Schema to trigger Google Rich Snippets */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -74,47 +110,18 @@ export default function FaqPage() {
                 },
               ],
             },
-            {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: [
-                {
-                  "@type": "Question",
-                  name: "How do I place a wholesale order at SANWARIYAS?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Simply browse our wholesale catalogue, select the styles you want to source, and fill out the bulk inquiry form with your requirements. Our export desk will respond within 24 hours with a custom proposal quote.",
-                  },
-                },
-                {
-                  "@type": "Question",
-                  name: "What is the minimum order quantity (MOQ)?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Our wholesale MOQ starts strictly at 50 pieces per style. This helps boutique owners, international retailers, and commercial distributors scale up inventory efficiently.",
-                  },
-                },
-                {
-                  "@type": "Question",
-                  name: "Do you offer customization on ethnic wear?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Yes — we offer full contract manufacturing support including custom fabric selection, custom size specifications, custom embroidery, print production, and private label/OEM solutions.",
-                  },
-                },
-                {
-                  "@type": "Question",
-                  name: "Do you ship internationally?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Yes. We export worldwide to over 50+ countries including the USA, UK, UAE, Canada, and Australia. All global export shipments are fully cargo-insured and securely packed.",
-                  },
-                },
-              ],
-            },
           ]),
         }}
       />
+
+
+
+
+
+
+
+
+
 
       <main
         id="main-content"
@@ -125,7 +132,7 @@ export default function FaqPage() {
 
         {/* 2. Main FAQ Section (Padding added to account for Navbar height) */}
         <div className="flex-grow">
-          <FaqSection />
+          <FaqSection injectSchema={true} />
         </div>
 
         {/* 3. Footer */}

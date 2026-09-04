@@ -46,31 +46,34 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
-// ✅ SEO FIX: Robust Schema for Homepage (Organization, Website Sitelinks, and FAQ)
-const homepageSchema = [
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How do I place a wholesale order at SANWARIYAS?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Browse our catalog, select your styles, and fill out the inquiry form. Our export team responds within 24 hours.",
-        },
+const homepageSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://sanwariyas.com/#organization",
+      name: "SANWARIYAS",
+      url: "https://sanwariyas.com/",
+      logo: "https://sanwariyas.com/images/og-home.png",
+      description:
+        "Premier wholesale ethnic wear manufacturer and B2B exporter in Jaipur, Rajasthan.",
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        availableLanguage: ["English", "Hindi"],
       },
-      {
-        "@type": "Question",
-        name: "Do you offer customization on ethnic wear?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, we offer full OEM/Contract manufacturing including fabric selection and private labeling.",
-        },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://sanwariyas.com/#website",
+      url: "https://sanwariyas.com/",
+      name: "SANWARIYAS Wholesale",
+      publisher: {
+        "@id": "https://sanwariyas.com/#organization",
       },
-    ],
-  },
-];
+    },
+  ],
+};
 
 async function getFeaturedProducts() {
   try {

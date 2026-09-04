@@ -665,13 +665,13 @@ export default function UserDashboard() {
     }
   };
 
-const handleLogout = () => {
-  showToast("Logged out successfully.", "success"); // Pehle toast dikhao
-  setTimeout(() => {
-    logout(); 
-    router.replace("/login"); 
-  }, 1500);
-};
+  const handleLogout = () => {
+    showToast("Logged out successfully.", "success"); // Pehle toast dikhao
+    setTimeout(() => {
+      logout();
+      router.replace("/login");
+    }, 1500);
+  };
 
   //  Account Deletion Function
   const handleDeleteAccount = async () => {
@@ -1185,30 +1185,38 @@ const handleLogout = () => {
                             required
                           />
                         </div>
+
                         <div>
                           <label className={labelCls}>Email Address</label>
                           <input
                             type="email"
                             value={user?.email || ""}
-                            readOnly
-                            className={`${inputCls} opacity-60 cursor-not-allowed`}
+                            disabled
+                            className="w-full px-4 py-2.5 border border-[#E8D5A3]/60 rounded-lg font-sans text-sm text-[#574325] bg-[#FAF3E8]/50 opacity-60 cursor-not-allowed outline-none"
                           />
+                          <p className="mt-1.5 font-sans text-[11px] text-[#a07f61] italic">
+                            Email is locked for security. Contact support to
+                            change it.
+                          </p>
                         </div>
+
                         <div>
                           <label className={labelCls}>Phone Number</label>
                           <PhoneInput
                             value={profileData.phone}
-                            onChange={(combined) =>
-                              setProfileData({
-                                ...profileData,
-                                phone: combined,
-                              })
-                            }
-                            className="flex items-stretch w-full border border-[#E8D5A3]/60 rounded-lg overflow-hidden bg-[#FAF3E8]/50 text-sm focus-within:border-[#6F4E37] transition-colors"
+                            onChange={() => {}}
+                            disabled
+                            readOnly
+                            className="flex items-stretch w-full border border-[#E8D5A3]/60 rounded-lg overflow-hidden bg-[#FAF3E8]/50 text-sm opacity-60 cursor-not-allowed outline-none"
                             textClassName="text-[#574325]"
                             verticalPadding="py-2.5"
                           />
+                          <p className="mt-1.5 font-sans text-[11px] text-[#a07f61] italic">
+                            Phone number is locked for security. Contact support
+                            to change it.
+                          </p>
                         </div>
+
                         <div>
                           <label className={labelCls}>Company / Boutique</label>
                           <input

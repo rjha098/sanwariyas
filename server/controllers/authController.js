@@ -98,7 +98,7 @@ export const login = async (req, res) => {
     const id = identifier.trim().toLowerCase();
     const cleanPhoneInput = identifier.trim().replace(/[\s-\+]/g, "");
 
-    // ENV ADMIN CHECK     
+    // ENV ADMIN CHECK
     const isAdminId =
       safeCompare(id, adminUsername) ||
       safeCompare(id, adminEmail) ||
@@ -291,16 +291,26 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-  
     // resetPassword function mein
-const { email, otp, newPassword } = req.body;
+    const { email, otp, newPassword } = req.body;
 
-// Strict string check taaki hacker object/code na bhej sake
-if (!email || !otp || !newPassword || typeof email !== "string" || typeof otp !== "string") {
-  return res.status(400).json({ success: false, message: "All fields required and must be valid text." });
-}
+    // Strict string check taaki hacker object/code na bhej sake
+    if (
+      !email ||
+      !otp ||
+      !newPassword ||
+      typeof email !== "string" ||
+      typeof otp !== "string"
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "All fields required and must be valid text.",
+        });
+    }
 
-await authService.resetUserPassword(email, otp, newPassword);
+    await authService.resetUserPassword(email, otp, newPassword);
 
     return res.json({
       success: true,
@@ -395,7 +405,7 @@ export const getMe = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { name, phone, company, country } = req.body;
+    const { name, company, country } = req.body;
     const user = await User.findById(req.authUser.id);
     if (!user)
       return res
@@ -403,10 +413,10 @@ export const updateProfile = async (req, res) => {
         .json({ success: false, message: "User not found" });
 
     user.name = name || user.name;
-    user.phone = phone || user.phone;
     user.company = company || user.company;
     user.country = country || user.country;
     await user.save();
+
     res.json({
       success: true,
       message: "Profile updated successfully",
@@ -429,7 +439,6 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 export const logout = async (req, res) => {
   try {
@@ -568,7 +577,6 @@ export const getVisibility = async (req, res) => {
     return res.status(500).json({ success: false });
   }
 };
-
 
 export const setOffline = async (req, res) => {
   try {

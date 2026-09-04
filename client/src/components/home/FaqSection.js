@@ -11,8 +11,6 @@ import Link from "next/link";
 // Accent     : #BE6E5B  (Terracotta)
 // ─────────────────────────────────────────────────
 
-//  SEO FIX: Naturally injected primary B2B and Manufacturer keywords into FAQ answers for Topical Authority
-
 const BUILT_IN_FAQS = [
   {
     name: "How do I place an order at SANWARIYAS?",
@@ -45,7 +43,7 @@ const BUILT_IN_FAQS = [
   {
     name: "What fabrics do you work with?",
     acceptedAnswer: {
-      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, and high-durability mixed blends perfect for B2B Ethnic Wear Suppliers. Every lot is checked thoroughly for colorfastness and stitching tensile strength.",
+      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, and high-durability mixed blends perfect for B2B Ethnic Wear Suppliers. Every lot is checked thoroughly for color fastness and stitching tensile strength.",
     },
     category: "Products",
   },
@@ -63,14 +61,15 @@ const BUILT_IN_FAQS = [
     },
     category: "Ordering",
   },
+
   {
     name: "What payment methods do you accept?",
     acceptedAnswer: {
-      text: "We process payments via secure corporate Bank Wire Transfers (SWIFT / International Telegraphic Transfers), NEFT, RTGS, and legal business invoices. For overseas trade orders, we accept clean wire payments in USD, GBP, AED, and EUR accounts.",
+      text: "We process payments via secure corporate bank transfers including NEFT, RTGS, and IMPS, as well as standard UPI methods. All wholesale orders are processed strictly in INR and are accompanied by GST-compliant legal business invoices.",
     },
     category: "Payment",
   },
-  // ── NEW FAQS ADDED ──────────────────────────────────────────────────────
+
   {
     name: "Do you provide size charts and grading for bulk orders?",
     acceptedAnswer: {
@@ -88,21 +87,21 @@ const BUILT_IN_FAQS = [
   {
     name: "Do you offer private labelling and branded packaging?",
     acceptedAnswer: {
-      text: "Yes, we support full private label programs — custom neck labels, brand tags, poly-bag branding, and tailored hang-tag printing. Share your brand guidelines and we'll handle the rest at no extra design cost above MOQ.",
+      text: "Yes, we support full private label programs, including custom neck labels, brand tags, poly-bag branding, and tailored hang-tag printing. Simply share your brand guidelines with us, and we’ll take care of the rest. Additional customization will incur extra costs.",
     },
     category: "Customization",
   },
   {
     name: "What quality checks happen before shipping?",
     acceptedAnswer: {
-      text: "Every lot undergoes a 3-stage QC process: fabric inspection, in-line stitching checks, and a final pre-dispatch audit covering measurements, finishing, and packaging — so what you see in samples is exactly what you receive in bulk.",
+      text: "Every lot undergoes our strict 4-step quality control process: Fabric Inspection (testing color fastness and weave), Precision Cutting (for perfect sizing), Stitching Audit (checking seam strength), and Final Finishing (trimming, ironing, and strict packaging audits) — so what you see in samples is exactly what you receive in bulk.",
     },
     category: "Products",
   },
   {
     name: "Can I track my shipment after dispatch?",
     acceptedAnswer: {
-      text: "Yes. Once your order is dispatched, you'll receive a tracking number and carrier details via email. Our export desk also proactively shares status updates at key milestones — customs clearance, transit, and final delivery.",
+      text: "Yes. Tracking details and carrier information are generated as soon as your order is dispatched. Whenever you need updates on your shipment status—such as transit milestones or delivery estimates—simply reach out to our support team, and they will promptly assist you with all tracking details.",
     },
     category: "Shipping",
   },
@@ -148,7 +147,7 @@ const CATEGORY_COLORS = {
   },
 };
 
-export default function FaqSection({ faqs }) {
+export default function FaqSection({ faqs, injectSchema = false }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   // Assign categories to incoming schema items based on keywords
@@ -225,24 +224,27 @@ export default function FaqSection({ faqs }) {
   return (
     <>
       {/* SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: finalFaqsList.map((faq) => ({
-              "@type": "Question",
-              name: faq.name,
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: faq.acceptedAnswer.text,
-              },
-            })),
-          }),
-        }}
-      />
+      // NEW:
+      {/* SEO FIX: Conditionally inject Dynamic FAQPage Schema based on prop */}
+      {injectSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: finalFaqsList.map((faq) => ({
+                "@type": "Question",
+                name: faq.name,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: faq.acceptedAnswer.text,
+                },
+              })),
+            }),
+          }}
+        />
+      )}
       <section
         aria-labelledby="faq-heading"
         className="relative py-24 md:py-32 overflow-hidden z-10"
@@ -413,7 +415,7 @@ export default function FaqSection({ faqs }) {
                 const globalIndex = finalFaqsList.findIndex(
                   (f) => f.name === faq.name,
                 );
-                return (  
+                return (
                   <FaqItem
                     key={globalIndex}
                     index={globalIndex}

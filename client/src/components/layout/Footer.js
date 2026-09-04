@@ -242,7 +242,7 @@
 //               aria-label="Legal Policies"
 //               className="flex items-center gap-4 text-xs text-[#FDF7F2]/40 tracking-widest"
 //             >
-              
+
 //             {/* <span aria-hidden="true">•</span> */}
 
 //               <Link
@@ -267,8 +267,6 @@
 //     </>
 //   );
 // }
-
-
 
 // FILE: client/src/components/layout/Footer.js
 
@@ -407,7 +405,9 @@ export default function Footer() {
                   <span aria-hidden="true" className="text-[#EAC9A8] mt-0.5">
                     ✦
                   </span>
-                  <span className="text-[#FDF7F2]/60">Mon–Sat: 10:30am – 7pm</span>
+                  <span className="text-[#FDF7F2]/60">
+                    Mon–Sat: 10:30am – 7pm
+                  </span>
                 </li>
               </ul>
             </address>
@@ -515,8 +515,7 @@ export default function Footer() {
               aria-label="Legal Policies"
               className="flex items-center gap-4 text-xs text-[#FDF7F2]/40 tracking-widest"
             >
-
-            {/* <span aria-hidden="true">•</span> */}
+              {/* <span aria-hidden="true">•</span> */}
 
               <Link
                 href="/privacy"
