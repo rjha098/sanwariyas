@@ -1,4 +1,4 @@
- // FILE: server/services/authService.js
+// FILE: server/services/authService.js
 
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
@@ -6,7 +6,11 @@ import { Resend } from "resend";
 import User from "../models/User.js";
 import Inquiry from "../models/Inquiry.js";
 import { safeCompare } from "../utils/authUtils.js";
-import { normalizeEmail, normalizePhone, phoneMatchCandidates } from "../utils/normalize.js";
+import {
+  normalizeEmail,
+  normalizePhone,
+  phoneMatchCandidates,
+} from "../utils/normalize.js";
 
 // In-Memory Store for ENV-only Root Admins
 export const adminOtpStore = new Map();
@@ -248,9 +252,11 @@ export const verifyAdminOtp = async (adminEmail, otp) => {
 // ═════════════════════════════════════════════════════════════════
 // DIRECT LOGIN VALIDATION
 // ═════════════════════════════════════════════════════════════════
+
 export const loginUser = async (identifier, password) => {
   const cleanEmail = normalizeEmail(identifier);
   const phoneCandidates = phoneMatchCandidates(identifier);
+  const typedDigits = normalizePhone(identifier);
 
   // Phone is unique going forward, but old accounts created before that
   // constraint existed can still collide. So instead of trusting the first
@@ -258,22 +264,36 @@ export const loginUser = async (identifier, password) => {
   // every plausible phone form — with/without country code) and check the
   // password against each — this way login works correctly even with
   // legacy data, with no manual DB cleanup required.
-
+  //
+  // phoneCandidates only guesses India's "91" dial code. For any other
+  // country, a bare local number (e.g. a US or UAE user typing just their
+  // number without re-entering the country code) would never match the
+  // stored "<dialcode><localnumber>" value. To cover every country without
+  // hardcoding every dial code, we ALSO match any stored phone that simply
+  // ENDS WITH the digits the person typed — this is safe because
+  // typedDigits is already digit-only (regex-safe) and short local numbers
+  // (<6 digits) are excluded to avoid overly broad matches.
+  const phoneOrConditions = [{ phone: { $in: phoneCandidates } }];
+  if (typedDigits.length >= 6) {
+    phoneOrConditions.push({ phone: { $regex: `${typedDigits}$` } });
+  }
 
   const candidates = await User.find({
-    $or: [{ email: cleanEmail }, { phone: { $in: phoneCandidates } }],
+    $or: [{ email: cleanEmail }, ...phoneOrConditions],
     isActive: true,
   });
 
+  const DUMMY_HASH =
+    "$2a$12$CwTycUXWue0Thq9StjUM0uJ8G8j6xQZQ0Zz9Z9Z9Z9Z9Z9Z9Z9Z9";
 
-const DUMMY_HASH = "$2a$12$CwTycUXWue0Thq9StjUM0uJ8G8j6xQZQ0Zz9Z9Z9Z9Z9Z9Z9Z9Z9"; 
-
-if (candidates.length === 0) {
-  await bcrypt.compare(password, DUMMY_HASH); // Fake password check time burn karne ke liye
-  const err = new Error("Account not found. Please check your email or sign up.");
-  err.statusCode = 401;
-  throw err;
-}
+  if (candidates.length === 0) {
+    await bcrypt.compare(password, DUMMY_HASH); // Fake password check time burn karne ke liye
+    const err = new Error(
+      "Account not found. Please check your email or sign up.",
+    );
+    err.statusCode = 401;
+    throw err;
+  }
 
   let user = null;
   for (const candidate of candidates) {
@@ -322,11 +342,10 @@ export const initiateForgotPassword = async (identifier) => {
     throw err;
   }
 
-  const user =
-    candidates.find((c) => c.email === cleanEmail) || candidates[0];
+  const user = candidates.find((c) => c.email === cleanEmail) || candidates[0];
 
   const otp = generateOtp();
-  console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`); 
+  console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`);
 
   user.resetOtpHash = hashOtp(otp);
   user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
@@ -349,15 +368,15 @@ export const initiateForgotPassword = async (identifier) => {
 
   if (!sent) console.info(`[auth][dev] Reset OTP for ${user.email}: ${otp}`);
 
-  return { emailHint: maskEmail(user.email), message: "Reset code has been sent." };
+  return {
+    emailHint: maskEmail(user.email),
+    message: "Reset code has been sent.",
+  };
 };
 
-
-
 export const resetUserPassword = async (email, otp, newPassword) => {
-
-const cleanEmail = normalizeEmail(email);
-const user = await User.findOne({ email: cleanEmail });
+  const cleanEmail = normalizeEmail(email);
+  const user = await User.findOne({ email: cleanEmail });
 
   if (
     !user ||

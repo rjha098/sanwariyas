@@ -4,12 +4,14 @@
 import { useState } from "react";
 import Link from "next/link";
 
+
 // ── COLOR PALETTE ────────────────────────────────
 // Background : #FDF7F2 to #F2D9C3 (Light Cream to Pumpkin Essence)
 // Headings   : #7A3D2A  (Dark Burnt)
 // Body text  : #a07f61  (Warm Brown)
 // Accent     : #BE6E5B  (Terracotta)
 // ─────────────────────────────────────────────────
+
 
 const BUILT_IN_FAQS = [
   {
