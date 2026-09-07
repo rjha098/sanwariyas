@@ -24,7 +24,8 @@ export default function CheckoutPage() {
     setToast({ isVisible: true, message, type });
   const hideToast = () => setToast((t) => ({ ...t, isVisible: false }));
 
-  useEffect(() => {
+  
+  useEffect(() => {        
     if (!authChecking && !isAuthenticated) {
       router.replace("/login?mode=signin&redirect=/checkout");
     }

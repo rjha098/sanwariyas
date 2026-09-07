@@ -197,7 +197,7 @@ export default function CartPage() {
                 </p>
               </div>
               <button
-                type="button"
+                type="button"        
                 disabled={!allMoqMet}
                 onClick={() => router.push("/checkout")}
                 className="bg-[#7A3D2A] text-white px-8 py-3 font-sans text-xs tracking-[0.2em] uppercase font-bold rounded-md hover:bg-[#5c2d1f] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"

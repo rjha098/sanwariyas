@@ -1,5 +1,4 @@
 // FILE: server/services/authService.js
-
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { Resend } from "resend";
@@ -87,6 +86,7 @@ export const signupCustomer = async ({
       err.statusCode = 409;
       throw err;
     }
+
     const err = new Error("An account with this phone number already exists.");
     err.statusCode = 409;
     throw err;
@@ -109,6 +109,7 @@ export const signupCustomer = async ({
   // match (only one of the two) is intentionally NOT linked, so an inquiry
   // never becomes visible to the wrong account just because one field
   // happens to be reused.
+
   await Inquiry.updateMany(
     {
       userId: null,
@@ -273,6 +274,7 @@ export const loginUser = async (identifier, password) => {
   // ENDS WITH the digits the person typed — this is safe because
   // typedDigits is already digit-only (regex-safe) and short local numbers
   // (<6 digits) are excluded to avoid overly broad matches.
+
   const phoneOrConditions = [{ phone: { $in: phoneCandidates } }];
   if (typedDigits.length >= 6) {
     phoneOrConditions.push({ phone: { $regex: `${typedDigits}$` } });

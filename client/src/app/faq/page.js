@@ -51,43 +51,7 @@ export const metadata = {
 export default function FaqPage() {
   return (
     <>
-     
-     
-     
-     
-     
-
-
-
-
-
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* Injected BreadcrumbList Schema to trigger Google Rich Snippets */}
+      {/* Injected BreadcrumbList Schema to trigger Google Rich Snippets */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -113,15 +77,6 @@ export default function FaqPage() {
           ]),
         }}
       />
-
-
-
-
-
-
-
-
-
 
       <main
         id="main-content"

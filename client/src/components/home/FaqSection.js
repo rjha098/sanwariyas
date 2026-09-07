@@ -12,7 +12,6 @@ import Link from "next/link";
 // Accent     : #BE6E5B  (Terracotta)
 // ─────────────────────────────────────────────────
 
-
 const BUILT_IN_FAQS = [
   {
     name: "How do I place an order at SANWARIYAS?",

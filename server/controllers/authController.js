@@ -302,12 +302,10 @@ export const resetPassword = async (req, res) => {
       typeof email !== "string" ||
       typeof otp !== "string"
     ) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "All fields required and must be valid text.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "All fields required and must be valid text.",
+      });
     }
 
     await authService.resetUserPassword(email, otp, newPassword);

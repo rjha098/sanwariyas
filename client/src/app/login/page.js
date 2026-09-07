@@ -517,7 +517,8 @@ export default function LoginPage() {
       ) {
         setMode(queryMode);
       }
-
+     
+      
       //  FIX: honor ?redirect=/cart (or /checkout) so a guest who tried to
       // Buy Now / go to checkout lands back where they were after logging in.
 
