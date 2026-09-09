@@ -677,8 +677,6 @@
 //   );
 // }
 
-
-
 // FILE: client/src/app/operations-center/blog/create/page.js
 "use client";
 
@@ -1155,7 +1153,9 @@ export default function CreateBlogPage() {
 
             <div className="space-y-5">
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
-                <label className={lbl}>Thumbnail Image (Bahar ke liye) *</label>
+                <label className={lbl}>
+                  Thumbnail Image (For Outer Side) *
+                </label>
                 <div className="relative">
                   <input
                     id="blog-image-upload"
@@ -1210,7 +1210,7 @@ export default function CreateBlogPage() {
               </div>
 
               <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-5">
-                <label className={lbl}>Banner Image (Andar ke liye)</label>
+                <label className={lbl}>Banner Image (Inner Side)</label>
                 <div className="relative">
                   <input
                     id="blog-banner-upload"
@@ -1352,7 +1352,6 @@ export default function CreateBlogPage() {
                   />
                 </div>
               </div>
-
             </div>
           </form>
         </div>

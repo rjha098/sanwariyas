@@ -63,7 +63,9 @@ export const metadata = {
   },
 };
 
-// Pura Timeline text yahan map kiya gaya hai
+
+// complete timeline text  present  here  and  mapped here 
+
 const TIMELINE = [
   {
     year: "2017",

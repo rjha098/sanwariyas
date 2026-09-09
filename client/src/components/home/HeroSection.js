@@ -209,18 +209,27 @@ const STYLES = `
     background:linear-gradient(to bottom, transparent 0%, rgba(139,101,8,0.18) 40%, rgba(139,101,8,0.18) 60%, transparent 100%);
   }
 
+
   @media (min-width:1024px) {
     .hero-section {
-      height: 100dvh;
       min-height: 620px;
-      max-height: 900px;
     }
     .hero-main-grid {
-      flex: 1 1 0;
-      min-height: 0;
+      flex: 1 1 auto;
+      min-height: 480px;
     }
     .hero-thumb-strip {
       flex-shrink: 0;
+    }
+  }
+
+  @media (min-width:1024px) and (max-height: 700px) {
+    .hero-thumb-strip {
+      padding-top: 6px;
+      padding-bottom: 10px;
+    }
+    .thumb-card {
+      transform: scale(0.85) !important;
     }
   }
 `;
@@ -418,7 +427,7 @@ export default function HeroSection() {
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 
       <section
-        className="hero-section relative w-full flex flex-col overflow-hidden"
+        className="hero-section relative w-full flex flex-col overflow-x-hidden"
         aria-label="Sanwariyas Global Wholesale – Premium Indian Ethnic Wear"
         aria-roledescription="carousel"
         itemScope
@@ -439,36 +448,12 @@ export default function HeroSection() {
         ))}
         <div aria-hidden="true" className="grain-layer" />
 
-        {/* ── Decorative vertical lines ── */}
-        <div
-          aria-hidden="true"
-          className="deco-vline hidden lg:block h-3/4 top-[12%] left-[5.5%] z-10"
-        />
-        <div
-          aria-hidden="true"
-          className="deco-vline hidden lg:block h-2/5 top-[30%] right-[5.5%] z-10"
-        />
-
-        {/* ── Corner ornaments ── */}
-        <div
-          aria-hidden="true"
-          className="absolute top-3 left-3 z-10 hidden lg:block opacity-20"
-        >
-          <CornerOrnament accentGold={slide.accentGold} />
-        </div>
-        <div
-          aria-hidden="true"
-          className="absolute top-3 right-3 z-10 hidden lg:block opacity-20"
-          style={{ transform: "rotate(90deg)" }}
-        >
-          <CornerOrnament accentGold={slide.accentGold} />
-        </div>
-
         {/* ── Slide counter ── */}
         <div
           aria-hidden="true"
           className="absolute top-5 right-5 z-20 hidden lg:flex items-center gap-2"
         >
+          {/* Current Slide Number */}
           <span
             style={{
               fontFamily: "'Cinzel',serif",
@@ -480,13 +465,10 @@ export default function HeroSection() {
           >
             {String(cur + 1).padStart(2, "0")}
           </span>
-          <div
-            style={{
-              width: "32px",
-              height: "1px",
-              background: "linear-gradient(to right,#C9A485,transparent)",
-            }}
-          />
+
+          <span className="text-[#C9A485] opacity-60 text-xs">/</span>
+
+          {/* Total Slide Number */}
           <span
             style={{
               fontFamily: "'Cinzel',serif",
@@ -503,7 +485,6 @@ export default function HeroSection() {
         {/* ── Main content ── */}
         <div className="hero-main-grid relative z-10 flex-grow flex items-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-14 pt-20 lg:pt-16 pb-2 lg:pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 xl:gap-12 items-center w-full">
-            
             {/* ════ LEFT: Text ════ */}
             <div
               aria-live="polite"
@@ -685,12 +666,7 @@ export default function HeroSection() {
               </div>
             </div>
 
-
-
-
-
-
-{/* ════ RIGHT: Image ════ */}
+            {/* ════ RIGHT: Image ════ */}
             <div
               key={`img-${cur}`}
               className="hero-img-wrap relative flex items-center justify-center order-1 lg:order-2 mb-8 lg:mb-0 mt-4 lg:mt-0"
@@ -703,15 +679,6 @@ export default function HeroSection() {
                   margin: "0 auto",
                 }}
               >
-
-
-
-
-
-
-
-
-
                 {/* Floating orbs */}
                 <div
                   aria-hidden="true"
@@ -837,10 +804,7 @@ export default function HeroSection() {
             className="max-w-7xl mx-auto px-4 lg:px-14"
           >
             {/* Dot indicators */}
-            <div
-              aria-hidden="true"
-              className="flex justify-center gap-2 mb-3"
-            >
+            <div aria-hidden="true" className="flex justify-center gap-2 mb-3">
               {slides.map((s, i) => (
                 <button
                   key={s.id}
