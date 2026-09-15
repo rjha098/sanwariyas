@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkProductsAvailability,
   createProduct,
   deleteProduct,
   getAdminProductById,
@@ -19,6 +20,7 @@ const router = express.Router();
 //  Specific routes FIRST
 router.get("/", getProducts);
 router.get("/categories", getCategories);
+router.post("/check-availability", checkProductsAvailability);
 
 // Admin-protected (must come before /:slug)
 router.get("/admin/list", requireAdmin, getAdminProducts);

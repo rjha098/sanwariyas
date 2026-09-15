@@ -63,8 +63,7 @@ export const metadata = {
   },
 };
 
-
-// complete timeline text  present  here  and  mapped here 
+// complete timeline text  present  here  and  mapped here
 
 const TIMELINE = [
   {
@@ -104,7 +103,6 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-
 
 // ── Woven cross-hatch texture — a recurring, subject-true motif (handloom
 // cotton weave) used in place of a generic dot-grid. Opacity/scale is
@@ -278,13 +276,25 @@ export default function AboutPage() {
 
             <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-left md:text-center mt-8">
               <p>
-                Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali, A-Line Suit, or Co-ord Set, passes through a meticulous four-step quality process before it leaves our factory. Every garment is individually inspected before dispatch, ensuring consistent quality across every order.
+                Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali,
+                A-Line Suit, or Co-ord Set, passes through a meticulous
+                four-step quality process before it leaves our factory. Every
+                garment is individually inspected before dispatch, ensuring
+                consistent quality across every order.
               </p>
               <p>
-                With over 1500+ new designs introduced each season, we help boutiques, retailers, and distributors stay ahead. We provide collections that are fresh, relevant, and commercially strong, allowing our partners to lead the market.
+                With over 1500+ new designs introduced each season, we help
+                boutiques, retailers, and distributors stay ahead. We provide
+                collections that are fresh, relevant, and commercially strong,
+                allowing our partners to lead the market.
               </p>
               <p>
-                Today, our garments are trusted across more than 50 countries, yet the philosophy remains unchanged. <strong className="text-[#7A3D2A] font-bold block mt-3">“Every piece is crafted with the same care, attention, and commitment to quality that shaped our very first workshop.”</strong>
+                Today, our garments are trusted across more than 50 countries,
+                yet the philosophy remains unchanged.{" "}
+                <strong className="text-[#7A3D2A] font-bold block mt-3">
+                  “Every piece is crafted with the same care, attention, and
+                  commitment to quality that shaped our very first workshop.”
+                </strong>
               </p>
             </div>
 

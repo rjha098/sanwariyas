@@ -27,7 +27,35 @@ export const createOrder = async (req, res) => {
         .json({ success: false, message: "Cart is empty." });
     }
 
-    const order = await orderService.createOrder(userObj.id, buyer, items);
+    // NEW: shipping address is mandatory — validated here too (not just in
+    // the Mongoose schema) so we can return a clean 400 error instead of a
+    // raw Mongoose ValidationError if the frontend is ever bypassed.
+    const { shippingAddress } = req.body;
+    if (
+      !shippingAddress ||
+      !shippingAddress.addressLine1 ||
+      !shippingAddress.city ||
+      !shippingAddress.state ||
+      !shippingAddress.pincode
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Complete shipping address is required.",
+      });
+    }
+    if (!/^[0-9]{6}$/.test(String(shippingAddress.pincode))) {
+      return res.status(400).json({
+        success: false,
+        message: "Enter a valid 6-digit pincode.",
+      });
+    }
+
+    const order = await orderService.createOrder(
+      userObj.id,
+      buyer,
+      items,
+      shippingAddress,
+    );
 
     return res.status(201).json({ success: true, order });
   } catch (error) {
@@ -118,6 +146,3 @@ export const getAnalytics = async (req, res) => {
     });
   }
 };
-
-
-

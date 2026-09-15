@@ -27,33 +27,24 @@ const generateOrderNumber = async () => {
   return `ORD-${nextNum}`;
 };
 
-
-
-
 // 1. BULLETPROOF INVOICE GENERATOR (For Billions of Orders)
 
 const generateInvoiceNumber = async () => {
-  // 1. Date (YYYYMMDD) - unique  for  according  to  day 
+  // 1. Date (YYYYMMDD) - unique  for  according  to  day
   const dateString = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  
+
   // 2. Exact Millisecond Timestamp (Agar 2 order same din aaye)
 
   const timeMs = Date.now().toString(36).toUpperCase();
-  
+
   // 3. Cryptographically Secure Random String (if  2   order  come  in  1 milesecond)
 
   const randomStr = crypto.randomBytes(2).toString("hex").toUpperCase();
-  
 
-  // Output Format: INV-20260805-LWK1JXYZ-A1B2 
+  // Output Format: INV-20260805-LWK1JXYZ-A1B2
   // (Here Date + Millisecond Time + Crypto Random all  are  present  it  is  not  dublicate anytime)
   return `INV-${dateString}-${timeMs}-${randomStr}`;
 };
-
-
-
-
-
 
 const buildOrderItems = async (cartItems) => {
   if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -122,7 +113,12 @@ const buildOrderItems = async (cartItems) => {
   return items;
 };
 
-export const createOrder = async (userId, buyer, cartItems) => {
+export const createOrder = async (
+  userId,
+  buyer,
+  cartItems,
+  shippingAddress,
+) => {
   const items = await buildOrderItems(cartItems);
   const totalPieces = items.reduce((sum, i) => sum + i.pieces, 0);
   const totalSets = items.reduce((sum, i) => sum + i.sets, 0);
@@ -141,6 +137,14 @@ export const createOrder = async (userId, buyer, cartItems) => {
     buyerEmail: (buyer.email || "").toLowerCase().trim(),
     buyerPhone: buyer.phone || "",
     buyerCompany: buyer.company || "",
+    shippingAddress: {
+      addressLine1: shippingAddress.addressLine1,
+      addressLine2: shippingAddress.addressLine2 || "",
+      city: shippingAddress.city,
+      state: shippingAddress.state,
+      pincode: String(shippingAddress.pincode),
+      alternatePhone: shippingAddress.alternatePhone || "",
+    },
     items,
     totalPieces,
     totalSets,

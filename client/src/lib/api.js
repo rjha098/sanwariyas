@@ -537,6 +537,11 @@ export const updateStaffStatus = (token, id, data) =>
 export const deleteStaffAccount = (token, id) =>
   api.delete(`/auth/staff/${id}`, withAuth(token)).then((r) => r.data);
 
+
+
+
+
+
 // PRODUCTS
 export const fetchProducts = (params = {}) =>
   api.get("/products", { params }).then((r) => r.data);
@@ -544,6 +549,14 @@ export const fetchProductBySlug = (slug) =>
   api.get(`/products/${slug}`).then((r) => r.data);
 export const fetchProductCategories = () =>
   api.get("/products/categories").then((r) => r.data);
+export const checkProductsAvailability = (ids) =>
+  api.post("/products/check-availability", { ids }).then((r) => r.data);
+
+
+
+
+
+
 export const fetchAdminProducts = (token, params = {}) =>
   api
     .get("/products/admin/list", { ...withAuth(token), params })

@@ -4,6 +4,7 @@ import Product from "../models/Product.js";
 import slugify from "slugify";
 import fs from "fs/promises";
 import path from "path";
+import mongoose from "mongoose";
 
 // Fetch products with optional filters and pagination
 // Default: page 1, 12 products per page
@@ -256,6 +257,22 @@ const deleteProduct = async (id) => {
   }
 
   return { deleted: true };
+};
+
+// NEW: check which of the given product IDs still exist AND are available.
+// Used by the cart page to detect deleted/unavailable products WITHOUT
+// depending on pagination limits — this works correctly no matter how
+// large the product catalog grows.
+export const checkProductsAvailability = async (ids) => {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const validIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id));
+  const products = await Product.find({
+    _id: { $in: validIds },
+    isAvailable: true,
+  })
+    .select("_id")
+    .lean();
+  return products.map((p) => String(p._id));
 };
 
 // Add sample products to empty database — for testing only

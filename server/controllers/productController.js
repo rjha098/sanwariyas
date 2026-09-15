@@ -2,6 +2,7 @@
 
 import * as productService from "../services/productService.js";
 
+
 const getProducts = async (req, res) => {
   try {
     const { category, featured, page, limit } = req.query;
@@ -16,7 +17,25 @@ const getProducts = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-  
+
+// NEW: given a list of product IDs (from a customer's cart), return only
+// the ones that are still available. Powers the cart page's orphan-check
+// — no pagination limit involved, so it stays correct at any catalog size.
+const checkProductsAvailability = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "ids must be an array." });
+    }
+    const availableIds = await productService.checkProductsAvailability(ids);
+    res.json({ success: true, availableIds });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const getProductBySlug = async (req, res) => {
   try {
     const product = await productService.getProductBySlug(req.params.slug);
@@ -62,7 +81,6 @@ const getAdminProductById = async (req, res) => {
   }
 };
 
-
 const createProduct = async (req, res) => {
   try {
     //  Directory-based upload — override body.image/images with actual uploaded files, if any
@@ -75,13 +93,11 @@ const createProduct = async (req, res) => {
       );
     }
     const product = await productService.createProduct(req.body);
-    res
-      .status(201)
-      .json({
-        success: true,
-        product,
-        message: "Product created successfully",
-      });
+    res.status(201).json({
+      success: true,
+      product,
+      message: "Product created successfully",
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -129,6 +145,7 @@ const seedData = async (req, res) => {
 };
 
 export {
+  checkProductsAvailability,
   createProduct,
   deleteProduct,
   getAdminProductById,
@@ -139,4 +156,3 @@ export {
   seedData,
   updateProduct,
 };
-   

@@ -284,9 +284,8 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-
-
-  redirect("/");
+  
+  // redirect("/");
 
   return (
     <>

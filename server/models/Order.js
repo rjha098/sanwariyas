@@ -29,6 +29,7 @@ const orderSchema = new mongoose.Schema(
     // FIX: Generate a random string as the default invoice number.
     // If we leave it blank, MongoDB throws a duplicate key error for "null".
     // This creates a unique invoice like "INV-202685-ABC12"
+
     invoiceNumber: {
       type: String,
       unique: true,
@@ -45,11 +46,14 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    buyerName: { type: String, required: true },
-    buyerEmail: { type: String, lowercase: true, trim: true, default: "" },
-    buyerPhone: { type: String, default: "" },
-    buyerCompany: { type: String, default: "" },
+    shippingAddress: {
+      addressLine1: { type: String, required: true, trim: true },
+      addressLine2: { type: String, default: "", trim: true },
+      city: { type: String, required: true, trim: true },
+      state: { type: String, required: true, trim: true },
+      pincode: { type: String, required: true, trim: true },
+      alternatePhone: { type: String, default: "", trim: true },
+    },
 
     items: { type: [orderItemSchema], required: true },
 

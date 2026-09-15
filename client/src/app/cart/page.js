@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart, computeMoq, MIN_PIECES } from "@/hooks/useCart";
 import { getImageUrl } from "@/lib/imageUrl";
-import { fetchProducts } from "@/lib/api";
+import { checkProductsAvailability } from "@/lib/api";
 
 export default function CartPage() {
   const router = useRouter();
@@ -31,32 +31,28 @@ export default function CartPage() {
     }
   }, [authChecking, isAuthenticated, router]);
 
-  // 3. FIX: Database Verification Logic (to  remove  the  orphan  product )
+  // FIX: check only the exact product IDs that are in the cart — this is
+  // correct no matter how large the product catalog grows (previously this
+  // fetched only the first page of products and wrongly removed valid cart
+  // items once the catalog passed 12 products).
   useEffect(() => {
     async function verifyCartItems() {
       if (!hydrated) return;
 
       if (items.length > 0) {
         try {
-          // fetch  the  active  product  from  database
-          const response = await fetchProducts();
-          const activeProducts = response.products || [];
-          const activeProductIds = activeProducts.map((p) => p._id);
-
-          // check  which   product  is in cart and  not  available  in database
+          const cartProductIds = items.map((i) => i.productId);
+          const response = await checkProductsAvailability(cartProductIds);
+          const availableIds = response.availableIds || [];
 
           items.forEach((cartItem) => {
-            if (!activeProductIds.includes(cartItem.productId)) {
+            if (!availableIds.includes(cartItem.productId)) {
               console.log(`Auto-removing deleted product: ${cartItem.name}`);
               removeItem(cartItem.productId);
             }
           });
         } catch (error) {
-
-
           // console.error("Failed to verify cart items:", error);
-
-
         }
       }
       setIsVerifying(false);
@@ -197,7 +193,7 @@ export default function CartPage() {
                 </p>
               </div>
               <button
-                type="button"        
+                type="button"
                 disabled={!allMoqMet}
                 onClick={() => router.push("/checkout")}
                 className="bg-[#7A3D2A] text-white px-8 py-3 font-sans text-xs tracking-[0.2em] uppercase font-bold rounded-md hover:bg-[#5c2d1f] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"

@@ -1,3 +1,5 @@
+// FILE: client/src/app/operations-center/inquiries/[id]/page.js
+
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -65,7 +67,7 @@ export default function InquiryDetailsPage() {
     };
   }, []);
 
-  // ✅ FIX: Fetch Admin Visibility Configuration
+  //  FIX: Fetch Admin Visibility Configuration
   useEffect(() => {
     if (token) {
       api
@@ -103,7 +105,7 @@ export default function InquiryDetailsPage() {
         const fetchedInquiry = res.data.inquiry;
         setInquiry(fetchedInquiry);
 
-        // ✅ FIX: Only clear notifications if the user is actively viewing this tab
+        //  FIX: Only clear notifications if the user is actively viewing this tab
         const isTabActive = document.visibilityState === "visible";
 
         if (!isSilent || isTabActive) {

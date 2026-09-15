@@ -104,12 +104,14 @@ export const signupCustomer = async ({
     isVerified: true,
   });
 
+
   // Link any guest inquiries (submitted before this account existed) that
   // match BOTH this exact email AND this exact phone number — a partial
   // match (only one of the two) is intentionally NOT linked, so an inquiry
   // never becomes visible to the wrong account just because one field
   // happens to be reused.
 
+  
   await Inquiry.updateMany(
     {
       userId: null,
