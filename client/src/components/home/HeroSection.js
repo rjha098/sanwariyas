@@ -842,7 +842,6 @@
 //   );
 // }
 
-
 // FILE: client/src/components/home/HeroSection.js
 
 "use client";
@@ -999,7 +998,7 @@ export default function HeroSection() {
         style={{
           minHeight: "700px",
           background:
-            "linear-gradient(100deg, #F2D9C3 0%, #EAC9A5 28%, #E0BB92 50%, #D2A575 72%, #C08B5C 100%)",
+            "linear-gradient(100deg, #FBF1E4 0%, #F6E6D2 28%, #F0DBBF 50%, #EACFAD 72%, #E0BF98 100%)",
         }}
         aria-label="Sanwariyas Global Wholesale – Premium Indian Ethnic Wear"
         aria-roledescription="carousel"
@@ -1220,20 +1219,16 @@ export default function HeroSection() {
             </div>
 
             {/* ════ RIGHT — one clean, framed photo that changes with the slide ════ */}
-            <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
+            <div className="relative flex justify-center lg:justify-end order-1 lg:order-2 w-full">
               <div
-                className="relative"
-                style={{
-                  width: "clamp(240px, 30vw, 360px)",
-                  height: "clamp(320px, 46vw, 480px)",
-                }}
+                className="relative w-full max-w-[440px] aspect-[3/4] mx-auto lg:mx-0 lg:w-[clamp(240px,30vw,360px)] lg:h-[clamp(320px,46vw,480px)] lg:aspect-auto"
               >
                 <div
                   aria-hidden="true"
                   className="absolute inset-[-12%] rounded-[2.5rem]"
                   style={{
                     background:
-                      "radial-gradient(ellipse at 50% 42%, rgba(231,201,162,0.9) 0%, rgba(192,139,92,0.55) 45%, rgba(242,217,195,0.25) 68%, transparent 82%)",
+                      "radial-gradient(ellipse at 50% 42%, rgba(246,230,210,0.95) 0%, rgba(224,191,152,0.6) 45%, rgba(251,241,228,0.3) 68%, transparent 82%)",
                     filter: "blur(18px)",
                   }}
                 />
