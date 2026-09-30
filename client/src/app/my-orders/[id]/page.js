@@ -1,16 +1,16 @@
 // FILE: client/src/app/my-orders/[id]/page.js
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
-import { fetchOrderById } from "@/lib/api";
+import { fetchOrderById, verifyPayment, createPaymentSession } from "@/lib/api";
+import { redirectToCashfreeCheckout } from "@/lib/cashfree";
 // import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getImageUrl } from "@/lib/imageUrl";
 
-// Map reused for customer side
 const generateTrackingLink = (courier, awb) => {
   if (!awb) return "#";
   const map = {
@@ -29,15 +29,20 @@ const generateTrackingLink = (courier, awb) => {
   );
 };
 
-export default function MyOrderDetailPage() {
+function MyOrderDetailPageInner() {
   const { token, isAuthenticated, authChecking } = useAuth();
   const { loadItems } = useCart();
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
+  const returningFromPayment = searchParams.get("payment") === "return";
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [verifyingPayment, setVerifyingPayment] =
+    useState(returningFromPayment);
+  const [retryingPayment, setRetryingPayment] = useState(false);
 
   useEffect(() => {
     if (!authChecking && !isAuthenticated) {
@@ -54,6 +59,50 @@ export default function MyOrderDetailPage() {
       )
       .finally(() => setLoading(false));
   }, [token, params.id]);
+
+  useEffect(() => {
+    if (!token || !params.id || !returningFromPayment) return;
+
+    let cancelled = false;
+    let attempts = 0;
+
+    const poll = async () => {
+      try {
+        const data = await verifyPayment(token, params.id);
+        if (cancelled) return;
+        setOrder(data.order);
+        attempts += 1;
+        if (data.paymentStatus === "pending" && attempts < 5) {
+          setTimeout(poll, 2000);
+        } else {
+          setVerifyingPayment(false);
+        }
+      } catch {
+        if (!cancelled) setVerifyingPayment(false);
+      }
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+    };
+  }, [token, params.id, returningFromPayment]);
+
+  const handleRetryPayment = async () => {
+    if (!order) return;
+    setRetryingPayment(true);
+    try {
+      const { paymentSessionId } = await createPaymentSession(token, order._id);
+      await redirectToCashfreeCheckout(paymentSessionId);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to start payment.",
+      );
+      setRetryingPayment(false);
+    }
+  };
 
   const handleReorder = () => {
     if (!order) return;
@@ -72,7 +121,6 @@ export default function MyOrderDetailPage() {
   if (authChecking || loading) {
     return (
       <>
-        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center">
           <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#70543E]/50">
             Loading...
@@ -86,7 +134,6 @@ export default function MyOrderDetailPage() {
   if (error || !order) {
     return (
       <>
-        {/* <Navbar /> */}
         <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center px-4">
           <p className="font-sans text-sm text-red-600">
             {error || "Order not found."}
@@ -99,7 +146,6 @@ export default function MyOrderDetailPage() {
 
   return (
     <>
-      {/* <Navbar /> */}
       <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4 print:pt-4">
         <div className="max-w-3xl mx-auto">
           <button
@@ -131,6 +177,45 @@ export default function MyOrderDetailPage() {
             </div>
           </div>
 
+          {verifyingPayment && (
+            <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6 text-center">
+              <p className="font-sans text-sm text-[#70543E]">
+                Confirming your payment with Cashfree — this only takes a
+                moment...
+              </p>
+            </div>
+          )}
+
+          {!verifyingPayment && order.paymentStatus === "paid" && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center justify-between">
+              <p className="font-sans text-sm text-green-700 font-medium">
+                ✓ Payment received
+                {order.paidAt &&
+                  ` on ${new Date(order.paidAt).toLocaleDateString("en-IN")}`}
+                .
+              </p>
+            </div>
+          )}
+
+          {!verifyingPayment &&
+            (order.paymentStatus === "pending" ||
+              order.paymentStatus === "failed") && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden">
+                <p className="font-sans text-sm text-amber-800">
+                  {order.paymentStatus === "failed"
+                    ? "Payment failed or was cancelled. Your order is on hold until payment is completed."
+                    : "Payment not completed yet. Your order will not be processed until payment is received."}
+                </p>
+                <button
+                  onClick={handleRetryPayment}
+                  disabled={retryingPayment}
+                  className="bg-[#7A3D2A] text-white font-sans text-xs tracking-widest uppercase px-5 py-2.5 rounded-md hover:bg-[#5c2d1f] transition-colors disabled:opacity-50 whitespace-nowrap"
+                >
+                  {retryingPayment ? "Starting..." : "Pay Now"}
+                </button>
+              </div>
+            )}
+
           {order.shippingAddress && (
             <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6">
               <p className="font-sans text-[11px] uppercase tracking-widest text-[#a07f61] mb-2">
@@ -143,6 +228,9 @@ export default function MyOrderDetailPage() {
                 <br />
                 {order.shippingAddress.city}, {order.shippingAddress.state} -{" "}
                 {order.shippingAddress.pincode}
+                {order.shippingAddress.country && (
+                  <>, {order.shippingAddress.country}</>
+                )}
                 {order.shippingAddress.alternatePhone && (
                   <>
                     <br />
@@ -153,7 +241,6 @@ export default function MyOrderDetailPage() {
             </div>
           )}
 
-          {/* Dynamic Smart Courier Tracking Button */}
           {order.status !== "cancelled" &&
             (order.awbNumber ? (
               <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -165,6 +252,7 @@ export default function MyOrderDetailPage() {
                     {order.awbNumber}
                   </p>
                 </div>
+
                 <a
                   href={generateTrackingLink(
                     order.courierPartner,
@@ -186,7 +274,6 @@ export default function MyOrderDetailPage() {
               </div>
             ))}
 
-          {/* Invoice */}
           <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6">
             <h2 className="font-sans text-[11px] uppercase tracking-widest text-[#a07f61] mb-4">
               Invoice
@@ -233,5 +320,13 @@ export default function MyOrderDetailPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function MyOrderDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <MyOrderDetailPageInner />
+    </Suspense>
   );
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 const CONTACT_CARDS = [
   {
     label: "Visit Us",
-    line1: "Shiv Plaza, 1st Floor, Shop 10–12",
+    line1: "Shiv Plaza, 1st Floor, Shop 10–14",
     line2: "Sanganer, Jaipur, Rajasthan 302029",
     href: "https://maps.google.com/?q=Shiv+Plaza+Sanganer+Jaipur",
     external: true,
@@ -30,7 +30,7 @@ const CONTACT_CARDS = [
   {
     label: "Call Us",
     line1: "+91 9352111306",
-    line2: "Mon – Sat · 10 am – 7 pm",
+    line2: "Mon – Sat · 10:30 am – 7:30 pm",
     href: "tel:+919251171306",
     external: false,
     icon: (
@@ -228,7 +228,7 @@ export default function InquiryCTASection() {
             email: "hrsanwariyas@gmail.com",
             address: {
               "@type": "PostalAddress",
-              streetAddress: "Shiv Plaza, 1st Floor, Shop 12–13, Sanganer",
+              streetAddress: "Shiv Plaza, 1st Floor, Shop 12–14, Sanganer",
               addressLocality: "Jaipur",
               addressRegion: "Rajasthan",
               postalCode: "302029",
@@ -250,8 +250,8 @@ export default function InquiryCTASection() {
                 "Friday",
                 "Saturday",
               ],
-              opens: "10:00",
-              closes: "19:00",
+              opens: "10:30",
+              closes: "19:30",
             },
           }),
         }}
@@ -385,7 +385,6 @@ export default function InquiryCTASection() {
                 We're Always Here
               </h3>
 
-              {/* ✅ A11Y FIX: Wrapped contact cards in a semantic unordered list */}
               <ul
                 aria-label="Contact Methods"
                 className="flex flex-col gap-3 list-none p-0 m-0"
@@ -446,7 +445,8 @@ export default function InquiryCTASection() {
                   <span className="font-bold text-[#7A3D2A]">
                     Fast, Personal Response
                   </span>{" "}
-                  — Every inquiry is reviewed and replied to directly by our team.
+                  — Every inquiry is reviewed and replied to directly by our
+                  team.
                 </p>
               </div>
             </div>
@@ -539,7 +539,7 @@ export default function InquiryCTASection() {
                 <div aria-hidden="true" className="h-rule w-full" />
 
                 {/* benefits list */}
-                {/* ✅ SEO FIX: Replaced B2C text with target B2B manufacturing and wholesale keywords */}
+                {/*  Replaced B2C text with target B2B manufacturing and wholesale keywords */}
                 <ul
                   className="text-left w-full flex flex-col gap-2.5 list-none p-0 m-0"
                   aria-label="What you get when you inquire"

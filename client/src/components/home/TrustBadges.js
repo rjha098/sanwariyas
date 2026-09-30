@@ -226,18 +226,23 @@ export default function TrustBadges() {
     if (diff < -2) diff += total;
     if (diff > 3) diff -= total;
 
-    if (diff === 0) return "radial-center shadow-[0_16px_40px_rgba(122,61,42,0.12)] bg-gradient-to-b from-[#FDF7F2] to-[#F5E8D8] border-[#BE6E5B]/40";
-    if (diff === -1) return "radial-left-1 shadow-md bg-[#F2D9C3]/60 backdrop-blur-sm border-[#BE6E5B]/20";
-    if (diff === 1) return "radial-right-1 shadow-md bg-[#F2D9C3]/60 backdrop-blur-sm border-[#BE6E5B]/20";
-    if (diff === -2) return "radial-left-2 shadow-sm bg-[#F2D9C3]/40 backdrop-blur-sm border-[#BE6E5B]/10";
-    
+    if (diff === 0)
+      return "radial-center shadow-[0_16px_40px_rgba(122,61,42,0.12)] bg-gradient-to-b from-[#FDF7F2] to-[#F5E8D8] border-[#BE6E5B]/40";
+    if (diff === -1)
+      return "radial-left-1 shadow-md bg-[#F2D9C3]/60 backdrop-blur-sm border-[#BE6E5B]/20";
+    if (diff === 1)
+      return "radial-right-1 shadow-md bg-[#F2D9C3]/60 backdrop-blur-sm border-[#BE6E5B]/20";
+    if (diff === -2)
+      return "radial-left-2 shadow-sm bg-[#F2D9C3]/40 backdrop-blur-sm border-[#BE6E5B]/10";
+
     // ✅ FIX APPLIED HERE: Separated diff === 2 and diff === 3 to hide the 6th card properly
-    if (diff === 2) return "radial-right-2 shadow-sm bg-[#F2D9C3]/40 backdrop-blur-sm border-[#BE6E5B]/10";
-    if (diff === 3) return "radial-hidden-right-out bg-[#F2D9C3]/20"; 
-    
+    if (diff === 2)
+      return "radial-right-2 shadow-sm bg-[#F2D9C3]/40 backdrop-blur-sm border-[#BE6E5B]/10";
+    if (diff === 3) return "radial-hidden-right-out bg-[#F2D9C3]/20";
+
     // Fallback for hidden
     if (diff < -2) return "radial-hidden-left-out bg-[#F2D9C3]/20";
-    return "radial-hidden-right-out bg-[#F2D9C3]/20"; 
+    return "radial-hidden-right-out bg-[#F2D9C3]/20";
   };
 
   return (
@@ -298,12 +303,13 @@ export default function TrustBadges() {
         />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-          
           {/* Header */}
           <div className="text-center mb-8 md:mb-12 w-full">
-            <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-3">
-              Why Retailers and Wholesalers Trust Us{" "}
+            <p className="font-sans text-[8px] md:text-[10px] tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-3">
+              {" "}
+              Why Retailers and Wholesalers Trust Us?{" "}
             </p>
+
             <h2
               id="trust-heading"
               className="font-display text-5xl md:text-6xl text-[#7A3D2A] leading-tight drop-shadow-sm font-bold"
@@ -323,7 +329,7 @@ export default function TrustBadges() {
               <span className="text-[#BE6E5B] text-base animate-pulse">✦</span>
               <div className="h-[2px] w-16 bg-gradient-to-l from-transparent to-[#BE6E5B]" />
             </div>
-            
+
             <p className="max-w-3xl mx-auto text-[#a07f61] text-sm md:text-base leading-relaxed mt-4 font-serif italic font-medium">
               SANWARIYAS is a trusted ethnic wear manufacturer serving
               wholesalers, distributors, retailers, boutiques, private label
@@ -350,7 +356,10 @@ export default function TrustBadges() {
                 </h3>
 
                 {/* Divider */}
-                <div aria-hidden="true" className="h-px w-10 bg-gradient-to-r from-transparent via-[#BE6E5B]/50 to-transparent mx-auto mb-3" />
+                <div
+                  aria-hidden="true"
+                  className="h-px w-10 bg-gradient-to-r from-transparent via-[#BE6E5B]/50 to-transparent mx-auto mb-3"
+                />
 
                 {/* Subtitle */}
                 <p className="text-[10px] md:text-[12px] text-[#8a6a4a] leading-relaxed font-semibold px-2">
@@ -367,7 +376,16 @@ export default function TrustBadges() {
               aria-label="Previous Badge"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#BE6E5B]/40 bg-white/60 backdrop-blur-sm flex items-center justify-center text-[#7A3D2A] hover:bg-[#BE6E5B] hover:text-white hover:border-[#BE6E5B] transition-all duration-300 shadow-sm"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
@@ -376,12 +394,20 @@ export default function TrustBadges() {
               aria-label="Next Badge"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#BE6E5B]/40 bg-white/60 backdrop-blur-sm flex items-center justify-center text-[#7A3D2A] hover:bg-[#BE6E5B] hover:text-white hover:border-[#BE6E5B] transition-all duration-300 shadow-sm"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>
           </div>
-
         </div>
       </section>
     </>

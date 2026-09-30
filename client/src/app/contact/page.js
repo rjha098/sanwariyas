@@ -17,7 +17,7 @@ const contactItems = [
   {
     label: "Visit Us",
     line1:
-      "Shop No. 12,13, 1st Floor, Shiv Plaza, Near HDFC Bank, Printers Colony, Dada Gurudev Nagar, Sanganer",
+      "Shop No. 10-14, 1st Floor, Shiv Plaza, Near HDFC Bank, Dada Gurudev Nagar, Sanganer",
     line2: "Jaipur, Rajasthan 302029",
     href: "https://www.google.com/maps/place/SANWARIYAS/@26.8187965,75.7826464,17z/data=!3m1!4b1!4m6!3m5!1s0x396c4b51b58d103b:0xe385440bc09f2694!8m2!3d26.8187965!4d75.7826464!16s%2Fg%2F11v3hb_9y0",
     external: true,
@@ -34,14 +34,14 @@ const contactItems = [
         className="w-5 h-5 flex-shrink-0"
       >
         <path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.75 4.5 8.5 4.5 8.5S12.5 9.75 12.5 6c0-2.49-2.01-4.5-4.5-4.5z" />
-        <circle cx="8" cy="6" r="1.5" />
+        <circle cx="8" cy= "6" r="1.5" />
       </svg>
     ),
   },
   {
     label: "Call Us",
     line1: "+91 9251171306",
-    line2: "Mon – Sat: 10am – 7pm (IST)",
+    line2: "Mon – Sat: 10:30am – 7:30pm (IST)",
     href: "tel:+919251171306",
     external: false,
     icon: (

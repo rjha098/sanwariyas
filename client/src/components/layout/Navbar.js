@@ -16,11 +16,11 @@ const navLinks = [
     title: "SANWARIYAS Wholesale Ethnic Wear Manufacturer",
   },
 
-  // {
-  //   href: "/products",
-  //   label: "Products",
-  //   title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
-  // },
+  {
+    href: "/products",
+    label: "Products",
+    title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
+  },
 
   {
     href: "/contact",
@@ -31,10 +31,6 @@ const navLinks = [
     href: "/about",
     label: "About",
     title: "About SANWARIYAS Manufacturer",
-  },
-  {
-    href: "/exportdocs",
-    label: "Export",
   },
   {
     id: "discover",
@@ -48,6 +44,10 @@ const navLinks = [
           { href: "/lookbook", label: "Our Lookbook" },
           { href: "/blog", label: "Journal & Blog" },
           { href: "/privacy", label: "Privacy" },
+          {
+            href: "/exportdocs",
+            label: "Export",
+          },
         ],
       },
       {
@@ -232,7 +232,7 @@ export default function Navbar() {
           </Link>
 
           {/* DESKTOP NAV */}
-          
+
           <nav
             aria-label="Main Navigation"
             className="hidden lg:flex"
@@ -342,6 +342,51 @@ export default function Navbar() {
 
           {/* AUTH, CTA + HAMBURGER */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {/* <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href={getDashboardLink()}
+                    className="sw-auth-link"
+                    aria-label="Dashboard"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="sw-auth-link"
+                    aria-label="Log Out"
+                  >
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="sw-auth-link"
+                  aria-label="Log In"
+                >
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  Log In
+                </Link>
+              )}
+            </div>
+ */}
 
             {/* Desktop Auth */}
             <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
@@ -388,6 +433,64 @@ export default function Navbar() {
                 </Link>
               )}
             </div>
+
+            {/* Cart icon — visible to everyone, guests included, since
+                items can be added to the cart before logging in. */}
+            <Link
+              href="/cart"
+              aria-label={`Cart, ${cartItemCount} item${cartItemCount === 1 ? "" : "s"}`}
+              className="hidden lg:flex"
+              style={{
+                position: "relative",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "36px",
+                height: "36px",
+                color: "#a07f61",
+                transition: "color 0.2s ease",
+              }}
+            >
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              {cartItemCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    right: "-6px",
+                    minWidth: "16px",
+                    height: "16px",
+                    padding: "0 4px",
+                    borderRadius: "999px",
+                    background: "#BE6E5B",
+                    color: "#FFFFFF",
+                    fontSize: "10px",
+                    fontWeight: "700",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1,
+                  }}
+                >
+                  {cartItemCount > 99 ? "99+" : cartItemCount}
+                </span>
+              )}
+            </Link>
 
             {/* CTA Button */}
             <Link
@@ -597,6 +700,34 @@ export default function Navbar() {
             })}
 
             {/* Mobile Auth */}
+            <Link
+              href="/cart"
+              onClick={() => setMenuOpen(false)}
+              className="sw-mob-link"
+              aria-label={`Cart, ${cartItemCount} item${cartItemCount === 1 ? "" : "s"}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "16px 0",
+                borderBottom: "1px solid rgba(190,110,91,0.2)",
+                color: "#a07f61",
+                fontSize: "12px",
+                fontWeight: "600",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+              }}
+            >
+              <span>Cart{cartItemCount > 0 ? ` (${cartItemCount})` : ""}</span>
+              <span
+                aria-hidden="true"
+                style={{ color: "#BE6E5B", fontSize: "18px" }}
+              >
+                ›
+              </span>
+            </Link>
+
             {isAuthenticated ? (
               <>
                 <Link

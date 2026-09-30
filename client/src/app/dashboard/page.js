@@ -601,7 +601,7 @@ export default function UserDashboard() {
       loadInquiries();
       loadOrders();
 
-      // NAYA: Listen to global sync
+      // NEW: Listen to global sync
       window.addEventListener("global_60s_sync", silentRefreshInquiries);
 
       return () =>
@@ -707,15 +707,9 @@ export default function UserDashboard() {
   const resolvedCount = inquiries.filter((i) => i.status === "resolved").length;
 
   const navItems = [
-    // {/* CART/ORDERS TEMPORARILY HIDDEN */}
-    // { key: "orders", label: "My Orders", icon: <Icon.order /> },
-    {
-      key: "inquiries",
-      label: "My Inquiries",
-      icon: <Icon.inquiry />,
-      badge: unreadCount,
-    },
     { key: "profile", label: "My Profile", icon: <Icon.profile /> },
+    { key: "inquiries",  label: "My Inquiries", icon: <Icon.inquiry />,  badge: unreadCount, },
+    { key: "orders", label: "My Orders", icon: <Icon.order /> }, 
   ];
 
   if (authChecking) {
@@ -1309,6 +1303,7 @@ export default function UserDashboard() {
                       </div>
 
                       {/*  DELETE ACCOUNT BUTTON */}
+
                       <div className="pt-6 mt-6 border-t border-red-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                           <h4 className="font-sans text-sm font-semibold text-red-600">

@@ -7,6 +7,7 @@ import MarqueeTicker from "@/components/home/MarqueeTicker";
 import TrustBadges from "@/components/home/TrustBadges";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import FeaturedProductsSection from "@/components/home/FeaturedProductsSection";
+import InstagramReelsSection from "@/components/home/InstagramReelsSection";
 import ManufacturingInfoSections from "@/components/home/ManufacturingInfoSections";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
@@ -124,6 +125,7 @@ export default async function HomePage() {
         <MarqueeTicker />
         <CategoriesSection />
         <FeaturedProductsSection products={featuredProducts} />
+        <InstagramReelsSection />
         <ManufacturingInfoSections />
         <TrustBadges />
 

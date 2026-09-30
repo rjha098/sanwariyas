@@ -850,6 +850,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 // 1 brand slide + 6 category slides — all pointing at your existing catalogue images
+
 const slides = [
   {
     id: 1,
@@ -860,24 +861,24 @@ const slides = [
   },
   {
     id: 2,
+    title: ["Complete Elegance,", "Straight 3-Piece Suits"],
+    sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas — fully insured, securely packaged, exported worldwide.",
+    img: "/images/HomepageTemplate/Straight%203-Piece.png",
+    badge: "3-Piece Suits",
+  },
+  {
+    id: 3,
     title: ["Exquisite Craftsmanship,", "A-Line Masterpieces"],
     sub: "Flawlessly stitched A-Line suits crafted for elegance — the perfect blend of comfort and pure luxury in every thread.",
     img: "/images/HomepageTemplate/A-Line.png",
     badge: "A-Line Suits",
   },
   {
-    id: 3,
+    id: 4,
     title: ["Timeless Grace,", "Designer Anarkalis"],
     sub: "Beautifully flared Anarkali suits tailored with breathable fabrics, redefining the standard of ethnic fashion.",
     img: "/images/HomepageTemplate/Anarkali.png",
     badge: "Anarkali Collection",
-  },
-  {
-    id: 4,
-    title: ["Complete Elegance,", "Straight 3-Piece Suits"],
-    sub: "Classic straight-cut 3-piece suits featuring exquisite dupattas — fully insured, securely packaged, exported worldwide.",
-    img: "/images/HomepageTemplate/Straight%203-Piece.png",
-    badge: "3-Piece Suits",
   },
   {
     id: 5,
@@ -901,6 +902,7 @@ const slides = [
     badge: "Long Kurtis",
   },
 ];
+
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Jost:wght@300;400;500;600&family=Cinzel:wght@400;600;700&display=swap');
@@ -933,20 +935,6 @@ const STYLES = `
   .hs-badge-card { animation: floatCard 5.5s ease-in-out infinite; }
 
   .hs-fade { animation: fadeIn 0.5s ease both; }
-
-  @keyframes hsBubbleFloat {
-    0%   { transform: translateY(0) scale(1); opacity: 0.35; }
-    50%  { transform: translateY(-22px) scale(1.15); opacity: 0.85; }
-    100% { transform: translateY(0) scale(1); opacity: 0.35; }
-  }
-  .hs-bubble {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(190,110,91,0.55) 55%, rgba(139,101,8,0.15) 100%);
-    filter: blur(0.4px);
-    animation: hsBubbleFloat 6s ease-in-out infinite;
-  }
 
   .hs-thumb {
     transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease, box-shadow 0.4s ease, margin 0.4s cubic-bezier(0.22,1,0.36,1);
@@ -1018,8 +1006,18 @@ export default function HeroSection() {
           fill="none"
         >
           <defs>
-            <pattern id="jaali" width="36" height="36" patternUnits="userSpaceOnUse">
-              <path d="M18 0 L36 18 L18 36 L0 18 Z" stroke="#8B6508" strokeWidth="1" fill="none" />
+            <pattern
+              id="jaali"
+              width="36"
+              height="36"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M18 0 L36 18 L18 36 L0 18 Z"
+                stroke="#8B6508"
+                strokeWidth="1"
+                fill="none"
+              />
             </pattern>
           </defs>
           <rect width="260" height="700" fill="url(#jaali)" />
@@ -1084,7 +1082,10 @@ export default function HeroSection() {
                   <span
                     aria-hidden="true"
                     className="inline-block w-1.5 h-1.5 rounded-full"
-                    style={{ background: "#8B6508", animation: "dotPulse 2s ease-in-out infinite" }}
+                    style={{
+                      background: "#8B6508",
+                      animation: "dotPulse 2s ease-in-out infinite",
+                    }}
                   />
                   {slide.badge}
                 </span>
@@ -1139,7 +1140,8 @@ export default function HeroSection() {
                   className="hs-explore inline-flex items-center gap-2.5 rounded-full"
                   style={{
                     padding: "13px 28px",
-                    background: "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
+                    background:
+                      "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
                     color: "#FDF7F2",
                     fontFamily: "'Jost',sans-serif",
                     fontWeight: 700,
@@ -1184,7 +1186,11 @@ export default function HeroSection() {
                     {i > 0 && (
                       <span
                         aria-hidden="true"
-                        style={{ width: "1px", height: "30px", background: "rgba(139,101,8,0.25)" }}
+                        style={{
+                          width: "1px",
+                          height: "30px",
+                          background: "rgba(139,101,8,0.25)",
+                        }}
                       />
                     )}
                     <div className="flex flex-col items-center lg:items-start">
@@ -1220,9 +1226,7 @@ export default function HeroSection() {
 
             {/* ════ RIGHT — one clean, framed photo that changes with the slide ════ */}
             <div className="relative flex justify-center lg:justify-end order-1 lg:order-2 w-full">
-              <div
-                className="relative w-full max-w-[440px] aspect-[3/4] mx-auto lg:mx-0 lg:w-[clamp(240px,30vw,360px)] lg:h-[clamp(320px,46vw,480px)] lg:aspect-auto"
-              >
+              <div className="relative w-full max-w-[440px] aspect-[3/4] mx-auto lg:mx-0 lg:w-[clamp(240px,30vw,360px)] lg:h-[clamp(320px,46vw,480px)] lg:aspect-auto">
                 <div
                   aria-hidden="true"
                   className="absolute inset-[-12%] rounded-[2.5rem]"
@@ -1233,16 +1237,6 @@ export default function HeroSection() {
                   }}
                 />
 
-                {/* floating glow bubbles — ties the photo visually into the template */}
-                <span className="hs-bubble" style={{ width: 14, height: 14, top: "4%", left: "-4%", animationDelay: "0s" }} />
-                <span className="hs-bubble" style={{ width: 9, height: 9, top: "18%", right: "-3%", animationDelay: "1.1s" }} />
-                <span className="hs-bubble" style={{ width: 11, height: 11, top: "38%", left: "-6%", animationDelay: "2.2s" }} />
-                <span className="hs-bubble" style={{ width: 7, height: 7, top: "58%", right: "-5%", animationDelay: "0.6s" }} />
-                <span className="hs-bubble" style={{ width: 13, height: 13, bottom: "10%", left: "-3%", animationDelay: "1.7s" }} />
-                <span className="hs-bubble" style={{ width: 8, height: 8, bottom: "22%", right: "-4%", animationDelay: "2.8s" }} />
-                <span className="hs-bubble" style={{ width: 10, height: 10, top: "-3%", left: "30%", animationDelay: "0.9s" }} />
-                <span className="hs-bubble" style={{ width: 8, height: 8, bottom: "-3%", right: "28%", animationDelay: "1.9s" }} />
-
                 <button
                   onClick={() => goTo(cur - 1)}
                   aria-label="Previous slide"
@@ -1250,7 +1244,8 @@ export default function HeroSection() {
                   style={{
                     width: "40px",
                     height: "40px",
-                    background: "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
+                    background:
+                      "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
                     border: "1px solid rgba(255,255,255,0.35)",
                     color: "#FDF7F2",
                     boxShadow: "0 8px 22px rgba(59,31,23,0.32)",
@@ -1268,7 +1263,8 @@ export default function HeroSection() {
                   style={{
                     width: "40px",
                     height: "40px",
-                    background: "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
+                    background:
+                      "linear-gradient(135deg, #8B6508 0%, #BE6E5B 100%)",
                     border: "1px solid rgba(255,255,255,0.35)",
                     color: "#FDF7F2",
                     boxShadow: "0 8px 22px rgba(59,31,23,0.32)",
@@ -1296,7 +1292,10 @@ export default function HeroSection() {
                         priority
                         fetchPriority="high"
                         itemProp="image"
-                        style={{ filter: "drop-shadow(0 18px 26px rgba(59,31,23,0.28))" }}
+                        style={{
+                          filter:
+                            "drop-shadow(0 18px 26px rgba(59,31,23,0.28))",
+                        }}
                       />
                     </div>
                   </div>
@@ -1319,7 +1318,10 @@ export default function HeroSection() {
                     <div
                       aria-hidden="true"
                       className="absolute inset-x-0 bottom-0 h-24"
-                      style={{ background: "linear-gradient(to top, rgba(0,0,0,0.4), transparent)" }}
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.4), transparent)",
+                      }}
                     />
 
                     <div
@@ -1344,7 +1346,10 @@ export default function HeroSection() {
 
         {/* ── Thumbnail strip — 7 slides: brand + all 6 categories ── */}
         <div className="relative z-20 w-full pb-6 pt-1">
-          <nav aria-label="Carousel slide selector" className="max-w-7xl mx-auto px-6 lg:px-14">
+          <nav
+            aria-label="Carousel slide selector"
+            className="max-w-7xl mx-auto px-6 lg:px-14"
+          >
             <div aria-hidden="true" className="flex justify-center gap-2 mb-3">
               {slides.map((s, i) => (
                 <button
@@ -1376,9 +1381,13 @@ export default function HeroSection() {
                       width: "clamp(64px, 8vw, 84px)",
                       height: "clamp(84px, 10vw, 106px)",
                       margin: isActive ? "0 10px" : "0",
-                      border: isActive ? "2px solid #8B6508" : "1.5px solid rgba(255,255,255,0.4)",
+                      border: isActive
+                        ? "2px solid #8B6508"
+                        : "1.5px solid rgba(255,255,255,0.4)",
                       opacity: isActive ? 1 : 0.55,
-                      transform: isActive ? "scale(1.06) translateY(-3px)" : "scale(1)",
+                      transform: isActive
+                        ? "scale(1.06) translateY(-3px)"
+                        : "scale(1)",
                       boxShadow: isActive
                         ? "0 12px 28px rgba(59,31,23,0.24)"
                         : "0 4px 10px rgba(59,31,23,0.1)",
@@ -1394,7 +1403,10 @@ export default function HeroSection() {
                     <div
                       aria-hidden="true"
                       className="absolute inset-0"
-                      style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent 55%)" }}
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.55), transparent 55%)",
+                      }}
                     />
                     {isActive && (
                       <div
@@ -1402,7 +1414,8 @@ export default function HeroSection() {
                         aria-hidden="true"
                         className="absolute bottom-0 left-0 h-[3px]"
                         style={{
-                          background: "linear-gradient(to right, #8B6508, #BE6E5B)",
+                          background:
+                            "linear-gradient(to right, #8B6508, #BE6E5B)",
                           animation: "slideProgress 5000ms linear forwards",
                           animationPlayState: paused ? "paused" : "running",
                           width: "100%",

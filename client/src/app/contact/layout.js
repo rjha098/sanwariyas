@@ -70,7 +70,7 @@ export default function ContactLayout({ children }) {
               "email": "hrsanwariyas@gmail.com",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "Shop no. - 12,13, 1st floor, Shiv Plaza, near HDFC Bank, Printers Colony, Dada Gurudev Nagar, Sanganer",
+                "streetAddress": "Shop no. - 12,13, 1st floor, Shiv Plaza, near HDFC Bank, Dada Gurudev Nagar, Sanganer",
                 "addressLocality": "Jaipur",
                 "addressRegion": "Rajasthan",
                 "postalCode": "302029",

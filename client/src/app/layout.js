@@ -85,7 +85,7 @@ const organizationSchema = {
   address: {
     "@type": "PostalAddress",
     streetAddress:
-      "Shop no.- 12,13, 1st floor, Shiv Plaza, near HDFC bank, Printers Colony, Dada Gurudev Nagar, Sanganer",
+      "Shop no.- 12,13, 1st floor, Shiv Plaza, near HDFC bank, Dada Gurudev Nagar, Sanganer",
     addressLocality: "Jaipur",
     addressRegion: "Rajasthan",
     postalCode: "302029",

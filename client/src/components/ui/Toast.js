@@ -9,10 +9,10 @@ export default function Toast({
   isVisible,
   onClose,
 }) {
-  // 🔴 NAYA LOGIC: Exit animation ko chalne ka time dene ke liye
+
   const [mounted, setMounted] = useState(isVisible);
   
-  // 🔴 NAYA LOGIC: Timer thrashing rokne ke liye
+
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 

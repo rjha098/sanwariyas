@@ -202,7 +202,7 @@ export default function WhyUsSection() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 md:mb-20">
             <p className="font-sans text-[10px] md:text-xs tracking-[0.7em] uppercase text-[#BE6E5B] font-bold mb-4">
-              Why Choose SANWARIYAS{" "}
+              Why Choose SANWARIYAS?{" "}
             </p>
 
             <h2

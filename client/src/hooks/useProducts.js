@@ -29,6 +29,7 @@ const emptyProductForm = {
   isAvailable: true,
   imageFile: null,
   galleryFiles: [],
+  bulkDiscountTiers: [],
 };
 
 const toProductForm = (product) => ({
@@ -51,6 +52,12 @@ const toProductForm = (product) => ({
   isAvailable: product.isAvailable !== false,
   imageFile: null,
   galleryFiles: [],
+  bulkDiscountTiers: Array.isArray(product.bulkDiscountTiers)
+    ? product.bulkDiscountTiers.map((t) => ({
+        minPieces: t.minPieces ?? "",
+        discountPercent: t.discountPercent ?? "",
+      }))
+    : [],
 });
 
 const productPayloadFromForm = (form) => ({
@@ -66,9 +73,20 @@ const buildProductFormData = (form) => {
 
   Object.entries(payload).forEach(([key, value]) => {
     if (key === "imageFile" || key === "galleryFiles") return;
+    // bulkDiscountTiers is an array of objects — FormData would otherwise
+    // coerce it to the useless string "[object Object]". It's appended
+    // separately below as JSON, and parsed back out on the server.
+    if (key === "bulkDiscountTiers") return;
     if (value === null || typeof value === "undefined") return;
     fd.append(key, value);
   });
+
+  // Only send tiers with both fields actually filled in — an empty row
+  // left over from clicking "Add Tier" shouldn't be saved as a tier.
+  const cleanTiers = (form.bulkDiscountTiers || []).filter(
+    (t) => t.minPieces !== "" && t.discountPercent !== "",
+  );
+  fd.append("bulkDiscountTiers", JSON.stringify(cleanTiers));
 
   if (form.imageFile) {
     fd.append("image", form.imageFile);

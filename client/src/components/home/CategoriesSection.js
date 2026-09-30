@@ -5,12 +5,34 @@ import Link from "next/link";
 //  SEO FIX: Mapped exact-match primary B2B/Manufacturer keywords to each category to maximize topical authority in Image SEO
 const categories = [
   {
+    name: "Straight 3 Piece",
+    slug: "straight-3piece-suit",
+    image: "/images/suits/Straight3piece/3-piece-suit1.png",
+    count: "Kurta • Pant • Dupatta",
+    seoKeyword: "Ladies Cotton Suit Manufacturer",
+  },
+  {
+    name: "A-Line Suits",
+    slug: "a-line-suit",
+    image: "/images/suits/A-Line/a-line1.png",
+    count: "A-Line • Party • Festive",
+    seoKeyword: "Jaipur Ethnic Wear Manufacturer",
+  },
+  {
     name: "Anarkali Kurtis",
     slug: "anarkali-kurti",
     image: "/images/suits/Anarkali/anarkali2.png",
     count: "Anarkali • Festive • Designer",
     seoKeyword: "Wholesale Ethnic Wear Supplier India",
   },
+  {
+    name: "Co-Ord Sets",
+    slug: "co-ord-sets",
+    image: "/images/suits/cordset/co-ordsets1.png",
+    count: "Matching Sets • Trendy • Modern",
+    seoKeyword: "Designer Co-Ord Set Manufacturer",
+  },
+
   {
     name: "Short Kurtis",
     slug: "short-kurti",
@@ -24,28 +46,6 @@ const categories = [
     image: "/images/suits/LongKurtis/long-kurtis1.png",
     count: "Straight • Ethnic • Elegant",
     seoKeyword: "Indian Ethnic Wear Manufacturer",
-  },
-  {
-    //  SEO FIX: Corrected spelling to match exact high-volume SEO target keyword
-    name: "Co-Ord Sets",
-    slug: "co-ord-sets",
-    image: "/images/suits/cordset/co-ordsets1.png",
-    count: "Matching Sets • Trendy • Modern",
-    seoKeyword: "Designer Co-Ord Set Manufacturer",
-  },
-  {
-    name: "Straight 3 Piece",
-    slug: "straight-3piece-suit",
-    image: "/images/suits/Straight3piece/3-piece-suit1.png",
-    count: "Kurta • Pant • Dupatta",
-    seoKeyword: "Ladies Cotton Suit Manufacturer",
-  },
-  {
-    name: "A-Line Suits",
-    slug: "a-line-suit",
-    image: "/images/suits/A-Line/a-line1.png",
-    count: "A-Line • Party • Festive",
-    seoKeyword: "Jaipur Ethnic Wear Manufacturer",
   },
 ];
 
