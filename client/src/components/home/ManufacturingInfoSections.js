@@ -976,9 +976,6 @@
 //   );
 // }
 
-
-
-
 // FILE: client/src/components/home/ManufacturingInfoSections.js
 "use client";
 
@@ -1931,10 +1928,29 @@ export default function ManufacturingInfoSections() {
               5th entry to VIDEO_STEPS later and it'll just flow into a
               3rd row automatically.
             */}
-            <div className="grid grid-cols-2 gap-4 items-center justify-center mx-auto w-full max-w-[460px]">
-              {VIDEO_STEPS.map((step) => (
-                <VideoTile key={step.title} step={step} onOpen={handleOpen} />
-              ))}
+
+            <div className="relative mx-auto w-full max-w-[460px]">
+              {/* Decorative connecting line down the middle — purely
+                  aesthetic, ties the staggered columns together */}
+              <div
+                aria-hidden="true"
+                className="hidden sm:block absolute top-12 bottom-12 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-transparent via-[#BE6E5B]/30 to-transparent"
+              />
+              <div className="relative grid grid-cols-2 gap-5">
+                {VIDEO_STEPS.map((step, i) => (
+                  <div
+                    key={step.title}
+                    className={`transition-transform duration-500 ease-out hover:-translate-y-2 hover:z-10 ${
+                      // Right column (Cutting, Finishing Check) sits lower
+                      // than the left column — gives the "kuch upar, kuch
+                      // neeche" staggered/brick look instead of a flat grid.
+                      i % 2 === 1 ? "mt-10 md:mt-14" : ""
+                    }`}
+                  >
+                    <VideoTile step={step} onOpen={handleOpen} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
