@@ -149,7 +149,7 @@ function SectionHeader({ eyebrow, title, subtitle }) {
 
       {subtitle && (
         <p
-          className={`${cormorant.className} italic text-lg md:text-xl text-[#6b4a35] max-w-2xl mx-auto leading-relaxed font-semibold`}
+          className={`${cormorant.className} italic text-lg md:text-xl text-[#a07f61] max-w-2xl mx-auto leading-relaxed font-medium`}
         >
           {subtitle}
         </p>
@@ -225,7 +225,7 @@ export default function AboutPage() {
               A Story Stitched with Tradition, Quality, and Trust.
             </p>
 
-            <div className="font-sans text-[15px] md:text-base text-[#8a6f58] max-w-4xl mx-auto mb-16 leading-[1.9] font-normal tracking-[0.005em] space-y-6 text-left md:text-center">
+            <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-4xl mx-auto mb-16 leading-relaxed font-medium space-y-6 text-left md:text-center">
               <p>
                 Sanganer has always known how to make cloth speak. Long before
                 it had a name for itself, this pocket of Jaipur was where
@@ -274,7 +274,7 @@ export default function AboutPage() {
               subtitle="Designing, cutting, stitching, and quality-checking every piece under one roof."
             />
 
-            <div className="font-sans text-[15px] md:text-base text-[#8a6f58] max-w-3xl mx-auto leading-[1.9] font-normal tracking-[0.005em] space-y-6 text-left md:text-center mt-8">
+            <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-left md:text-center mt-8">
               <p>
                 Every SANWARIYAS garment - whether a Kurti, Suit, Anarkali,
                 A-Line Suit, or Co-ord Set, passes through a meticulous
@@ -291,11 +291,9 @@ export default function AboutPage() {
               <p>
                 Today, our garments are trusted across more than 50 countries,
                 yet the philosophy remains unchanged.{" "}
-                <strong
-                  className={`${cormorant.className} italic text-[#7A3D2A] font-bold text-lg md:text-xl block mt-3`}
-                >
-                  "Every piece is crafted with the same care, attention, and
-                  commitment to quality that shaped our very first workshop."
+                <strong className="text-[#7A3D2A] font-bold block mt-3">
+                  “Every piece is crafted with the same care, attention, and
+                  commitment to quality that shaped our very first workshop.”
                 </strong>
               </p>
             </div>
@@ -474,7 +472,7 @@ export default function AboutPage() {
               More Than a Manufacturer
             </p>
 
-            <div className="font-sans text-[15px] md:text-base text-[#8a6f58] leading-[1.9] font-normal tracking-[0.005em] max-w-4xl mx-auto mb-12 space-y-6 text-left md:text-center">
+            <div className="font-sans text-base md:text-lg text-[#a07f61] leading-relaxed max-w-4xl mx-auto mb-12 space-y-6 text-left md:text-center">
               <p>
                 Over the years, SANWARIYAS has grown from a small workshop in
                 Sanganer to a trusted manufacturing partner for retailers,
@@ -507,9 +505,7 @@ export default function AboutPage() {
                 in your journey of growth.
               </p>
 
-              <p
-                className={`${cormorant.className} italic text-xl md:text-2xl font-bold text-[#7A3D2A] pt-4`}
-              >
+              <p className="text-xl font-bold text-[#7A3D2A] pt-4">
                 Because when your business grows, so does ours.
               </p>
             </div>

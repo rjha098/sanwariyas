@@ -232,7 +232,7 @@ export default function AboutInteractive() {
             </div>
           </div>
 
-          <div className="font-sans text-[15px] md:text-base text-[#8a6f58] max-w-3xl mx-auto leading-[1.9] font-normal tracking-[0.005em] space-y-6 text-left md:text-center">
+          <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-left md:text-center">
             <p>
               Retailers don't reorder because a brand asks nicely. They reorder
               because the last shipment matched the first one, and the one
@@ -257,9 +257,7 @@ export default function AboutInteractive() {
                 >
                   ✦
                 </span>
-                <p
-                  className={`${cormorant.className} italic text-xl md:text-2xl font-bold text-[#7A3D2A] leading-relaxed text-center`}
-                >
+                <p className="font-sans text-[15px] md:text-[17px] font-bold text-[#7A3D2A] leading-relaxed text-center">
                   "None of this makes headlines. But it's the reason a small
                   workshop kept getting called back, long after the first order
                   was filled, building a foundation of long-term trust."
