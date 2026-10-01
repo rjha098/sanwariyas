@@ -232,7 +232,13 @@ export default function AboutInteractive() {
             </div>
           </div>
 
-          <div className="font-sans text-base md:text-lg text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-left md:text-center">
+
+
+
+
+          <div
+            className={`${cormorant.className} italic text-lg md:text-xl text-[#a07f61] max-w-3xl mx-auto leading-relaxed font-medium space-y-6 text-center`}
+          >
             <p>
               Retailers don't reorder because a brand asks nicely. They reorder
               because the last shipment matched the first one, and the one
@@ -245,6 +251,12 @@ export default function AboutInteractive() {
               when a wholesaler said a design wasn't moving, or a fit needed
               adjusting, and to act on it, not just note it down.
             </p>
+
+
+
+
+
+
 
             {/* Quote styled as a stitched fabric label/tag — the one
                 deliberate accent moment in this section: a dashed border
