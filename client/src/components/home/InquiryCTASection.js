@@ -547,7 +547,7 @@ export default function InquiryCTASection() {
                   {[
                     "Custom B2B pricing for bulk & wholesale orders",
 
-                    "Manufacturing availability across our full catalogue on avaibality of print",
+                    "Custom manufacturing available, subject to print availability.",
 
                     "Dedicated export consultant assigned",
                     "Premium cotton suits & kurtis creation",

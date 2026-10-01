@@ -4,7 +4,6 @@
 import { useState } from "react";
 import Link from "next/link";
 
-
 // ── COLOR PALETTE ────────────────────────────────
 // Background : #FDF7F2 to #F2D9C3 (Light Cream to Pumpkin Essence)
 // Headings   : #7A3D2A  (Dark Burnt)
@@ -30,7 +29,7 @@ const BUILT_IN_FAQS = [
   {
     name: "What is the delivery timeline?",
     acceptedAnswer: {
-      text: "Ready inventory lots are dispatched within 5–7 business days. Custom commercial manufacturing orders typically require 15–21 business days based on manufacturing load and design complexity. Timelines are committed upfront before booking.",
+      text: "Ready inventory lots are dispatched within 24-48 hours. Custom commercial manufacturing orders typically require 25-30 business days based on manufacturing load and design complexity. Timelines are committed upfront before booking.",
     },
     category: "Shipping",
   },
@@ -51,7 +50,7 @@ const BUILT_IN_FAQS = [
   {
     name: "Do you ship internationally?",
     acceptedAnswer: {
-      text: "Yes. As a leading Cotton Clothing Exporter India, we export worldwide to over 50+ countries including the USA, UK, UAE, Canada, and Australia. All global export shipments are fully cargo-insured, securely crated or packed, and freight-forwarded via trackable global carrier services.",
+      text: "Yes. As a leading Cotton Clothing Exporter India, we export worldwide to over 50+ countries including the USA, UK, UAE, Canada, and Australia etc. All global export shipments are fully securely crated or packed, and freight-forwarded via trackable global carrier services.",
     },
     category: "Shipping",
   },
@@ -225,7 +224,6 @@ export default function FaqSection({ faqs, injectSchema = false }) {
   return (
     <>
       {/* SEO FIX: Injected Dynamic FAQPage Schema for Rich Snippets */}
-      // NEW:
       {/* SEO FIX: Conditionally inject Dynamic FAQPage Schema based on prop */}
       {injectSchema && (
         <script
@@ -365,7 +363,7 @@ export default function FaqSection({ faqs, injectSchema = false }) {
               id="faq-heading"
               className="font-display text-4xl md:text-5xl lg:text-6xl text-[#7A3D2A] drop-shadow-sm font-bold leading-tight"
             >
-              Frequently Asked:
+              What You Need to Know
               {/* SEO FIX: Injected visually hidden primary priority keyword */}
               <span className="sr-only">
                 {" "}
@@ -454,7 +452,8 @@ export default function FaqSection({ faqs, injectSchema = false }) {
                 Have unique trade specifications?
               </p>
               <p className="font-display text-2xl md:text-3xl font-bold text-[#7A3D2A]">
-                Our export consultants are standing by.
+                {/* Let’s Talk About Your Next Collection. */}
+                Your Export Needs, Our Expertise
               </p>
             </div>
 
@@ -584,7 +583,7 @@ function FaqItem({ faq, isOpen, onToggle, index }) {
         <div className="overflow-hidden">
           <div className="px-6 md:px-7 pb-7 pt-0">
             <div className="ml-[19px] pl-4 border-l-2 border-[#BE6E5B]/25">
-              <p className="font-sans text-sm md:text-[15px] text-[#a07f61] leading-relaxed font-medium">
+              <p className="font-serif text-sm md:text-[15px] text-[#a07f61] leading-relaxed font-medium">
                 {faq.acceptedAnswer.text}
               </p>
             </div>

@@ -954,8 +954,17 @@ export const seedAdminProducts = (token) =>
   api.get("/products/seed", withAuth(token)).then((r) => r.data);
 
 // INQUIRIES
+// "Content-Type": undefined is REQUIRED for multipart uploads: this axios instance
+// defaults to application/json, and axios would then JSON-stringify a FormData body
+// (silently dropping the image files). Unsetting it lets the browser send
+// multipart/form-data with the correct boundary. Plain-object bodies still get
+// JSON automatically, so existing callers are unaffected.
 export const submitInquiry = (data, token) =>
-  api.post("/inquiry", data, withAuth(token)).then((r) => r.data);
+  api
+    .post("/inquiry", data, {
+      headers: { ...withAuth(token).headers, "Content-Type": undefined },
+    })
+    .then((r) => r.data);
 export const fetchAdminInquiries = (token, params = {}) =>
   api.get("/inquiry", { ...withAuth(token), params }).then((r) => r.data);
 export const updateAdminInquiryStatus = (token, id, data) =>

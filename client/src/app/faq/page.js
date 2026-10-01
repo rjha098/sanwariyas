@@ -92,7 +92,7 @@ export default function FaqPage() {
 
         {/* 3. Footer */}
         <Footer />
-      </main>
+      </main>    
     </>
   );
 }

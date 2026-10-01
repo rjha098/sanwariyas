@@ -2,13 +2,13 @@
 
 "use client";
 
+
 const CERTIFICATES = [
   {
     id: "gst",
     title: "GST Registration Certificate",
     subtitle: "Government of India",
     desc: "Officially registered manufacturer and supplier under the Goods and Services Tax act.",
-    // Next.js access files in the public folder directly from the root path
     pdfSrc: "/images/certificates/New RC.pdf",
   },
   {
@@ -17,6 +17,13 @@ const CERTIFICATES = [
     subtitle: "Letter of Undertaking",
     desc: "Authorized for international B2B exports without payment of IGST under official compliance.",
     pdfSrc: "/images/certificates/ACKNOWLEDGEMENT GST RFD -11-3.pdf",
+  },
+  {
+    id: "udyam",
+    title: "Udyam Registration Certificate",
+    subtitle: "Government of India",
+    desc: "Official Udyam Registration certificate confirming our registered MSME status.",
+    pdfSrc: "/images/certificates/Print _ Udyam RegistrationCertificate.pdf",
   },
 ];
 
@@ -62,7 +69,8 @@ export default function CertificatesSection() {
         </div>
 
         {/* Certificates Grid - Changed to Clickable PDF Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
+          {" "}
           {CERTIFICATES.map((cert) => (
             <a
               key={cert.id}
