@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import api, { deleteNotificationByInquiry } from "@/lib/api";
 import Toast from "@/components/ui/Toast";
 import PhoneInput from "@/components/ui/PhoneInput";
+import SampleImageGallery from "@/components/ui/SampleImageGallery";
 
 const Icon = {
   order: () => (
@@ -281,7 +282,9 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
   const allMessages = [
     {
       role: "customer",
+
       message: inquiry.message,
+      sampleImages: inquiry.sampleImages,
       createdAt: inquiry.createdAt,
       name: inquiry.name,
     },
@@ -464,6 +467,15 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
                 <p className="whitespace-pre-wrap leading-relaxed">
                   {msg.message}
                 </p>
+
+                {msg.sampleImages?.length > 0 && (
+                  <SampleImageGallery
+                    images={msg.sampleImages}
+                    size="sm"
+                    className="mt-3"
+                  />
+                )}
+
                 <p className="text-[10px] opacity-40 mt-1.5 text-right">
                   {new Date(msg.createdAt).toLocaleDateString("en-IN", {
                     hour: "2-digit",
@@ -708,8 +720,13 @@ export default function UserDashboard() {
 
   const navItems = [
     { key: "profile", label: "My Profile", icon: <Icon.profile /> },
-    { key: "inquiries",  label: "My Inquiries", icon: <Icon.inquiry />,  badge: unreadCount, },
-    { key: "orders", label: "My Orders", icon: <Icon.order /> }, 
+    {
+      key: "inquiries",
+      label: "My Inquiries",
+      icon: <Icon.inquiry />,
+      badge: unreadCount,
+    },
+    { key: "orders", label: "My Orders", icon: <Icon.order /> },
   ];
 
   if (authChecking) {

@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import api, { deleteNotificationByInquiry } from "@/lib/api";
 // import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SampleImageGallery from "@/components/ui/SampleImageGallery";
 
 export default function MyInquiryDetailPage() {
   const params = useParams();
@@ -87,7 +88,6 @@ export default function MyInquiryDetailPage() {
       window.removeEventListener("global_60s_sync", handleGlobalSync);
   }, [token, params.id, fetchInquiry]);
 
-  
   const handleSendReply = async () => {
     if (!replyText.trim() || !token) return;
     setSending(true);
@@ -171,9 +171,15 @@ export default function MyInquiryDetailPage() {
             <h3 className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#C9A84C] mb-3">
               Your Original Message
             </h3>
+
             <p className="font-sans text-sm text-[#70543E] whitespace-pre-wrap">
               {inquiry.message}
             </p>
+            {inquiry.sampleImages?.length > 0 && (
+              <div className="mt-4">
+                <SampleImageGallery images={inquiry.sampleImages} />
+              </div>
+            )}
           </div>
 
           {inquiry.replies && inquiry.replies.length > 0 && (
@@ -276,7 +282,7 @@ export default function MyInquiryDetailPage() {
             </button>
           </div>
         </div>
-      </main>    
+      </main>
       <Footer />
     </>
   );
