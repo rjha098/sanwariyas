@@ -5,6 +5,7 @@ import Product from "../models/Product.js";
 import Notification from "../models/Notification.js";
 import { Resend } from "resend";
 import crypto from "crypto";
+import Counter from "../models/Counter.js";
 
 const { SET_SIZE, MIN_PIECES } = ORDER_CONSTANTS;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hrsanwariyas@gmail.com";
@@ -19,12 +20,12 @@ export const computeMoq = (pieces) => {
 };
 
 const generateOrderNumber = async () => {
-  const lastOrder = await Order.findOne().sort({ createdAt: -1 });
-  const nextNum =
-    lastOrder && lastOrder.orderNumber
-      ? parseInt(lastOrder.orderNumber.replace("ORD-", "")) + 1
-      : 1000;
-  return `ORD-${nextNum}`;
+  const counter = await Counter.findByIdAndUpdate(
+    "orderId",
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true, setDefaultsOnInsert: true },
+  );
+  return `ORD-${counter.seq}`;
 };
 
 // 1. BULLETPROOF INVOICE GENERATOR (For Billions of Orders)
@@ -33,7 +34,7 @@ const generateInvoiceNumber = async () => {
   // 1. Date (YYYYMMDD) - unique  for  according  to  day
   const dateString = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
-  // 2. Exact Millisecond Timestamp (Agar 2 order same din aaye)
+  // 2. Exact Millisecond Timestamp (if 2  order  come  in the  same  time )
 
   const timeMs = Date.now().toString(36).toUpperCase();
 
@@ -129,6 +130,9 @@ export const createOrder = async (
 
   const invoiceNumber = await generateInvoiceNumber();
 
+  // NOTE: stock is intentionally NOT deducted here. This order is not
+  // confirmed yet — the customer still has to pay for it. Stock is only
+  // deducted in markOrderPaid(), once Cashfree confirms the payment.
   const order = await Order.create({
     orderNumber,
     invoiceNumber,
@@ -137,33 +141,85 @@ export const createOrder = async (
     buyerEmail: (buyer.email || "").toLowerCase().trim(),
     buyerPhone: buyer.phone || "",
     buyerCompany: buyer.company || "",
+
     shippingAddress: {
       addressLine1: shippingAddress.addressLine1,
       addressLine2: shippingAddress.addressLine2 || "",
       city: shippingAddress.city,
       state: shippingAddress.state,
       pincode: String(shippingAddress.pincode),
+      country: shippingAddress.country || "India",
       alternatePhone: shippingAddress.alternatePhone || "",
     },
+
     items,
     totalPieces,
     totalSets,
     totalAmount,
     status: "pending",
+    paymentStatus: "pending",
   });
 
-  for (const item of items) {
-    await Product.updateOne(
-      { _id: item.product, stock: { $type: "number" } },
-      { $inc: { stock: -item.pieces } },
-    );
+  return order.toObject();
+};
+
+// Called only from the payment webhook / verify flow, never directly from
+// a client request — this is what actually deducts stock and confirms the
+// order. Safe to call more than once for the same order (idempotent) since
+// webhooks can be retried or arrive twice.
+export const markOrderPaid = async (orderId, { cfPaymentId } = {}) => {
+  const order = await Order.findById(orderId);
+  if (!order) {
+    const err = new Error("Order not found");
+    err.statusCode = 404;
+    throw err;
   }
+
+  // Idempotency guard: if we already processed this payment, do nothing.
+  if (order.paymentStatus === "paid") {
+    return order.toObject();
+  }
+
+  order.paymentStatus = "paid";
+  order.paidAt = new Date();
+  if (cfPaymentId) order.cfPaymentId = cfPaymentId;
+  if (order.status === "pending") order.status = "confirmed";
+
+  if (!order.stockDeducted) {
+    for (const item of order.items) {
+      // Atomic, conditional decrement: only succeeds if enough stock is
+      // still available at this exact moment. This is what closes the
+      // race-condition gap the original audit flagged (two paid orders
+      // can no longer both decrement past zero stock).
+      const result = await Product.updateOne(
+        {
+          _id: item.product,
+          $or: [
+            { stock: { $type: "number", $gte: item.pieces } },
+            { stock: { $exists: false } },
+            { stock: null },
+          ],
+        },
+        { $inc: { stock: -item.pieces } },
+      );
+      if (result.modifiedCount === 0) {
+        // Stock ran out between order placement and payment confirmation.
+        // We do NOT fail the order here — the customer has already paid —
+        // we flag it so a human resolves it (refund or restock) instead of
+        // silently overselling or silently losing the payment.
+        order.adminNotes = `${order.adminNotes ? order.adminNotes + " | " : ""}STOCK ALERT: insufficient stock for "${item.name}" at payment time — please review.`;
+      }
+    }
+    order.stockDeducted = true;
+  }
+
+  await order.save();
 
   await Notification.create({
     isGlobalAdmin: true,
     type: "new_order",
-    title: "New Wholesale Order",
-    message: `New order ${order.orderNumber} received from ${buyer.company || buyer.name} — ${totalPieces} pieces.`,
+    title: "New Paid Order",
+    message: `Order ${order.orderNumber} paid by ${order.buyerCompany || order.buyerName} — ${order.totalPieces} pieces, ₹${order.totalAmount.toLocaleString("en-IN")}.`,
     relatedOrderId: order._id,
     link: `/operations-center/orders/${order._id}`,
   });
@@ -176,19 +232,30 @@ export const createOrder = async (
           process.env.RESEND_FROM_EMAIL ||
           "Sanwariyas System <onboarding@resend.dev>",
         to: ADMIN_EMAIL,
-        subject: `🧾 New Order ${order.orderNumber} — ${totalPieces} pcs`,
+        subject: `🧾 Paid Order ${order.orderNumber} — ${order.totalPieces} pcs`,
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-            <h2 style="color: #7A3D2A;">New Wholesale Order</h2>
+            <h2 style="color: #7A3D2A;">New Paid Wholesale Order</h2>
             <p><strong>Order #:</strong> ${order.orderNumber}</p>
-            <p><strong>Invoice #:</strong> ${order.invoiceNumber}</p> 
-            <p><strong>Buyer:</strong> ${buyer.name} (${buyer.email})</p>
-            <p><strong>Total Pieces:</strong> ${totalPieces} (${totalSets} sets)</p>
-            <p><strong>Total Amount:</strong> ₹${totalAmount.toLocaleString("en-IN")}</p>
+            <p><strong>Invoice #:</strong> ${order.invoiceNumber}</p>
+            <p><strong>Buyer:</strong> ${order.buyerName} (${order.buyerEmail})</p>
+            <p><strong>Total Pieces:</strong> ${order.totalPieces} (${order.totalSets} sets)</p>
+            <p><strong>Total Amount:</strong> ₹${order.totalAmount.toLocaleString("en-IN")}</p>
           </div>`,
       });
     } catch (emailError) {}
   }
+
+  return order.toObject();
+};
+
+// Called when Cashfree reports the payment failed or the user dropped off.
+export const markOrderFailed = async (orderId) => {
+  const order = await Order.findById(orderId);
+  if (!order) return null;
+  if (order.paymentStatus === "paid") return order.toObject(); // never downgrade a paid order
+  order.paymentStatus = "failed";
+  await order.save();
   return order.toObject();
 };
 
@@ -204,6 +271,23 @@ export const getOrderById = async (id) => {
     throw err;
   }
   return order;
+};
+
+export const getOrderByOrderNumber = async (orderNumber) => {
+  return Order.findOne({ orderNumber });
+};
+
+// Persists the Cashfree session details onto our order right after we
+// create them, so a page refresh or the webhook can look the order back up
+// by cfOrderId/orderNumber without calling Cashfree again.
+export const savePaymentSession = async (
+  orderId,
+  { paymentSessionId, cfOrderId },
+) => {
+  await Order.updateOne(
+    { _id: orderId },
+    { $set: { paymentSessionId, cfOrderId } },
+  );
 };
 
 export const isOrderOwnedByUser = async (id, userId) => {

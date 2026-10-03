@@ -1,3 +1,5 @@
+// server/route/productRoutes.js
+
 import express from "express";
 import {
   checkProductsAvailability,
@@ -8,12 +10,12 @@ import {
   getProducts,
   getProductBySlug,
   getCategories,
-  seedData,
+  seedData, 
   updateProduct,
 } from "../controllers/productController.js";
 
 import { requireAdmin } from "../utils/authUtils.js";
-import { upload } from "../middlewares/upload.js";
+import { upload, verifyUploadedImages } from "../middlewares/upload.js";
 
 const router = express.Router();
 
@@ -33,6 +35,7 @@ router.post(
     { name: "image", maxCount: 1 },
     { name: "images", maxCount: 4 },
   ]),
+  verifyUploadedImages,
   createProduct,
 );
 router.patch(
@@ -42,6 +45,7 @@ router.patch(
     { name: "image", maxCount: 1 },
     { name: "images", maxCount: 4 },
   ]),
+  verifyUploadedImages,
   updateProduct,
 );
 router.delete("/:id", requireAdmin, deleteProduct);

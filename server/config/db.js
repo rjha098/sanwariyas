@@ -1,4 +1,8 @@
 // FILE: server/config/db.js
+
+// Usage:->>>>>>.  config/db.js: Connects your Express server to your local MongoDB 8.0 instance (127.0.0.1). It includes a 5-attempt retry loop and mid-session drop protection.
+
+
 import mongoose from "mongoose";
 
 const MAX_RETRIES = 5;

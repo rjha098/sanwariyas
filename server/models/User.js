@@ -1,4 +1,7 @@
 // FILE: server/models/User.js
+// usage ----->>>>>>>>>   models/User.js: The database schema for all accounts. It tracks roles, online/offline session states, and hashes passwords via a pre-save hook.
+
+
 
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";

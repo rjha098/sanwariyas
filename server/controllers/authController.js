@@ -1,12 +1,28 @@
 // FILE: server/controllers/authController.js
+//usage --->>>>  controllers/authController.js & services/authService.js: Handles the heavy lifting of user identity. It processes customer signups, issues HTTP-only cookies, triggers Resend OTP emails for staff/admin 2FA, and seamlessly merges old "guest" inquiries into new accounts based on matching phone/email data.
+
 import crypto from "crypto";
+
 import {
   createAccessToken,
   createRefreshToken,
   safeCompare,
   verifyRefreshToken,
-  adminSessionStore,
+  setAdminSession,
+  getAdminSession,
+  deleteAdminSession,
 } from "../utils/authUtils.js";
+
+import Order from "../models/Order.js";
+
+// In-memory presence state for the pure ENV-based root admin (no DB user
+// row to store this on). Declared here, at the top, since several
+// functions below reference it — declaring it after those functions
+// worked at runtime (module load always finishes before any request
+// handler runs), but reads confusingly. Moved for clarity only; behaviour
+// is unchanged.
+let envAdminVisible = true;
+let envAdminLastActiveAt = null;
 
 // Helper to set HTTP-Only cookie for cross-origin domains
 
@@ -217,6 +233,7 @@ export const verifyOtp = async (req, res) => {
           phone: emailForOtp,
           isActive: true,
         });
+
         if (dbUser) emailForOtp = dbUser.email;
       }
 
@@ -229,9 +246,9 @@ export const verifyOtp = async (req, res) => {
         { new: true },
       );
 
-      // If DB User doesn't exist (Pure ENV Admin), store session in Memory Map
+      // If DB User doesn't exist (Pure ENV Admin), store session in MongoDB
       if (!dbUser) {
-        adminSessionStore.set(emailForOtp, sessionId);
+        await setAdminSession(emailForOtp, sessionId);
       }
 
       const usernameOutput =
@@ -345,7 +362,8 @@ export const session = async (req, res) => {
         });
       }
     } else if (payload.role === "admin" && !payload.id) {
-      const activeSession = adminSessionStore.get(payload.email);
+      const activeSession = await getAdminSession(payload.email);
+
       if (activeSession && activeSession !== payload.sessionId) {
         clearRefreshTokenCookie(res);
         return res.status(401).json({
@@ -450,7 +468,7 @@ export const logout = async (req, res) => {
         lastActiveAt: new Date(0),
       });
     } else if (req.authUser?.role === "admin" && !req.authUser?.id) {
-      adminSessionStore.delete(req.authUser.email);
+      await deleteAdminSession(req.authUser.email);
       envAdminLastActiveAt = null;
     }
 
@@ -466,6 +484,27 @@ export const logout = async (req, res) => {
   }
 };
 
+// export const deleteAccount = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.authUser.id);
+//     if (!user)
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "User not found" });
+
+//     await Inquiry.deleteMany({
+//       $or: [{ userId: user._id }, { email: user.email }],
+//     });
+//     await User.findByIdAndDelete(user._id);
+
+//     return res.json({ success: true, message: "Account deleted." });
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Failed to delete account." });
+//   }
+// };
+
 export const deleteAccount = async (req, res) => {
   try {
     const user = await User.findById(req.authUser.id);
@@ -474,6 +513,38 @@ export const deleteAccount = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
 
+    // If this account has any orders, we must NOT hard-delete it — every
+    // Order document keeps a `userId` pointing at this account, and those
+    // orders are also financial/tax records the business needs to keep.
+    // Hard-deleting the user would leave those orders pointing at nothing
+    // (broken in the admin dashboard, and un-attributable for tax purposes).
+    const hasOrders = await Order.exists({ userId: user._id });
+
+    if (hasOrders) {
+      // Soft delete: deactivate the account and strip personal info, but
+      // keep the document (and therefore every order's userId) intact.
+      // email/phone are unique-indexed, so we can't just blank them out —
+      // each needs a unique placeholder or the save would fail if this
+      // person, or anyone else, is soft-deleted again later.
+      user.name = "Deleted User";
+      user.email = `deleted-${user._id}@deleted.sanwariyas.local`;
+      user.phone = String(parseInt(user._id.toString().slice(-8), 16)).padStart(
+        8,
+        "0",
+      ); // digits-only, derived from this user's own unique ObjectId
+      user.company = "";
+      user.country = "";
+      user.isActive = false; // loginUser() already filters on isActive: true, so this alone blocks login
+      user.currentSessionId = null;
+      await user.save();
+
+      return res.json({
+        success: true,
+        message: "Account deleted. Your past orders are kept for our records.",
+      });
+    }
+
+    // No order history — safe to fully remove, same as before.
     await Inquiry.deleteMany({
       $or: [{ userId: user._id }, { email: user.email }],
     });
@@ -533,9 +604,6 @@ export const isAdminCurrentlyOnline = async () => {
 
   return !!activeStaff;
 };
-
-let envAdminVisible = true;
-let envAdminLastActiveAt = null;
 
 export const toggleVisibility = async (req, res) => {
   try {

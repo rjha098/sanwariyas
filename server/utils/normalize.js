@@ -1,5 +1,7 @@
 // FILE: server/utils/normalize.js
 
+// usage    ----->>>>>   utils/normalize.js: Cleans up user input by stripping spaces from emails and isolating raw digits from phone numbers for accurate database matching.
+
 // Plain digit cleanup — used everywhere a phone is WRITTEN (signup,
 // profile update, inquiry submission). All of these now go through the
 // <PhoneInput> component on the frontend, which combines the selected
@@ -8,6 +10,7 @@
 // already sends "916203290195"). So this function no longer needs to
 // GUESS at stripping a country code — it just strips any stray
 // non-digit characters as a defensive measure.
+
 export const normalizePhone = (phone) => {
   if (!phone) return "";
   return String(phone).replace(/\D/g, "");

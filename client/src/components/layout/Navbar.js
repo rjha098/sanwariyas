@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { useCart } from "@/hooks/useCart";
+// import { useCart } from "@/hooks/useCart";
 
 const navLinks = [
   {
@@ -16,11 +16,11 @@ const navLinks = [
     title: "SANWARIYAS Wholesale Ethnic Wear Manufacturer",
   },
 
-  {
-    href: "/products",
-    label: "Products",
-    title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
-  },
+  // {
+  //   href: "/products",
+  //   label: "Products",
+  //   title: "SANWARIYAS Wholesale Products - Ethnic Wear Manufacturer",
+  // },
 
   {
     href: "/contact",
@@ -33,6 +33,11 @@ const navLinks = [
     title: "About SANWARIYAS Manufacturer",
   },
   {
+    href: "/exportdocs",
+    label: "Export",
+    title: "Business & Export Documents",
+  },
+  {
     id: "discover",
     type: "megamenu",
     label: "Discover ▾",
@@ -42,18 +47,13 @@ const navLinks = [
         title: "Collections & Media",
         links: [
           { href: "/lookbook", label: "Our Lookbook" },
-          { href: "/blog", label: "Journal & Blog" },
           { href: "/privacy", label: "Privacy" },
-          {
-            href: "/exportdocs",
-            label: "Export",
-          },
+          { href: "/blog", label: "Journal & Blog" },
         ],
       },
       {
         title: "Support",
         links: [
-          { href: "/contact", label: "Contact Us" },
           { href: "/faq", label: "FAQs" },
           { href: "/terms", label: "Terms & Conditions" },
         ],
@@ -74,7 +74,7 @@ export default function Navbar() {
   // Auth context and state
   const { isAuthenticated, isCustomer, user, logout } = useAuth();
 
-  const { itemCount: cartItemCount } = useCart();
+  // const { itemCount: cartItemCount } = useCart();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -436,7 +436,7 @@ export default function Navbar() {
 
             {/* Cart icon — visible to everyone, guests included, since
                 items can be added to the cart before logging in. */}
-            <Link
+            {/* <Link
               href="/cart"
               aria-label={`Cart, ${cartItemCount} item${cartItemCount === 1 ? "" : "s"}`}
               className="hidden lg:flex"
@@ -490,7 +490,7 @@ export default function Navbar() {
                   {cartItemCount > 99 ? "99+" : cartItemCount}
                 </span>
               )}
-            </Link>
+            </Link> */}
 
             {/* CTA Button */}
             <Link
@@ -700,6 +700,7 @@ export default function Navbar() {
             })}
 
             {/* Mobile Auth */}
+            {/*             
             <Link
               href="/cart"
               onClick={() => setMenuOpen(false)}
@@ -726,7 +727,7 @@ export default function Navbar() {
               >
                 ›
               </span>
-            </Link>
+            </Link> */}
 
             {isAuthenticated ? (
               <>

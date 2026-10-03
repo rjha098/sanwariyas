@@ -1,4 +1,7 @@
 // FILE: server/services/authService.js
+
+//usage---->>>> controllers/authController.js & services/authService.js: Handles the heavy lifting of user identity. It processes customer signups, issues HTTP-only cookies, triggers Resend OTP emails for staff/admin 2FA, and seamlessly merges old "guest" inquiries into new accounts based on matching phone/email data.
+
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { Resend } from "resend";
@@ -104,14 +107,12 @@ export const signupCustomer = async ({
     isVerified: true,
   });
 
-
   // Link any guest inquiries (submitted before this account existed) that
   // match BOTH this exact email AND this exact phone number — a partial
   // match (only one of the two) is intentionally NOT linked, so an inquiry
   // never becomes visible to the wrong account just because one field
   // happens to be reused.
 
-  
   await Inquiry.updateMany(
     {
       userId: null,
@@ -287,14 +288,46 @@ export const loginUser = async (identifier, password) => {
     isActive: true,
   });
 
+  // const DUMMY_HASH =
+  //   "$2a$12$CwTycUXWue0Thq9StjUM0uJ8G8j6xQZQ0Zz9Z9Z9Z9Z9Z9Z9Z9Z9";
+
+  // if (candidates.length === 0) {
+  //   await bcrypt.compare(password, DUMMY_HASH); // Fake password check time burn karne ke liye
+  //   const err = new Error(
+  //     "Account not found. Please check your email or sign up.",
+  //   );
+  //   err.statusCode = 401;
+  //   throw err;
+  // }
+
+  // let user = null;
+  // for (const candidate of candidates) {
+  //   const passwordOk = await bcrypt.compare(password, candidate.password);
+  //   if (passwordOk) {
+  //     user = candidate;
+  //     break;
+  //   }
+  // }
+
+  // if (!user) {
+  //   const err = new Error("Invalid credentials. Please check your details.");
+  //   err.statusCode = 401;
+  //   throw err;
+  // }
+
   const DUMMY_HASH =
     "$2a$12$CwTycUXWue0Thq9StjUM0uJ8G8j6xQZQ0Zz9Z9Z9Z9Z9Z9Z9Z9Z9";
 
+  // SECURITY: use the exact same message + statusCode as the "wrong
+  // password" branch below (account enumeration fix). The DUMMY_HASH
+  // compare above is untouched — it's what keeps this branch's timing
+  // indistinguishable from a real password check.
+  const INVALID_CREDENTIALS_MESSAGE =
+    "Invalid credentials. Please check your details.";
+
   if (candidates.length === 0) {
     await bcrypt.compare(password, DUMMY_HASH); // Fake password check time burn karne ke liye
-    const err = new Error(
-      "Account not found. Please check your email or sign up.",
-    );
+    const err = new Error(INVALID_CREDENTIALS_MESSAGE);
     err.statusCode = 401;
     throw err;
   }
@@ -309,7 +342,7 @@ export const loginUser = async (identifier, password) => {
   }
 
   if (!user) {
-    const err = new Error("Invalid credentials. Please check your details.");
+    const err = new Error(INVALID_CREDENTIALS_MESSAGE);
     err.statusCode = 401;
     throw err;
   }
@@ -340,16 +373,64 @@ export const initiateForgotPassword = async (identifier) => {
     isActive: true,
   });
 
+  //   if (candidates.length === 0) {
+  //     const err = new Error("Account not found. Cannot reset password.");
+  //     err.statusCode = 404;
+  //     throw err;
+  //   }
+
+  //   const user = candidates.find((c) => c.email === cleanEmail) || candidates[0];
+
+  //   const otp = generateOtp();
+
+  //   console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`);
+
+  //   user.resetOtpHash = hashOtp(otp);
+  //   user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  //   await user.save();
+
+  //   const sent = await sendEmail({
+  //     to: user.email,
+  //     subject: "SANWARIYAS — Password Reset OTP",
+  //     html: `
+  //       <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #E8D5A3">
+  //         <p style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin:0 0 16px">Sanwariyas</p>
+  //         <h2 style="color:#574325;margin:0 0 8px">Password Reset OTP</h2>
+  //         <p style="color:#70543E;font-size:14px;margin:0 0 24px">Your one-time code expires in <strong>10 minutes</strong>.</p>
+  //         <div style="background:#f5efe4;border:1px solid #E8D5A3;padding:20px;text-align:center;margin-bottom:24px">
+  //           <span style="font-size:40px;font-weight:bold;letter-spacing:14px;color:#574325">${otp}</span>
+  //         </div>
+  //         <p style="color:#999;font-size:12px">If you did not request this, please ignore this email.</p>
+  //       </div>`,
+  //   });
+
+  //   if (!sent) console.info(`[auth][dev] Reset OTP for ${user.email}: ${otp}`);
+
+  //   return {
+  //     emailHint: maskEmail(user.email),
+  //     message: "Reset code has been sent.",
+  //   };
+  // };
+
+  // SECURITY: account-enumeration fix. This response must be byte-for-byte
+  // identical (same message, same implicit 200 status via the controller)
+  // whether or not an account exists — no `emailHint` field either, since
+  // its mere presence/absence would itself reveal existence. The frontend
+  // (ForgotPasswordScreen in client/src/app/login/page.js) only checks
+  // `res.data.success` to move to the OTP step — it never reads
+  // `emailHint` from this endpoint, so removing it here is safe.
+  const GENERIC_RESPONSE = {
+    message:
+      "If an account exists for this identifier, you will receive further instructions.",
+  };
+
   if (candidates.length === 0) {
-    const err = new Error("Account not found. Cannot reset password.");
-    err.statusCode = 404;
-    throw err;
+    return GENERIC_RESPONSE;
   }
 
   const user = candidates.find((c) => c.email === cleanEmail) || candidates[0];
 
   const otp = generateOtp();
-  console.log(`\n🔑 PASSWORD RESET OTP FOR [${user.email}] IS: ${otp}\n`);
 
   user.resetOtpHash = hashOtp(otp);
   user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
@@ -372,10 +453,7 @@ export const initiateForgotPassword = async (identifier) => {
 
   if (!sent) console.info(`[auth][dev] Reset OTP for ${user.email}: ${otp}`);
 
-  return {
-    emailHint: maskEmail(user.email),
-    message: "Reset code has been sent.",
-  };
+  return GENERIC_RESPONSE;
 };
 
 export const resetUserPassword = async (email, otp, newPassword) => {

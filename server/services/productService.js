@@ -1,3 +1,5 @@
+// // PURPOSE: All database logic for products lives HERE
+
 // PURPOSE: All database logic for products lives HERE
 
 import Product from "../models/Product.js";
@@ -111,6 +113,40 @@ const getAdminProductById = async (id) => {
   return product;
 };
 
+// Product create/update always goes through multipart/form-data (because
+// image files ride along in the same request), and FormData can only carry
+// strings — so the admin form JSON.stringifies the tiers array before
+// sending it. This turns that string (or a plain array, if ever called
+// directly with JSON) back into clean, validated tier objects.
+const normalizeBulkDiscountTiers = (input) => {
+  let tiers = input;
+  if (typeof tiers === "string") {
+    if (!tiers.trim()) return [];
+    try {
+      tiers = JSON.parse(tiers);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(tiers)) return [];
+  return tiers
+    .filter(
+      (t) =>
+        t &&
+        t.minPieces !== undefined &&
+        t.minPieces !== "" &&
+        t.discountPercent !== undefined &&
+        t.discountPercent !== "" &&
+        Number(t.minPieces) > 0 &&
+        Number(t.discountPercent) >= 0 &&
+        Number(t.discountPercent) <= 100,
+    )
+    .map((t) => ({
+      minPieces: Number(t.minPieces),
+      discountPercent: Number(t.discountPercent),
+    }));
+};
+
 const normalizeProductPayload = (payload = {}, { isUpdate = false } = {}) => {
   const cleanString = (value) =>
     typeof value === "string" ? value.trim() : "";
@@ -163,14 +199,7 @@ const normalizeProductPayload = (payload = {}, { isUpdate = false } = {}) => {
         ? null
         : cleanNumber(payload.stock, null),
     //  Bulk Discount (Future Ready) — optional tiers array
-    bulkDiscountTiers: Array.isArray(payload.bulkDiscountTiers)
-      ? payload.bulkDiscountTiers
-          .filter((t) => t && t.minPieces && t.discountPercent !== undefined)
-          .map((t) => ({
-            minPieces: Number(t.minPieces),
-            discountPercent: Number(t.discountPercent),
-          }))
-      : [],
+    bulkDiscountTiers: normalizeBulkDiscountTiers(payload.bulkDiscountTiers),
   };
 
   if (isUpdate) {

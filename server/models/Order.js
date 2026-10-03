@@ -26,6 +26,19 @@ const orderSchema = new mongoose.Schema(
   {
     orderNumber: { type: String, required: true, unique: true },
 
+    // Owning customer. Required for "My Orders", order-ownership checks,
+    // and user-targeted notifications to work at all.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    buyerName: { type: String, required: true, trim: true },
+    buyerEmail: { type: String, required: true, trim: true, lowercase: true },
+    buyerPhone: { type: String, default: "", trim: true },
+    buyerCompany: { type: String, default: "", trim: true },
+
     // FIX: Generate a random string as the default invoice number.
     // If we leave it blank, MongoDB throws a duplicate key error for "null".
     // This creates a unique invoice like "INV-202685-ABC12"
@@ -52,6 +65,9 @@ const orderSchema = new mongoose.Schema(
       city: { type: String, required: true, trim: true },
       state: { type: String, required: true, trim: true },
       pincode: { type: String, required: true, trim: true },
+      // "India" as default keeps this backward-compatible with any order
+      // placed before this field existed.
+      country: { type: String, required: true, trim: true, default: "India" },
       alternatePhone: { type: String, default: "", trim: true },
     },
 
@@ -60,6 +76,22 @@ const orderSchema = new mongoose.Schema(
     totalPieces: { type: Number, required: true, min: 0 },
     totalSets: { type: Number, required: true, min: 0 },
     totalAmount: { type: Number, required: true, min: 0 },
+
+    // Cashfree payment tracking. paymentStatus is the source of truth for
+    // whether money has actually been received — it is only ever set to
+    // "paid" from the webhook/verify flow, never directly by the client.
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+    cfOrderId: { type: String, default: "" },
+    paymentSessionId: { type: String, default: "" },
+    cfPaymentId: { type: String, default: "" },
+    paidAt: { type: Date, default: null },
+    // Stock is only decremented once, at the moment payment is confirmed.
+    // This flag makes that step idempotent even if the webhook fires twice.
+    stockDeducted: { type: Boolean, default: false },
 
     status: {
       type: String,

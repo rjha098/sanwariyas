@@ -26,9 +26,9 @@ const blogSchema = new mongoose.Schema(
     metaTitle: { type: String, default: "", maxlength: 200 },
     metaDescription: { type: String, default: "", maxlength: 300 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const Blog = mongoose.model("Blog", blogSchema);   // ← yeh line missing thi
+const Blog = mongoose.model("Blog", blogSchema); 
 
 export default Blog;

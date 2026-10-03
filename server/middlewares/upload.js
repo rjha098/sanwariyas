@@ -1,4 +1,8 @@
 // server/middlewares/upload.js
+
+// usage ---- critical security layer. Instead of trusting file extensions, it reads the binary "magic bytes" of uploaded files to ensure they are genuinely images before saving them to /uploads.
+
+
 import fs from "fs";
 import path from "path";
 import multer from "multer";

@@ -1,11 +1,28 @@
 // FILE: server/utils/authUtils.js
 
+// usage  ->>>.  Manages the generation and verification of JWTs (Access and Refresh tokens) and includes safeCompare to block timing attacks. It also holds the role-based protection middlewares (requireAuth, requireAdmin).
+
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import User from "../models/User.js";
+import AdminSession from "../models/AdminSession.js";
 
-// In-Memory Store for ENV-only Root Admins
-export const adminSessionStore = new Map();
+export const setAdminSession = async (email, sessionId) => {
+  await AdminSession.findByIdAndUpdate(
+    email,
+    { sessionId },
+    { upsert: true, setDefaultsOnInsert: true },
+  );
+};
+
+export const getAdminSession = async (email) => {
+  const doc = await AdminSession.findById(email).lean();
+  return doc ? doc.sessionId : null;
+};
+
+export const deleteAdminSession = async (email) => {
+  await AdminSession.findByIdAndDelete(email);
+};
 
 const getSecret = () => {
   const secret = process.env.ADMIN_JWT_SECRET || process.env.AUTH_SECRET;
@@ -17,8 +34,7 @@ const getSecret = () => {
   return secret;
 };
 
-
-const ACCESS_TOKEN_EXPIRY = "15m";
+const ACCESS_TOKEN_EXPIRY = "10m";
 const REFRESH_TOKEN_EXPIRY = "7d";
 
 // Constant-time string comparison to prevent Timing Attacks
@@ -36,16 +52,11 @@ export const createAccessToken = (payload) =>
     expiresIn: ACCESS_TOKEN_EXPIRY, // "15m"
   });
 
-
-
-
 export const createRefreshToken = (payload) =>
   jwt.sign({ ...payload, type: "refresh" }, getSecret(), {
     algorithm: "HS256",
     expiresIn: REFRESH_TOKEN_EXPIRY,
   });
-
-
 
 export const verifyAccessToken = (token) => {
   const decoded = jwt.verify(token, getSecret(), { algorithms: ["HS256"] });
@@ -56,7 +67,6 @@ export const verifyAccessToken = (token) => {
   }
   return decoded;
 };
-
 
 export const verifyRefreshToken = (token) => {
   const decoded = jwt.verify(token, getSecret(), { algorithms: ["HS256"] });

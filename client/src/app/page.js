@@ -6,14 +6,14 @@ import HeroSection from "@/components/home/HeroSection";
 import MarqueeTicker from "@/components/home/MarqueeTicker";
 import TrustBadges from "@/components/home/TrustBadges";
 import CategoriesSection from "@/components/home/CategoriesSection";
-import FeaturedProductsSection from "@/components/home/FeaturedProductsSection";
+// import FeaturedProductsSection from "@/components/home/FeaturedProductsSection";
 import InstagramReelsSection from "@/components/home/InstagramReelsSection";
 import ManufacturingInfoSections from "@/components/home/ManufacturingInfoSections";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
-import { fetchProducts } from "@/lib/api";
+// import { fetchProducts } from "@/lib/api";
 
-// SEO FIX: Highly optimized Metadata for E-commerce B2B Homepage
+//  Highly optimized Metadata for E-commerce B2B Homepage
 export const metadata = {
   title: "Wholesale Ethnic Wear Manufacturer in Jaipur | SANWARIYAS",
   description:
@@ -76,17 +76,17 @@ const homepageSchema = {
   ],
 };
 
-async function getFeaturedProducts() {
-  try {
-    const data = await fetchProducts({ featured: "true", limit: 4 });
-    return data.products || [];
-  } catch {
-    return [];
-  }
-}
+// async function getFeaturedProducts() {
+//   try {
+//     const data = await fetchProducts({ featured: "true", limit: 4 });
+//     return data.products || [];
+//   } catch {
+//     return [];
+//   }
+// }
 
 export default async function HomePage() {
-  const featuredProducts = await getFeaturedProducts();
+  // const featuredProducts = await getFeaturedProducts();
 
   return (
     <>
@@ -124,7 +124,7 @@ export default async function HomePage() {
 
         <MarqueeTicker />
         <CategoriesSection />
-        <FeaturedProductsSection products={featuredProducts} />
+        {/* <FeaturedProductsSection products={featuredProducts} /> */}
         <InstagramReelsSection />
         <ManufacturingInfoSections />
         <TrustBadges />
