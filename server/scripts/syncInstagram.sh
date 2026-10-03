@@ -8,7 +8,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Triggering Instagram sync via Node.js..."
 cd /var/www/sanwariyas/server
 
 # Node script ko run karna
-if /usr/bin/node scripts/syncInstagramReels.js; then
+if /root/.nvm/versions/node/v22.23.2/bin/node scripts/syncInstagramReels.js; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Instagram sync successful."
 else
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Instagram sync FAILED."
