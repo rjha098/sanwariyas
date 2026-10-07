@@ -12,6 +12,7 @@ import {
   getAdminSession,
   deleteAdminSession,
 } from "../utils/authUtils.js";
+import { removeStoredInquiryImages } from "../middlewares/inquiryUpload.js";
 
 import Order from "../models/Order.js";
 // In-memory presence state for the pure ENV-based root admin (no DB user
@@ -546,11 +547,19 @@ export const deleteAccount = async (req, res) => {
     }
 
     // No order history — safe to fully remove, same as before.
-    await Inquiry.deleteMany({
-      $or: [{ userId: user._id }, { email: user.email }],
-    });
-    await User.findByIdAndDelete(user._id);
 
+        const inquiryFilter = {
+      $or: [{ userId: user._id }, { email: user.email }],
+    };
+    const doomedInquiries = await Inquiry.find(inquiryFilter)
+      .select("sampleImages")
+      .lean();
+    await Inquiry.deleteMany(inquiryFilter);
+    await removeStoredInquiryImages(
+      doomedInquiries.flatMap((i) => i.sampleImages || []),
+    );
+    await User.findByIdAndDelete(user._id);
+    
     return res.json({ success: true, message: "Account deleted." });
   } catch (error) {
     return res

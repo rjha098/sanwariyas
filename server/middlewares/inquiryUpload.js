@@ -49,8 +49,22 @@ export const removeUploadedFiles = async (files = []) => {
   );
 };
 
+// Deletes images saved on an inquiry. Only plain files inside
+// uploads/inquiries are touched; never throws.
+export const removeStoredInquiryImages = async (publicPaths = []) => {
+  await Promise.allSettled(
+    (Array.isArray(publicPaths) ? publicPaths : [])
+      .filter((p) => typeof p === "string" && p.startsWith(`${PUBLIC_PREFIX}/`))
+      .map((p) => fs.promises.unlink(path.join(UPLOAD_DIR, path.basename(p)))),
+  );
+};
+
 const storage = multer.diskStorage({
-  destination: UPLOAD_DIR, // Multer creates it (recursively) if missing
+  // Re-creates the folder on every request if it is missing.
+  destination: (req, file, cb) => {
+    fs.mkdir(UPLOAD_DIR, { recursive: true }, (err) => cb(err, UPLOAD_DIR));
+  },
+
   filename: (req, file, cb) => {
     // Temporary name — renamed to the verified extension after the content check.
     cb(null, `${Date.now()}-${crypto.randomBytes(8).toString("hex")}.tmp`);
@@ -94,9 +108,18 @@ const describeUploadError = (err) => {
       return { status: 400, message: TYPE_ERROR_MESSAGE };
     default:
       if (err instanceof multer.MulterError) {
-        return { status: 400, message: "Image upload failed. Please check your files and try again." };
+        return {
+          status: 400,
+          message:
+            "Image upload failed. Please check your files and try again.",
+        };
       }
-      return { status: 500, message: "Failed to upload images. Please try again." };
+
+      console.error("[inquiry upload] unexpected error:", err);
+      return {
+        status: 500,
+        message: "Failed to upload images. Please try again.",
+      };
   }
 };
 
@@ -113,7 +136,8 @@ const verifyInquiryImages = async (req, res, next) => {
         await removeUploadedFiles(files);
         return res.status(400).json({
           success: false,
-          message: "One of the uploaded files is not a valid JPG, PNG or WEBP image.",
+          message:
+            "One of the uploaded files is not a valid JPG, PNG or WEBP image.",
         });
       }
 

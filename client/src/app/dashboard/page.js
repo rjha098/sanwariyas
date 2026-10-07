@@ -1,6 +1,6 @@
 // FILE: client/src/app/dashboard/page.js
-
 "use client";
+import { formatPhone } from "@/utils/formatPhone";
 
 import {
   useState,
@@ -437,7 +437,7 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
             WhatsApp:{" "}
           </span>
           <span className="text-[#574325] font-semibold">
-            {inquiry.whatsapp}
+            {formatPhone(inquiry.whatsapp)}{" "}
           </span>
         </span>
       </div>
@@ -1290,7 +1290,9 @@ export default function UserDashboard() {
                           { label: "Email", value: user?.email },
                           {
                             label: "Phone",
-                            value: profileData.phone || "Not Provided",
+                            value: profileData.phone
+                              ? formatPhone(profileData.phone)
+                              : "Not Provided",
                           },
                           {
                             label: "Company",

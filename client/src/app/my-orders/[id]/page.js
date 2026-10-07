@@ -1,5 +1,6 @@
 // FILE: client/src/app/my-orders/[id]/page.js
 "use client";
+import { formatPhone } from "@/utils/formatPhone";
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
@@ -234,7 +235,10 @@ function MyOrderDetailPageInner() {
                 {order.shippingAddress.alternatePhone && (
                   <>
                     <br />
-                    Alt. Phone: {order.shippingAddress.alternatePhone}
+                    Alt. Phone:{" "}
+                    {formatPhone(order.shippingAddress.alternatePhone, {
+                      assumeIndia: true,
+                    })}
                   </>
                 )}
               </p>

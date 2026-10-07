@@ -1,6 +1,6 @@
 // FILE: client/src/components/ui/InquiryModal.js
 "use client";
-
+import { formatPhone } from "@/utils/formatPhone";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
@@ -457,7 +457,7 @@ export default function InquiryModal() {
                     </p>
                     <p className="font-sans text-xs text-[#574325]">
                       <span className="text-[#a07f61]">Phone: </span>
-                      <strong>{submittedContact.phone}</strong>
+                      <strong>{formatPhone(submittedContact.phone)}</strong>
                     </p>
                   </div>
                   <p className="font-sans text-[11px] text-[#a07f61] mt-2 leading-relaxed">
