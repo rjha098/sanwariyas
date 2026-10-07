@@ -51,7 +51,7 @@ export const metadata = {
 export default function LookbookLayout({ children }) {
   return (
     <>
-      {/* ✅ SEO FIX: Injected CollectionPage and BreadcrumbList Schema for Semantic SEO */}
+      {/*  SEO FIX: Injected CollectionPage and BreadcrumbList Schema for Semantic SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

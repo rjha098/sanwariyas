@@ -14,7 +14,6 @@ import {
 } from "../utils/authUtils.js";
 
 import Order from "../models/Order.js";
-
 // In-memory presence state for the pure ENV-based root admin (no DB user
 // row to store this on). Declared here, at the top, since several
 // functions below reference it — declaring it after those functions
@@ -293,10 +292,12 @@ export const verifyOtp = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { identifier } = req.body;
-    if (!identifier)
+
+    if (!identifier || typeof identifier !== "string")
       return res
         .status(400)
-        .json({ success: false, message: "Email or phone required." });
+        .json({ success: false, message: "Email address required." });
+
     const result = await authService.initiateForgotPassword(identifier);
     return res.json({ success: true, ...result });
   } catch (error) {

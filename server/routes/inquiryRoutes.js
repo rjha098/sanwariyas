@@ -29,6 +29,10 @@
 // router.delete('/:id', requireAdmin, deleteInquiry);
 
 // export default router;
+
+
+
+
 // FILE: server/routes/inquiryRoutes.js
 import express from "express";
 import {

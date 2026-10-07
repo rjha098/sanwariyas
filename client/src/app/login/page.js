@@ -1,4 +1,4 @@
- // FILE: client/src/app/login/page.js
+// FILE: client/src/app/login/page.js
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -14,7 +14,6 @@ const lbl =
   "block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2";
 const btn =
   "w-full bg-brand-coffee text-brand-cream py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-brand-african transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
-
 
 // ── OTP Screen (Used for Admin login) ─────────────────────────────────────────
 function OtpScreen({ emailHint, devOtp, verifyingOtp, onSubmit, onBack }) {
@@ -89,13 +88,20 @@ function ForgotPasswordScreen({ onBack, onResetSuccess }) {
 
   const handleRequestOtp = async (e) => {
     e.preventDefault();
-    if (!identifier.trim()) return;
+
+    const emailValue = identifier.trim().toLowerCase();
+    if (!emailValue) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+      setLocalErr("Please enter your registered email address.");
+      return;
+    }
     setLoading(true);
     setLocalErr("");
     try {
       const res = await api.post("/auth/forgot-password", {
-        identifier: identifier.trim(),
+        identifier: emailValue,
       });
+
       if (res.data.success) {
         setStep(2);
       }
@@ -136,17 +142,18 @@ function ForgotPasswordScreen({ onBack, onResetSuccess }) {
         </h2>
         <p className="font-sans text-xs text-brand-mud mt-1">
           {step === 1
-            ? "Enter your email or phone to receive a reset code."
-            : `An OTP was sent to ${identifier}`}
+            ? "Enter your registered email to receive a reset code."
+            : `If an account exists for ${identifier.trim().toLowerCase()}, a 6-digit code has been emailed to it.`}
         </p>
       </div>
 
       {step === 1 ? (
         <form onSubmit={handleRequestOtp} className="space-y-5">
           <div>
-            <label className={lbl}>Email or Phone</label>
+            <label className={lbl}>Email</label>
             <input
-              type="text"
+              type="email"
+              autoComplete="email"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="you@example.com"
@@ -341,7 +348,6 @@ function SignupForm({ onSignup, signingUp }) {
       phone: cleanedPhone,
       countryCode: splitPhone(cleanedPhone).dial,
     });
-    
   };
 
   return (
@@ -368,9 +374,7 @@ function SignupForm({ onSignup, signingUp }) {
           <label className={lbl}>Phone *</label>
           <PhoneInput
             value={form.phone}
-            onChange={(combined) =>
-              setForm((f) => ({ ...f, phone: combined }))
-            }
+            onChange={(combined) => setForm((f) => ({ ...f, phone: combined }))}
             className="flex items-stretch w-full border border-brand-lightgold/60 bg-white text-sm focus-within:border-brand-coffee transition-colors"
             textClassName="text-brand-mud"
             required
@@ -467,9 +471,8 @@ export default function LoginPage() {
     type: "success",
   });
   const [redirecting, setRedirecting] = useState(false);
-    const [returnTo, setReturnTo] = useState("/");   
+  const [returnTo, setReturnTo] = useState("/");
   const redirectTimeoutRef = useRef(null);
-  
 
   const showToast = (message, type = "success") =>
     setToast({ isVisible: true, message, type });
@@ -517,8 +520,7 @@ export default function LoginPage() {
       ) {
         setMode(queryMode);
       }
-     
-      
+
       //  FIX: honor ?redirect=/cart (or /checkout) so a guest who tried to
       // Buy Now / go to checkout lands back where they were after logging in.
 
@@ -603,7 +605,7 @@ export default function LoginPage() {
       setRedirecting(true);
       showToast("Login successful. Welcome!", "success");
 
-     redirectTimeoutRef.current = setTimeout(() => {
+      redirectTimeoutRef.current = setTimeout(() => {
         if (result.role === "admin" || result.role === "staff") {
           router.push("/operations-center");
         } else {
@@ -623,7 +625,7 @@ export default function LoginPage() {
         if (result.role === "admin" || result.role === "staff") {
           router.push("/operations-center");
         } else {
-          router.push(returnTo); 
+          router.push(returnTo);
         }
       }, 2000);
     }

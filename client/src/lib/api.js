@@ -15,12 +15,11 @@
 // //   headers: { "Content-Type": "application/json" },
 // // });
 
-
 // const api = axios.create({
 //   baseURL: API_URL,
 //   timeout: 30000,
 //   headers: { "Content-Type": "application/json" },
-//   withCredentials: true, 
+//   withCredentials: true,
 // });
 
 // api.interceptors.request.use((config) => {
@@ -88,8 +87,6 @@
 //     //   return Promise.reject(error);
 //     // }
 
-
-
 //     if (error.isLocalPreflightReject) {
 //       if (typeof window !== "undefined") {
 //         tokenStorage.clear();
@@ -105,7 +102,6 @@
 //       }
 //       return Promise.reject(error);
 //     }
-
 
 //     if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
 //       error.isTimeout = true;
@@ -159,7 +155,7 @@
 //         try {
 //           // Ask backend for a new access token using the HTTP-Only cookie
 //           const { data } = await axios.get(`${API_URL}/auth/session`, { withCredentials: true });
-          
+
 //        if (data && data.token) {
 //             tokenStorage.set(data.token);
 //             // 🔴 NEW: Tell React about the new token!
@@ -168,7 +164,7 @@
 //             }
 //             config.headers.Authorization = `Bearer ${data.token}`;
 //             processRefreshQueue(null, data.token);
-//             return api(config); 
+//             return api(config);
 //           }
 //         } catch (refreshError) {
 //           processRefreshQueue(refreshError, null);
@@ -189,7 +185,6 @@
 //       //   }
 //       // }
 
-
 //       // If we reach here, both access and refresh tokens are dead. Hard logout.
 //       if (typeof window !== "undefined") {
 //         tokenStorage.clear();
@@ -204,11 +199,11 @@
 //           window.location.href = "/login";
 //         }
 //       }
-//     }  
+//     }
 
 //     return Promise.reject(error);
 //   }
-// ); 
+// );
 
 // const withAuth = (token) => ({
 //   headers: { Authorization: `Bearer ${token}` },
@@ -240,11 +235,6 @@
 // export const deleteStaffAccount = (token, id) =>
 //   api.delete(`/auth/staff/${id}`, withAuth(token)).then((r) => r.data);
 
-
-
-
-
-
 // // PRODUCTS
 // export const fetchProducts = (params = {}) =>
 //   api.get("/products", { params }).then((r) => r.data);
@@ -254,11 +244,6 @@
 //   api.get("/products/categories").then((r) => r.data);
 // export const checkProductsAvailability = (ids) =>
 //   api.post("/products/check-availability", { ids }).then((r) => r.data);
-
-
-
-
-
 
 // export const fetchAdminProducts = (token, params = {}) =>
 //   api
@@ -363,9 +348,6 @@
 //   api.get("/orders/analytics", withAuth(token)).then((r) => r.data);
 
 // export default api;
-
-
-
 
 // // FILE: client/src/lib/api.js
 // import axios from "axios";
@@ -663,8 +645,8 @@
 
 
 
-
 // FILE: client/src/lib/api.js
+
 import axios from "axios";
 import { tokenStorage } from "./tokenStorage";
 
@@ -675,18 +657,18 @@ const API_URL = rawApiUrl.endsWith("/api")
   ? rawApiUrl
   : `${rawApiUrl.replace(/\/+$/, "")}/api`;
 
+  
 // const api = axios.create({
 //   baseURL: API_URL,
 //   timeout: 30000,
 //   headers: { "Content-Type": "application/json" },
 // });
 
-
 const api = axios.create({
   baseURL: API_URL,
   timeout: 30000,
   headers: { "Content-Type": "application/json" },
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -754,8 +736,6 @@ api.interceptors.response.use(
     //   return Promise.reject(error);
     // }
 
-
-
     if (error.isLocalPreflightReject) {
       if (typeof window !== "undefined") {
         tokenStorage.clear();
@@ -764,14 +744,16 @@ api.interceptors.response.use(
           isRedirecting = true;
           sessionStorage.setItem(
             "pending_toast",
-            JSON.stringify({ message: "Session Expired. Please log in again.", type: "error" })
+            JSON.stringify({
+              message: "Session Expired. Please log in again.",
+              type: "error",
+            }),
           );
           window.location.href = "/login";
         }
       }
       return Promise.reject(error);
     }
-
 
     if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
       error.isTimeout = true;
@@ -800,8 +782,12 @@ api.interceptors.response.use(
         isRateLimitPaused = true;
         config._retryCount += 1;
         const retryAfter = response.headers["retry-after"];
-        const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2000 * Math.pow(2, config._retryCount);
-        await new Promise((resolve) => setTimeout(resolve, waitTime + Math.floor(Math.random() * 500)));
+        const waitTime = retryAfter
+          ? parseInt(retryAfter, 10) * 1000
+          : 2000 * Math.pow(2, config._retryCount);
+        await new Promise((resolve) =>
+          setTimeout(resolve, waitTime + Math.floor(Math.random() * 500)),
+        );
         isRateLimitPaused = false;
         processRateLimitQueue(null);
         return api(config);
@@ -810,7 +796,10 @@ api.interceptors.response.use(
 
     // ── Naya Refresh Token Logic ──
     if (response && response.status === 401 && !config._isRetry) {
-      if (config.url.includes("/auth/session") || config.url.includes("/auth/login")) {
+      if (
+        config.url.includes("/auth/session") ||
+        config.url.includes("/auth/login")
+      ) {
         // Refresh token itself failed or login failed, trigger hard logout
       } else {
         if (isRefreshing) {
@@ -824,17 +813,21 @@ api.interceptors.response.use(
 
         try {
           // Ask backend for a new access token using the HTTP-Only cookie
-          const { data } = await axios.get(`${API_URL}/auth/session`, { withCredentials: true });
-          
-       if (data && data.token) {
+          const { data } = await axios.get(`${API_URL}/auth/session`, {
+            withCredentials: true,
+          });
+
+          if (data && data.token) {
             tokenStorage.set(data.token);
             // 🔴 NEW: Tell React about the new token!
             if (typeof window !== "undefined") {
-              window.dispatchEvent(new CustomEvent("auth:token_refreshed", { detail: data.token }));
+              window.dispatchEvent(
+                new CustomEvent("auth:token_refreshed", { detail: data.token }),
+              );
             }
             config.headers.Authorization = `Bearer ${data.token}`;
             processRefreshQueue(null, data.token);
-            return api(config); 
+            return api(config);
           }
         } catch (refreshError) {
           processRefreshQueue(refreshError, null);
@@ -855,26 +848,27 @@ api.interceptors.response.use(
       //   }
       // }
 
-
       // If we reach here, both access and refresh tokens are dead. Hard logout.
       if (typeof window !== "undefined") {
         tokenStorage.clear();
         localStorage.removeItem("sanwariyas_user");
         if (window.location.pathname !== "/login" && !isRedirecting) {
           isRedirecting = true;
-          const backendMessage = response.data?.message || "Your session has expired. Please log in again.";
+          const backendMessage =
+            response.data?.message ||
+            "Your session has expired. Please log in again.";
           sessionStorage.setItem(
             "pending_toast",
-            JSON.stringify({ message: backendMessage, type: "error" })
+            JSON.stringify({ message: backendMessage, type: "error" }),
           );
           window.location.href = "/login";
         }
       }
-    }  
+    }
 
     return Promise.reject(error);
-  }
-); 
+  },
+);
 
 const withAuth = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
@@ -885,9 +879,7 @@ export const unifiedLogin = (credentials) =>
   api.post("/auth/login", credentials).then((r) => r.data);
 
 export const checkAuthSession = () =>
-  api
-    .get("/auth/session", { withCredentials: true })
-    .then((r) => r.data);
+  api.get("/auth/session", { withCredentials: true }).then((r) => r.data);
 
 export const verifyOTP = (data) =>
   api.post("/auth/verify-otp", data).then((r) => r.data);
@@ -906,9 +898,6 @@ export const updateStaffStatus = (token, id, data) =>
 export const deleteStaffAccount = (token, id) =>
   api.delete(`/auth/staff/${id}`, withAuth(token)).then((r) => r.data);
 
-
-
-
 // PRODUCTS
 export const fetchProducts = (params = {}) =>
   api.get("/products", { params }).then((r) => r.data);
@@ -918,9 +907,6 @@ export const fetchProductCategories = () =>
   api.get("/products/categories").then((r) => r.data);
 export const checkProductsAvailability = (ids) =>
   api.post("/products/check-availability", { ids }).then((r) => r.data);
-
-
-
 
 export const fetchAdminProducts = (token, params = {}) =>
   api
@@ -972,9 +958,6 @@ export const updateAdminInquiryStatus = (token, id, data) =>
 
 // LOOKBOOK
 
-
-
-
 export const fetchLookbook = async () => {
   const PAGE_SIZE = 60;
   let page = 1;
@@ -997,7 +980,6 @@ export const fetchLookbook = async () => {
   return { success: true, items: allItems, pagination };
 };
 
-
 export const createLookbookItem = (token, formData) =>
   api
     .post("/lookbook", formData, {
@@ -1007,8 +989,19 @@ export const createLookbookItem = (token, formData) =>
       },
     })
     .then((r) => r.data);
+export const updateLookbookItem = (token, id, formData) =>
+  api
+    .patch(`/lookbook/${id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((r) => r.data);
 export const deleteLookbookItem = (token, id) =>
   api.delete(`/lookbook/${id}`, withAuth(token)).then((r) => r.data);
+export const bulkDeleteLookbookItems = (token, ids) =>
+  api.post("/lookbook/bulk-delete", { ids }, withAuth(token)).then((r) => r.data);
 
 // NOTIFICATIONS
 export const fetchUnreadCount = (token) =>
@@ -1061,7 +1054,9 @@ export const fetchOrderAnalytics = (token) =>
 
 // PAYMENTS — Cashfree
 export const createPaymentSession = (token, orderId) =>
-  api.post(`/payments/session/${orderId}`, {}, withAuth(token)).then((r) => r.data);
+  api
+    .post(`/payments/session/${orderId}`, {}, withAuth(token))
+    .then((r) => r.data);
 export const verifyPayment = (token, orderId) =>
   api.get(`/payments/verify/${orderId}`, withAuth(token)).then((r) => r.data);
 

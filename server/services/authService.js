@@ -24,13 +24,21 @@ export const sendEmail = async ({ to, subject, html }) => {
   }
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
+
+    const { error } = await resend.emails.send({
       from:
         process.env.RESEND_FROM_EMAIL || "Sanwariyas <onboarding@resend.dev>",
       to,
       subject,
       html,
     });
+    if (error) {
+      console.error(
+        "[email] Resend rejected the email:",
+        error.message || error,
+      );
+      return false;
+    }
     return true;
   } catch (error) {
     // console.error("[email] Failed to send email via Resend:", error.message);
@@ -361,17 +369,15 @@ export const loginUser = async (identifier, password) => {
 // ═════════════════════════════════════════════════════════════════
 
 export const initiateForgotPassword = async (identifier) => {
+  // Password reset is EMAIL-OTP ONLY.
   const cleanEmail = normalizeEmail(identifier);
-  const phoneCandidates = phoneMatchCandidates(identifier);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    const err = new Error("Please enter your registered email address.");
+    err.statusCode = 400;
+    throw err;
+  }
 
-  // Same duplicate-phone safety as loginUser: don't just trust the first
-  // match — if a phone collides across old accounts, prefer the one whose
-  // email actually matches (a phone-only match is ambiguous here since
-  // there's no password to disambiguate with).
-  const candidates = await User.find({
-    $or: [{ email: cleanEmail }, { phone: { $in: phoneCandidates } }],
-    isActive: true,
-  });
+  const candidates = await User.find({ email: cleanEmail, isActive: true });
 
   //   if (candidates.length === 0) {
   //     const err = new Error("Account not found. Cannot reset password.");

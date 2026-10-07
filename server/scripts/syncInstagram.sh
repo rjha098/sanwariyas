@@ -3,11 +3,10 @@
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Triggering Instagram sync via Node.js..."
 
-# Server folder me jana zaroori hai taaki .env file theek se load ho
-
+ #  to  going  in the server  file  is necessary so that .env file loads properly
 cd /var/www/sanwariyas/server
 
-# Node script ko run karna
+# Node script  running 
 if /root/.nvm/versions/node/v22.23.2/bin/node scripts/syncInstagramReels.js; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Instagram sync successful."
 else
