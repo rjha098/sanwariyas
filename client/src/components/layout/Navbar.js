@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-// import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 //  import { useCart } from "@/hooks/useCart";
 
@@ -33,7 +33,11 @@ const navLinks = [
     label: "About",
     title: "About SANWARIYAS Manufacturer",
   },
-  { href: "/exportdocs", label: "Export Documents" },
+  {
+    href: "/exportdocs",
+    label: "Export",
+    title: "SANWARIYAS Wholesale Export Documents & Guidelines",
+  },
   {
     id: "discover",
     type: "megamenu",
@@ -71,7 +75,7 @@ export default function Navbar() {
   // Auth context and state
   const { isAuthenticated, isCustomer, user, logout } = useAuth();
 
-  const { itemCount: cartItemCount } = useCart();
+  // const { itemCount: cartItemCount } = useCart();
 
   useEffect(() => {
     setMenuOpen(false);

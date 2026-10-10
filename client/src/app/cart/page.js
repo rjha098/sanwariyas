@@ -3,13 +3,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart, computeMoq, MIN_PIECES } from "@/hooks/useCart";
 import { getImageUrl } from "@/lib/imageUrl";
 import { checkProductsAvailability } from "@/lib/api";
 
 export default function CartPage() {
+
+  redirect("/");
   const router = useRouter();
   const { isAuthenticated, authChecking } = useAuth();
   const {
