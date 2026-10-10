@@ -6,8 +6,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
-// import { useCart } from "@/hooks/useCart";
+// import { useAuth } from "@/hooks/useAuth";
+
+//  import { useCart } from "@/hooks/useCart";
 
 const navLinks = [
   {
@@ -32,11 +33,7 @@ const navLinks = [
     label: "About",
     title: "About SANWARIYAS Manufacturer",
   },
-  {
-    href: "/exportdocs",
-    label: "Export",
-    title: "Business & Export Documents",
-  },
+  { href: "/exportdocs", label: "Export Documents" },
   {
     id: "discover",
     type: "megamenu",
@@ -64,7 +61,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mobMegaOpen, setMobMegaOpen] = useState(false); // Mobile dropdown toggle ke liye
+  const [mobMegaOpen, setMobMegaOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
 
@@ -74,7 +71,7 @@ export default function Navbar() {
   // Auth context and state
   const { isAuthenticated, isCustomer, user, logout } = useAuth();
 
-  // const { itemCount: cartItemCount } = useCart();
+  const { itemCount: cartItemCount } = useCart();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -342,52 +339,6 @@ export default function Navbar() {
 
           {/* AUTH, CTA + HAMBURGER */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {/* <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    href={getDashboardLink()}
-                    className="sw-auth-link"
-                    aria-label="Dashboard"
-                  >
-                    Dashboard
-                  </Link>
-
-                  <button
-                    onClick={handleLogout}
-                    className="sw-auth-link"
-                    aria-label="Log Out"
-                  >
-                    Log Out
-                  </button>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  className="sw-auth-link"
-                  aria-label="Log In"
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                  Log In
-                </Link>
-              )}
-            </div>
- */}
-
             {/* Desktop Auth */}
             <div className="hidden lg:flex items-center gap-5 mr-2 border-r border-[#BE6E5B]/20 pr-5">
               {isAuthenticated ? (
@@ -700,8 +651,8 @@ export default function Navbar() {
             })}
 
             {/* Mobile Auth */}
-            {/*             
-            <Link
+
+            {/* <Link
               href="/cart"
               onClick={() => setMenuOpen(false)}
               className="sw-mob-link"

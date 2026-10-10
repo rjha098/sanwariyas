@@ -29,15 +29,21 @@ export const countryCodes = [
   { code: "+387", name: "Bosnia and Herzegovina" },
   { code: "+267", name: "Botswana" },
   { code: "+55", name: "Brazil" },
-  { code: "+246", name: "British Indian Ocean Territory" },
+
+  { code: "+246", name: "Diego Garcia" },
+
   { code: "+673", name: "Brunei" },
   { code: "+359", name: "Bulgaria" },
   { code: "+226", name: "Burkina Faso" },
   { code: "+257", name: "Burundi" },
   { code: "+855", name: "Cambodia" },
   { code: "+237", name: "Cameroon" },
-  { code: "+1", name: "USA / Canada" },
-  { code: "+238", name: "Cape Verde" },
+
+  { code: "+1", name: "Canada" },
+  { code: "+1", name: "United States" },
+
+  { code: "+238", name: "Cabo Verde" },
+
   { code: "+1345", name: "Cayman Islands" },
   { code: "+236", name: "Central African Republic" },
   { code: "+235", name: "Chad" },
@@ -98,11 +104,16 @@ export const countryCodes = [
   { code: "+353", name: "Ireland" },
   { code: "+972", name: "Israel" },
   { code: "+39", name: "Italy" },
-  { code: "+225", name: "Ivory Coast" },
+
+  { code: "+225", name: "Côte d'Ivoire" },
+
   { code: "+1876", name: "Jamaica" },
   { code: "+81", name: "Japan" },
   { code: "+962", name: "Jordan" },
-  { code: "+7", name: "Kazakhstan / Russia" },
+
+  { code: "+7", name: "Kazakhstan" },
+  { code: "+7", name: "Russia" },
+
   { code: "+254", name: "Kenya" },
   { code: "+686", name: "Kiribati" },
   { code: "+965", name: "Kuwait" },
@@ -116,8 +127,11 @@ export const countryCodes = [
   { code: "+423", name: "Liechtenstein" },
   { code: "+370", name: "Lithuania" },
   { code: "+352", name: "Luxembourg" },
-  { code: "+853", name: "Macau" },
-  { code: "+389", name: "Macedonia" },
+
+  { code: "+853", name: "Macao, China" },
+
+  { code: "+389", name: "North Macedonia" },
+
   { code: "+261", name: "Madagascar" },
   { code: "+265", name: "Malawi" },
   { code: "+60", name: "Malaysia" },
@@ -188,7 +202,9 @@ export const countryCodes = [
   { code: "+94", name: "Sri Lanka" },
   { code: "+249", name: "Sudan" },
   { code: "+597", name: "Suriname" },
-  { code: "+268", name: "Swaziland" },
+
+  { code: "+268", name: "Eswatini" },
+
   { code: "+46", name: "Sweden" },
   { code: "+41", name: "Switzerland" },
   { code: "+963", name: "Syria" },
@@ -201,7 +217,9 @@ export const countryCodes = [
   { code: "+676", name: "Tonga" },
   { code: "+1868", name: "Trinidad and Tobago" },
   { code: "+216", name: "Tunisia" },
-  { code: "+90", name: "Turkey" },
+
+  { code: "+90", name: "Türkiye" },
+
   { code: "+993", name: "Turkmenistan" },
   { code: "+1649", name: "Turks and Caicos Islands" },
   { code: "+688", name: "Tuvalu" },
@@ -212,13 +230,23 @@ export const countryCodes = [
   { code: "+598", name: "Uruguay" },
   { code: "+998", name: "Uzbekistan" },
   { code: "+678", name: "Vanuatu" },
-  { code: "+379", name: "Vatican City" },
   { code: "+58", name: "Venezuela" },
-  { code: "+84", name: "Vietnam" },
+  { code: "+84", name: "Viet Nam" },
   { code: "+1284", name: "Virgin Islands (British)" },
   { code: "+1340", name: "Virgin Islands (U.S.)" },
   { code: "+681", name: "Wallis and Futuna" },
   { code: "+967", name: "Yemen" },
   { code: "+260", name: "Zambia" },
   { code: "+263", name: "Zimbabwe" },
+  { code: "+247", name: "Ascension" },
+  { code: "+262", name: "Réunion and Mayotte" },
+  { code: "+290", name: "Saint Helena and Tristan da Cunha" },
+  { code: "+383", name: "Kosovo" },
+  { code: "+508", name: "Saint Pierre and Miquelon" },
+  { code: "+599", name: "Curaçao" },
+  { code: "+599", name: "Bonaire, Sint Eustatius and Saba" },
+  { code: "+672", name: "Norfolk Island" },
+  { code: "+1670", name: "Northern Mariana Islands" },
+  { code: "+1721", name: "Sint Maarten" },
+  { code: "+690", name: "Tokelau" },
 ];

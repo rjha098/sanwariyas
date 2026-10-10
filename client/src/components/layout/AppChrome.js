@@ -4,6 +4,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppWidget from "@/components/ui/WhatsAppWidget";
+import InquiryWidget from "@/components/ui/InquiryWidget";
 import InquiryModal from "@/components/ui/InquiryModal";
 
 export default function AppChrome({ children }) {
@@ -20,7 +21,9 @@ export default function AppChrome({ children }) {
       <Navbar />
       <div className="flex-grow pt-[80px]">{children}</div>
       <WhatsAppWidget />
+      <InquiryWidget />
       <InquiryModal />
     </>
   );
 }
+
