@@ -12,6 +12,7 @@ import { checkProductsAvailability } from "@/lib/api";
 export default function CartPage() {
 
   redirect("/");
+  
   const router = useRouter();
   const { isAuthenticated, authChecking } = useAuth();
   const {

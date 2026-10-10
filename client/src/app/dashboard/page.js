@@ -726,7 +726,7 @@ export default function UserDashboard() {
       icon: <Icon.inquiry />,
       badge: unreadCount,
     },
-    { key: "orders", label: "My Orders", icon: <Icon.order /> },
+    // { key: "orders", label: "My Orders", icon: <Icon.order /> },
   ];
 
   if (authChecking) {

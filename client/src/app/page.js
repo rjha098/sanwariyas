@@ -16,7 +16,8 @@ import CategoriesSection from "@/components/home/CategoriesSection";
 
 
 
-import InstagramReelsSection from "@/components/home/InstagramReelsSection";
+// import InstagramReelsSection from "@/components/home/InstagramReelsSection";
+
 import ManufacturingInfoSections from "@/components/home/ManufacturingInfoSections";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
@@ -163,7 +164,8 @@ export default async function HomePage() {
 
 
         
-        <InstagramReelsSection />
+        {/* <InstagramReelsSection /> */}
+
         <ManufacturingInfoSections />
         <TrustBadges />
 
