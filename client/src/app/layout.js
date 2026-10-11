@@ -99,8 +99,8 @@ const organizationSchema = {
   },
   priceRange: "$$",
   sameAs: [
-    "https://www.instagram.com/sanwariyas.official",
-    "https://www.facebook.com/sanwariyas.official",
+    "https://www.instagram.com/sanwariyas_jaipur",
+    "https://www.facebook.com/sanwariyas_jaipur",
   ],
 };
 
