@@ -62,7 +62,7 @@ export default function WhatsAppWidget() {
 
       {/* WhatsApp Button */}
       <a
-        href="https://wa.me/919251171306?text=Hello%20SANWARIYAS%20Team!%20I%20am%20interested%20in%20your%20wholesale%20ethnic%20wear,%20Jaipur%20cotton%20suits,%20and%20premium%20kurtis%20for%20my%20business."
+        href="https://wa.me/919352111306?text=Hello%20SANWARIYAS%20Team!%20I%20am%20interested%20in%20your%20wholesale%20ethnic%20wear,%20Jaipur%20cotton%20suits,%20and%20premium%20kurtis%20for%20my%20business."
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with our wholesale ethnic wear manufacturing team on WhatsApp"

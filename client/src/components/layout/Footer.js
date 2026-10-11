@@ -109,17 +109,28 @@ export default function Footer() {
                     Jaipur, Rajasthan 302029
                   </span>
                 </li>
+
                 <li className="flex gap-3">
                   <span aria-hidden="true" className="text-[#EAC9A8] mt-0.5">
                     ✦
                   </span>
-                  <a
-                    href="tel:+919680812813"
-                    className="text-[#FDF7F2]/60 hover:text-[#FDF7F2] transition-colors"
-                  >
-                    +91 9251171306
-                  </a>
+                  <span className="text-[#FDF7F2]/60">
+                    <a
+                      href="tel:+919251171306"
+                      className="hover:text-[#FDF7F2] transition-colors"
+                    >
+                      +91 9352111306
+                    </a>
+                    {" OR "}
+                    <a
+                      href="tel:+919680812813"
+                      className="hover:text-[#FDF7F2] transition-colors"
+                    >
+                      +91 9251171306
+                    </a>
+                  </span>
                 </li>
+
                 <li className="flex gap-3">
                   <span aria-hidden="true" className="text-[#EAC9A8] mt-0.5">
                     ✦

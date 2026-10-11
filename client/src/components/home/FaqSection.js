@@ -19,13 +19,15 @@ const BUILT_IN_FAQS = [
     },
     category: "Ordering",
   },
+
   {
-    name: "Do you offer customization on ethnic wear?",
+    name: "Do you offer customization and private labelling?",
     acceptedAnswer: {
-      text: "Yes — as a premier Jaipur Ethnic Wear Manufacturer, we offer full contract manufacturing support including custom fabric selection, custom size specifications, custom embroidery, print production, and private label/OEM solutions. Detail your specifications in the B2B inquiry form.",
+      text: "Bring your vision to life with our custom clothing manufacturing services. Choose your designs, fabrics, styles, and specifications to create apparel tailored to your needs. We also offer private labelling exclusively for customised orders, allowing you to add your own brand labels and tags, provided by you, for a personalised, brand-ready finish.",
     },
     category: "Customization",
   },
+
   {
     name: "What is the delivery timeline?",
     acceptedAnswer: {
@@ -40,13 +42,15 @@ const BUILT_IN_FAQS = [
     },
     category: "Ordering",
   },
+
   {
-    name: "What fabrics do you work with?",
+    name: "What fabrics do you offer, and how do you ensure quality?",
     acceptedAnswer: {
-      text: "We specialize in export-grade Cotton, Georgette, Pure Silk, and high-durability mixed blends perfect for B2B Ethnic Wear Suppliers. Every lot is checked thoroughly for color fastness and stitching tensile strength.",
+      text: "We specialise in export-quality fabrics, including Cotton, Mul Cotton, Cotton Flex, Mul Chanderi, Pure Silk, Muslin, and high-durability blended fabrics. Each fabric is carefully selected to meet the quality standards and design requirements of premium B2B ethnic wear collections. To ensure consistent quality and reliability, every production lot undergoes rigorous quality checks for colourfastness, fabric durability, and stitching strength. Our commitment to quality ensures that every order meets the expectations of our business partners and delivers lasting value.",
     },
     category: "Products",
   },
+
   {
     name: "Do you ship internationally?",
     acceptedAnswer: {
@@ -80,24 +84,11 @@ const BUILT_IN_FAQS = [
   {
     name: "Can I mix multiple styles and sizes in one bulk order?",
     acceptedAnswer: {
-      text: "Absolutely. As long as the total order meets our 50-piece MOQ per style, you can freely mix designs, colors, and sizes within your container to match your retail demand patterns.",
+      text: "Absolutely. You can mix multiple designs, colours, and sizes in one bulk order, subject to our minimum order quantity of 2–3 sets per design.",
     },
     category: "Ordering",
   },
-  {
-    name: "Do you offer private labelling and branded packaging?",
-    acceptedAnswer: {
-      text: "Yes, we support full private label programs, including custom neck labels, brand tags, poly-bag branding, and tailored hang-tag printing. Simply share your brand guidelines with us, and we’ll take care of the rest. Additional customization will incur extra costs.",
-    },
-    category: "Customization",
-  },
-  {
-    name: "What quality checks happen before shipping?",
-    acceptedAnswer: {
-      text: "Every lot undergoes our strict 4-step quality control process: Fabric Inspection (testing color fastness and weave), Precision Cutting (for perfect sizing), Stitching Audit (checking seam strength), and Final Finishing (trimming, ironing, and strict packaging audits) — so what you see in samples is exactly what you receive in bulk.",
-    },
-    category: "Products",
-  },
+
   {
     name: "Can I track my shipment after dispatch?",
     acceptedAnswer: {
