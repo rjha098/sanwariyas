@@ -116,17 +116,17 @@ export default function Footer() {
                   </span>
                   <span className="text-[#FDF7F2]/60">
                     <a
-                      href="tel:+919251171306"
+                      href="tel:+919352111306"
                       className="hover:text-[#FDF7F2] transition-colors"
                     >
                       +91 9352111306
                     </a>
                     {" OR "}
                     <a
-                      href="tel:+919680812813"
+                      href="tel:+919251121306"
                       className="hover:text-[#FDF7F2] transition-colors"
                     >
-                      +91 9251171306
+                      +91 9251121306
                     </a>
                   </span>
                 </li>
