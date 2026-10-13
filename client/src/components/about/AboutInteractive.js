@@ -22,7 +22,7 @@ const OWNERS = [
     name: "Sanyam Kanther",
     role: "Director",
     bio: "Sanyam oversees our overarching business strategy and international expansions. His expertise in supply chain optimization ensures that our wholesale operations run with precision and unmatched reliability.",
-    image: "/images/sanyam.png",
+    image: "/images/sanyam.jpeg",
     initial: "S",
   },
 ];
