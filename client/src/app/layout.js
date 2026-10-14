@@ -1,7 +1,8 @@
 import "./globals.css";
+import Script from "next/script";
 import { AppProviders } from "@/providers/AppProviders";
 import { CartProvider } from "@/providers/CartProvider";
-import AppChrome from "@/components/layout/AppChrome"; 
+import AppChrome from "@/components/layout/AppChrome";
 
 export const viewport = {
   themeColor: "#FAF3E8",
@@ -136,6 +137,19 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
         className="font-sans antialiased bg-[#FAF3E8] text-[#1A1A1A] min-h-screen flex flex-col"
       >
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-X1KK3VPQ9G"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X1KK3VPQ9G');
+  `}
+        </Script>
+
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:p-4 focus:bg-white focus:text-[#7A3D2A] focus:font-bold focus:shadow-md"
