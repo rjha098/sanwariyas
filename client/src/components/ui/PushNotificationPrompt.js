@@ -196,6 +196,15 @@ import {
 const DISMISS_KEY = "sanwariyas_push_dismissed_at";
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
+// Turns any failure into a message that names the step that failed.
+const describeError = (err) => {
+  const status = err?.response?.status;
+  const detail = err?.response?.data?.message || err?.message || "";
+  return `Could not turn on notifications [${err?.pushStep || "unknown"}${
+    status ? " " + status : ""
+  }]${detail ? ": " + detail : ""}`;
+};
+
 export default function PushNotificationPrompt() {
   const { isAuthenticated, token } = useAuth();
   const [mode, setMode] = useState(null); // null | "ask" | "ios-install" | "done"
@@ -212,8 +221,9 @@ export default function PushNotificationPrompt() {
   useEffect(() => {
     if (!isAuthenticated || !token || typeof window === "undefined") return;
 
+    const debug = new URLSearchParams(window.location.search).get("pushdebug") === "1";
     const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
-    const recentlyDismissed = Date.now() - dismissedAt < SEVEN_DAYS;
+    const recentlyDismissed = !debug && Date.now() - dismissedAt < SEVEN_DAYS;
 
     // iPhone / iPad opened in Safari (not from the home-screen icon)
     if (isIOS() && !isStandalone()) {
@@ -226,11 +236,20 @@ export default function PushNotificationPrompt() {
     if (!pushSupported()) return;
 
     if (Notification.permission === "granted") {
-      // already allowed: make sure this device is linked to the account that is logged in now
-      subscribeThisDevice(token).catch(() => {});
+      // already allowed: make sure this device is linked to the account that is logged in now.
+      // If that fails, tell the person (and us) exactly why instead of staying silent.
+      subscribeThisDevice(token).catch((err) => {
+        if (recentlyDismissed) return;
+        setMsg(describeError(err));
+        setMode("error");
+      });
       return;
     }
-    if (Notification.permission === "denied" || recentlyDismissed) return;
+    if (Notification.permission === "denied") {
+      if (!recentlyDismissed) setMode("blocked");
+      return;
+    }
+    if (recentlyDismissed) return;
 
     const t = setTimeout(() => setMode("ask"), 4000);
     return () => clearTimeout(t);
@@ -255,13 +274,20 @@ export default function PushNotificationPrompt() {
       await subscribeThisDevice(token);
       setMode("done");
     } catch (err) {
-      const status = err?.response?.status;
-      const detail = err?.response?.data?.message || err?.message || "";
-      setMsg(
-        `Could not turn on notifications [${err?.pushStep || "unknown"}${status ? " " + status : ""}]${
-          detail ? ": " + detail : ""
-        }`,
-      );
+      setMsg(describeError(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const retry = async () => {
+    setBusy(true);
+    setMsg("");
+    try {
+      await subscribeThisDevice(token);
+      setMode("done");
+    } catch (err) {
+      setMsg(describeError(err));
     } finally {
       setBusy(false);
     }
@@ -327,6 +353,33 @@ export default function PushNotificationPrompt() {
             <li>Open SANWARIYAS from the new home-screen icon, log in, then tap <strong>Turn on</strong>.</li>
           </ol>
           <p className="font-sans text-xs text-[#a07f61]">Needs iOS 16.4 or newer.</p>
+        </>
+      )}
+
+      {mode === "error" && (
+        <>
+          <p className="font-display text-lg font-bold mb-1">Notifications need attention</p>
+          <p className="font-sans text-sm text-[#7a5a45] mb-3">
+            Permission is allowed, but this device could not be registered.
+          </p>
+          <button
+            type="button"
+            onClick={retry}
+            disabled={busy}
+            className="px-4 py-2 rounded-full bg-[#7A3D2A] text-white font-sans text-[11px] tracking-[0.18em] uppercase font-bold hover:bg-[#5f2e1f] disabled:opacity-60"
+          >
+            {busy ? "Please wait…" : "Try again"}
+          </button>
+        </>
+      )}
+
+      {mode === "blocked" && (
+        <>
+          <p className="font-display text-lg font-bold mb-1">Notifications are blocked</p>
+          <p className="font-sans text-sm text-[#7a5a45]">
+            Open the browser menu (⋮) → <strong>Settings</strong> → <strong>Site settings</strong> →{" "}
+            <strong>Notifications</strong>, allow this site, then reload.
+          </p>
         </>
       )}
 
