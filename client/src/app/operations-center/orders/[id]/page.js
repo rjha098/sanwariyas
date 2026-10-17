@@ -136,7 +136,7 @@ export default function AdminOrderDetailPage() {
       />
 
       <button
-        onClick={() => router.push("/operations-center?tab=orders")}
+        onClick={() => router.push("/operations-center/orders")}
         className="mb-6 font-sans text-[10px] tracking-widest uppercase text-brand-mud hover:text-brand-coffee border-b border-brand-mud pb-1 transition-colors"
       >
         ← Back to Orders

@@ -2,10 +2,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import api from "@/lib/api";
 
-export function useInquiries(token, role = "admin") {
+// `initialState` is optional, so existing callers are unaffected. It lets a route seed
+// page/filter from the URL, so the first fetch already uses the right values.
+export function useInquiries(token, role = "admin", initialState = {}) {
   const [inquiries, setInquiries] = useState([]);
-  const [inquiryPage, setInquiryPage] = useState(1);
-  const [inquiryFilter, setInquiryFilter] = useState("all");
+  const [inquiryPage, setInquiryPage] = useState(initialState.page ?? 1);
+  const [inquiryFilter, setInquiryFilter] = useState(
+    initialState.filter ?? "all",
+  );
+
   const [inquiryPagination, setInquiryPagination] = useState({
     pages: 0,
     total: 0,
@@ -89,9 +94,9 @@ export function useInquiries(token, role = "admin") {
           setInquiryPagination({ pages: 0, total: 0 });
         } else {
           setFlash(
-            error.userMessage || 
-            error.response?.data?.message || 
-            "Unable to load inquiries"
+            error.userMessage ||
+              error.response?.data?.message ||
+              "Unable to load inquiries",
           );
         }
       } finally {

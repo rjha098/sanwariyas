@@ -479,3 +479,23 @@ html:has(.admin-wrapper.dark) ::-webkit-scrollbar-track { background: var(--ad-s
 .admin-wrapper.dark [class~="hover:border-[#E8D5A3]"]:hover {
   border-color: #6b6f7a;
 }
+
+
+/* ── Toast in admin dark mode ─────────────────────────────────────────── */
+.admin-wrapper.dark [data-toast] {
+  background-color: rgba(36, 39, 46, 0.97);
+  border-color: var(--ad-border);
+  color: var(--ad-strong);
+}
+.admin-wrapper.dark [data-toast] p { color: var(--ad-strong); }
+.admin-wrapper.dark [data-toast] button { color: var(--ad-muted); }
+.admin-wrapper.dark [data-toast] button:hover {
+  color: var(--ad-strong);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.admin-wrapper.dark [data-toast="error"] {
+  background-color: rgba(58, 30, 30, 0.97);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+.admin-wrapper.dark [data-toast="error"] p,
+.admin-wrapper.dark [data-toast="error"] button { color: #fecaca; }

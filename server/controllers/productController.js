@@ -2,7 +2,6 @@
 
 import * as productService from "../services/productService.js";
 
-
 const getProducts = async (req, res) => {
   try {
     const { category, featured, page, limit } = req.query;
@@ -57,14 +56,17 @@ const getCategories = async (req, res) => {
 
 const getAdminProducts = async (req, res) => {
   try {
-    const { page, limit, category, search, isAvailable } = req.query;
+    const { page, limit, category, search, isAvailable, isFeatured } =
+      req.query;
     const data = await productService.getAdminProducts({
       page,
       limit,
       category,
       search,
       isAvailable,
+      isFeatured,
     });
+
     res.json({ success: true, ...data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

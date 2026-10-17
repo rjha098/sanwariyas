@@ -1,15 +1,15 @@
-
 // FILE: client/src/app/operations-center/inquiries/[id]/page.js
 
 "use client";
 
-import { formatPhone } from "@/utils/formatPhone"; 
+import { formatPhone } from "@/utils/formatPhone";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import api from "@/lib/api";
 import { deleteNotificationByInquiry } from "@/lib/api";
 import { getImageUrl } from "@/lib/imageUrl";
+import { inquiryListHrefFromSearch } from "@/lib/adminRoutes";
 
 export default function InquiryDetailsPage() {
   const params = useParams();
@@ -242,7 +242,9 @@ export default function InquiryDetailsPage() {
               </button>
             )}
             <button
-              onClick={() => router.back()}
+              onClick={() =>
+                router.push(inquiryListHrefFromSearch(window.location.search))
+              }
               className="px-6 py-3 border border-brand-lightgold/60 text-brand-mud font-sans text-[10px] tracking-[0.2em] uppercase hover:bg-gray-50 transition-colors"
             >
               ← Go Back
@@ -265,7 +267,9 @@ export default function InquiryDetailsPage() {
     <div className="max-w-4xl mx-auto p-6 mt-10 bg-white border border-brand-lightgold/50 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <button
-          onClick={() => router.back()}
+          onClick={() =>
+            router.push(inquiryListHrefFromSearch(window.location.search))
+          }
           className="font-sans text-[10px] tracking-widest uppercase text-brand-mud hover:text-brand-coffee border-b border-brand-mud pb-1 transition-colors"
         >
           ← Back to Inquiries List

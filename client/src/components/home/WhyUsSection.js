@@ -67,7 +67,7 @@ const USP_ITEMS = [
   },
   {
     number: "04",
-    title: "1500+ New Designs Every Season",
+    title: "2500 New Designs Every Season",
     desc: "Our in-house team launches new wholesale kurti, cotton suit and co-ord set collections every season, helping boutiques stay ahead of fashion trends.",
     icon: (
       <svg

@@ -1,4 +1,3 @@
-
 // FILE: client/src/components/ui/InquiryModal.js
 "use client";
 import { formatPhone } from "@/utils/formatPhone";
@@ -221,7 +220,7 @@ export default function InquiryModal() {
     if (!isClosed) {
       const timer = setTimeout(() => {
         setIsVisible(true);
-      }, 30000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, [pathname]);

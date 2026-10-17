@@ -70,12 +70,18 @@ const getAdminProducts = async ({
   page = 1,
   limit = 20,
   category,
+
   search,
   isAvailable,
+  isFeatured,
 }) => {
   const query = {};
 
   if (category) query.category = category;
+  // Only the "true" filter is supported, matching the public getProducts behaviour.
+  // It lets the dashboard get an exact featured count from pagination.total.
+  if (isFeatured === "true") query.isFeatured = true;
+
   if (typeof isAvailable !== "undefined" && isAvailable !== "") {
     query.isAvailable = isAvailable === "true";
   }

@@ -22,7 +22,7 @@ export default function Footer() {
             address: {
               "@type": "PostalAddress",
               streetAddress:
-                "Shop no.- 10, 14, 1st floor, Shiv plaza, near HDFC Bank, Dada Gurudev Nagar, Sanganer",
+                "Shop no.- 10 to 14, 1st floor, Shiv plaza, near HDFC Bank, Dada Gurudev Nagar, Sanganer",
               addressLocality: "Jaipur",
               addressRegion: "Rajasthan",
               postalCode: "302029",

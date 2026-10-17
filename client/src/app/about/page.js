@@ -286,7 +286,7 @@ export default function AboutPage() {
                 consistent quality across every order.
               </p>
               <p>
-                With over 1500+ new designs introduced each season, we help
+                With over 2500+ new designs introduced each season, we help
                 boutiques, retailers, and distributors stay ahead. We provide
                 collections that are fresh, relevant, and commercially strong,
                 allowing our partners to lead the market.
@@ -315,7 +315,7 @@ export default function AboutPage() {
                 {[
                   { v: "10,000+", l: "Pieces/month" },
                   { v: "4-Step", l: "Quality control" },
-                  { v: "1500+", l: "Designs per season" },
+                  { v: "2500+", l: "Designs per season" },
                   { v: "15+", l: "Fabric categories" },
                 ].map((s) => (
                   <div
@@ -501,7 +501,7 @@ export default function AboutPage() {
                 Fashion trends evolve, collections change, and businesses grow
                 but trust remains timeless. At SANWARIYAS, every order is
                 approached with the same care and accountability that shaped our
-                earliest days. Our 1500+ fresh designs every season, meticulous
+                earliest days. Our 2500+ fresh designs every season, meticulous
                 4-step quality process, and commitment to delivering consistent
                 quality are all guided by one simple belief: when our customers
                 succeed, we succeed alongside them. That philosophy continues to

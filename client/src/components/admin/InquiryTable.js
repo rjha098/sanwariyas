@@ -2,8 +2,9 @@
 
 "use client";
 
-import { formatPhone } from "@/utils/formatPhone"; 
+import { formatPhone } from "@/utils/formatPhone";
 import { useRouter } from "next/navigation";
+import { buildInquiryDetailHref } from "@/lib/adminRoutes";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-300",
@@ -31,7 +32,14 @@ export default function InquiryTable({
     if (isUnread && markAsViewed) {
       await markAsViewed(inquiryId);
     }
-    router.push(`/operations-center/inquiries/${inquiryId}`);
+    // Carry the current filter/page to the detail route so its Back button can
+    // return to this exact list state (no router.back()/sessionStorage needed).
+    router.push(
+      buildInquiryDetailHref(inquiryId, {
+        status: inquiryFilter,
+        page: inquiryPage,
+      }),
+    );
   };
 
   return (

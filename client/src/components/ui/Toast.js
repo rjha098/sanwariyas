@@ -9,9 +9,7 @@ export default function Toast({
   isVisible,
   onClose,
 }) {
-
   const [mounted, setMounted] = useState(isVisible);
-  
 
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -35,6 +33,7 @@ export default function Toast({
       role={type === "success" ? "status" : "alert"}
       aria-live={type === "success" ? "polite" : "assertive"}
       aria-atomic="true"
+      data-toast={type}
       className={`fixed top-4 right-4 left-4 md:left-auto md:top-8 md:right-8 z-[9999]
         w-auto md:min-w-[340px] md:max-w-sm
         flex items-center gap-4
@@ -50,10 +49,10 @@ export default function Toast({
             ? "translate-x-0 opacity-100"
             : "translate-x-[120%] opacity-0"
         } ${
-        type === "success"
-          ? "bg-[#FDF7F2]/95 border-[#BE6E5B]/20 text-[#5C3120]"
-          : "bg-[#FFF5F5]/95 border-[#8C3B3B]/20 text-[#8C3B3B]" 
-      }`}
+          type === "success"
+            ? "bg-[#FDF7F2]/95 border-[#BE6E5B]/20 text-[#5C3120]"
+            : "bg-[#FFF5F5]/95 border-[#8C3B3B]/20 text-[#8C3B3B]"
+        }`}
     >
       {/* Top accent bar */}
       <div

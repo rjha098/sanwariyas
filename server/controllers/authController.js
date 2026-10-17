@@ -820,6 +820,8 @@
 // FILE: server/controllers/authController.js
 //usage --->>>>  controllers/authController.js & services/authService.js: Handles the heavy lifting of user identity. It processes customer signups, issues HTTP-only cookies, triggers Resend OTP emails for staff/admin 2FA, and seamlessly merges old "guest" inquiries into new accounts based on matching phone/email data.
 
+
+
 import crypto from "crypto";
 
 import {

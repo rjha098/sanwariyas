@@ -1,7 +1,7 @@
 // // FILE: client/src/components/lookbook/LookbookModal.js
 
 // "use client";
-// import { useEffect } from "react";
+// import { useEffect, useState } from "react";
 // import Link from "next/link";
 
 // export default function LookbookModal({
@@ -17,6 +17,22 @@
 //   shortlist,
 //   toggleShortlist,
 // }) {
+//   const [copied, setCopied] = useState(false);
+//   useEffect(() => {
+//     setCopied(false);
+//   }, [item?._id]);
+
+//   const handleShare = async () => {
+//     const url = `${window.location.origin}/lookbook?item=${item._id}`;
+//     try {
+//       await navigator.clipboard.writeText(url);
+//       setCopied(true);
+//       setTimeout(() => setCopied(false), 2000);
+//     } catch {
+//       window.prompt("Copy this link:", url);
+//     }
+//   };
+
 //   useEffect(() => {
 //     if (!item) return;
 //     const handleKey = (e) => {
@@ -42,7 +58,7 @@
 //   if (!item) return null;
 
 //   const whatsappMsg = encodeURIComponent(
-//     `Hi SANWARIYAS, I'm interested in your "${item.title}" (${item.category}) collection. Please share wholesale pricing & MOQ.`,
+//     `Hi SANWARIYAS, I'm interested in your "${item.title}" (${item.category}) collection. Please share wholesale pricing & MOQ.`
 //   );
 
 //   const isShortlisted = shortlist?.some((i) => i._id === item._id);
@@ -78,15 +94,7 @@
 //           aria-label="Previous piece"
 //           className="flex absolute left-4 md:left-8 lg:left-16 bottom-[5%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7A3D2A] lg:bg-white hover:scale-110 text-white lg:text-[#7A3D2A] items-center justify-center transition-all duration-300 shadow-md lg:shadow-[0_0_20px_rgba(255,255,255,0.4)] border border-white lg:border-none"
 //         >
-//           <svg
-//             className="w-5 h-5 md:w-6 md:h-6"
-//             viewBox="0 0 24 24"
-//             fill="none"
-//             stroke="currentColor"
-//             strokeWidth="2.5"
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//           >
+//           <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
 //             <path d="M15 18l-6-6 6-6" />
 //           </svg>
 //         </button>
@@ -98,15 +106,7 @@
 //           aria-label="Next piece"
 //           className="flex absolute right-4 md:right-8 lg:right-16 bottom-[5%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7A3D2A] lg:bg-white hover:scale-110 text-white lg:text-[#7A3D2A] items-center justify-center transition-all duration-300 shadow-md lg:shadow-[0_0_20px_rgba(255,255,255,0.4)] border border-white lg:border-none"
 //         >
-//           <svg
-//             className="w-5 h-5 md:w-6 md:h-6"
-//             viewBox="0 0 24 24"
-//             fill="none"
-//             stroke="currentColor"
-//             strokeWidth="2.5"
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//           >
+//           <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
 //             <path d="M9 18l6-6-6-6" />
 //           </svg>
 //         </button>
@@ -128,6 +128,10 @@
 //         <div className="relative w-full h-[45vh] md:h-full shrink-0 bg-[#FDF7F2] flex justify-center items-center p-4 md:p-8">
 //           <img
 //             src={`${backendUrl}${item.image}`}
+//             onError={(e) => {
+//               e.currentTarget.onerror = null;
+//               e.currentTarget.src = "/images/placeholder.png";
+//             }}
 //             alt={`${item.title} - Wholesale Ethnic Wear`}
 //             className="w-full h-full object-contain animate-[imageIn_0.4s_ease] rounded-2xl md:rounded-3xl shadow-[0_8px_25px_rgba(122,61,42,0.15)] border border-[#E8D5A3]/50"
 //           />
@@ -171,8 +175,8 @@
 //             {item.title}
 //           </h2>
 //           <p className="font-serif italic text-[#a07f61] text-sm md:text-base mb-8 leading-relaxed">
-//             Manufactured in Jaipur, available for wholesale bulk orders. MOQ and
-//             pricing details available on inquiry.
+//             Manufactured in Jaipur, available for wholesale bulk orders.
+//             MOQ and pricing details available on inquiry.
 //           </p>
 
 //           <div className="flex flex-col gap-3 mt-auto">
@@ -199,6 +203,14 @@
 //               Inquire on WhatsApp
 //             </a>
 
+//             <button
+//               type="button"
+//               onClick={handleShare}
+//               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full font-sans text-xs tracking-[0.2em] uppercase font-bold text-[#7A3D2A] border border-[#BE6E5B]/40 hover:bg-white transition-all"
+//             >
+//               {copied ? "✓ Link copied" : "🔗 Copy share link"}
+//             </button>
+
 //             {totalCount > 1 && (
 //               <p className="text-center font-sans text-[9px] tracking-[0.2em] uppercase text-[#a07f61] mt-3 hidden md:block">
 //                 Use ← → keys to browse
@@ -210,32 +222,16 @@
 
 //       <style jsx>{`
 //         @keyframes fadeIn {
-//           from {
-//             opacity: 0;
-//           }
-//           to {
-//             opacity: 1;
-//           }
+//           from { opacity: 0; }
+//           to { opacity: 1; }
 //         }
 //         @keyframes popIn {
-//           from {
-//             opacity: 0;
-//             transform: scale(0.92) translateY(10px);
-//           }
-//           to {
-//             opacity: 1;
-//             transform: scale(1) translateY(0);
-//           }
+//           from { opacity: 0; transform: scale(0.92) translateY(10px); }
+//           to { opacity: 1; transform: scale(1) translateY(0); }
 //         }
 //         @keyframes imageIn {
-//           from {
-//             opacity: 0;
-//             transform: scale(1.03);
-//           }
-//           to {
-//             opacity: 1;
-//             transform: scale(1);
-//           }
+//           from { opacity: 0; transform: scale(1.03); }
+//           to { opacity: 1; transform: scale(1); }
 //         }
 //       `}</style>
 //     </div>
@@ -245,10 +241,7 @@
 
 
 
-
-
 // FILE: client/src/components/lookbook/LookbookModal.js
-
 
 "use client";
 import { useEffect, useState } from "react";
@@ -308,7 +301,7 @@ export default function LookbookModal({
   if (!item) return null;
 
   const whatsappMsg = encodeURIComponent(
-    `Hi SANWARIYAS, I'm interested in your "${item.title}" (${item.category}) collection. Please share wholesale pricing & MOQ.`
+    `Hi SANWARIYAS, I'm interested in your "${item.title}" (${item.category}) collection. Please share wholesale pricing & MOQ.`,
   );
 
   const isShortlisted = shortlist?.some((i) => i._id === item._id);
@@ -344,19 +337,35 @@ export default function LookbookModal({
           aria-label="Previous piece"
           className="flex absolute left-4 md:left-8 lg:left-16 bottom-[5%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7A3D2A] lg:bg-white hover:scale-110 text-white lg:text-[#7A3D2A] items-center justify-center transition-all duration-300 shadow-md lg:shadow-[0_0_20px_rgba(255,255,255,0.4)] border border-white lg:border-none"
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className="w-5 h-5 md:w-6 md:h-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
       )}
-      
+
       {hasNext && (
         <button
           onClick={onNext}
           aria-label="Next piece"
           className="flex absolute right-4 md:right-8 lg:right-16 bottom-[5%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-50 w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#7A3D2A] lg:bg-white hover:scale-110 text-white lg:text-[#7A3D2A] items-center justify-center transition-all duration-300 shadow-md lg:shadow-[0_0_20px_rgba(255,255,255,0.4)] border border-white lg:border-none"
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className="w-5 h-5 md:w-6 md:h-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M9 18l6-6-6-6" />
           </svg>
         </button>
@@ -419,14 +428,15 @@ export default function LookbookModal({
         {/* TEXT SECTION */}
         <div className="p-6 md:p-10 flex flex-col justify-center h-full">
           <p className="font-sans text-[10px] tracking-[0.4em] uppercase text-[#BE6E5B] font-bold mb-2">
+            {item.styleNumber ? `Style ${item.styleNumber} · ` : ""}
             {item.category}
           </p>
           <h2 className="font-display text-2xl md:text-3xl lg:text-4xl text-[#7A3D2A] font-bold mb-4 leading-tight">
             {item.title}
           </h2>
           <p className="font-serif italic text-[#a07f61] text-sm md:text-base mb-8 leading-relaxed">
-            Manufactured in Jaipur, available for wholesale bulk orders.
-            MOQ and pricing details available on inquiry.
+            Manufactured in Jaipur, available for wholesale bulk orders. MOQ and
+            pricing details available on inquiry.
           </p>
 
           <div className="flex flex-col gap-3 mt-auto">
@@ -472,20 +482,34 @@ export default function LookbookModal({
 
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
         @keyframes popIn {
-          from { opacity: 0; transform: scale(0.92) translateY(10px); }
-          to { opacity: 1; transform: scale(1) translateY(0); }
+          from {
+            opacity: 0;
+            transform: scale(0.92) translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
         }
         @keyframes imageIn {
-          from { opacity: 0; transform: scale(1.03); }
-          to { opacity: 1; transform: scale(1); }
+          from {
+            opacity: 0;
+            transform: scale(1.03);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
         }
       `}</style>
     </div>
   );
 }
-
-

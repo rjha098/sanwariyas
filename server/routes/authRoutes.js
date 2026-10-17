@@ -1,5 +1,6 @@
 // FILE: server/routes/authRoutes.js
 
+
 import express from "express";
 import {
   login,
@@ -54,5 +55,6 @@ router.post("/staff", requireAdmin, createStaffAccount);
 router.get("/staff", requireStaff, getAllStaff);
 router.patch("/staff/:id", requireAdmin, updateStaffStatus);
 router.delete("/staff/:id", requireAdmin, deleteStaffAccount);
+
 
 export default router;

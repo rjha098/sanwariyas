@@ -22,7 +22,7 @@ export default function AdminThemeProvider({ children }) {
   return (
     <div className={`admin-wrapper min-h-screen transition-colors duration-300 ${darkMode ? "dark bg-gray-900 text-gray-100" : "bg-[#f8f4ec] text-gray-900"}`}>
       
-      {/* Floating Dark Mode Toggle Button */}
+      {/* Floating Dark Mode Toggle Button */} 
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={toggleDarkMode}

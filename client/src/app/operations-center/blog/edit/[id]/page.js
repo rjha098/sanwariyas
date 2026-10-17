@@ -287,7 +287,7 @@ export default function EditBlogPage() {
       });
 
       showToast("Blog updated successfully!", "success");
-      setTimeout(() => router.push("/operations-center"), 1500);
+      setTimeout(() => router.push("/operations-center/blogs"), 1500);
     } catch (err) {
       showToast(
         err.response?.data?.message || "Failed to update blog.",
@@ -313,7 +313,7 @@ export default function EditBlogPage() {
       <div className="min-h-screen bg-[#FAF3E8] flex items-center justify-center flex-col gap-4">
         <p className="font-display text-2xl text-[#574325]">Blog not found</p>
         <button
-          onClick={() => router.push("/operations-center")}
+          onClick={() => router.push("/operations-center/blogs")}
           className="text-[#BE6E5B] underline"
         >
           Go Back
@@ -341,7 +341,7 @@ export default function EditBlogPage() {
           <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => router.push("/operations-center")}
+                onClick={() => router.push("/operations-center/blogs")}
                 className="text-[#70543E] hover:text-[#574325] transition-colors"
               >
                 <svg

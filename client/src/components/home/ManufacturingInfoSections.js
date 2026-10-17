@@ -158,6 +158,11 @@ function VideoLightbox({ step, onClose }) {
   const closeButtonRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
+  // Back-button support: the lightbox owns ONE extra browser-history entry while
+  // it is open, so the phone's Back button / swipe-back closes the video instead
+  // of leaving the whole website.
+  const closingRef = useRef(false);
+  const pushedRef = useRef(false);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -197,13 +202,38 @@ function VideoLightbox({ step, onClose }) {
   }, []);
 
   const handleClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
     setIsContentVisible(false);
     setIsVisible(false);
     if (videoRef.current) {
       videoRef.current.pause();
     }
+    // closed with the X / backdrop / Esc: remove the history entry we added
+    if (pushedRef.current) {
+      pushedRef.current = false;
+      if (window.history.state?.__videoLightbox) window.history.back();
+    }
     setTimeout(onClose, 300);
   }, [onClose]);
+
+  // add the history entry on open, close the video when Back is pressed
+  useEffect(() => {
+    if (!window.history.state?.__videoLightbox) {
+      window.history.pushState(
+        { ...(window.history.state || {}), __videoLightbox: true },
+        "",
+      );
+    }
+    pushedRef.current = true;
+
+    const onPopState = () => {
+      pushedRef.current = false; // the entry is already gone
+      handleClose();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [handleClose]);
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -895,7 +925,7 @@ export default function ManufacturingInfoSections() {
                 {[
                   { v: "10K+", l: "Pieces / month" },
                   { v: "4-Step", l: "Quality control" },
-                  { v: "1500+", l: "Designs / season" },
+                  { v: "2500+", l: "Designs / season" },
                   { v: "15+", l: "Fabric types" },
                 ].map((s) => (
                   <div

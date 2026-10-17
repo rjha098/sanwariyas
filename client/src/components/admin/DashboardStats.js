@@ -6,7 +6,9 @@ export default function DashboardStats({
   resolvedInquiriesTotal,
   countdown,
 }) {
+
   // Sanwariyas Theme: 5 Different but Earthy Colors (Terracotta, Mustard, Olive, Slate, Coffee)
+  
   const stats = [
     {
       label: "Products",

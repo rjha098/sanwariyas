@@ -10,7 +10,8 @@ import {
   getBlogBySlug,
   getCategories,
   createCategory,
-  deleteCategory, // Imported the new delete function
+  deleteCategory, 
+  
 } from "../controllers/blogController.js";
 import { requireAdmin } from "../utils/authUtils.js";
 import { upload, verifyUploadedImages } from "../middlewares/upload.js";
