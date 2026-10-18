@@ -78,7 +78,7 @@
 
 // // ── Forgot Password Screen
 
-// function ForgotPasswordScreen({ onBack, onResetSuccess }) {
+// function ForgotPasswordScreen({ onBack, onResetSuccess, onSwitchToSignup }) {
 //   const [step, setStep] = useState(1);
 //   const [identifier, setIdentifier] = useState("");
 //   const [otp, setOtp] = useState("");
@@ -226,6 +226,22 @@
 //           >
 //             ← Go Back
 //           </button>
+
+//           {/* Shown regardless of whether this email has an account — the
+//               backend deliberately never reveals that distinction (prevents
+//               account enumeration), so the frontend can't either. This just
+//               offers a path forward for someone who mistyped their email or
+//               never signed up, without confirming/denying anything. */}
+//           <p className="text-center font-sans text-[11px] text-brand-mud pt-1">
+//             Didn&apos;t get a code, or wrong email?{" "}
+//             <button
+//               type="button"
+//               onClick={onSwitchToSignup}
+//               className="underline hover:text-brand-coffee"
+//             >
+//               Create a new account
+//             </button>
+//           </p>
 //         </form>
 //       )}
 //     </div>
@@ -233,7 +249,7 @@
 // }
 
 // // ── Sign In Form ──────────────────────────────────────────────────────────────
-// function SignInForm({ onLogin, loggingIn, onForgot }) {
+// function SignInForm({ onLogin, loggingIn, onForgot, onSwitchToSignup }) {
 //   const [identifier, setIdentifier] = useState("");
 //   const [password, setPassword] = useState("");
 //   return (
@@ -289,6 +305,21 @@
 //       >
 //         {loggingIn ? "Please wait..." : "Sign In"}
 //       </button>
+
+//       {/* Shown regardless of why sign-in might fail (wrong password vs no
+//           account) — the backend deliberately gives one generic "Invalid
+//           credentials" message for both, so this can't be conditional on
+//           which one it was. Just offers a direct path to sign up instead. */}
+//       <p className="text-center font-sans text-[11px] text-brand-mud pt-1">
+//         Don&apos;t have an account?{" "}
+//         <button
+//           type="button"
+//           onClick={onSwitchToSignup}
+//           className="underline hover:text-brand-coffee"
+//         >
+//           Create one
+//         </button>
+//       </p>
 //     </form>
 //   );
 // }
@@ -723,12 +754,14 @@
 //                 onLogin={handleLogin}
 //                 loggingIn={loggingIn}
 //                 onForgot={() => switchMode("forgot")}
+//                 onSwitchToSignup={() => switchMode("signup")}
 //               />
 //             ) : mode === "signup" ? (
 //               <SignupForm onSignup={signup} signingUp={signingUp} />
 //             ) : (
 //               <ForgotPasswordScreen
 //                 onBack={() => switchMode("signin")}
+//                 onSwitchToSignup={() => switchMode("signup")}
 //                 onResetSuccess={(msg) => {
 //                   showToast(msg, "success");
 //                   switchMode("signin");
@@ -742,11 +775,6 @@
 //   );
 // }
 
-
-
-
-
-
 // FILE: client/src/app/login/page.js
 "use client";
 
@@ -755,10 +783,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Toast from "@/components/ui/Toast";
 import api from "@/lib/api";
-import PhoneInput, { splitPhone } from "@/components/ui/PhoneInput";
+import SignupForm from "@/components/auth/SignupForm";
 
 const inp =
-  "w-full border border-brand-lightgold/60 px-4 py-3 text-sm bg-white focus:outline-none focus:border-brand-coffee transition-colors";
+  "w-full min-w-0 border border-brand-lightgold/60 px-4 py-3 text-base sm:text-sm bg-white focus:outline-none focus:border-brand-coffee transition-colors";
 const lbl =
   "block font-sans text-[11px] tracking-[0.2em] uppercase text-brand-mud mb-2";
 const btn =
@@ -1073,174 +1101,6 @@ function SignInForm({ onLogin, loggingIn, onForgot, onSwitchToSignup }) {
   );
 }
 
-// ── Signup Form ───────────────────────────────────────────────────────────────
-function SignupForm({ onSignup, signingUp }) {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirm: "",
-    company: "",
-    country: "",
-  });
-  const [localErr, setLocalErr] = useState("");
-  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLocalErr("");
-
-    const trimmedName = form.name.trim();
-    if (trimmedName.length < 3) {
-      setLocalErr("Please enter a valid full name (min 3 characters).");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email.trim())) {
-      setLocalErr(
-        "Please enter a valid email address (e.g., user@example.com).",
-      );
-      return;
-    }
-
-    const cleanedPhone = form.phone.trim();
-    if (!/^[0-9]{8,15}$/.test(cleanedPhone)) {
-      setLocalErr("Please select a country code and enter your phone number.");
-      return;
-    }
-
-    if (form.password !== form.confirm) {
-      setLocalErr("Passwords do not match.");
-      return;
-    }
-    if (form.password.length < 8) {
-      setLocalErr("Password must be at least 8 characters.");
-      return;
-    }
-
-    const { confirm, ...payload } = form;
-    onSignup({
-      ...payload,
-      name: trimmedName,
-      email: payload.email.trim().toLowerCase(),
-      phone: cleanedPhone,
-      countryCode: splitPhone(cleanedPhone).dial,
-    });
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4"
-      noValidate
-      aria-label="B2B Wholesale Buyer Registration Form"
-    >
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={lbl}>Full Name *</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={set("name")}
-            placeholder="Your name"
-            aria-label="Full Name"
-            className={inp}
-            required
-          />
-        </div>
-        <div>
-          <label className={lbl}>Phone *</label>
-          <PhoneInput
-            value={form.phone}
-            onChange={(combined) => setForm((f) => ({ ...f, phone: combined }))}
-            className="flex items-stretch w-full border border-brand-lightgold/60 bg-white text-sm focus-within:border-brand-coffee transition-colors"
-            textClassName="text-brand-mud"
-            required
-          />
-        </div>
-      </div>
-      <div>
-        <label className={lbl}>Email *</label>
-        <input
-          type="email"
-          value={form.email}
-          onChange={set("email")}
-          placeholder="you@example.com"
-          aria-label="Email Address"
-          className={inp}
-          required
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={lbl}>Company</label>
-          <input
-            type="text"
-            value={form.company}
-            onChange={set("company")}
-            placeholder="Your company"
-            aria-label="Company Name"
-            className={inp}
-          />
-        </div>
-        <div>
-          <label className={lbl}>Country</label>
-          <input
-            type="text"
-            value={form.country}
-            onChange={set("country")}
-            placeholder="India"
-            aria-label="Country"
-            className={inp}
-          />
-        </div>
-      </div>
-      <div>
-        <label className={lbl}>Password *</label>
-        <input
-          type="password"
-          value={form.password}
-          onChange={set("password")}
-          placeholder="Min. 8 characters"
-          aria-label="Password"
-          className={inp}
-          required
-        />
-      </div>
-      <div>
-        <label className={lbl}>Confirm Password *</label>
-        <input
-          type="password"
-          value={form.confirm}
-          onChange={set("confirm")}
-          placeholder="Repeat password"
-          aria-label="Confirm Password"
-          className={inp}
-          required
-        />
-      </div>
-      {localErr && (
-        <p
-          className="font-sans text-xs text-red-700 bg-red-50 border border-red-200 px-4 py-3"
-          role="alert"
-        >
-          {localErr}
-        </p>
-      )}
-      <button
-        type="submit"
-        disabled={signingUp}
-        className={btn}
-        title="Create Wholesale Account"
-      >
-        {signingUp ? "Creating Account..." : "Create Account"}
-      </button>
-    </form>
-  );
-}
-
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const router = useRouter();
@@ -1437,10 +1297,14 @@ export default function LoginPage() {
 
       <main
         id="main-content"
-        className="min-h-screen bg-[#f5efe4] text-brand-african flex items-center justify-center px-4 py-12"
+        className="min-h-[100dvh] bg-[#f5efe4] text-brand-african flex items-start sm:items-center justify-center px-3 sm:px-4 py-6 sm:py-12"
       >
-        <div className="w-full max-w-md bg-white border border-brand-lightgold/60 shadow-xl">
-          <div className="px-8 pt-8 pb-5 border-b border-brand-lightgold/30">
+        <div
+          className={`w-full min-w-0 bg-white border border-brand-lightgold/60 shadow-xl ${
+            mode === "signup" && !otpPending ? "max-w-xl" : "max-w-md"
+          }`}
+        >
+          <div className="px-5 sm:px-8 pt-7 sm:pt-8 pb-5 border-b border-brand-lightgold/30">
             <p className="font-sans text-[10px] tracking-[0.5em] uppercase text-brand-gold">
               Sanwariyas
             </p>
@@ -1489,7 +1353,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="px-8 py-7">
+          <div className="px-5 sm:px-8 py-6 sm:py-7">
             {otpPending ? (
               <OtpScreen
                 emailHint={emailHint}
