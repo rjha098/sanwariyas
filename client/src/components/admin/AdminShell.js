@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Toast from "@/components/ui/Toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import NotificationBell from "@/components/ui/NotificationBell";
 import { AdminDashboardContext } from "@/components/admin/AdminDashboardContext";
 import { ADMIN_ROUTES } from "@/lib/adminRoutes";
@@ -68,13 +69,13 @@ export default function AdminShell({ children }) {
   });
   const [countdown, setCountdown] = useState(60);
   const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [desktopSidebar, setDesktopSidebar] = useState(true); // Desktop
 
   // Stable identities: section pages list showToast in effect deps, so a new
   // function on every render would re-run those effects.
   const showToast = useCallback(
-    (message, type = "success") =>
-      setToast({ isVisible: true, message, type }),
+    (message, type = "success") => setToast({ isVisible: true, message, type }),
     [],
   );
   const hideToast = useCallback(
@@ -100,12 +101,12 @@ export default function AdminShell({ children }) {
     };
   }, [token]);
 
-  const handleLogout = () => {
-    showToast("Logged out successfully.", "success");
-    setTimeout(() => {
-      logout();
-      router.replace("/login");
-    }, 2000);
+  const handleLogout = () => setShowLogoutConfirm(true);
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+    router.replace("/login");
   };
 
   const activeItem =
@@ -119,6 +120,15 @@ export default function AdminShell({ children }) {
   return (
     <AdminDashboardContext.Provider value={contextValue}>
       <div className="flex min-h-screen bg-[#FAF3E8] font-sans">
+        <ConfirmDialog
+          open={showLogoutConfirm}
+          title="Log out?"
+          message="Are you sure you want to log out of your account?"
+          confirmLabel="Log out"
+          cancelLabel="Stay logged in"
+          onConfirm={confirmLogout}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
         <Toast
           isVisible={toast.isVisible}
           message={toast.message}

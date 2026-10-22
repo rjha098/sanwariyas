@@ -1,4 +1,5 @@
 // FILE: client/src/app/my-inquiries/page.js
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -63,7 +64,7 @@ export default function MyInquiriesPage() {
   return (
     <>
       {/* <Navbar /> */}
-      <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
+      <main className="min-h-screen bg-[#FAF3E8] pt-8 pb-28 sm:pt-32 sm:pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           {/*  Back to Dashboard button */}
           <button
@@ -73,9 +74,27 @@ export default function MyInquiriesPage() {
             ← Back to Dashboard
           </button>
 
-          <h1 className="font-display text-3xl text-[#574325] mb-8">
+          <h1 className="font-display text-3xl text-[#574325] mb-3">
             My Inquiries
           </h1>
+
+          <div className="font-sans text-xs text-[#70543E] mb-8 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span>Sent an inquiry before you had an account?</span>
+            <button
+              type="button"
+              onClick={() => router.push("/account/security#claim")}
+              className="underline hover:text-[#574325] text-left"
+            >
+              Add it to this account
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/account/security")}
+              className="underline hover:text-[#574325] text-left"
+            >
+              Account security
+            </button>
+          </div>
 
           {inquiries.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-xl border border-[#E8D5A3]/40">
@@ -97,19 +116,19 @@ export default function MyInquiriesPage() {
                   <div
                     key={inq._id}
                     onClick={() => router.push(`/my-inquiries/${inq._id}`)}
-                    className={`cursor-pointer bg-white rounded-xl border p-5 hover:shadow-md transition-all ${
+                    className={`cursor-pointer bg-white rounded-xl border p-4 sm:p-5 hover:shadow-md transition-all ${
                       hasUnread
                         ? "border-[#C9A84C] bg-[#FEF9F0]"
                         : "border-[#E8D5A3]/40"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           {hasUnread && (
                             <span className="w-2 h-2 rounded-full bg-[#C9A84C] flex-shrink-0 animate-pulse" />
                           )}
-                          <h3 className="font-sans font-semibold text-[#574325] text-sm flex items-center gap-2">
+                          <h3 className="font-sans font-semibold text-[#574325] text-sm flex flex-wrap items-center gap-x-2 min-w-0 break-words">
                             {inq.productCategory ||
                               inq.productName ||
                               "General Inquiry"}
@@ -120,7 +139,7 @@ export default function MyInquiriesPage() {
                             )}
                           </h3>
                         </div>
-                        <p className="font-sans text-xs text-[#70543E]/70 line-clamp-2">
+                        <p className="font-sans text-xs text-[#70543E]/70 line-clamp-2 break-words">
                           {inq.message}
                         </p>
                         <p className="font-sans text-[10px] text-[#a07f61] mt-2">
@@ -131,7 +150,7 @@ export default function MyInquiriesPage() {
                           })}
                         </p>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-col items-end gap-2 flex-shrink-0">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-widest uppercase border ${status.cls}`}
                         >

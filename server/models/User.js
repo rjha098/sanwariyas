@@ -1,8 +1,6 @@
 // FILE: server/models/User.js
 // usage ----->>>>>>>>>   models/User.js: The database schema for all accounts. It tracks roles, online/offline session states, and hashes passwords via a pre-save hook.
 
-
-
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { normalizePhone } from "../utils/normalize.js";
@@ -31,10 +29,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
       unique: true,
       trim: true,
-      match: [
-        /^[0-9]{8,15}$/,
-        "Please enter a valid phone number",
-      ],
+      match: [/^[0-9]{8,15}$/, "Please enter a valid phone number"],
     },
     // Stores just the dial code digits (e.g. "91") separately from `phone`
     // (which holds dial-code + local number combined). Only used to
@@ -47,9 +42,16 @@ const userSchema = new mongoose.Schema(
     },
     company: { type: String, default: "", trim: true },
     country: { type: String, default: "", trim: true },
+    // A Google-first account has NO password until the owner sets one (no
+    // fake/random password is stored). Every other account must have one.
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [
+        function () {
+          return !this.googleId;
+        },
+        "Password is required",
+      ],
       minlength: [8, "Password must be at least 8 characters long"],
     },
     role: {
@@ -60,10 +62,22 @@ const userSchema = new mongoose.Schema(
     // ✅ NEW: Added department for Phase 2 Staff Management
     department: {
       type: String,
-      enum: ["Sales", "Digital Marketing", "Support", "Accounts", "Management", "General"],
+      enum: [
+        "Sales",
+        "Digital Marketing",
+        "Support",
+        "Accounts",
+        "Management",
+        "General",
+      ],
       default: "General",
     },
     isActive: { type: Boolean, default: true },
+
+    // Google sign-in. `sparse` so the many password-only users (no googleId)
+    // never collide on the unique index.
+    googleId: { type: String, unique: true, sparse: true },
+    authProvider: { type: String, enum: ["local", "google"], default: "local" },
 
     // Single Device Session Tracking
     currentSessionId: { type: String, default: null },
@@ -81,6 +95,12 @@ const userSchema = new mongoose.Schema(
     adminOtpExpiry: { type: Date, default: null },
     resetOtpHash: { type: String, default: null },
     resetOtpExpiry: { type: Date, default: null },
+    // Password-reset hardening: wrong-guess counter for the emailed code, and
+    // a short-lived single-use token issued only AFTER the code is verified
+    // (it authorises screen 2: "set new password").
+    resetOtpAttempts: { type: Number, default: 0 },
+    resetTokenHash: { type: String, default: null },
+    resetTokenExpiry: { type: Date, default: null },
     isVisible: { type: Boolean, default: true },
   },
   { timestamps: true },

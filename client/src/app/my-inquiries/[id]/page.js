@@ -1,5 +1,6 @@
+//client/src/app/my-inquiries/[id]/page.js
+
 "use client";
-//  FIX: useLayoutEffect add kiya
 import {
   useEffect,
   useState,
@@ -138,7 +139,7 @@ export default function MyInquiryDetailPage() {
   return (
     <>
       {/* <Navbar /> */}
-      <main className="min-h-screen bg-[#FAF3E8] pt-32 pb-20 px-4">
+      <main className="min-h-screen bg-[#FAF3E8] pt-8 pb-28 sm:pt-32 sm:pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <button
             onClick={() => router.push("/my-inquiries")}
@@ -147,8 +148,8 @@ export default function MyInquiryDetailPage() {
             ← Back to My Inquiries
           </button>
 
-          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6">
-            <h1 className="font-display text-2xl text-[#574325] mb-1 flex items-center flex-wrap gap-4">
+          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-4 sm:p-6 mb-6">
+            <h1 className="font-display text-2xl text-[#574325] mb-1 flex items-center flex-wrap gap-x-4 gap-y-2 break-words min-w-0">
               {inquiry.productCategory ||
                 inquiry.productName ||
                 "General Inquiry"}
@@ -167,12 +168,12 @@ export default function MyInquiryDetailPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6">
+          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-4 sm:p-6 mb-6">
             <h3 className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#C9A84C] mb-3">
               Your Original Message
             </h3>
 
-            <p className="font-sans text-sm text-[#70543E] whitespace-pre-wrap">
+            <p className="font-sans text-sm text-[#70543E] whitespace-pre-wrap break-words">
               {inquiry.message}
             </p>
             {inquiry.sampleImages?.length > 0 && (
@@ -183,7 +184,7 @@ export default function MyInquiryDetailPage() {
           </div>
 
           {inquiry.replies && inquiry.replies.length > 0 && (
-            <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6 mb-6">
+            <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-4 sm:p-6 mb-6">
               <h3 className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#C9A84C] mb-6">
                 Conversation
               </h3>
@@ -205,7 +206,7 @@ export default function MyInquiryDetailPage() {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] p-4 font-sans text-sm rounded-xl ${
+                        className={`max-w-[90%] sm:max-w-[80%] min-w-0 p-3 sm:p-4 font-sans text-sm rounded-xl ${
                           isAdmin
                             ? `bg-[#FAF3E8] text-[#574325] border ${
                                 isUnreadAdminReply &&
@@ -228,7 +229,9 @@ export default function MyInquiryDetailPage() {
                               </span>
                             )}
                         </div>
-                        <p className="whitespace-pre-wrap">{reply.message}</p>
+                        <p className="whitespace-pre-wrap break-words">
+                          {reply.message}
+                        </p>
                         <p className="text-[10px] opacity-50 mt-2">
                           {new Date(reply.createdAt).toLocaleDateString(
                             "en-IN",
@@ -248,7 +251,7 @@ export default function MyInquiryDetailPage() {
             </div>
           )}
 
-          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-6">
+          <div className="bg-white rounded-xl border border-[#E8D5A3]/40 p-4 sm:p-6">
             <h3 className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#C9A84C] mb-4">
               Send a Reply
             </h3>
@@ -270,13 +273,13 @@ export default function MyInquiryDetailPage() {
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Type your message here..."
               rows={4}
-              className="w-full p-4 border border-[#E8D5A3]/60 rounded-lg focus:outline-none focus:border-[#6F4E37] font-sans text-sm resize-none mb-4"
+              className="w-full min-w-0 p-3 sm:p-4 border border-[#E8D5A3]/60 rounded-lg focus:outline-none focus:border-[#6F4E37] font-sans text-base sm:text-sm resize-none mb-4"
             />
 
             <button
               onClick={handleSendReply}
               disabled={sending || !replyText.trim()}
-              className="px-6 py-3 bg-[#6F4E37] text-white font-sans text-[10px] tracking-[0.2em] uppercase rounded-lg hover:bg-[#574325] disabled:opacity-50 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-[#6F4E37] text-white font-sans text-[10px] tracking-[0.2em] uppercase rounded-lg hover:bg-[#574325] disabled:opacity-50 transition-colors"
             >
               {sending ? "Sending..." : "Send Reply"}
             </button>

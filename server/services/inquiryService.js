@@ -108,11 +108,8 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
 
   //  ADDED: Attach Customer Online Status in bulk
   const userIds = inquiries.map((i) => i.userId).filter((id) => id);
-  const emails = inquiries.map((i) => i.email).filter((e) => e);
-  const activeUsers = await User.find({
-    $or: [{ _id: { $in: userIds } }, { email: { $in: emails } }],
-  })
-    .select("_id email lastActiveAt")
+  const activeUsers = await User.find({ _id: { $in: userIds } })
+    .select("_id lastActiveAt")
     .lean();
 
   const activeMap = {};
@@ -121,7 +118,6 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
       const diff = (new Date() - new Date(u.lastActiveAt)) / 1000;
       if (diff < 120) {
         activeMap[u._id.toString()] = true;
-        if (u.email) activeMap[u.email.toLowerCase()] = true;
       }
     }
   });
@@ -129,8 +125,6 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
   const enrichedInquiries = inquiries.map((inq) => {
     let isCustomerOnline = false;
     if (inq.userId && activeMap[inq.userId.toString()]) isCustomerOnline = true;
-    else if (inq.email && activeMap[inq.email.toLowerCase()])
-      isCustomerOnline = true;
     return { ...inq, isAdminOnline, isCustomerOnline };
   });
 
@@ -146,25 +140,16 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
   };
 };
 
-export const getUserInquiries = async (userId, email, phone) => {
-  const orConditions = [{ userId }];
-
-  // Only match by email+phone together — a single matching field is not
-  // enough. This prevents an inquiry from showing up for someone just
-  // because they happen to share one field (email or phone) with it.
-  if (email && phone) {
-    orConditions.push({
-      email: normalizeEmail(email),
-      whatsapp: normalizePhone(phone),
-    });
-  }
-
-  //  MINOR FIX: User Inquiries par limit (Max 50)
-  const page = 1; // Frontend se agar page nahi aa raha toh default 1
+// Ownership is the permanent account id ONLY. Matching email/phone is never
+// enough (that let a new registration read someone else's guest inquiries);
+// guest inquiries join an account through the verified claim flow
+// (inquiryClaimService.js), which sets userId.
+export const getUserInquiries = async (userId) => {
+  const page = 1;
   const limit = 50;
   const skip = (page - 1) * limit;
 
-  const inquiries = await Inquiry.find({ $or: orConditions })
+  const inquiries = await Inquiry.find({ userId })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
@@ -191,10 +176,6 @@ export const getInquiryById = async (id) => {
   let userObj = null;
   if (inquiry.userId) {
     userObj = await User.findById(inquiry.userId).select("lastActiveAt").lean();
-  } else if (inquiry.email) {
-    userObj = await User.findOne({ email: inquiry.email })
-      .select("lastActiveAt")
-      .lean();
   }
 
   if (userObj && userObj.lastActiveAt) {
@@ -383,28 +364,9 @@ export const deleteInquiryById = async (id) => {
 
 // server/services/inquiryService.js — add this helper, use it in markInquiryAsViewed too
 
-export const isInquiryOwnedByUser = async (id, userId, email, phone) => {
-  const inquiry = await Inquiry.findById(id)
-    .select("userId email whatsapp")
-    .lean();
-  if (!inquiry) return false;
-
-  if (userId && inquiry.userId && String(inquiry.userId) === String(userId))
-    return true;
-
-  // Only match by email+phone together — same strict rule as
-  // getUserInquiries, so an inquiry visible in the list is never blocked
-  // (or wrongly allowed) here for a different reason.
-
-  if (
-    email &&
-    phone &&
-    inquiry.email &&
-    inquiry.whatsapp &&
-    inquiry.email.toLowerCase() === normalizeEmail(email) &&
-    inquiry.whatsapp === normalizePhone(phone)
-  )
-    return true;
-
-  return false;
+export const isInquiryOwnedByUser = async (id, userId) => {
+  if (!userId) return false;
+  const inquiry = await Inquiry.findById(id).select("userId").lean();
+  if (!inquiry || !inquiry.userId) return false;
+  return String(inquiry.userId) === String(userId);
 };

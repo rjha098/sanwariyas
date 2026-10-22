@@ -1,3 +1,4 @@
+
 // FILE: client/src/utils/phoneRules.js
 //
 // usage ----->>>>>  Country-wise phone number rules + password rules used by
@@ -7,41 +8,43 @@
 //
 // Every validator returns an error STRING when invalid, "" when valid.
 
+import { countryCodes } from "@/utils/countryCodes";
+
 // ── Phone ───────────────────────────────────────────────────────────────
 // Key = dial code (digits only). min/max = length of the LOCAL number
 // (without dial code). `start` = optional regex the local number must match.
 export const PHONE_RULES = {
   "91": { min: 10, max: 10, start: /^[6-9]/, hint: "10-digit Indian mobile number (starts with 6-9)" },
   "1": { min: 10, max: 10, start: /^[2-9]/, hint: "10-digit number (area code + number)" },
-  "44": { min: 10, max: 10, hint: "10-digit UK number (without the leading 0)" },
-  "971": { min: 9, max: 9, hint: "9-digit UAE number (without the leading 0)" },
-  "966": { min: 9, max: 9, hint: "9-digit Saudi number (without the leading 0)" },
+  "44": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit UK number (without the leading 0)" },
+  "971": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit UAE number (without the leading 0)" },
+  "966": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit Saudi number (without the leading 0)" },
   "974": { min: 8, max: 8, hint: "8-digit Qatar number" },
   "968": { min: 8, max: 8, hint: "8-digit Oman number" },
   "965": { min: 8, max: 8, hint: "8-digit Kuwait number" },
   "973": { min: 8, max: 8, hint: "8-digit Bahrain number" },
-  "61": { min: 9, max: 9, hint: "9-digit Australian number (without the leading 0)" },
+  "61": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit Australian number (without the leading 0)" },
   "64": { min: 8, max: 10, hint: "8 to 10-digit New Zealand number" },
   "65": { min: 8, max: 8, hint: "8-digit Singapore number" },
-  "60": { min: 9, max: 10, hint: "9 or 10-digit Malaysian number" },
+  "60": { min: 9, max: 10, start: /^[1-9]/, hint: "9 or 10-digit Malaysian number (without the leading 0)" },
   "62": { min: 9, max: 12, hint: "9 to 12-digit Indonesian number" },
   "86": { min: 11, max: 11, hint: "11-digit Chinese mobile number" },
-  "81": { min: 10, max: 10, hint: "10-digit Japanese number (without the leading 0)" },
+  "81": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Japanese number (without the leading 0)" },
   "82": { min: 9, max: 10, hint: "9 or 10-digit Korean number" },
   "49": { min: 10, max: 11, hint: "10 or 11-digit German number" },
-  "33": { min: 9, max: 9, hint: "9-digit French number (without the leading 0)" },
+  "33": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit French number (without the leading 0)" },
   "39": { min: 9, max: 11, hint: "9 to 11-digit Italian number" },
   "34": { min: 9, max: 9, hint: "9-digit Spanish number" },
-  "31": { min: 9, max: 9, hint: "9-digit Dutch number (without the leading 0)" },
-  "92": { min: 10, max: 10, hint: "10-digit Pakistani number (without the leading 0)" },
-  "880": { min: 10, max: 10, hint: "10-digit Bangladeshi number (without the leading 0)" },
-  "94": { min: 9, max: 9, hint: "9-digit Sri Lankan number (without the leading 0)" },
+  "31": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit Dutch number (without the leading 0)" },
+  "92": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Pakistani number (without the leading 0)" },
+  "880": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Bangladeshi number (without the leading 0)" },
+  "94": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit Sri Lankan number (without the leading 0)" },
   "977": { min: 10, max: 10, hint: "10-digit Nepali number" },
-  "27": { min: 9, max: 9, hint: "9-digit South African number (without the leading 0)" },
-  "234": { min: 10, max: 10, hint: "10-digit Nigerian number (without the leading 0)" },
-  "254": { min: 9, max: 9, hint: "9-digit Kenyan number (without the leading 0)" },
-  "20": { min: 10, max: 10, hint: "10-digit Egyptian number (without the leading 0)" },
-  "90": { min: 10, max: 10, hint: "10-digit Turkish number (without the leading 0)" },
+  "27": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit South African number (without the leading 0)" },
+  "234": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Nigerian number (without the leading 0)" },
+  "254": { min: 9, max: 9, start: /^[1-9]/, hint: "9-digit Kenyan number (without the leading 0)" },
+  "20": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Egyptian number (without the leading 0)" },
+  "90": { min: 10, max: 10, start: /^[1-9]/, hint: "10-digit Turkish number (without the leading 0)" },
   "7": { min: 10, max: 10, hint: "10-digit Russian/Kazakh number" },
   "55": { min: 10, max: 11, hint: "10 or 11-digit Brazilian number" },
   "52": { min: 10, max: 10, hint: "10-digit Mexican number" },
@@ -65,6 +68,8 @@ export const validatePhoneLocal = (dial, local) => {
 
   if (!d) return "Please select a country code.";
   if (!l) return "Phone number is required.";
+  // Same total-length cap the server applies (E.164 = 15 digits).
+  if (d.length + l.length > TOTAL_MAX) return "Phone number is too long.";
 
   const rule = PHONE_RULES[d];
   if (rule) {
@@ -149,4 +154,63 @@ export const validateCountry = (country) => {
   const v = String(country || "").trim();
   if (!v) return "Please select your country.";
   return "";
+};
+
+// ── Country <-> phone code ──────────────────────────────────────────────
+// Same rule as the backend (server/utils/validators.js): the country the user
+// picked must own the phone code they used. +1, +7 and +599 are shared.
+const COUNTRY_BY_NAME = {};
+const COUNTRIES_BY_DIAL = {};
+countryCodes.forEach((c) => {
+  const dial = c.code.replace("+", "");
+  COUNTRY_BY_NAME[c.name.toLowerCase()] = { name: c.name, dial };
+  (COUNTRIES_BY_DIAL[dial] = COUNTRIES_BY_DIAL[dial] || []).push(c.name);
+});
+
+export const validateCountryMatchesDial = (country, dial) => {
+  const key = String(country || "").trim().toLowerCase();
+  const d = String(dial || "").replace(/\D/g, "");
+  if (!key) return "";
+  const entry = COUNTRY_BY_NAME[key];
+  if (!entry) return "Please select a valid country from the list.";
+  if (entry.dial !== d) {
+    return `The selected country (${entry.name}) uses +${entry.dial}, but the phone number uses +${d}. Please select the matching country or phone code.`;
+  }
+  return "";
+};
+
+const DIALS_LONGEST_FIRST = Object.keys(COUNTRIES_BY_DIAL).sort(
+  (a, b) => b.length - a.length,
+);
+
+// Detects the country from a number the user typed/pasted in INTERNATIONAL
+// form ("+60 12 345 6789" or "0060..."). Only an explicit "+" or "00" prefix
+// is trusted — a plain "9123456789" is a local number and is never guessed.
+// Returns null when it is not international or the code is unknown, otherwise
+//   { dial, local, countries: [names], ambiguous }
+// `ambiguous` = several countries share the code (+1, +7, +599), so the user
+// must pick the country themselves.
+export const parseInternationalNumber = (raw) => {
+  const text = String(raw || "").trim();
+  if (!/^(\+|00)/.test(text)) return null;
+  let all = text.replace(/\D/g, "");
+  if (!text.startsWith("+")) all = all.slice(2); // drop the "00" prefix
+  for (const dial of DIALS_LONGEST_FIRST) {
+    if (all.startsWith(dial)) {
+      const countries = COUNTRIES_BY_DIAL[dial];
+      return {
+        dial,
+        local: all.slice(dial.length),
+        countries,
+        ambiguous: countries.length > 1,
+        // true while the user may still be typing a LONGER code that starts
+        // with these digits (+1 ... could become +1242 Bahamas), so callers
+        // should wait before converting the text into dial + local.
+        pending: DIALS_LONGEST_FIRST.some(
+          (e) => e !== dial && e.length > all.length && e.startsWith(all),
+        ),
+      };
+    }
+  }
+  return null;
 };

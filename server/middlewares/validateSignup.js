@@ -17,6 +17,7 @@ import {
   validatePhone,
   validateCompany,
   validateCountry,
+  validateCountryMatchesDial,
   validatePassword,
   validateConfirmPassword,
 } from "../utils/validators.js";
@@ -53,7 +54,10 @@ export const validateSignup = async (req, res, next) => {
     const companyErr = validateCompany(body.company);
     if (companyErr) errors.company = companyErr;
 
-    const countryErr = validateCountry(body.country);
+    // Country must be the one that owns the phone code (India + +60 = reject).
+    const countryErr =
+      validateCountry(body.country) ||
+      validateCountryMatchesDial(body.country, countryCode);
     if (countryErr) errors.country = countryErr;
 
     const passwordErr = validatePassword(body.password);

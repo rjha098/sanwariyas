@@ -12,6 +12,12 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import Toast from "@/components/ui/Toast";
 import PhoneInput from "@/components/ui/PhoneInput";
+import CountrySelect from "@/components/ui/CountrySelect";
+import {
+  validatePhoneLocal,
+  validateCountry,
+  validateCountryMatchesDial,
+} from "@/utils/phoneRules";
 import SampleImageUpload, {
   useSampleImages,
   buildInquiryFormData,
@@ -192,40 +198,48 @@ function LoginPromptBanner({ router, email, phone }) {
           <p className="font-sans text-[11px] tracking-[0.3em] uppercase text-[#C9A84C] font-semibold mb-1">
             Track Your Inquiry
           </p>
+
           <p className="font-sans text-sm text-[#574325] leading-relaxed">
-            Your inquiry has been submitted! To track it, log in or create an
-            account using <strong>both</strong> of these — exactly as entered:
+            Your inquiry has been submitted! To see replies and track it in your
+            dashboard, sign in or create an account, then open{" "}
+            <strong>Account Security → Add earlier inquiries</strong>.
           </p>
-          {(email || phone) && (
-            <div className="mt-3 bg-white/60 border border-[#C9A84C]/30 rounded-lg px-3 py-2 space-y-1">
-              {email && (
-                <p className="font-sans text-xs text-[#574325]">
-                  <span className="text-[#a07f61]">Email: </span>
-                  <strong>{email}</strong>
-                </p>
-              )}
-              {phone && (
-                <p className="font-sans text-xs text-[#574325]">
-                  <span className="text-[#a07f61]">Phone: </span>
-                  <strong>{formatPhone(phone)}</strong>
-                </p>
-              )}
+
+          {email && (
+            <div className="mt-3 bg-white/60 border border-[#C9A84C]/30 rounded-lg px-3 py-2">
+              <p className="font-sans text-xs text-[#574325]">
+                <span className="text-[#a07f61]">Inquiry email: </span>
+                <strong>{email}</strong>
+              </p>
             </div>
           )}
+
           <p className="font-sans text-[11px] text-[#a07f61] mt-2 leading-relaxed">
-            Using a different email or phone number will not show this inquiry
-            in your dashboard.
+            We will send a one-time code to this email to confirm it is yours.
+            Inquiries are never linked automatically, and your account email
+            does not have to match.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-2 mt-4">
             <button
-              onClick={() => router.push("/login")}
+              onClick={() =>
+                router.push(
+                  "/login?redirect=" +
+                    encodeURIComponent("/account/security#claim"),
+                )
+              }
               title="Sign In to B2B Dashboard"
               className="flex-1 py-2.5 px-4 bg-[#6F4E37] text-white font-sans text-xs tracking-[0.2em] uppercase hover:bg-[#574325] transition-colors rounded-lg"
             >
               Sign In
             </button>
             <button
-              onClick={() => router.push("/login?mode=signup")}
+              onClick={() =>
+                router.push(
+                  "/login?mode=signup&redirect=" +
+                    encodeURIComponent("/account/security#claim"),
+                )
+              }
               title="Create Wholesale Account"
               className="flex-1 py-2.5 px-4 border border-[#C9A84C]/50 text-[#574325] font-sans text-xs tracking-[0.2em] uppercase hover:bg-[#C9A84C]/10 transition-colors rounded-lg"
             >
@@ -346,7 +360,70 @@ function ContactPageContent() {
 
   // Store full profile data for freeze logic
   const [fullProfile, setFullProfile] = useState(null);
+  // ── WhatsApp number <-> Country consistency (same rules as signup) ──
+  const [phoneParts, setPhoneParts] = useState({ dial: "91", local: "" });
+  const [countryManual, setCountryManual] = useState(false);
+  const phoneLocked = isAuthenticated && !!fullProfile?.phone;
+  const countryLocked = isAuthenticated && !!fullProfile?.country;
 
+  const getPhoneError = (parts) =>
+    phoneLocked || !parts.local
+      ? ""
+      : validatePhoneLocal(parts.dial, parts.local);
+
+  const getCountryError = (country, parts) => {
+    if (countryLocked || !String(country || "").trim()) return "";
+    const base = validateCountry(country);
+    if (base) return base;
+    if (phoneLocked || !parts.local) return "";
+    return validateCountryMatchesDial(country, parts.dial);
+  };
+
+  const setFieldError = (key, msg) =>
+    setFieldErrors((prev) => {
+      if (msg) return prev[key] === msg ? prev : { ...prev, [key]: msg };
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+
+  const handleWhatsappParts = (parts) => {
+    setPhoneParts(parts);
+    setFieldError("whatsapp", getPhoneError(parts));
+  };
+
+  const autoSetCountry = (name) => {
+    setFormData((prev) => ({ ...prev, country: name }));
+    setFieldError("country", "");
+  };
+
+  const handleWhatsappCountry = (name) => {
+    if (!countryManual) autoSetCountry(name);
+  };
+
+  const handleWhatsappDetect = ({ countries, ambiguous }) => {
+    if (ambiguous || !countries?.length) return;
+    if (!countryManual) autoSetCountry(countries[0]);
+  };
+
+  const handleCountryPick = (name) => {
+    setCountryManual(true);
+    setFormData((prev) => ({ ...prev, country: name }));
+    setFieldError("country", getCountryError(name, phoneParts));
+  };
+
+  useEffect(() => {
+    if (countryLocked) return;
+    setFieldError("country", getCountryError(formData.country, phoneParts));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    formData.country,
+    phoneParts.dial,
+    phoneParts.local,
+    phoneLocked,
+    countryLocked,
+  ]);
   //  NEW: Prefill product info from ?inquiry= query param (e.g. from Lookbook)
   // Runs independently of login state — works for both guests and logged-in users,
   // and never touches name/email so it can never break the normal inquiry flow.
@@ -475,6 +552,11 @@ function ContactPageContent() {
       if (isNaN(num) || num < 10)
         errors.quantity = "Minimum order quantity is 10 pieces (2 Sets).";
     }
+
+    const whatsappErr = getPhoneError(phoneParts);
+    if (whatsappErr) errors.whatsapp = whatsappErr;
+    const countryErr = getCountryError(formData.country, phoneParts);
+    if (countryErr) errors.country = countryErr;
     setFieldErrors(errors);
 
     // Mark all as touched so borders turn red immediately
@@ -564,6 +646,8 @@ function ContactPageContent() {
       }));
       setFieldErrors({});
       setTouchedFields({});
+      setPhoneParts({ dial: "91", local: "" });
+      setCountryManual(false);
       setInquiredProduct("");
       sampleImages.reset();
 
@@ -889,7 +973,9 @@ function ContactPageContent() {
                     >
                       WhatsApp Number
                     </label>
+
                     <PhoneInput
+                      id="whatsapp"
                       value={formData.whatsapp}
                       onChange={(combined) =>
                         setFormData((prev) => ({
@@ -897,7 +983,11 @@ function ContactPageContent() {
                           whatsapp: combined,
                         }))
                       }
-                      readOnly={isAuthenticated && !!fullProfile?.phone}
+                      onPartsChange={handleWhatsappParts}
+                      onCountryChange={handleWhatsappCountry}
+                      onDetect={handleWhatsappDetect}
+                      error={!!fieldErrors.whatsapp}
+                      readOnly={phoneLocked}
                       className="flex items-stretch w-full border text-sm transition-colors duration-200 border-[#a07f61]/30 focus-within:border-[#BE6E5B] bg-[#f8f4ec]"
                       textClassName="text-[#7A3D2A]"
                     />
@@ -909,17 +999,36 @@ function ContactPageContent() {
                     >
                       Country
                     </label>
-                    <StyledInput
-                      id="country"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleChange}
-                      readOnly={isAuthenticated && !!fullProfile?.country}
-                    />
+
+                    {countryLocked ? (
+                      <StyledInput
+                        id="country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        readOnly
+                      />
+                    ) : (
+                      <CountrySelect
+                        id="country"
+                        value={formData.country}
+                        onChange={handleCountryPick}
+                        error={!!fieldErrors.country}
+                        className="w-full px-4 py-3 border text-sm text-[#7A3D2A] border-[#a07f61]/30 bg-[#f8f4ec] focus:outline-none focus:border-[#BE6E5B] transition-colors duration-200"
+                        placeholder="Select country"
+                      />
+                    )}
                   </div>
+                  {(fieldErrors.whatsapp || fieldErrors.country) && (
+                    <div className="md:col-span-2 -mt-4">
+                      <FieldError message={fieldErrors.whatsapp} />
+                      <FieldError message={fieldErrors.country} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Company + Category */}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label

@@ -1,4 +1,5 @@
 // FILE: client/src/app/dashboard/page.js
+
 "use client";
 import { formatPhone } from "@/utils/formatPhone";
 
@@ -14,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import api, { deleteNotificationByInquiry } from "@/lib/api";
 import Toast from "@/components/ui/Toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import PhoneInput from "@/components/ui/PhoneInput";
 import SampleImageGallery from "@/components/ui/SampleImageGallery";
 
@@ -550,6 +552,7 @@ export default function UserDashboard() {
 
   // ── Delete Account States ──
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const showToast = (message, type = "success") =>
@@ -677,12 +680,12 @@ export default function UserDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    showToast("Logged out successfully.", "success"); // Pehle toast dikhao
-    setTimeout(() => {
-      logout();
-      router.replace("/login");
-    }, 1500);
+  const handleLogout = () => setShowLogoutConfirm(true);
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+    router.replace("/login");
   };
 
   //  Account Deletion Function
@@ -748,6 +751,15 @@ export default function UserDashboard() {
     <>
       {/*  SEO FIX: Injected NoIndex tag and Metadata for Private Dashboard Route */}
 
+      <ConfirmDialog
+        open={showLogoutConfirm}
+        title="Log out?"
+        message="Are you sure you want to log out of your account?"
+        confirmLabel="Log out"
+        cancelLabel="Stay logged in"
+        onConfirm={confirmLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}
@@ -1161,14 +1173,22 @@ export default function UserDashboard() {
                   <h1 className="font-display text-2xl text-[#574325]">
                     My Profile
                   </h1>
-                  {!isEditingProfile && (
-                    <button
-                      onClick={() => setIsEditingProfile(true)}
-                      className="font-sans text-xs tracking-[0.2em] uppercase bg-[#6F4E37] text-white px-5 py-2.5 hover:bg-[#574325] transition-colors rounded-lg"
+                  <div className="flex items-center gap-3">
+                    <a
+                      href="/account/security"
+                      className="font-sans text-xs tracking-[0.2em] uppercase border border-[#6F4E37] text-[#6F4E37] px-5 py-2.5 hover:bg-[#6F4E37] hover:text-white transition-colors rounded-lg"
                     >
-                      Edit Profile
-                    </button>
-                  )}
+                      Account Security
+                    </a>
+                    {!isEditingProfile && (
+                      <button
+                        onClick={() => setIsEditingProfile(true)}
+                        className="font-sans text-xs tracking-[0.2em] uppercase bg-[#6F4E37] text-white px-5 py-2.5 hover:bg-[#574325] transition-colors rounded-lg"
+                      >
+                        Edit Profile
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="bg-white rounded-xl border border-[#E8D5A3]/60 p-6 md:p-8">
@@ -1205,10 +1225,6 @@ export default function UserDashboard() {
                             disabled
                             className="w-full px-4 py-2.5 border border-[#E8D5A3]/60 rounded-lg font-sans text-sm text-[#574325] bg-[#FAF3E8]/50 opacity-60 cursor-not-allowed outline-none"
                           />
-                          <p className="mt-1.5 font-sans text-[11px] text-[#a07f61] italic">
-                            Email is locked for security. Contact support to
-                            change it.
-                          </p>
                         </div>
 
                         <div>

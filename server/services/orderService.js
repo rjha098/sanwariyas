@@ -168,52 +168,117 @@ export const createOrder = async (
 // order. Safe to call more than once for the same order (idempotent) since
 // webhooks can be retried or arrive twice.
 export const markOrderPaid = async (orderId, { cfPaymentId } = {}) => {
-  const order = await Order.findById(orderId);
+  // Step 1 — atomically claim the unpaid -> paid transition. Only ONE caller
+  // (webhook or verify endpoint) can win this, so notification/email below
+  // are sent once and concurrent calls cannot double-process the order.
+  const paidSet = { paymentStatus: "paid", paidAt: new Date() };
+  if (cfPaymentId) paidSet.cfPaymentId = cfPaymentId;
+  const claimed = await Order.findOneAndUpdate(
+    { _id: orderId, paymentStatus: { $ne: "paid" } },
+    { $set: paidSet },
+    { new: true },
+  );
+  const justPaid = !!claimed;
+  if (justPaid) {
+    await Order.updateOne(
+      { _id: orderId, status: "pending" },
+      { $set: { status: "confirmed" } },
+    );
+  }
+
+  let order = claimed || (await Order.findById(orderId));
   if (!order) {
     const err = new Error("Order not found");
     err.statusCode = 404;
     throw err;
   }
 
-  // Idempotency guard: if we already processed this payment, do nothing.
-  if (order.paymentStatus === "paid") {
-    return order.toObject();
-  }
-
-  order.paymentStatus = "paid";
-  order.paidAt = new Date();
-  if (cfPaymentId) order.cfPaymentId = cfPaymentId;
-  if (order.status === "pending") order.status = "confirmed";
-
+  // Step 2 — deduct stock exactly once. Also runs on a repeat call if an
+  // earlier attempt failed part-way (stockDeducted still false), so webhook
+  // retries heal the order instead of leaving inventory untouched.
   if (!order.stockDeducted) {
-    for (const item of order.items) {
-      // Atomic, conditional decrement: only succeeds if enough stock is
-      // still available at this exact moment. This is what closes the
-      // race-condition gap the original audit flagged (two paid orders
-      // can no longer both decrement past zero stock).
-      const result = await Product.updateOne(
-        {
-          _id: item.product,
-          $or: [
-            { stock: { $type: "number", $gte: item.pieces } },
-            { stock: { $exists: false } },
-            { stock: null },
-          ],
-        },
-        { $inc: { stock: -item.pieces } },
-      );
-      if (result.modifiedCount === 0) {
-        // Stock ran out between order placement and payment confirmation.
-        // We do NOT fail the order here — the customer has already paid —
-        // we flag it so a human resolves it (refund or restock) instead of
-        // silently overselling or silently losing the payment.
-        order.adminNotes = `${order.adminNotes ? order.adminNotes + " | " : ""}STOCK ALERT: insufficient stock for "${item.name}" at payment time — please review.`;
+    const stockClaim = await Order.findOneAndUpdate(
+      { _id: orderId, stockDeducted: false },
+      { $set: { stockDeducted: true } },
+    );
+    if (stockClaim) {
+      const applied = []; // decrements done so far, for rollback on error
+      const alerts = [];
+      try {
+        for (const item of order.items) {
+          if (!item.product) continue;
+          // Atomic conditional decrement: only tracked (numeric) stock with
+          // enough quantity matches, so stock can never go below zero and
+          // null / missing (untracked) stock is never touched.
+          const result = await Product.updateOne(
+            {
+              _id: item.product,
+              stock: { $type: "number", $gte: item.pieces },
+            },
+            { $inc: { stock: -item.pieces } },
+          );
+          if (result.modifiedCount === 1) {
+            applied.push(item);
+            continue;
+          }
+          // No match: untracked stock (fine), missing product, or genuinely
+          // insufficient stock. The customer has already paid, so the order
+          // is kept and flagged for a human (refund / restock).
+          const prod = await Product.findById(item.product)
+            .select("stock")
+            .lean();
+          if (prod && typeof prod.stock !== "number") continue; // untracked
+          alerts.push(
+            prod
+              ? `insufficient stock for "${item.name}" at payment time`
+              : `product for "${item.name}" no longer exists`,
+          );
+        }
+      } catch (stockError) {
+        // Undo what we did and release the claim so a retry starts clean.
+        for (const item of applied) {
+          try {
+            await Product.updateOne(
+              { _id: item.product, stock: { $type: "number" } },
+              { $inc: { stock: item.pieces } },
+            );
+          } catch (_) {}
+        }
+        await Order.updateOne(
+          { _id: orderId },
+          { $set: { stockDeducted: false } },
+        );
+        throw stockError;
+      }
+      if (alerts.length) {
+        const note = `STOCK ALERT: ${alerts.join("; ")} — please review.`;
+        await Order.updateOne({ _id: orderId }, [
+          {
+            $set: {
+              adminNotes: {
+                $concat: [
+                  {
+                    $cond: [
+                      { $gt: [{ $strLenCP: { $ifNull: ["$adminNotes", ""] } }, 0] },
+                      { $concat: ["$adminNotes", " | "] },
+                      "",
+                    ],
+                  },
+                  note,
+                ],
+              },
+            },
+          },
+        ]);
       }
     }
-    order.stockDeducted = true;
+    order = await Order.findById(orderId);
+  } else {
+    order = await Order.findById(orderId);
   }
 
-  await order.save();
+  // Repeat call for an already-processed payment: nothing more to do.
+  if (!justPaid) return order.toObject();
 
   await Notification.create({
     isGlobalAdmin: true,

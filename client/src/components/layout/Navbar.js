@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 //  import { useCart } from "@/hooks/useCart";
 
@@ -68,6 +69,7 @@ export default function Navbar() {
   const [mobMegaOpen, setMobMegaOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -83,8 +85,13 @@ export default function Navbar() {
   }, [pathname]);
 
   const handleLogout = () => {
-    logout();
     setMenuOpen(false);
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
     router.push("/login");
   };
 
@@ -96,6 +103,15 @@ export default function Navbar() {
 
   return (
     <>
+      <ConfirmDialog
+        open={showLogoutConfirm}
+        title="Log out?"
+        message="Are you sure you want to log out of your account?"
+        confirmLabel="Log out"
+        cancelLabel="Stay logged in"
+        onConfirm={confirmLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
       <style>{`
         .sw-nav-ul {
           position: absolute; bottom: -4px; left: 0;

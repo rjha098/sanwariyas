@@ -1,54 +1,3 @@
-// // server/models/Notification.js 
-
-// import mongoose from "mongoose";
-
-// const notificationSchema = new mongoose.Schema(
-//   {
-//     recipientId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//       default: null,
-//     },
-//     isGlobalAdmin: { type: Boolean, default: false },
-
-//     type: {
-//       type: String,
-//       enum: [
-//         "new_inquiry",
-//         "inquiry_reply",
-//         "system",
-//         "new_order",
-//         "order_status",
-//       ],
-//       required: true,
-//     },
-//     title: { type: String, required: true },
-//     message: { type: String, required: true },
-//     isRead: { type: Boolean, default: false },
-//     relatedInquiryId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "Inquiry",
-//       default: null,
-//     },
-//     relatedOrderId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "Order",
-//       default: null,
-//     },
-//     link: { type: String, default: null },
-//   },
-//   { timestamps: true },
-// );
-
-// export default mongoose.model("Notification", notificationSchema);
-
-
-
-
-
-
-
-
 // server/models/Notification.js 
 
 import mongoose from "mongoose";
@@ -90,6 +39,12 @@ const notificationSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+// Indexes matching the real queries in notificationController.js
+// (list / unread-count / mark-read / clear). The unread-count is polled often.
+notificationSchema.index({ recipientId: 1, isRead: 1, createdAt: -1 });
+notificationSchema.index({ isGlobalAdmin: 1, isRead: 1, createdAt: -1 });
+notificationSchema.index({ relatedInquiryId: 1 });
 
 // Every NEW notification is also pushed to the phone / browser (Web Push).
 notificationSchema.pre("save", function (next) {

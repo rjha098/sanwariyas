@@ -1,7 +1,7 @@
 // FILE: client/src/components/auth/SignupForm.js
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PhoneInput from "@/components/ui/PhoneInput";
 import CountrySelect from "@/components/ui/CountrySelect";
 import {
@@ -11,6 +11,7 @@ import {
   validatePhoneLocal,
   validateCompany,
   validateCountry,
+  validateCountryMatchesDial,
   validatePassword,
   validateConfirmPassword,
 } from "@/utils/phoneRules";
@@ -94,7 +95,13 @@ export default function SignupForm({ onSignup, signingUp }) {
   const [touched, setTouched] = useState({});
   const [formError, setFormError] = useState("");
   const [showPw, setShowPw] = useState(false);
+
   const [showConfirm, setShowConfirm] = useState(false);
+  // true once the user picks the Country field themselves. After that the
+  // phone box never changes it (a mismatch is reported instead).
+  const [countryManual, setCountryManual] = useState(false);
+  // set when a typed "+1"/"+7"/"+599" number fits several countries.
+  const [ambiguousDial, setAmbiguousDial] = useState(null);
 
   // ── validation ──
   const validateField = (key, values = form, parts = phoneParts) => {
@@ -107,8 +114,14 @@ export default function SignupForm({ onSignup, signingUp }) {
         return validateEmail(values.email);
       case "company":
         return validateCompany(values.company);
+
       case "country":
-        return validateCountry(values.country);
+        // Country must be the one that owns the phone code.
+        return (
+          validateCountry(values.country) ||
+          validateCountryMatchesDial(values.country, parts.dial)
+        );
+
       case "password":
         return validatePassword(values.password);
       case "confirmPassword":
@@ -179,18 +192,75 @@ export default function SignupForm({ onSignup, signingUp }) {
   };
 
   const handleCountryPick = (name) => {
+    setCountryManual(true);
     const values = { ...form, country: name };
+
     setForm(values);
     setTouched((t) => ({ ...t, country: true }));
     setFormError("");
     refreshField("country", values, phoneParts, true);
   };
 
-  // Picking a phone country pre-fills the Country field if it is still empty.
-  const handlePhoneCountry = (name) => {
-    if (form.country) return;
-    handleCountryPick(name);
+  // Sets the Country field from the phone box WITHOUT marking it as a manual
+  // choice, so a later phone change may still update it.
+  const autoSetCountry = (name) => {
+    setForm((f) => ({ ...f, country: name }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.country;
+      return next;
+    });
   };
+
+  // Picking a country code from the phone list pre-fills Country, unless the
+  // user already chose Country themselves.
+  const handlePhoneCountry = (name) => {
+    setAmbiguousDial(null);
+    if (countryManual) return;
+    autoSetCountry(name);
+  };
+
+  // A number typed/pasted as "+60…" / "0060…" was recognised.
+  const handlePhoneDetect = ({ dial, countries, ambiguous }) => {
+    if (ambiguous) {
+      // Shared code (+1, +7, +599): cannot be decided reliably -> ask.
+      setAmbiguousDial({ dial, countries });
+      return;
+    }
+    setAmbiguousDial(null);
+    if (!countryManual) autoSetCountry(countries[0]);
+    // If the user picked a different Country manually, it is NOT changed;
+    // the live check below shows the mismatch.
+  };
+
+  // Live country <-> phone-code check (also reacts when the phone code
+  // changes after Country was already chosen).
+  useEffect(() => {
+    const visited = touched.country || phoneParts.local.length > 0;
+    if (!visited) return;
+    let msg = "";
+    if (form.country) {
+      msg = validateCountryMatchesDial(form.country, phoneParts.dial);
+    } else if (ambiguousDial && ambiguousDial.dial === phoneParts.dial) {
+      msg = `+${ambiguousDial.dial} is used by ${ambiguousDial.countries.join(" and ")}. Please select your country.`;
+    }
+    setErrors((prev) => {
+      if (msg) return prev.country === msg ? prev : { ...prev, country: msg };
+      if (!prev.country) return prev;
+      // Only clear a country error that this check owns; keep "required".
+      if (form.country) {
+        const { country, ...rest } = prev;
+        return rest;
+      }
+      return prev;
+    });
+  }, [
+    form.country,
+    phoneParts.dial,
+    phoneParts.local,
+    ambiguousDial,
+    touched.country,
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -198,9 +268,7 @@ export default function SignupForm({ onSignup, signingUp }) {
     setFormError("");
 
     const nextErrors = validateAll();
-    setTouched(
-      FIELD_ORDER.reduce((acc, key) => ({ ...acc, [key]: true }), {}),
-    );
+    setTouched(FIELD_ORDER.reduce((acc, key) => ({ ...acc, [key]: true }), {}));
     setErrors(nextErrors);
 
     const firstBad = FIELD_ORDER.find((key) => nextErrors[key]);
@@ -285,6 +353,7 @@ export default function SignupForm({ onSignup, signingUp }) {
           onChange={handlePhoneChange}
           onPartsChange={handlePhoneParts}
           onCountryChange={handlePhoneCountry}
+          onDetect={handlePhoneDetect}
           error={!!errors.phone}
           className={phoneBox}
           textClassName="text-brand-mud"

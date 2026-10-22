@@ -1,4 +1,5 @@
 // FILE: client/src/components/ui/WhatsAppWidget.js
+
 "use client";
 
 import { useState, useEffect } from "react";

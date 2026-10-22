@@ -25,16 +25,30 @@ dotenv.config();
 // ═══════════════════════════════════════════════════════════════════════════
 // PROCESS-LEVEL SAFETY NET
 // ═══════════════════════════════════════════════════════════════════════════
-process.on("uncaughtException", (err) => {
-  // console.error("UNCAUGHT EXCEPTION — server stayed alive, but fix this:", err);
-});
+// Log only error name/message/stack — never request bodies, headers or env.
+const logFatal = (label, err) => {
+  const e = err instanceof Error ? err : new Error(String(err));
+  console.error(`[FATAL] ${label}: ${e.name}: ${e.message}\n${e.stack || ""}`);
+};
 
-process.on("unhandledRejection", (reason, promise) => {
-  // console.error(
-  //   "UNHANDLED PROMISE REJECTION — server stayed alive, but fix this:",
-  //   reason,
-  // );
-});
+// After an uncaught error the process state is undefined, so we do NOT keep
+// running. Close the HTTP server gracefully, then exit(1) so PM2 / systemd /
+// the host restarts a clean process. A hard timeout guarantees the exit.
+let shuttingDown = false;
+let httpServer = null;
+const fatalExit = (label, err) => {
+  logFatal(label, err);
+  if (shuttingDown) return;
+  shuttingDown = true;
+  setTimeout(() => process.exit(1), 10000).unref();
+  if (httpServer) httpServer.close(() => process.exit(1));
+  else process.exit(1);
+};
+
+process.on("uncaughtException", (err) => fatalExit("uncaughtException", err));
+process.on("unhandledRejection", (reason) =>
+  fatalExit("unhandledRejection", reason),
+);
 
 const app = express();
 
@@ -59,13 +73,26 @@ const explicitAllowedOrigins = [
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
-const vercelPreviewPattern =
-  /^https:\/\/sanwariya-project-[a-z0-9-]+-projects\.vercel\.app$/;
+// Vercel preview deployments look like
+//   sanwariya-project-<hash>-<TEAM-SLUG>.vercel.app
+// The old pattern accepted ANY team slug ending in "-projects", so anyone could
+// create a Vercel project with a matching name and get a credentialed-CORS
+// origin (refresh cookie is SameSite=None in production). Previews are now
+// allowed ONLY for your own team slug, set via VERCEL_PREVIEW_SCOPE
+// (e.g. "yourname-projects"). Unset = previews blocked.
+const previewScope = (process.env.VERCEL_PREVIEW_SCOPE || "")
+  .trim()
+  .toLowerCase();
+const vercelPreviewPattern = /^[a-z0-9-]+$/.test(previewScope)
+  ? new RegExp(
+      `^https://sanwariya-project-[a-z0-9-]+-${previewScope}\\.vercel\\.app$`,
+    )
+  : null;
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (explicitAllowedOrigins.includes(origin)) return true;
-  return vercelPreviewPattern.test(origin);
+  return vercelPreviewPattern ? vercelPreviewPattern.test(origin) : false;
 };
 
 
@@ -160,6 +187,11 @@ app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
 app.use("/api/auth/customer/signup", authLimiter);
 app.use("/api/auth/forgot-password", authLimiter);
+app.use("/api/auth/verify-reset-code", authLimiter);
+app.use("/api/auth/google", authLimiter);
+app.use("/api/auth/password/set", authLimiter);
+
+app.use("/api/inquiry/claim", authLimiter);
 app.use("/api/auth/reset-password", authLimiter);
 
 app.use("/api/auth/session", highFreqLimiter);
@@ -204,16 +236,20 @@ app.use((err, req, res, next) => {
     });
   }
 
-  // console.error(err.stack);
+  // Log name/message/stack + route only — never headers, cookies or bodies.
+  console.error(
+    `[ERROR] ${req.method} ${req.path}: ${err?.name}: ${err?.message}\n${err?.stack || ""}`,
+  );
 
   res.status(500).json({
     success: false,
     message: "Internal server error",
-    error: err.message,
+    // Internal error text is shown only outside production.
+    ...(process.env.NODE_ENV !== "production" && { error: err?.message }),
   });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  // console.log(`Server running on http://localhost:${PORT}`);
+httpServer = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

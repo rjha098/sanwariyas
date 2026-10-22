@@ -16,6 +16,8 @@
 // ─────────────────────────────────────────────────────────────────────────
 // bcrypt only looks at the first 72 bytes of a password, so anything longer
 // would silently be truncated. We cap at 72 to keep behaviour honest.
+import { COUNTRY_DIAL_CODES } from "./countryDialCodes.js";
+
 export const PASSWORD_MIN = 8;
 export const PASSWORD_MAX = 72;
 
@@ -96,7 +98,8 @@ export const validateCompany = (company) => {
   if (v === "") return "";
   if (v.length < 2) return "Company name must be at least 2 characters.";
   if (v.length > 100) return "Company name must be at most 100 characters.";
-  if (!COMPANY_REGEX.test(v)) return "Company name contains invalid characters.";
+  if (!COMPANY_REGEX.test(v))
+    return "Company name contains invalid characters.";
   return "";
 };
 
@@ -125,40 +128,130 @@ export const validateCountry = (country) => {
 // IMPORTANT: this table is mirrored in client/src/utils/phoneRules.js.
 // If you change one, change the other (the server cannot import from client/).
 export const PHONE_RULES = {
-  "91": { min: 10, max: 10, start: /^[6-9]/, hint: "10-digit Indian mobile number (starts with 6-9)" },
-  "1": { min: 10, max: 10, start: /^[2-9]/, hint: "10-digit number (area code + number)" },
-  "44": { min: 10, max: 10, hint: "10-digit UK number (without the leading 0)" },
-  "971": { min: 9, max: 9, hint: "9-digit UAE number (without the leading 0)" },
-  "966": { min: 9, max: 9, hint: "9-digit Saudi number (without the leading 0)" },
-  "974": { min: 8, max: 8, hint: "8-digit Qatar number" },
-  "968": { min: 8, max: 8, hint: "8-digit Oman number" },
-  "965": { min: 8, max: 8, hint: "8-digit Kuwait number" },
-  "973": { min: 8, max: 8, hint: "8-digit Bahrain number" },
-  "61": { min: 9, max: 9, hint: "9-digit Australian number (without the leading 0)" },
-  "64": { min: 8, max: 10, hint: "8 to 10-digit New Zealand number" },
-  "65": { min: 8, max: 8, hint: "8-digit Singapore number" },
-  "60": { min: 9, max: 10, hint: "9 or 10-digit Malaysian number" },
-  "62": { min: 9, max: 12, hint: "9 to 12-digit Indonesian number" },
-  "86": { min: 11, max: 11, hint: "11-digit Chinese mobile number" },
-  "81": { min: 10, max: 10, hint: "10-digit Japanese number (without the leading 0)" },
-  "82": { min: 9, max: 10, hint: "9 or 10-digit Korean number" },
-  "49": { min: 10, max: 11, hint: "10 or 11-digit German number" },
-  "33": { min: 9, max: 9, hint: "9-digit French number (without the leading 0)" },
-  "39": { min: 9, max: 11, hint: "9 to 11-digit Italian number" },
-  "34": { min: 9, max: 9, hint: "9-digit Spanish number" },
-  "31": { min: 9, max: 9, hint: "9-digit Dutch number (without the leading 0)" },
-  "92": { min: 10, max: 10, hint: "10-digit Pakistani number (without the leading 0)" },
-  "880": { min: 10, max: 10, hint: "10-digit Bangladeshi number (without the leading 0)" },
-  "94": { min: 9, max: 9, hint: "9-digit Sri Lankan number (without the leading 0)" },
-  "977": { min: 10, max: 10, hint: "10-digit Nepali number" },
-  "27": { min: 9, max: 9, hint: "9-digit South African number (without the leading 0)" },
-  "234": { min: 10, max: 10, hint: "10-digit Nigerian number (without the leading 0)" },
-  "254": { min: 9, max: 9, hint: "9-digit Kenyan number (without the leading 0)" },
-  "20": { min: 10, max: 10, hint: "10-digit Egyptian number (without the leading 0)" },
-  "90": { min: 10, max: 10, hint: "10-digit Turkish number (without the leading 0)" },
-  "7": { min: 10, max: 10, hint: "10-digit Russian/Kazakh number" },
-  "55": { min: 10, max: 11, hint: "10 or 11-digit Brazilian number" },
-  "52": { min: 10, max: 10, hint: "10-digit Mexican number" },
+  91: {
+    min: 10,
+    max: 10,
+    start: /^[6-9]/,
+    hint: "10-digit Indian mobile number (starts with 6-9)",
+  },
+  1: {
+    min: 10,
+    max: 10,
+    start: /^[2-9]/,
+    hint: "10-digit number (area code + number)",
+  },
+  44: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit UK number (without the leading 0)",
+  },
+  971: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit UAE number (without the leading 0)",
+  },
+  966: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit Saudi number (without the leading 0)",
+  },
+  974: { min: 8, max: 8, hint: "8-digit Qatar number" },
+  968: { min: 8, max: 8, hint: "8-digit Oman number" },
+  965: { min: 8, max: 8, hint: "8-digit Kuwait number" },
+  973: { min: 8, max: 8, hint: "8-digit Bahrain number" },
+  61: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit Australian number (without the leading 0)",
+  },
+  64: { min: 8, max: 10, hint: "8 to 10-digit New Zealand number" },
+  65: { min: 8, max: 8, hint: "8-digit Singapore number" },
+  60: {
+    min: 9,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "9 or 10-digit Malaysian number (without the leading 0)",
+  },
+  62: { min: 9, max: 12, hint: "9 to 12-digit Indonesian number" },
+  86: { min: 11, max: 11, hint: "11-digit Chinese mobile number" },
+  81: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Japanese number (without the leading 0)",
+  },
+  82: { min: 9, max: 10, hint: "9 or 10-digit Korean number" },
+  49: { min: 10, max: 11, hint: "10 or 11-digit German number" },
+  33: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit French number (without the leading 0)",
+  },
+  39: { min: 9, max: 11, hint: "9 to 11-digit Italian number" },
+  34: { min: 9, max: 9, hint: "9-digit Spanish number" },
+  31: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit Dutch number (without the leading 0)",
+  },
+  92: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Pakistani number (without the leading 0)",
+  },
+  880: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Bangladeshi number (without the leading 0)",
+  },
+  94: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit Sri Lankan number (without the leading 0)",
+  },
+  977: { min: 10, max: 10, hint: "10-digit Nepali number" },
+  27: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit South African number (without the leading 0)",
+  },
+  234: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Nigerian number (without the leading 0)",
+  },
+  254: {
+    min: 9,
+    max: 9,
+    start: /^[1-9]/,
+    hint: "9-digit Kenyan number (without the leading 0)",
+  },
+  20: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Egyptian number (without the leading 0)",
+  },
+  90: {
+    min: 10,
+    max: 10,
+    start: /^[1-9]/,
+    hint: "10-digit Turkish number (without the leading 0)",
+  },
+  7: { min: 10, max: 10, hint: "10-digit Russian/Kazakh number" },
+  55: { min: 10, max: 11, hint: "10 or 11-digit Brazilian number" },
+  52: { min: 10, max: 10, hint: "10-digit Mexican number" },
 };
 
 // Fallback for countries that are not in PHONE_RULES.
@@ -210,6 +303,24 @@ export const validatePhone = (phone, countryCode) => {
 
   if (local.length < DEFAULT_LOCAL_MIN || local.length > DEFAULT_LOCAL_MAX) {
     return `Phone number must be ${DEFAULT_LOCAL_MIN} to ${DEFAULT_LOCAL_MAX} digits for the selected country.`;
+  }
+  return "";
+};
+
+// ── Country <-> phone code consistency ─────────────────────────────────
+// The country the user picked must be the country that owns the phone code
+// they used (India + 60xxxx is rejected). +1 (Canada/USA), +7 (Russia/
+// Kazakhstan) and +599 are shared, so both of their countries are accepted.
+export const validateCountryMatchesDial = (country, countryCode) => {
+  const key = String(country ?? "")
+    .trim()
+    .toLowerCase();
+  const dial = String(countryCode ?? "").replace(/\D/g, "");
+  const entry = COUNTRY_DIAL_CODES[key];
+  if (!key) return "Please select your country.";
+  if (!entry) return "Please select a valid country from the list.";
+  if (entry.dial !== dial) {
+    return `The selected country (${entry.name}) uses +${entry.dial}, but the phone number uses +${dial}. Please select the matching country or phone code.`;
   }
   return "";
 };

@@ -1,4 +1,3 @@
-
 // FILE: client/src/lib/api.js
 
 import axios from "axios";
@@ -10,13 +9,6 @@ const rawApiUrl =
 const API_URL = rawApiUrl.endsWith("/api")
   ? rawApiUrl
   : `${rawApiUrl.replace(/\/+$/, "")}/api`;
-
-  
-// const api = axios.create({
-//   baseURL: API_URL,
-//   timeout: 30000,
-//   headers: { "Content-Type": "application/json" },
-// });
 
 const api = axios.create({
   baseURL: API_URL,
@@ -125,7 +117,10 @@ api.interceptors.response.use(
     }
 
     // ── Naya Rate Limit Logic ──
-    if (response && response.status === 429) {
+    // `skipRateLimitRetry: true` (set by the OTP / password-reset screens) lets
+    // those screens show the lockout message and countdown immediately instead
+    // of silently retrying (and waiting up to 15 minutes) behind "Verifying...".
+    if (response && response.status === 429 && !config?.skipRateLimitRetry) {
       if (isRateLimitPaused) {
         return new Promise((resolve, reject) => {
           rateLimitQueue.push({ resolve, reject, config });
@@ -355,7 +350,9 @@ export const updateLookbookItem = (token, id, formData) =>
 export const deleteLookbookItem = (token, id) =>
   api.delete(`/lookbook/${id}`, withAuth(token)).then((r) => r.data);
 export const bulkDeleteLookbookItems = (token, ids) =>
-  api.post("/lookbook/bulk-delete", { ids }, withAuth(token)).then((r) => r.data);
+  api
+    .post("/lookbook/bulk-delete", { ids }, withAuth(token))
+    .then((r) => r.data);
 
 // NOTIFICATIONS
 export const fetchUnreadCount = (token) =>

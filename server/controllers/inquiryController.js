@@ -1,201 +1,3 @@
-// // FILE: server/controllers/inquiryController.js
-
-// import mongoose from "mongoose";
-// import * as inquiryService from "../services/inquiryService.js";
-// import User from "../models/User.js";
-// import { verifyAccessToken } from "../utils/authUtils.js";
-
-// export const submitInquiry = async (req, res) => {
-//   try {
-//     let userId = null;
-
-//     const authHeader = req.headers.authorization;
-//     if (authHeader && authHeader.startsWith("Bearer ")) {
-//       const token = authHeader.slice(7);
-//       try {
-//         const decoded = verifyAccessToken(token);
-//         userId = decoded.id || decoded._id || decoded.userId;
-//       } catch (err) {
-//         // console.log("Invalid token, proceeding as guest.");
-//       }
-//     }
-
-//     const inquiry = await inquiryService.createInquiry(req.body, userId);
-//     res.status(201).json({ success: true, inquiry });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-
-// export const getInquiries = async (req, res) => {
-//   try {
-//     // MINOR FIX: Admin request par limit cap (max 100)
-//     const page = Math.max(parseInt(req.query.page) || 1, 1);
-//     const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 100);
-
-//     const data = await inquiryService.getAllInquiries({ ...req.query, page, limit });
-//     res.json({ success: true, ...data });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-
-// export const getMyInquiries = async (req, res) => {
-//   try {
-//     const userId =
-//       req.authUser?.id || req.authUser?._id || req.authUser?.userId;
-
-//     const userEmail = req.authUser?.email;
-
-//     if (!userId) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Unauthorized. Please login.",
-//       });
-//     }
-
-//     // JWT payload doesn't carry phone, so fetch it once here — needed so
-//     // inquiries linked only by phone number (not yet by userId/email)
-//     // still show up for this user.
-//     const userDoc = await User.findById(userId).select("phone").lean();
-//     const userPhone = userDoc?.phone;
-
-//     const inquiries = await inquiryService.getUserInquiries(
-//       userId,
-//       userEmail,
-//       userPhone,
-//     );
-
-//     res.json({
-//       success: true,
-//       inquiries,
-//     });
-//   } catch (error) {
-//     // console.error("GET MY INQUIRIES ERROR:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-// export const updateStatus = async (req, res) => {
-//   try {
-//     const inquiry = await inquiryService.updateInquiryStatus(
-//       req.params.id,
-//       req.body,
-//     );
-//     res.json({ success: true, inquiry });
-//   } catch (error) {
-//     res.status(error.statusCode || 500).json({ success: false, message: error.message });
-//   }
-// };
-
-// export const replyToInquiry = async (req, res) => {
-//   try {
-//     const userObj = req.authUser || {};
-//     let senderId = userObj.id || userObj._id || userObj.userId;
-//     const role = userObj.role || "admin";
-
-//     if (!senderId) senderId = "000000000000000000000000";
-
-//     //  Ownership check for customers
-//     if (role === "customer") {
-//       // Fetch phone once — JWT payload doesn't carry it, and the
-//       // ownership check now requires email + phone together.
-//       const userDoc = await User.findById(senderId).select("phone").lean();
-
-//       const owned = await inquiryService.isInquiryOwnedByUser(
-//         req.params.id,
-//         senderId,
-//         userObj.email,
-//         userDoc?.phone,
-//       );
-//       if (!owned) {
-//         return res.status(403).json({
-//           success: false,
-//           message: "You do not have access to this inquiry.",
-//         });
-//       }
-//     }
-
-//     const inquiry = await inquiryService.addReplyToInquiry(
-//       req.params.id,
-//       senderId,
-//       role,
-//       req.body.message,
-//     );
-//     res.json({ success: true, inquiry });
-//   } catch (error) {
-//     console.error("Reply Error:", error);
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-
-
-
-// export const markViewed = async (req, res) => {
-//   try {
-//     const { role, id, email } = req.authUser;
-
-//     // Ownership check for customers
-//     if (role === "customer") {
-
-//       const userDoc = await User.findById(id).select("phone").lean();
-
-//       const owned = await inquiryService.isInquiryOwnedByUser(
-//         req.params.id,
-//         id,
-//         email,
-//         userDoc?.phone,
-//       );
-
-//       if (!owned) {
-//         return res.status(403).json({
-//           success: false,
-//           message: "You do not have access to this inquiry.",
-//         });
-//       }
-//     }
-
-//     const inquiry = await inquiryService.markInquiryAsViewed(
-//       req.params.id,
-//       role,
-//     );
-
-//     res.json({
-//       success: true,
-//       inquiry,
-//     });
-//   } catch (error) {
-//     res.status(error.statusCode || 500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-// export const getSingleInquiry = async (req, res) => {
-//   try {
-//     const inquiry = await inquiryService.getInquiryById(req.params.id);
-//     res.json({ success: true, inquiry });
-//   }  catch (error) {
-//     res.status(error.statusCode || 500).json({ success: false, message: error.message });
-//   }
-// };
-
-// export const deleteInquiry = async (req, res) => {
-//   try {
-//     await inquiryService.deleteInquiryById(req.params.id);
-//     res.json({ success: true, message: "Inquiry deleted successfully" });
-//  } catch (error) {
-//     res.status(error.statusCode || 500).json({ success: false, message: error.message });
-//   }
-// };
-
-
-
-
 // FILE: server/controllers/inquiryController.js
 
 import mongoose from "mongoose";
@@ -203,6 +5,10 @@ import * as inquiryService from "../services/inquiryService.js";
 import User from "../models/User.js";
 import Inquiry from "../models/Inquiry.js";
 import { verifyAccessToken } from "../utils/authUtils.js";
+import {
+  requestInquiryClaim,
+  confirmInquiryClaim,
+} from "../services/inquiryClaimService.js";
 import {
   removeUploadedFiles,
   toPublicPath,
@@ -221,7 +27,15 @@ export const submitInquiry = async (req, res) => {
       const token = authHeader.slice(7);
       try {
         const decoded = verifyAccessToken(token);
-        userId = decoded.id || decoded._id || decoded.userId;
+        const candidate = decoded.id || decoded._id || decoded.userId;
+        // Owner id comes ONLY from a verified customer token (never from the
+        // request body); admin/staff tokens leave the inquiry unclaimed.
+        if (
+          decoded.role === "customer" &&
+          /^[a-f\d]{24}$/i.test(String(candidate))
+        ) {
+          userId = candidate;
+        }
       } catch (err) {
         // console.log("Invalid token, proceeding as guest.");
       }
@@ -260,7 +74,11 @@ export const getInquiries = async (req, res) => {
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 100);
 
-    const data = await inquiryService.getAllInquiries({ ...req.query, page, limit });
+    const data = await inquiryService.getAllInquiries({
+      ...req.query,
+      page,
+      limit,
+    });
     res.json({ success: true, ...data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -272,8 +90,6 @@ export const getMyInquiries = async (req, res) => {
     const userId =
       req.authUser?.id || req.authUser?._id || req.authUser?.userId;
 
-    const userEmail = req.authUser?.email;
-
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -281,27 +97,17 @@ export const getMyInquiries = async (req, res) => {
       });
     }
 
-    // JWT payload doesn't carry phone, so fetch it once here — needed so
-    // inquiries linked only by phone number (not yet by userId/email)
-    // still show up for this user.
-    const userDoc = await User.findById(userId).select("phone").lean();
-    const userPhone = userDoc?.phone;
-
-    const inquiries = await inquiryService.getUserInquiries(
-      userId,
-      userEmail,
-      userPhone,
-    );
+    // Only inquiries attached to THIS account id (see inquiryService).
+    const inquiries = await inquiryService.getUserInquiries(userId);
 
     res.json({
       success: true,
       inquiries,
     });
   } catch (error) {
-    // console.error("GET MY INQUIRIES ERROR:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to load your inquiries.",
     });
   }
 };
@@ -314,7 +120,9 @@ export const updateStatus = async (req, res) => {
     );
     res.json({ success: true, inquiry });
   } catch (error) {
-    res.status(error.statusCode || 500).json({ success: false, message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message });
   }
 };
 
@@ -328,15 +136,9 @@ export const replyToInquiry = async (req, res) => {
 
     //  Ownership check for customers
     if (role === "customer") {
-      // Fetch phone once — JWT payload doesn't carry it, and the
-      // ownership check now requires email + phone together.
-      const userDoc = await User.findById(senderId).select("phone").lean();
-
       const owned = await inquiryService.isInquiryOwnedByUser(
         req.params.id,
         senderId,
-        userObj.email,
-        userDoc?.phone,
       );
       if (!owned) {
         return res.status(403).json({
@@ -359,22 +161,15 @@ export const replyToInquiry = async (req, res) => {
   }
 };
 
-
-
 export const markViewed = async (req, res) => {
   try {
     const { role, id, email } = req.authUser;
 
     // Ownership check for customers
     if (role === "customer") {
-
-      const userDoc = await User.findById(id).select("phone").lean();
-
       const owned = await inquiryService.isInquiryOwnedByUser(
         req.params.id,
         id,
-        email,
-        userDoc?.phone,
       );
 
       if (!owned) {
@@ -406,8 +201,10 @@ export const getSingleInquiry = async (req, res) => {
   try {
     const inquiry = await inquiryService.getInquiryById(req.params.id);
     res.json({ success: true, inquiry });
-  }  catch (error) {
-    res.status(error.statusCode || 500).json({ success: false, message: error.message });
+  } catch (error) {
+    res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message });
   }
 };
 
@@ -415,7 +212,65 @@ export const deleteInquiry = async (req, res) => {
   try {
     await inquiryService.deleteInquiryById(req.params.id);
     res.json({ success: true, message: "Inquiry deleted successfully" });
- } catch (error) {
-    res.status(error.statusCode || 500).json({ success: false, message: error.message });
+  } catch (error) {
+    res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message });
+  }
+};
+
+// ── Claim earlier GUEST inquiries (verified by an emailed code) ──────────
+const claimError = (res, error) =>
+  res.status(error.statusCode || 500).json({
+    success: false,
+    message: error.statusCode
+      ? error.message
+      : "Server error. Please try again.",
+    ...(error.meta || {}),
+  });
+
+const customerId = (req) =>
+  req.authUser?.role === "customer" ? req.authUser.id : null;
+
+export const claimRequest = async (req, res) => {
+  try {
+    const userId = customerId(req);
+    if (!userId) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Customer account required." });
+    }
+    const result = await requestInquiryClaim(userId);
+    return res.json({ success: true, ...result });
+  } catch (error) {
+    return claimError(res, error);
+  }
+};
+
+export const claimConfirm = async (req, res) => {
+  try {
+    const userId = customerId(req);
+    if (!userId) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Customer account required." });
+    }
+    const { otp } = req.body || {};
+    if (typeof otp !== "string") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Code is required." });
+    }
+    const result = await confirmInquiryClaim(userId, otp);
+    return res.json({
+      success: true,
+      message:
+        result.claimed > 0
+          ? `${result.claimed} inquiry(ies) added to your account.`
+          : "No unclaimed inquiries were found for this email.",
+      ...result,
+    });
+  } catch (error) {
+    return claimError(res, error);
   }
 };
