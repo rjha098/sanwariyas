@@ -1,59 +1,66 @@
 // FILE: client/src/components/lookbook/LookbookInquirySheet.js
+// Review panel for the selected designs + ONE consolidated WhatsApp inquiry.
 //
-// ONE-TIME bulk inquiry from the Lookbook: every selected style (with its
-// style number + name) and the answers to the magazine questions go out as a
-// single inquiry. Contact details are asked once and remembered on the device.
+// The send button is a real <a href="https://wa.me/..."> link: it can never be
+// blocked as a popup, and the browser opens the official click-to-chat URL.
+// Nothing is "sent" until the customer presses Send inside WhatsApp, and the
+// UI says so. Images cannot be attached by click-to-chat; design codes and
+// public reference links are included in the message instead.
 "use client";
 
-import { useEffect, useState } from "react";
-import { submitLookbookInquiry } from "@/lib/lookbookApi";
-import PhoneInput from "@/components/ui/PhoneInput";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { getImageUrl } from "@/lib/imageUrl";
+import {
+  buildInquiryMessage,
+  buildWhatsAppUrl,
+  normalizeWhatsAppNumber,
+  validateInquiryDetails,
+} from "@/lib/lookbookWhatsApp";
+import { itemCaption } from "@/components/lookbook/LookbookGrid";
 
 const CONTACT_KEY = "sanwariyas_lookbook_contact";
-const WHATSAPP_NUMBER = "919251171306";
 
-const onImgError = (e) => {
+const fallback = (e) => {
   e.currentTarget.onerror = null;
   e.currentTarget.src = "/images/placeholder.png";
 };
 
-const inputCls =
-  "w-full border border-[#BE6E5B]/30 bg-white px-4 py-3 text-sm rounded-lg focus:outline-none focus:border-[#7A3D2A] text-[#7A3D2A] placeholder-[#a07f61]/70";
-
 export default function LookbookInquirySheet({
   open,
-  onClose,
-  shortlist,
+  items,
+  questions,
   answers,
-  backendUrl,
+  whatsappNumber,
+  onAnswer,
   onRemove,
   onClear,
+  onClose,
 }) {
   const [form, setForm] = useState({
     name: "",
-    companyName: "",
-    whatsapp: "",
-    email: "",
-    country: "India",
-    note: "",
+    businessName: "",
+    phone: "",
+    state: "",
   });
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
-  const [done, setDone] = useState(null); // {count, styles}
+  const [errors, setErrors] = useState({});
+  const [stage, setStage] = useState("form"); // "form" | "opened"
+  const [confirmClear, setConfirmClear] = useState(false);
+  const closeRef = useRef(null);
 
-  // remembered contact details (asked only once) + logged-in profile
+  // restore remembered contact details (same storage key as before)
   useEffect(() => {
     if (!open) return;
-       setDone(null);
+    setStage("form");
+    setErrors({});
+    setConfirmClear(false);
     try {
       const saved = JSON.parse(localStorage.getItem(CONTACT_KEY) || "{}");
       setForm((f) => ({
         ...f,
         name: saved.name || f.name,
-        companyName: saved.companyName || f.companyName,
-        whatsapp: saved.whatsapp || f.whatsapp,
-        email: saved.email || f.email,
-        country: saved.country || f.country,
+        businessName: saved.companyName || f.businessName,
+        phone: saved.whatsapp || f.phone,
+        state: saved.state || f.state,
       }));
     } catch {
       // ignore corrupted storage
@@ -61,9 +68,10 @@ export default function LookbookInquirySheet({
   }, [open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return undefined;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
     const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => {
@@ -72,219 +80,353 @@ export default function LookbookInquirySheet({
     };
   }, [open, onClose]);
 
+  const answerList = useMemo(
+    () => Object.values(answers || {}).filter((a) => a?.answer?.length),
+    [answers],
+  );
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+
+  const number = normalizeWhatsAppNumber(whatsappNumber);
+
+  const message = useMemo(
+    () =>
+      buildInquiryMessage({
+        details: {
+          name: form.name,
+          businessName: form.businessName,
+          phone: form.phone,
+          state: form.state,
+        },
+        items,
+        siteUrl,
+        answers: answerList,
+      }),
+    [
+      form.name,
+      form.businessName,
+      form.phone,
+      form.state,
+      items,
+      siteUrl,
+      answerList,
+    ],
+  );
+  const href = number ? buildWhatsAppUrl(number, message.text) : "";
+
   if (!open) return null;
 
-  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const answerList = Object.values(answers || {}).filter((a) => a.answer?.length);
+  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    if (shortlist.length === 0) return setError("Please select at least one style.");
-    const { name, companyName, whatsapp, email, country } = form;
-    if (!name.trim() || !companyName.trim() || !whatsapp.trim() || !email.trim() || !country.trim()) {
-      return setError("Please fill your name, company, WhatsApp, email and country.");
-    }
+  const validate = () => {
+    const next = validateInquiryDetails(form);
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
 
-    setSending(true);
+  const rememberContact = () => {
     try {
-      await submitLookbookInquiry(
-        {
-          name: name.trim(),
-          companyName: companyName.trim(),
-          whatsapp: whatsapp.trim(),
-          email: email.trim(),
-          country: country.trim(),
-          note: form.note.trim(),
-          lookbookIds: shortlist.map((i) => i._id),
-          lookbookAnswers: answerList.map((a) => ({
-            question: a.question,
-            answer: a.answer,
-          })),
-        },
+      localStorage.setItem(
+        CONTACT_KEY,
+        JSON.stringify({
+          name: form.name.trim(),
+          companyName: form.businessName.trim(),
+          whatsapp: form.phone.trim(),
+          state: form.state.trim(),
+        }),
       );
-
-      try {
-        localStorage.setItem(
-          CONTACT_KEY,
-          JSON.stringify({ name, companyName, whatsapp, email, country }),
-        );
-      } catch {
-        // storage blocked — fine
-      }
-      setDone({ count: shortlist.length, styles: shortlist });
-      onClear();
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          err.userMessage ||
-          "Could not send your inquiry. Please try again.",
-      );
-    } finally {
-      setSending(false);
+    } catch {
+      // storage blocked - fine
     }
   };
 
-  const whatsappHref = () => {
-    const styles = (done?.styles || shortlist)
-      .map((i) => `${i.styleNumber || "—"} ${i.title}`)
-      .join("\n");
-    const msg = `Hi SANWARIYAS, I just sent an inquiry from your Lookbook for:\n\n${styles}\n\nPlease share pricing & MOQ.`;
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  const onWhatsAppClick = (e) => {
+    if (!items.length || !href || !validate()) {
+      e.preventDefault();
+      return;
+    }
+    rememberContact();
+    setStage("opened");
   };
+
+  const waLabel = `Send Inquiry on WhatsApp (${items.length} Design${items.length === 1 ? "" : "s"})`;
 
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end bg-black/60 backdrop-blur-sm animate-[fadeIn_0.3s_ease]">
-      <div className="absolute inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[#FDF7F2] h-full shadow-2xl flex flex-col animate-[slideInRight_0.4s_ease-out]">
-        <div className="flex items-center justify-between p-5 border-b border-[#E8D5A3]/40 bg-white">
-          <div>
-            <h2 className="font-display text-2xl text-[#7A3D2A] font-bold">
-              {done ? "Inquiry sent" : "Your Inquiry"}
-            </h2>
-            <p className="font-sans text-xs text-[#a07f61] mt-0.5">
-              {done
-                ? "We’ll get back to you shortly"
-                : `${shortlist.length} style${shortlist.length === 1 ? "" : "s"} · one single inquiry`}
-            </p>
-          </div>
+    <div
+      className="lb-root lb-scrim"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <aside
+        className="lb-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lb-sheet-title"
+      >
+        <header className="lb-sheet-head">
+          <h2 id="lb-sheet-title">Your selection ({items.length})</h2>
           <button
+            ref={closeRef}
+            type="button"
+            className="lb-icon-btn"
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-[#FAF3E8] hover:bg-[#E8D5A3] text-[#7A3D2A] text-xl"
-            title="Close"
+            aria-label="Close"
           >
             &times;
           </button>
+        </header>
+
+        <div className="lb-sheet-body">
+          {!items.length ? (
+            <p className="lb-note">
+              No designs selected. Close this panel and tick the designs you
+              like.
+            </p>
+          ) : (
+            <>
+              <h3 className="lb-h3">Selected designs</h3>
+              <ul className="lb-sel-list">
+                {items.map((it) => (
+                  <li key={it._id} className="lb-sel-item">
+                    <img
+                      src={getImageUrl(it.thumb || it.image)}
+                      alt=""
+                      loading="lazy"
+                      onError={fallback}
+                    />
+                    <div>
+                      <p className="lb-code">{it.styleNumber || "-"}</p>
+                      <p className="lb-meta">{itemCaption(it)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="lb-btn lb-btn--sm"
+                      onClick={() => onRemove(it._id)}
+                      aria-label={`Remove ${it.styleNumber || it.title} from selection`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="lb-actions">
+                {confirmClear ? (
+                  <>
+                    <span className="lb-count">
+                      Remove all {items.length} designs?
+                    </span>
+                    <button
+                      type="button"
+                      className="lb-btn lb-btn--sm lb-btn--danger"
+                      onClick={() => {
+                        onClear();
+                        setConfirmClear(false);
+                      }}
+                    >
+                      Yes, clear all
+                    </button>
+                    <button
+                      type="button"
+                      className="lb-btn lb-btn--sm"
+                      onClick={() => setConfirmClear(false)}
+                    >
+                      Keep
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="lb-btn lb-btn--sm"
+                    onClick={() => setConfirmClear(true)}
+                  >
+                    Clear selection
+                  </button>
+                )}
+              </div>
+
+              {stage === "form" && (
+                <>
+                  <h3 className="lb-h3">Your details</h3>
+                  <div className="lb-field">
+                    <label htmlFor="lb-name">Your name *</label>
+                    <input
+                      id="lb-name"
+                      className="lb-input"
+                      value={form.name}
+                      onChange={set("name")}
+                      autoComplete="name"
+                      maxLength={80}
+                      aria-invalid={!!errors.name}
+                    />
+                    {errors.name && <p className="lb-err">{errors.name}</p>}
+                  </div>
+                  <div className="lb-field">
+                    <label htmlFor="lb-biz">Business / store name *</label>
+                    <input
+                      id="lb-biz"
+                      className="lb-input"
+                      value={form.businessName}
+                      onChange={set("businessName")}
+                      autoComplete="organization"
+                      maxLength={120}
+                      aria-invalid={!!errors.businessName}
+                    />
+                    {errors.businessName && (
+                      <p className="lb-err">{errors.businessName}</p>
+                    )}
+                  </div>
+                  <div className="lb-field">
+                    <label htmlFor="lb-phone">
+                      Contact number (with country code) *
+                    </label>
+                    <input
+                      id="lb-phone"
+                      type="tel"
+                      inputMode="tel"
+                      className="lb-input"
+                      placeholder="+91 ..."
+                      value={form.phone}
+                      onChange={set("phone")}
+                      autoComplete="tel"
+                      maxLength={30}
+                      aria-invalid={!!errors.phone}
+                    />
+                    {errors.phone && <p className="lb-err">{errors.phone}</p>}
+                  </div>
+                  <div className="lb-field">
+                    <label htmlFor="lb-state">State *</label>
+                    <input
+                      id="lb-state"
+                      className="lb-input"
+                      value={form.state}
+                      onChange={set("state")}
+                      autoComplete="address-level1"
+                      placeholder="e.g. Rajasthan"
+                      maxLength={80}
+                      aria-invalid={!!errors.state}
+                    />
+                    {errors.state && <p className="lb-err">{errors.state}</p>}
+                  </div>
+
+                  {questions.length > 0 && (
+                    <>
+                      <h3 className="lb-h3">Quick preferences (optional)</h3>
+                      {questions.map((q) => {
+                        const picked = answers?.[q._id]?.answer || [];
+                        return (
+                          <div key={q._id} className="lb-q">
+                            <p>{q.text}</p>
+                            <div
+                              className="lb-opts"
+                              role="group"
+                              aria-label={q.text}
+                            >
+                              {q.options.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  className="lb-chip"
+                                  aria-pressed={picked.includes(opt)}
+                                  onClick={() => onAnswer(q, opt)}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+
+                  <p className="lb-note">
+                    WhatsApp will open with a ready-made message listing every
+                    selected design. WhatsApp links can&apos;t attach pictures
+                    automatically, so each design&apos;s code and a link to it
+                    are included instead.
+                    {message.compact &&
+                      " Because you selected many designs, the message uses a compact list plus one link to all of them."}
+                  </p>
+                </>
+              )}
+
+              {stage === "opened" && (
+                <>
+                  <p className="lb-note" role="status">
+                    WhatsApp should have opened with your message pre-filled.
+                    Your inquiry is only sent once you press Send inside
+                    WhatsApp.
+                  </p>
+                  <h3 className="lb-h3">Was your inquiry sent?</h3>
+                  <div className="lb-actions">
+                    <button
+                      type="button"
+                      className="lb-btn lb-btn--accent"
+                      onClick={() => {
+                        onClear();
+                        setStage("form");
+                        onClose();
+                      }}
+                    >
+                      Yes, sent - clear my selection
+                    </button>
+                    <button
+                      type="button"
+                      className="lb-btn"
+                      onClick={() => setStage("form")}
+                    >
+                      No, keep my selection
+                    </button>
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
 
-        {done ? (
-          <div className="flex-1 overflow-y-auto p-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#4C8C6C] text-white flex items-center justify-center text-3xl">
-              ✓
-            </div>
-            <h3 className="font-display text-xl text-[#7A3D2A] font-bold mb-2">
-              {done.count} style{done.count === 1 ? "" : "s"} sent in one inquiry
-            </h3>
-            <p className="font-sans text-sm text-[#a07f61] mb-6">
-              Our team will share pricing & MOQ for every style you selected.
+        <footer className="lb-sheet-foot">
+          {!number && (
+            <p className="lb-err" role="alert">
+              WhatsApp inquiries are temporarily unavailable. Please try again
+              later.
             </p>
-            <ul className="text-left space-y-2 mb-6">
-              {done.styles.map((i) => (
-                <li key={i._id} className="flex gap-3 items-center bg-white p-2 rounded-lg border border-[#BE6E5B]/15">
-                  <img src={`${backendUrl}${i.image}`} onError={onImgError} alt="" className="w-10 h-12 object-cover rounded" />
-                  <div className="min-w-0">
-                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#BE6E5B] font-bold">
-                      {i.styleNumber || "—"}
-                    </p>
-                    <p className="font-sans text-sm text-[#7A3D2A] truncate">{i.title}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+          )}
+          {number && items.length > 0 ? (
             <a
-              href={whatsappHref()}
+              className="lb-btn lb-btn--wa"
+              style={{ width: "100%", minHeight: 48 }}
+              href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full bg-[#25D366] text-white py-3.5 rounded-xl font-sans text-xs tracking-[0.2em] uppercase font-bold mb-3"
+              onClick={onWhatsAppClick}
             >
-              Also message us on WhatsApp
+              {stage === "opened" ? "Open WhatsApp again" : waLabel}
             </a>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
-            <div className="flex-1 overflow-y-auto p-5 space-y-6">
-              {/* selected styles */}
-              <section>
-                <h3 className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#BE6E5B] font-bold mb-3">
-                  Selected styles
-                </h3>
-                {shortlist.length === 0 ? (
-                  <p className="text-sm text-[#a07f61]">No styles selected yet.</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {shortlist.map((item) => (
-                      <li key={item._id} className="flex gap-3 items-center bg-white p-2.5 rounded-xl border border-[#BE6E5B]/15 shadow-sm">
-                        <img src={`${backendUrl}${item.image}`} onError={onImgError} alt={item.title} className="w-14 h-[72px] object-cover rounded-lg bg-[#FAF3E8]" />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#BE6E5B] font-bold">
-                            Style {item.styleNumber || "—"}
-                          </p>
-                          <p className="font-display text-sm text-[#7A3D2A] font-bold leading-tight line-clamp-2">
-                            {item.title}
-                          </p>
-                          <p className="font-sans text-[9px] tracking-[0.2em] uppercase text-[#a07f61] mt-0.5">
-                            {item.category}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => onRemove(item)}
-                          className="w-8 h-8 rounded-full text-red-400 hover:bg-red-500 hover:text-white transition-colors"
-                          title="Remove"
-                        >
-                          &times;
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-
-              {answerList.length > 0 && (
-                <section>
-                  <h3 className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#BE6E5B] font-bold mb-3">
-                    Your preferences
-                  </h3>
-                  <ul className="space-y-1.5">
-                    {answerList.map((a, i) => (
-                      <li key={i} className="font-sans text-xs text-[#7A3D2A]">
-                        <span className="text-[#a07f61]">{a.question}: </span>
-                        <strong>{a.answer.join(", ")}</strong>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-
-              {/* contact — asked only once */}
-              <section className="space-y-3">
-                <h3 className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#BE6E5B] font-bold">
-                  Your details <span className="normal-case tracking-normal text-[#a07f61]">(saved for next time)</span>
-                </h3>
-                <input className={inputCls} placeholder="Your name *" value={form.name} onChange={set("name")} maxLength={120} required />
-                <input className={inputCls} placeholder="Company / boutique name *" value={form.companyName} onChange={set("companyName")} maxLength={150} required />
-                <PhoneInput value={form.whatsapp} onChange={(v) => setForm((f) => ({ ...f, whatsapp: v }))} required placeholder="WhatsApp number *" />
-                <input className={inputCls} type="email" placeholder="Email *" value={form.email} onChange={set("email")} maxLength={150} required />
-                <input className={inputCls} placeholder="Country *" value={form.country} onChange={set("country")} maxLength={80} required />
-                <textarea className={inputCls} rows={3} placeholder="Anything else? (quantity, colours, sizes…) — optional" value={form.note} onChange={set("note")} maxLength={1500} />
-              </section>
-            </div>
-
-            <div className="p-5 bg-white border-t border-[#E8D5A3]/40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-              {error && (
-                <p role="alert" className="mb-3 text-xs text-red-600 font-sans">
-                  {error}
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={sending || shortlist.length === 0}
-                className="w-full bg-[#7A3D2A] text-white py-4 rounded-xl font-sans text-xs tracking-[0.2em] uppercase font-bold hover:bg-[#5f2e1f] transition disabled:opacity-50"
-              >
-                {sending ? "Sending…" : `Send inquiry for ${shortlist.length} style${shortlist.length === 1 ? "" : "s"}`}
-              </button>
-              <button
-                type="button"
-                onClick={onClear}
-                disabled={shortlist.length === 0}
-                className="w-full mt-3 font-sans text-[10px] tracking-[0.2em] uppercase text-[#a07f61] hover:text-red-500 transition-colors disabled:opacity-40"
-              >
-                Clear all
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
+          ) : (
+            <button
+              type="button"
+              className="lb-btn lb-btn--wa"
+              style={{ width: "100%", minHeight: 48 }}
+              disabled
+            >
+              {waLabel}
+            </button>
+          )}
+          {stage === "opened" && (
+            <button
+              type="button"
+              className="lb-btn"
+              style={{ width: "100%", marginTop: 8 }}
+              onClick={onClose}
+            >
+              Back to designs
+            </button>
+          )}
+        </footer>
+      </aside>
     </div>
   );
 }
+ 

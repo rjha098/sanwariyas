@@ -200,6 +200,7 @@ export default function LookbookInquiriesManager({ token, showToast }) {
                         </a>
                       </p>
                       <p>Country: {inq.country}</p>
+                      <p>State: {inq.state || "—"}</p>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">

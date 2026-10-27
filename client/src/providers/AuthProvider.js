@@ -17,6 +17,7 @@ import api, {
 } from "@/lib/api";
 
 import { tokenStorage } from "@/lib/tokenStorage";
+import { releaseThisDevice } from "@/lib/pushClient";
 
 export const AuthContext = createContext(null);
 
@@ -435,7 +436,12 @@ const googleComplete = useCallback(
 
   const logout = useCallback(() => {
     const saved = token || tokenStorage.get();
-    if (saved) authLogout(saved).catch(() => {});
+    if (saved) {
+      // detach this device from push BEFORE the session ends
+      releaseThisDevice()
+        .then((endpoint) => authLogout(saved, endpoint))
+        .catch(() => authLogout(saved).catch(() => {}));
+    }
 
     tokenStorage.clear();
     localStorage.removeItem(USER_KEY);

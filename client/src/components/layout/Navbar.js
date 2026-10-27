@@ -35,9 +35,9 @@ const navLinks = [
     title: "About SANWARIYAS Manufacturer",
   },
   {
-    href: "/exportdocs",
-    label: "Export",
-    title: "SANWARIYAS Wholesale Export Documents & Guidelines",
+    href: "/lookbook",
+    label: "Catalogues",
+    title: "SANWARIYAS Catalogues | Wholesale Ethnic Wear Collections",
   },
   {
     id: "discover",
@@ -48,9 +48,13 @@ const navLinks = [
       {
         title: "Collections & Media",
         links: [
-          { href: "/lookbook", label: "Our Lookbook" },
           { href: "/privacy", label: "Privacy" },
           { href: "/blog", label: "Journal & Blog" },
+          {
+            href: "/exportdocs",
+            label: "Export",
+            title: "SANWARIYAS Wholesale Export Documents & Guidelines",
+          },
         ],
       },
       {

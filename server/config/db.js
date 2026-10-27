@@ -1,8 +1,4 @@
 // FILE: server/config/db.js
-
-// Usage:->>>>>>.  config/db.js: Connects your Express server to your local MongoDB 8.0 instance (127.0.0.1). It includes a 5-attempt retry loop and mid-session drop protection.
-
-
 import mongoose from "mongoose";
 
 const MAX_RETRIES = 5;
@@ -10,12 +6,16 @@ const RETRY_DELAY_MS = 5000;
 
 const connectDB = async (retryCount = 0) => {
   try {
-    const conn = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/clothing_business",
-      {
-        serverSelectionTimeoutMS: 10000, // fail fast on a single attempt, then retry
-      },
-    );
+    const uri = process.env.MONGODB_URI;
+
+    if (!uri) {
+      throw new Error("MONGODB_URI is not defined in .env");
+    }
+
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 10000,
+    });
+
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`MongoDB connection error: ${error.message}`);

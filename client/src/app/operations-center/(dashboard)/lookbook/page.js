@@ -4,16 +4,18 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminDashboard } from "@/components/admin/AdminDashboardContext";
 import AdminSectionCard from "@/components/admin/AdminSectionCard";
-import LookbookManager from "@/components/admin/LookbookManager";
+import LookbookCatalogueManager from "@/components/admin/LookbookCatalogueManager";
 
 export default function LookbookPage() {
   const { token } = useAuth();
   const { showToast } = useAdminDashboard();
   return (
-    <AdminSectionCard>
-      <section aria-label="Lookbook Management">
-        <LookbookManager token={token} showToast={showToast} />
-      </section>
-    </AdminSectionCard>
+    <>
+      <AdminSectionCard>
+        <section aria-label="PDF Catalogue Management">
+          <LookbookCatalogueManager token={token} showToast={showToast} />
+        </section>
+      </AdminSectionCard>
+    </>
   );
 }

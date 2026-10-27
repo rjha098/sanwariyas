@@ -5,9 +5,13 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
 import connectDB from "./config/db.js";
+import { resumeInterruptedCatalogues } from "./services/lookbookPdfService.js";
 
 import rateLimit from "express-rate-limit";
+import { hide500Details } from "./middlewares/hide500Details.js";
+import { makeRateLimitStore } from "./utils/mongoRateLimitStore.js";
 import mongoSanitize from "express-mongo-sanitize";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -61,6 +65,9 @@ app.use(
 app.set("trust proxy", 1);
 
 connectDB();
+mongoose.connection.once("open", () => {
+  resumeInterruptedCatalogues();
+});
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 1. CORS MIDDLEWARE
@@ -94,7 +101,6 @@ const isAllowedOrigin = (origin) => {
   if (explicitAllowedOrigins.includes(origin)) return true;
   return vercelPreviewPattern ? vercelPreviewPattern.test(origin) : false;
 };
-
 
 app.use(
   cors({
@@ -135,6 +141,8 @@ app.use("/uploads", express.static("uploads"));
 // 3. RATE LIMITING (ENTERPRISE ISOLATION)
 // ═══════════════════════════════════════════════════════════════════════════
 const authLimiter = rateLimit({
+  store: makeRateLimitStore("auth"),
+  passOnStoreError: true,
   windowMs: 15 * 60 * 1000,
   max: 20,
   standardHeaders: true,
@@ -182,6 +190,7 @@ const notificationLimiter = rateLimit({
 });
 
 // Apply Limiters
+app.use("/api/", hide500Details);
 app.use("/api/", generalLimiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/verify-otp", authLimiter);
@@ -226,6 +235,18 @@ app.use((err, req, res, next) => {
     return res.status(400).json({
       success: false,
       message: "Photo size is too large! Maximum limit is 2MB.",
+    });
+  }
+
+  if (Number.isInteger(err.status) && err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({
+      success: false,
+      message:
+        err.type === "entity.too.large"
+          ? "Request body is too large."
+          : err.type === "entity.parse.failed"
+            ? "Invalid JSON in request body."
+            : "Bad request.",
     });
   }
 

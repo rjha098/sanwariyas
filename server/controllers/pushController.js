@@ -1,5 +1,7 @@
 // FILE: server/controllers/pushController.js
+
 import PushSubscription from "../models/PushSubscription.js";
+import User from "../models/User.js";
 import {
   getPublicKey,
   sendPushToUser,
@@ -36,12 +38,33 @@ export const subscribe = async (req, res) => {
         .json({ success: false, message: "Invalid subscription." });
     }
 
-    // same phone can switch accounts: the endpoint is unique, so we just re-assign it
+    // Only real database accounts (stable user ID) can own a device, and only
+    // while the token's session is still the account's live session.
+    const userId = req.authUser?.id;
+    const sessionId = req.authUser?.sessionId;
+    const owner = userId
+      ? await User.findById(userId).select("role currentSessionId isActive").lean()
+      : null;
+    if (
+      !owner ||
+      owner.isActive === false ||
+      !sessionId ||
+      owner.currentSessionId !== sessionId
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: "Session is not active. Please log in again.",
+      });
+    }
+
+    // Same device can switch accounts: the endpoint is unique, so this
+    // re-assigns it to the account that is logged in now.
     await PushSubscription.findOneAndUpdate(
       { endpoint },
       {
-        userId: req.authUser.id,
-        role: req.authUser.role,
+        userId: owner._id,
+        role: owner.role,
+        sessionId,
         endpoint,
         keys: { p256dh, auth },
         userAgent: String(userAgent || req.headers["user-agent"] || "").slice(

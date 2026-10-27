@@ -2,9 +2,11 @@
 // One-time bulk inquiry from the Lookbook magazine (separate from /api/inquiries).
 import { Resend } from "resend";
 import Lookbook from "../models/Lookbook.js";
+import LookbookCatalogue from "../models/LookbookCatalogue.js";
 import LookbookInquiry from "../models/LookbookInquiry.js";
 import Notification from "../models/Notification.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
+import { validateState } from "../utils/validateState.js";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hrsanwariyas@gmail.com";
 const str = (v, max) =>
@@ -38,7 +40,8 @@ const notifyAdmin = async (inq) => {
         <strong>Company:</strong> ${escapeHtml(inq.companyName)}<br/>
         <strong>WhatsApp:</strong> ${escapeHtml(inq.whatsapp)}<br/>
         <strong>Email:</strong> ${escapeHtml(inq.email)}<br/>
-        <strong>Country:</strong> ${escapeHtml(inq.country)}</p>
+        <strong>Country:</strong> ${escapeHtml(inq.country)}<br/>
+        <strong>State:</strong> ${escapeHtml(inq.state || "—")}</p>
         <h3>Styles</h3><ul>${rows}</ul>
         ${ans ? `<h3>Preferences</h3><ul>${ans}</ul>` : ""}
         ${inq.note ? `<h3>Note</h3><p>${escapeHtml(inq.note)}</p>` : ""}`,
@@ -49,14 +52,20 @@ const notifyAdmin = async (inq) => {
 };
 
 // PUBLIC
+const lookbookInflight = new Map();
+
 export const createLookbookInquiry = async (req, res) => {
-  try {
+    try {
     const b = req.body || {};
     const name = str(b.name, 120);
     const companyName = str(b.companyName, 150);
     const email = str(b.email, 150).toLowerCase();
     const whatsapp = str(b.whatsapp, 30);
     const country = str(b.country, 80);
+    const checkedState = validateState(b.state);
+    if (checkedState.error) {
+      return res.status(400).json({ success: false, message: checkedState.error });
+    }
     if (
       !name ||
       !companyName ||
@@ -85,8 +94,23 @@ export const createLookbookInquiry = async (req, res) => {
     }
 
     // style number / name / photo always come from the database, never the browser
-    const docs = await Lookbook.find({ _id: { $in: ids } }).lean();
-    const byId = new Map(docs.map((d) => [String(d._id), d]));
+    const publishedCatalogues = await LookbookCatalogue.find({
+      status: "published",
+    })
+      .select("_id")
+      .lean();
+    const docs = await Lookbook.find({
+      _id: { $in: ids },
+      $or: [
+        { catalogueId: null },
+        {
+          catalogueId: { $in: publishedCatalogues.map((c) => c._id) },
+          isPublished: true,
+          sourceType: { $ne: "embedded" },
+        },
+      ],
+    }).lean();
+        const byId = new Map(docs.map((d) => [String(d._id), d]));
     const items = ids
       .map((id) => byId.get(id))
       .filter(Boolean)
@@ -113,18 +137,46 @@ export const createLookbookInquiry = async (req, res) => {
           .slice(0, 8),
       }))
       .filter((a) => a.question && a.answer.length);
-
+    const dupKey = `${email}|${items.map((i) => String(i.lookbookId)).sort().join(",")}`;
+    const waiting = lookbookInflight.get(dupKey);
+    if (waiting) {
+      const firstId = await waiting;
+      if (firstId) return res.status(201).json({ success: true, count: items.length, id: firstId });
+    }
+    let createdId = null;
+    if (typeof res.once === "function") {
+      let release;
+      lookbookInflight.set(dupKey, new Promise((r) => (release = r)));
+      res.once("close", () => {
+        lookbookInflight.delete(dupKey);
+        release(createdId);
+      });
+    }
+    const recentDup = await LookbookInquiry.findOne({
+      email,
+      "items.lookbookId": { $all: items.map((i) => i.lookbookId) },
+      items: { $size: items.length },
+      createdAt: { $gte: new Date(Date.now() - 60 * 1000) },
+    })
+      .select("_id")
+      .lean();
+    if (recentDup) {
+      createdId = recentDup._id;
+      return res.status(201).json({ success: true, count: items.length, id: recentDup._id });
+    }
     const inquiry = await LookbookInquiry.create({
       name,
       companyName,
       email,
       whatsapp,
       country,
+      state: checkedState.value,
       note: str(b.note, 1500),
       items,
       answers,
     });
 
+      createdId = inquiry._id;
     // Admin bell (same system as normal inquiries: red dot + sound + list)
     try {
       const first = items[0];

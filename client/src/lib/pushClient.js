@@ -53,7 +53,8 @@ export const subscribeThisDevice = async (token) => {
   if (!sub) {
     const publicKey = await step(
       "server-key",
-      async () => (await api.get("/notification/push/public-key")).data.publicKey,
+      async () =>
+        (await api.get("/notification/push/public-key")).data.publicKey,
     );
     sub = await step("browser-subscribe", () =>
       reg.pushManager.subscribe({
@@ -77,9 +78,30 @@ export const unsubscribeThisDevice = async (token) => {
   const sub = await reg?.pushManager.getSubscription();
   if (!sub) return;
   await api
-    .post("/notification/push/unsubscribe", { endpoint: sub.endpoint }, auth(token))
+    .post(
+      "/notification/push/unsubscribe",
+      { endpoint: sub.endpoint },
+      auth(token),
+    )
     .catch(() => {});
   await sub.unsubscribe();
+};
+
+// Used on logout: reads this device's push endpoint, then drops the browser
+// subscription so the endpoint stops working for the account being logged out.
+// Returns the endpoint (or null) so the server can detach it too.
+export const releaseThisDevice = async () => {
+  try {
+    if (!pushSupported()) return null;
+    const reg = await navigator.serviceWorker.getRegistration("/");
+    const sub = await reg?.pushManager.getSubscription();
+    if (!sub) return null;
+    const endpoint = sub.endpoint;
+    sub.unsubscribe().catch(() => {});
+    return endpoint;
+  } catch {
+    return null;
+  }
 };
 
 export const sendTestPush = (token) =>

@@ -14,6 +14,11 @@ import {
   toPublicPath,
 } from "../middlewares/inquiryUpload.js";
 
+const isObjectId = (id) => typeof id === "string" && /^[a-f\d]{24}$/i.test(id);
+const rejectBadId = (res) =>
+  res.status(400).json({ success: false, message: "Invalid inquiry id." });
+const MAX_REPLY_LENGTH = 5000;
+
 export const submitInquiry = async (req, res) => {
   // Built ONLY from req.files (Multer) — req.body.sampleImages is never trusted.
   const uploadedFiles = Array.isArray(req.files) ? req.files : [];
@@ -64,7 +69,9 @@ export const submitInquiry = async (req, res) => {
       if (!inquirySaved) await removeUploadedFiles(uploadedFiles);
     }
 
-    res.status(500).json({ success: false, message: error.message });
+    res
+      .status(Number.isInteger(error.status) ? error.status : 500)
+      .json({ success: false, message: error.message });
   }
 };
 
@@ -98,12 +105,11 @@ export const getMyInquiries = async (req, res) => {
     }
 
     // Only inquiries attached to THIS account id (see inquiryService).
-    const inquiries = await inquiryService.getUserInquiries(userId);
-
-    res.json({
-      success: true,
-      inquiries,
-    });
+    const { inquiries, pagination } = await inquiryService.getUserInquiriesPage(
+      userId,
+      { page: req.query?.page, limit: req.query?.limit },
+    );
+    return res.json({ success: true, inquiries, pagination });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -113,6 +119,7 @@ export const getMyInquiries = async (req, res) => {
 };
 
 export const updateStatus = async (req, res) => {
+  if (!isObjectId(req.params.id)) return rejectBadId(res);
   try {
     const inquiry = await inquiryService.updateInquiryStatus(
       req.params.id,
@@ -127,12 +134,17 @@ export const updateStatus = async (req, res) => {
 };
 
 export const replyToInquiry = async (req, res) => {
+  if (!isObjectId(req.params.id)) return rejectBadId(res);
   try {
     const userObj = req.authUser || {};
-    let senderId = userObj.id || userObj._id || userObj.userId;
-    const role = userObj.role || "admin";
+    const senderId = userObj.id || userObj._id || userObj.userId;
+    const role = userObj.role;
 
-    if (!senderId) senderId = "000000000000000000000000";
+    if (!senderId || !role) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized. Please login." });
+    }
 
     //  Ownership check for customers
     if (role === "customer") {
@@ -148,20 +160,31 @@ export const replyToInquiry = async (req, res) => {
       }
     }
 
+    const message =
+      typeof req.body?.message === "string" ? req.body.message.trim() : "";
+    if (!message || message.length > MAX_REPLY_LENGTH) {
+      return res.status(400).json({
+        success: false,
+        message: `Reply must be between 1 and ${MAX_REPLY_LENGTH} characters.`,
+      });
+    }
     const inquiry = await inquiryService.addReplyToInquiry(
       req.params.id,
       senderId,
       role,
-      req.body.message,
+      message,
     );
     res.json({ success: true, inquiry });
   } catch (error) {
     console.error("Reply Error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ success: false, message: error.message });
   }
 };
 
 export const markViewed = async (req, res) => {
+  if (!isObjectId(req.params.id)) return rejectBadId(res);
   try {
     const { role, id, email } = req.authUser;
 
@@ -198,6 +221,7 @@ export const markViewed = async (req, res) => {
 };
 
 export const getSingleInquiry = async (req, res) => {
+  if (!isObjectId(req.params.id)) return rejectBadId(res);
   try {
     const inquiry = await inquiryService.getInquiryById(req.params.id);
     res.json({ success: true, inquiry });
@@ -209,6 +233,7 @@ export const getSingleInquiry = async (req, res) => {
 };
 
 export const deleteInquiry = async (req, res) => {
+  if (!isObjectId(req.params.id)) return rejectBadId(res);
   try {
     await inquiryService.deleteInquiryById(req.params.id);
     res.json({ success: true, message: "Inquiry deleted successfully" });

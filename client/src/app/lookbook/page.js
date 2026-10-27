@@ -1,630 +1,1222 @@
+// // FILE: client/src/app/lookbook/page.js
+// "use client";
+
+// import { useCallback, useEffect, useMemo, useState } from "react";
+// import { getImageUrl } from "@/lib/imageUrl";
+// import Footer from "@/components/layout/Footer";
+// import LookbookGrid from "@/components/lookbook/LookbookGrid";
+// import LookbookMagazine, {
+//   orderPages,
+// } from "@/components/lookbook/LookbookMagazine";
+// import LookbookMagazineBar from "@/components/lookbook/LookbookMagazineBar";
+// import LookbookModal from "@/components/lookbook/LookbookModal";
+// import LookbookInquirySheet from "@/components/lookbook/LookbookInquirySheet";
+// import useLookbookSelection from "@/hooks/useLookbookSelection";
+// import {
+//   fetchCatalogueItems,
+//   fetchLookbookConfig,
+//   fetchLookbookQuestions,
+//   fetchPublishedCatalogues,
+// } from "@/lib/lookbookApi";
+// import "@/components/lookbook/lookbook.css";
+
+// const ALL = "All Collections";
+// const ANSWERS_KEY = "sanwariyas_lookbook_answers";
+// const VIEW_KEY = "sanwariyas_lookbook_view";
+
+// // null = no usable catalogue in the URL; invalid = the URL had a malformed id
+// const readCatalogueParam = () => {
+//   const raw = new URLSearchParams(window.location.search).get("catalogue");
+//   if (raw === null) return { id: null, invalid: false };
+//   if (/^[a-f\d]{24}$/i.test(raw)) return { id: raw, invalid: false };
+//   return { id: null, invalid: true };
+// };
+
+// export default function LookbookPage() {
+//   // undefined = still reading the URL, null = show the catalogue chooser, string = open catalogue
+//   const [catalogueId, setCatalogueId] = useState(undefined);
+//   const [cataloguesLoaded, setCataloguesLoaded] = useState(false);
+//   const [shareMsg, setShareMsg] = useState("");
+//   const [linkNotice, setLinkNotice] = useState("");
+//   const [badLink, setBadLink] = useState(false);
+//   const [items, setItems] = useState([]);
+//   const [complete, setComplete] = useState(false);
+//   const [loading, setLoading] = useState(true);
+//   const [loadError, setLoadError] = useState("");
+//   const [reloadKey, setReloadKey] = useState(0);
+
+//   const [activeCategory, setActiveCategory] = useState(ALL);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [featuredOnly, setFeaturedOnly] = useState(false);
+//   const [selectedOnly, setSelectedOnly] = useState(false);
+//   const [viewMode, setViewMode] = useState("grid");
+//   // last design the customer touched/viewed: lets Grid and Magazine reopen at the same spot
+//   const [focusId, setFocusId] = useState(null);
+
+//   const [lightbox, setLightbox] = useState(null); // { items, index }
+//   const [sheetOpen, setSheetOpen] = useState(false);
+
+//   const [whatsappNumber, setWhatsappNumber] = useState("");
+//   const [catalogues, setCatalogues] = useState([]);
+//   const [questions, setQuestions] = useState([]);
+//   const [answers, setAnswers] = useState({});
+
+//   const selection = useLookbookSelection(
+//     items,
+//     complete,
+//     catalogueId || "none",
+//   );
+//   const { selectedSet, selectedItems, count, toggle, remove, clear, addMany } =
+//     selection;
+
+//   // ── one-time setup: settings, questions, saved view + answers ───────────
+//   useEffect(() => {
+//     try {
+//       const v = localStorage.getItem(VIEW_KEY);
+//       if (v === "grid" || v === "magazine") setViewMode(v);
+//       const saved = JSON.parse(localStorage.getItem(ANSWERS_KEY) || "{}");
+//       if (saved && typeof saved === "object") setAnswers(saved);
+//     } catch {
+//       // ignore corrupted storage
+//     }
+//     fetchLookbookConfig()
+//       .then((d) => d.success && setWhatsappNumber(d.whatsappNumber || ""))
+//       .catch(() => {});
+//     fetchLookbookQuestions()
+//       .then((d) => d.success && setQuestions(d.questions || []))
+//       .catch(() => {});
+//     fetchPublishedCatalogues()
+//       .then((d) => d.success && setCatalogues(d.catalogues || []))
+//       .catch(() => {})
+//       .finally(() => setCataloguesLoaded(true));
+
+//     const resolve = () => {
+//       const { id, invalid } = readCatalogueParam();
+//       setBadLink(invalid);
+//       // a malformed link is replaced by the clean catalogue list URL
+//       if (invalid) window.history.replaceState(null, "", "/lookbook");
+//       setCatalogueId(id);
+//     };
+//     resolve();
+//     const onPop = () => resolve();
+//     window.addEventListener("popstate", onPop);
+//     return () => window.removeEventListener("popstate", onPop);
+//   }, []);
+
+//   // ── load all designs (progressively) ─────────────────────────────────────
+//   useEffect(() => {
+//     let cancelled = false;
+//     setItems([]);
+//     setLightbox(null);
+//     setFocusId(null);
+//     setLinkNotice("");
+//     if (!catalogueId) {
+//       setLoading(false);
+//       setComplete(false);
+//       return undefined;
+//     }
+//     setLoading(true);
+//     setLoadError("");
+//     setComplete(false);
+//     fetchCatalogueItems(catalogueId, (soFar) => {
+//       if (cancelled) return;
+//       setItems(soFar);
+//       setLoading(false);
+//     })
+//       .then((all) => {
+//         if (cancelled) return;
+//         setItems(all);
+//         setComplete(true);
+//       })
+//       .catch((err) => {
+//         if (cancelled) return;
+//         setLoadError(
+//           err.userMessage || "We couldn't load the lookbook. Please try again.",
+//         );
+//       })
+//       .finally(() => !cancelled && setLoading(false));
+//     return () => {
+//       cancelled = true;
+//     };
+//   }, [reloadKey, catalogueId]);
+
+//   // ── deep links: ?item=<id> opens the viewer, ?items=a,b,c preselects ────
+//   useEffect(() => {
+//     if (!complete) return;
+//     const params = new URLSearchParams(window.location.search);
+//     const bundle = params.get("items");
+//     if (bundle) {
+//       const ids = bundle.split(",").slice(0, 40);
+//       addMany(ids);
+//       setSelectedOnly(true);
+//     }
+//     const one = params.get("item");
+//     if (one) {
+//       const idx = items.findIndex((i) => i._id === one);
+//       if (idx >= 0) setLightbox({ items, index: idx });
+//       else
+//         setLinkNotice(
+//           "Sorry, the design from this link is no longer available. Here is the current catalogue.",
+//         );
+//     } else if (
+//       bundle &&
+//       !bundle.split(",").some((id) => items.some((i) => i._id === id))
+//     ) {
+//       setLinkNotice(
+//         "Sorry, the designs from this link are no longer available. Here is the current catalogue.",
+//       );
+//     }
+//     // run once after the first complete load
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [complete]);
+
+//   useEffect(() => {
+//     try {
+//       localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers));
+//     } catch {
+//       // storage blocked – fine
+//     }
+//   }, [answers]);
+
+//   const changeView = (mode) => {
+//     setViewMode(mode);
+//     try {
+//       localStorage.setItem(VIEW_KEY, mode);
+//     } catch {
+//       // ignore
+//     }
+//   };
+
+//   const onAnswer = useCallback((q, option) => {
+//     setAnswers((prev) => {
+//       const current = prev[q._id]?.answer || [];
+//       let nextAnswer;
+//       if (q.type === "multiple") {
+//         nextAnswer = current.includes(option)
+//           ? current.filter((o) => o !== option)
+//           : [...current, option];
+//       } else {
+//         nextAnswer = current[0] === option ? [] : [option];
+//       }
+//       const next = { ...prev };
+//       if (nextAnswer.length)
+//         next[q._id] = { question: q.text, answer: nextAnswer };
+//       else delete next[q._id];
+//       return next;
+//     });
+//   }, []);
+
+//   // ── filtering ────────────────────────────────────────────────────────────
+//   // ROOT CAUSE of "jumps back to page 1": `filtered` used to depend on
+//   // selectedSet always, so every select/deselect produced a new array and the
+//   // Grid/Magazine reset their position. It now only depends on the selection
+//   // while "Selected only" is on.
+//   const selectionFilter = selectedOnly ? selectedSet : null;
+
+//   const filtered = useMemo(() => {
+//     const q = searchQuery.trim().toLowerCase();
+//     return items.filter((i) => {
+//       if (activeCategory !== ALL && i.category !== activeCategory) return false;
+//       if (featuredOnly && !i.isFeatured) return false;
+//       if (selectionFilter && !selectionFilter.has(i._id)) return false;
+//       if (!q) return true;
+//       return [i.styleNumber, i.title, i.category, i.catalogueTitle]
+//         .filter(Boolean)
+//         .some((v) => String(v).toLowerCase().includes(q));
+//     });
+//   }, [items, activeCategory, featuredOnly, selectionFilter, searchQuery]);
+
+//   // "Selected only" with nothing left selected would show a blank page.
+//   useEffect(() => {
+//     if (selectedOnly && count === 0) setSelectedOnly(false);
+//   }, [selectedOnly, count]);
+
+//   const toggleDesign = useCallback(
+//     (id) => {
+//       setFocusId(id);
+//       toggle(id);
+//     },
+//     [toggle],
+//   );
+
+//   const openViewer = useCallback(
+//     (id) => {
+//       setFocusId(id);
+//       const list = viewMode === "magazine" ? orderPages(filtered) : filtered;
+//       const idx = list.findIndex((i) => i._id === id);
+//       if (idx >= 0) setLightbox({ items: list, index: idx });
+//     },
+//     [filtered, viewMode],
+//   );
+
+//   const activeCatalogue = catalogues.find((c) => c._id === catalogueId);
+
+//   const openCatalogue = (id, replace = false) => {
+//     setBadLink(false);
+//     window.history[replace ? "replaceState" : "pushState"](
+//       null,
+//       "",
+//       id ? `/lookbook?catalogue=${id}` : "/lookbook",
+//     );
+//     setActiveCategory(ALL);
+//     setSearchQuery("");
+//     setFeaturedOnly(false);
+//     setSelectedOnly(false);
+//     setCatalogueId(id);
+//     window.scrollTo({ top: 0 });
+//   };
+
+//   // Only one catalogue published: open it directly.
+//   useEffect(() => {
+//     if (cataloguesLoaded && catalogueId === null && catalogues.length === 1) {
+//       openCatalogue(catalogues[0]._id, true);
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [cataloguesLoaded, catalogueId, catalogues]);
+
+//   const shareCatalogue = async () => {
+//     const url = `${window.location.origin}/lookbook?catalogue=${catalogueId}`;
+//     const title = activeCatalogue?.title || "SANWARIYAS Catalogue";
+//     try {
+//       if (navigator.share) {
+//         await navigator.share({ title, url });
+//         return;
+//       }
+//       await navigator.clipboard.writeText(url);
+//       setShareMsg("Catalogue link copied");
+//     } catch {
+//       setShareMsg(url);
+//     }
+//     setTimeout(() => setShareMsg(""), 3500);
+//   };
+
+//   const clearFilters = () => {
+//     setActiveCategory(ALL);
+//     setSearchQuery("");
+//     setFeaturedOnly(false);
+//     setSelectedOnly(false);
+//   };
+
+//   if (
+//     catalogueId === undefined ||
+//     (catalogueId === null && !cataloguesLoaded)
+//   ) {
+//     return (
+//       <div className="lb-root min-h-screen">
+//         <div className="lb-wrap">
+//           <div className="lb-grid" aria-busy="true">
+//             {Array.from({ length: 4 }).map((_, i) => (
+//               <div key={i} className="lb-skel" />
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (catalogueId === null) {
+//     return (
+//       <div className="lb-root min-h-screen">
+//         <header className="lb-hero">
+//           <div className="lb-wrap">
+//             <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+//             <h1 className="lb-title">Our Catalogues</h1>
+//             <p className="lb-sub">
+//               Choose a catalogue to browse, tick the designs you like and send
+//               them to us in one WhatsApp inquiry.
+//             </p>
+//             {badLink && (
+//               <p className="lb-notice" role="status">
+//                 Sorry, that catalogue link is not valid. Please choose a
+//                 catalogue below.
+//               </p>
+//             )}
+//           </div>
+//         </header>
+//         <main className="lb-wrap" id="lookbook-content">
+//           {catalogues.length === 0 ? (
+//             <div className="lb-empty">
+//               <h2>New designs are on their way</h2>
+//               <p>
+//                 No catalogue has been published yet. Please check back soon.
+//               </p>
+//             </div>
+//           ) : (
+//             <ul className="lb-cat-grid">
+//               {catalogues.map((c) => (
+//                 <li key={c._id}>
+//                   <button
+//                     type="button"
+//                     className="lb-cat-card"
+//                     onClick={() => openCatalogue(c._id)}
+//                   >
+//                     <span className="lb-pick-cover">
+//                       {c.cover ? (
+//                         // eslint-disable-next-line @next/next/no-img-element
+//                         <img
+//                           src={getImageUrl(c.cover)}
+//                           alt={`${c.title} cover`}
+//                           loading="lazy"
+//                         />
+//                       ) : null}
+//                     </span>
+//                     <span className="lb-cat-body">
+//                       <strong>{c.title}</strong>
+//                       <span className="lb-meta">
+//                         {[c.season, `${c.count} designs`]
+//                           .filter(Boolean)
+//                           .join(" · ")}
+//                       </span>
+//                       <span className="lb-cat-open">View catalogue →</span>
+//                     </span>
+//                   </button>
+//                 </li>
+//               ))}
+//             </ul>
+//           )}
+//         </main>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   if (complete && !items.length && !loadError) {
+//     return (
+//       <div className="lb-root min-h-screen">
+//         <header className="lb-hero">
+//           <div className="lb-wrap">
+//             <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+//             <h1 className="lb-title">This catalogue is no longer available</h1>
+//             <p className="lb-sub">
+//               Sorry, the catalogue or image from this link has been removed or
+//               replaced. Please see our current catalogues.
+//             </p>
+//           </div>
+//         </header>
+//         <main className="lb-wrap" id="lookbook-content">
+//           <div className="lb-empty">
+//             <button
+//               type="button"
+//               className="lb-btn lb-btn--accent"
+//               onClick={() => openCatalogue(null)}
+//             >
+//               See the new catalogues
+//             </button>
+//           </div>
+//         </main>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="lb-root min-h-screen">
+//       <header className="lb-hero">
+//         <div className="lb-wrap">
+//           <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+//           <h1 className="lb-title">
+//             {activeCatalogue ? activeCatalogue.title : "Catalogue"}
+//           </h1>
+//           <p className="lb-sub">
+//             {activeCatalogue
+//               ? [activeCatalogue.season, activeCatalogue.description]
+//                   .filter(Boolean)
+//                   .join(" · ") ||
+//                 "Browse the collection and select your favourites."
+//               : "Tick every design you like and send them all to us in one WhatsApp inquiry."}
+//           </p>
+//           <div className="lb-hero-actions">
+//             {catalogues.length > 1 && (
+//               <button
+//                 type="button"
+//                 className="lb-chip"
+//                 onClick={() => openCatalogue(null)}
+//               >
+//                 ← All catalogues
+//               </button>
+//             )}
+//             <button type="button" className="lb-chip" onClick={shareCatalogue}>
+//               Share this catalogue
+//             </button>
+//           </div>
+//           {shareMsg && (
+//             <p className="lb-meta" role="status">
+//               {shareMsg}
+//             </p>
+//           )}
+//           {linkNotice && (
+//             <p className="lb-notice" role="status">
+//               {linkNotice}
+//             </p>
+//           )}
+//         </div>
+//       </header>
+
+//       <LookbookMagazineBar
+//         categories={[]}
+//         activeCategory={activeCategory}
+//         onCategory={setActiveCategory}
+//         searchQuery={searchQuery}
+//         onSearch={setSearchQuery}
+//         viewMode={viewMode}
+//         onView={changeView}
+//         hasFeatured={items.some((i) => i.isFeatured)}
+//         featuredOnly={featuredOnly}
+//         onToggleFeatured={() => setFeaturedOnly((v) => !v)}
+//         selectedOnly={selectedOnly}
+//         onToggleSelectedOnly={() => setSelectedOnly((v) => !v)}
+//         selectedCount={count}
+//         resultCount={filtered.length}
+//       />
+
+//       <main className="lb-wrap" id="lookbook-content">
+//         {loading && !items.length ? (
+//           <div
+//             className="lb-grid"
+//             aria-busy="true"
+//             aria-label="Loading designs"
+//           >
+//             {Array.from({ length: 8 }).map((_, i) => (
+//               <div key={i} className="lb-skel" />
+//             ))}
+//           </div>
+//         ) : loadError && !items.length ? (
+//           <div className="lb-empty" role="alert">
+//             <h2>Couldn&apos;t load the lookbook</h2>
+//             <p>{loadError}</p>
+//             <button
+//               type="button"
+//               className="lb-btn lb-btn--accent"
+//               onClick={() => setReloadKey((k) => k + 1)}
+//             >
+//               Try again
+//             </button>
+//           </div>
+//         ) : !items.length ? (
+//           <div className="lb-empty">
+//             <h2>Catalogue unavailable</h2>
+//             <p>
+//               This catalogue is not available. It may have been unpublished.
+//             </p>
+//             {catalogues.length > 0 && (
+//               <button
+//                 type="button"
+//                 className="lb-btn lb-btn--accent"
+//                 onClick={() => openCatalogue(null)}
+//               >
+//                 View all catalogues
+//               </button>
+//             )}
+//           </div>
+//         ) : !filtered.length ? (
+//           <div className="lb-empty">
+//             <h2>No designs match</h2>
+//             <p>Try a different collection or search term.</p>
+//             <button
+//               type="button"
+//               className="lb-btn lb-btn--accent"
+//               onClick={clearFilters}
+//             >
+//               Clear filters
+//             </button>
+//           </div>
+//         ) : viewMode === "grid" ? (
+//           <LookbookGrid
+//             items={filtered}
+//             selectedSet={selectedSet}
+//             focusId={focusId}
+//             onFocus={setFocusId}
+//             onToggle={toggleDesign}
+//             onOpen={openViewer}
+//           />
+//         ) : (
+//           <LookbookMagazine
+//             items={filtered}
+//             selectedSet={selectedSet}
+//             keysEnabled={!lightbox && !sheetOpen}
+//             focusId={focusId}
+//             onFocus={setFocusId}
+//             onToggle={toggleDesign}
+//             onOpen={openViewer}
+//           />
+//         )}
+//         {loadError && items.length > 0 && (
+//           <p className="lb-note" role="alert">
+//             Some designs could not be loaded. {loadError}
+//           </p>
+//         )}
+//       </main>
+
+//       {count > 0 && !sheetOpen && !lightbox && (
+//         <button
+//           type="button"
+//           className="lb-btn lb-btn--wa lb-fab"
+//           onClick={() => setSheetOpen(true)}
+//         >
+//           Send Inquiry on WhatsApp ({count} Design{count === 1 ? "" : "s"})
+//         </button>
+//       )}
+
+//       {selection.notice && (
+//         <div className="lb-toast" role="status">
+//           {selection.notice}
+//         </div>
+//       )}
+
+//       {lightbox && (
+//         <LookbookModal
+//           items={lightbox.items}
+//           index={lightbox.index}
+//           selectedSet={selectedSet}
+//           onIndex={(index) =>
+//             setLightbox((l) => {
+//               if (l?.items[index]) setFocusId(l.items[index]._id);
+//               return l && { ...l, index };
+//             })
+//           }
+//           onClose={() => setLightbox(null)}
+//           onToggle={toggleDesign}
+//         />
+//       )}
+
+//       {sheetOpen && (
+//         <LookbookInquirySheet
+//           open
+//           items={selectedItems}
+//           questions={questions}
+//           answers={answers}
+//           whatsappNumber={whatsappNumber}
+//           onAnswer={onAnswer}
+//           onRemove={remove}
+//           onClear={clear}
+//           onClose={() => setSheetOpen(false)}
+//         />
+//       )}
+
+//       <Footer />
+//     </div>
+//   );
+// }
+
 // FILE: client/src/app/lookbook/page.js
-
 "use client";
-import { useState, useEffect } from "react";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getImageUrl } from "@/lib/imageUrl";
 import Footer from "@/components/layout/Footer";
-import LookbookModal from "@/components/lookbook/LookbookModal";
-import LookbookMagazine from "@/components/lookbook/LookbookMagazine";
+import LookbookGrid from "@/components/lookbook/LookbookGrid";
+import LookbookMagazine, {
+  orderPages,
+} from "@/components/lookbook/LookbookMagazine";
 import LookbookMagazineBar from "@/components/lookbook/LookbookMagazineBar";
+import LookbookModal from "@/components/lookbook/LookbookModal";
 import LookbookInquirySheet from "@/components/lookbook/LookbookInquirySheet";
-import { fetchLookbook } from "@/lib/api";
-import { fetchLookbookQuestions } from "@/lib/lookbookApi";
+import useLookbookSelection from "@/hooks/useLookbookSelection";
+import {
+  fetchCatalogueItems,
+  fetchLookbookConfig,
+  fetchLookbookQuestions,
+  fetchPublishedCatalogues,
+} from "@/lib/lookbookApi";
+import "@/components/lookbook/lookbook.css";
 
-const BACKEND_URL = (
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
-).replace(/\/api\/?$/, "");
+const ALL = "All Collections";
+const ANSWERS_KEY = "sanwariyas_lookbook_answers";
+const VIEW_KEY = "sanwariyas_lookbook_view";
 
-const badgeStyles = {
-  Bestseller: "bg-[#BE6E5B]",
-  Trending: "bg-[#D4A24C]",
-  "New Arrival": "bg-[#4C8C6C]",
+// The first page (cover) and the last page (closing / thank-you page) of a
+// catalogue are not designs, so they cannot be selected. The last page is only
+// known once every page has loaded.
+const markEdges = (list, done) => {
+  const numbers = list
+    .filter((i) => i.sourceType === "page" && i.pageNumber)
+    .map((i) => i.pageNumber);
+  if (numbers.length < 3) return list;
+  const first = Math.min(...numbers);
+  const last = Math.max(...numbers);
+  return list.map((i) =>
+    i.sourceType === "page" &&
+    (i.pageNumber === first || (done && i.pageNumber === last))
+      ? { ...i, unselectable: true }
+      : i,
+  );
 };
 
-const SHORTLIST_KEY = "sanwariyas_lookbook_shortlist";
-const ANSWERS_KEY = "sanwariyas_lookbook_answers";
-
-// Broken / deleted image -> neutral placeholder (guarded so it can't loop)
-const handleImgError = (e) => {
-  e.currentTarget.onerror = null;
-  e.currentTarget.src = "/images/placeholder.png";
+// null = no usable catalogue in the URL; invalid = the URL had a malformed id
+const readCatalogueParam = () => {
+  const raw = new URLSearchParams(window.location.search).get("catalogue");
+  if (raw === null) return { id: null, invalid: false };
+  if (/^[a-f\d]{24}$/i.test(raw)) return { id: raw, invalid: false };
+  return { id: null, invalid: true };
 };
 
 export default function LookbookPage() {
-  const [activeCategory, setActiveCategory] = useState("All Collections");
-  const [searchQuery, setSearchQuery] = useState("");
+  // undefined = still reading the URL, null = show the catalogue chooser, string = open catalogue
+  const [catalogueId, setCatalogueId] = useState(undefined);
+  const [cataloguesLoaded, setCataloguesLoaded] = useState(false);
+  const [shareMsg, setShareMsg] = useState("");
+  const [linkNotice, setLinkNotice] = useState("");
+  const [badLink, setBadLink] = useState(false);
   const [items, setItems] = useState([]);
+  const [complete, setComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  const [shuffleKey, setShuffleKey] = useState(0);
+  const [loadError, setLoadError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
-  const [shortlist, setShortlist] = useState([]);
-  const [isBoxOpen, setIsBoxOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(ALL);
+  const [searchQuery, setSearchQuery] = useState("");
   const [featuredOnly, setFeaturedOnly] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-  const [viewMode, setViewMode] = useState("magazine"); // "magazine" | "grid"
+  const [selectedOnly, setSelectedOnly] = useState(false);
+  const [viewMode, setViewMode] = useState("grid");
+  // last design the customer touched/viewed: lets Grid and Magazine reopen at the same spot
+  const [focusId, setFocusId] = useState(null);
+
+  const [lightbox, setLightbox] = useState(null); // { items, index }
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [catalogues, setCatalogues] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState({}); // { [questionId]: { question, answer: [] } }
-  const [sharedItemId, setSharedItemId] = useState(null);
+  const [answers, setAnswers] = useState({});
 
+  const selectableItems = useMemo(
+    () => items.filter((i) => !i.unselectable),
+    [items],
+  );
+  const selection = useLookbookSelection(
+    selectableItems,
+    complete,
+    catalogueId || "none",
+  );
+  const { selectedSet, selectedItems, count, toggle, remove, clear, addMany } =
+    selection;
+
+  // ── one-time setup: settings, questions, saved view + answers ───────────
   useEffect(() => {
-    const loadData = async () => {
-      // Restore the Inquiry Box saved from the previous visit
-      try {
-        const saved = JSON.parse(localStorage.getItem(SHORTLIST_KEY) || "[]");
-        if (Array.isArray(saved)) setShortlist(saved);
-        const savedAnswers = JSON.parse(
-          localStorage.getItem(ANSWERS_KEY) || "{}",
-        );
-        if (savedAnswers && typeof savedAnswers === "object")
-          setAnswers(savedAnswers);
-      } catch {
-        // ignore corrupted storage
-      }
-      setHydrated(true);
+    try {
+      const v = localStorage.getItem(VIEW_KEY);
+      if (v === "grid" || v === "magazine") setViewMode(v);
+      const saved = JSON.parse(localStorage.getItem(ANSWERS_KEY) || "{}");
+      if (saved && typeof saved === "object") setAnswers(saved);
+    } catch {
+      // ignore corrupted storage
+    }
+    fetchLookbookConfig()
+      .then((d) => d.success && setWhatsappNumber(d.whatsappNumber || ""))
+      .catch(() => {});
+    fetchLookbookQuestions()
+      .then((d) => d.success && setQuestions(d.questions || []))
+      .catch(() => {});
+    fetchPublishedCatalogues()
+      .then((d) => d.success && setCatalogues(d.catalogues || []))
+      .catch(() => {})
+      .finally(() => setCataloguesLoaded(true));
 
-      // Questions shown between magazine pages (admin managed) — optional
-      fetchLookbookQuestions()
-        .then((d) => d.success && setQuestions(d.questions || []))
-        .catch(() => {});
-
-      try {
-        const data = await fetchLookbook();
-        if (data.success) {
-          setItems(data.items);
-
-          // Refresh saved shortlist with latest data; drop items deleted by admin
-          setShortlist((prev) =>
-            prev
-              .map((s) => data.items.find((i) => i._id === s._id))
-              .filter(Boolean),
-          );
-
-          // Shared link: /lookbook?item=<id> opens that piece directly
-          const wanted = new URLSearchParams(window.location.search).get(
-            "item",
-          );
-          if (wanted) {
-            const idx = data.items.findIndex((i) => i._id === wanted);
-            if (idx >= 0) setSharedItemId(wanted);
-          }
-        }
-      } catch (error) {
-        // Error handled silently
-      } finally {
-        setLoading(false);
-      }
+    const resolve = () => {
+      const { id, invalid } = readCatalogueParam();
+      setBadLink(invalid);
+      // a malformed link is replaced by the clean catalogue list URL
+      if (invalid) window.history.replaceState(null, "", "/lookbook");
+      setCatalogueId(id);
     };
-    loadData();
+    resolve();
+    const onPop = () => resolve();
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  const dynamicCategories = [
-    "All Collections",
-    ...Array.from(new Set(items.map((item) => item.category).filter(Boolean))),
-  ];
-
-  const VISIBLE_LIMIT = 5;
-  const visibleCategories = dynamicCategories.slice(0, VISIBLE_LIMIT);
-  const hiddenCategories = dynamicCategories.slice(VISIBLE_LIMIT);
-
-  const filteredItems = items.filter((item) => {
-    const matchesCategory =
-      activeCategory === "All Collections" || item.category === activeCategory;
-    const searchLower = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      searchLower === "" ||
-      item.title.toLowerCase().includes(searchLower) ||
-      item.category.toLowerCase().includes(searchLower) ||
-      (item.styleNumber || "").toLowerCase().includes(searchLower);
-    const matchesFeatured = !featuredOnly || item.isFeatured;
-    return matchesCategory && matchesSearch && matchesFeatured;
-  });
-
-  const seededShuffle = (array, seed) => {
-    const arr = [...array];
-    let s = seed || 1;
-    const random = () => {
-      s = (s * 9301 + 49297) % 233280;
-      return s / 233280;
+  // ── load all designs (progressively) ─────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    setItems([]);
+    setLightbox(null);
+    setFocusId(null);
+    setLinkNotice("");
+    if (!catalogueId) {
+      setLoading(false);
+      setComplete(false);
+      return undefined;
+    }
+    setLoading(true);
+    setLoadError("");
+    setComplete(false);
+    fetchCatalogueItems(catalogueId, (soFar) => {
+      if (cancelled) return;
+      setItems(markEdges(soFar, false));
+      setLoading(false);
+    })
+      .then((all) => {
+        if (cancelled) return;
+        setItems(markEdges(all, true));
+        setComplete(true);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(
+          err.userMessage || "We couldn't load the lookbook. Please try again.",
+        );
+      })
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
     };
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  };
+  }, [reloadKey, catalogueId]);
 
-  const displayItems =
-    shuffleKey === 0 ? filteredItems : seededShuffle(filteredItems, shuffleKey);
-
-  const toggleShortlist = (item) => {
-    const exists = shortlist.find((i) => i._id === item._id);
-    if (exists) {
-      setShortlist(shortlist.filter((i) => i._id !== item._id));
-      if (shortlist.length === 1 && isBoxOpen) {
-        setIsBoxOpen(false);
-      }
-    } else {
-      setShortlist([...shortlist, item]);
-    }
-  };
-
-  const setAnswer = (q, answer) =>
-    setAnswers((prev) => ({
-      ...prev,
-      [q._id]: { question: q.text, answer },
-    }));
-
-  // Persist the Inquiry Box (only after the saved copy has been read back)
+  // ── deep links: ?item=<id> opens the viewer, ?items=a,b,c preselects ────
   useEffect(() => {
-    if (!hydrated) return;
-    try {
-      localStorage.setItem(SHORTLIST_KEY, JSON.stringify(shortlist));
-    } catch {
-      // storage full / blocked — shortlist still works in memory
+    if (!complete) return;
+    const params = new URLSearchParams(window.location.search);
+    const bundle = params.get("items");
+    if (bundle) {
+      const ids = bundle.split(",").slice(0, 40);
+      addMany(ids);
+      setSelectedOnly(true);
     }
-  }, [shortlist, hydrated]);
+    const one = params.get("item");
+    if (one) {
+      const idx = items.findIndex((i) => i._id === one);
+      if (idx >= 0) setLightbox({ items, index: idx });
+      else
+        setLinkNotice(
+          "Sorry, the design from this link is no longer available. Here is the current catalogue.",
+        );
+    } else if (
+      bundle &&
+      !bundle.split(",").some((id) => items.some((i) => i._id === id))
+    ) {
+      setLinkNotice(
+        "Sorry, the designs from this link are no longer available. Here is the current catalogue.",
+      );
+    }
+    // run once after the first complete load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [complete]);
 
   useEffect(() => {
-    if (!hydrated) return;
     try {
       localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers));
     } catch {
+      // storage blocked – fine
+    }
+  }, [answers]);
+
+  const changeView = (mode) => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem(VIEW_KEY, mode);
+    } catch {
       // ignore
     }
-  }, [answers, hydrated]);
+  };
 
-  // Magazine mode takes over the whole screen (cover, book and controls only).
-  const immersive = viewMode === "magazine" && !loading && items.length > 0;
+  const onAnswer = useCallback((q, option) => {
+    setAnswers((prev) => {
+      const current = prev[q._id]?.answer || [];
+      let nextAnswer;
+      if (q.type === "multiple") {
+        nextAnswer = current.includes(option)
+          ? current.filter((o) => o !== option)
+          : [...current, option];
+      } else {
+        nextAnswer = current[0] === option ? [] : [option];
+      }
+      const next = { ...prev };
+      if (nextAnswer.length)
+        next[q._id] = { question: q.text, answer: nextAnswer };
+      else delete next[q._id];
+      return next;
+    });
+  }, []);
 
-  // No page scrolling behind the full-screen magazine or the inquiry sheet.
+  // ── filtering ────────────────────────────────────────────────────────────
+  // ROOT CAUSE of "jumps back to page 1": `filtered` used to depend on
+  // selectedSet always, so every select/deselect produced a new array and the
+  // Grid/Magazine reset their position. It now only depends on the selection
+  // while "Selected only" is on.
+  const selectionFilter = selectedOnly ? selectedSet : null;
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return items.filter((i) => {
+      if (activeCategory !== ALL && i.category !== activeCategory) return false;
+      if (featuredOnly && !i.isFeatured) return false;
+      if (selectionFilter && !selectionFilter.has(i._id)) return false;
+      if (!q) return true;
+      return [i.styleNumber, i.title, i.category, i.catalogueTitle]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q));
+    });
+  }, [items, activeCategory, featuredOnly, selectionFilter, searchQuery]);
+
+  // "Selected only" with nothing left selected would show a blank page.
   useEffect(() => {
-    document.body.style.overflow = isBoxOpen || immersive ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isBoxOpen, immersive]);
+    if (selectedOnly && count === 0) setSelectedOnly(false);
+  }, [selectedOnly, count]);
 
-  const chipCls = (active) =>
-    `px-4 py-1.5 rounded-full font-sans text-[10px] tracking-[0.18em] uppercase transition-all duration-300 border font-semibold whitespace-nowrap ${
-      active
-        ? "bg-[#7A3D2A] text-[#FDF7F2] border-[#7A3D2A] shadow-md"
-        : "bg-white/50 text-[#a07f61] border-[#BE6E5B]/30 hover:border-[#BE6E5B] hover:bg-white/80"
-    }`;
-
-  // Categories + view toggle + featured + search for the light grid page.
-  // (The full-screen magazine uses the slimmer <LookbookMagazineBar /> instead.)
-  const renderControls = () => (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
-      <div
-        className="flex items-center gap-2 flex-wrap"
-        role="group"
-        aria-label="Collections"
-      >
-        {visibleCategories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={chipCls(activeCategory === cat)}
-          >
-            {cat}
-          </button>
-        ))}
-
-        {/* Categories beyond VISIBLE_LIMIT are reachable through a "More" dropdown. */}
-        {hiddenCategories.length > 0 && (
-          <select
-            aria-label="More categories"
-            value={
-              hiddenCategories.includes(activeCategory) ? activeCategory : ""
-            }
-            onChange={(e) =>
-              e.target.value && setActiveCategory(e.target.value)
-            }
-            className={`${chipCls(hiddenCategories.includes(activeCategory))} cursor-pointer focus:outline-none`}
-          >
-            <option value="">More</option>
-            {hiddenCategories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        <div
-          className="inline-flex rounded-full border border-[#BE6E5B]/30 bg-white/50 p-1"
-          role="group"
-          aria-label="View mode"
-        >
-          {[
-            ["magazine", "📖 Magazine"],
-            ["grid", "▦ Grid"],
-          ].map(([mode, label]) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => setViewMode(mode)}
-              aria-pressed={viewMode === mode}
-              className={`px-4 py-1.5 rounded-full font-sans text-[10px] tracking-[0.18em] uppercase font-bold whitespace-nowrap transition-all ${
-                viewMode === mode
-                  ? "bg-[#7A3D2A] text-[#FDF7F2] shadow"
-                  : "text-[#a07f61] hover:text-[#7A3D2A]"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        {items.some((i) => i.isFeatured) && (
-          <button
-            type="button"
-            onClick={() => setFeaturedOnly((v) => !v)}
-            aria-pressed={featuredOnly}
-            className={`${chipCls(featuredOnly)} py-2`}
-          >
-            ★ Featured
-          </button>
-        )}
-        <input
-          type="text"
-          placeholder="Search collections..."
-          aria-label="Search collections"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full sm:w-52 px-5 py-2 rounded-full font-sans text-xs tracking-widest border focus:outline-none transition-all duration-300 shadow-sm bg-white/70 border-[#BE6E5B]/30 focus:border-[#7A3D2A] focus:bg-white text-[#7A3D2A] placeholder-[#a07f61]/70"
-        />
-      </div>
-    </div>
+  const toggleDesign = useCallback(
+    (id) => {
+      if (items.find((i) => i._id === id)?.unselectable) return;
+      setFocusId(id);
+      toggle(id);
+    },
+    [toggle, items],
   );
 
-  return (
-    <>
-      <main
-        id="main-content"
-        className="min-h-screen pt-24 pb-16 relative"
-        style={{
-          background: "linear-gradient(135deg, #FDF7F2 0%, #F2D9C3 100%)",
-        }}
-      >
-        {/* The big visible page header was removed to give the magazine the whole
-            screen. The heading and intro stay in the page for search engines and
-            screen readers. The visible title now lives on the magazine cover. */}
-        <h1 className="sr-only">
-          SANWARIYAS Lookbook — Wholesale Ethnic Wear Collections
-        </h1>
-        <p className="sr-only">
-          Explore our wholesale ethnic wear collections, cotton suits, designer
-          kurtis, and B2B boutique fashion designs.
-        </p>
+  const openViewer = useCallback(
+    (id) => {
+      setFocusId(id);
+      const list = viewMode === "magazine" ? orderPages(filtered) : filtered;
+      const idx = list.findIndex((i) => i._id === id);
+      if (idx >= 0) setLightbox({ items: list, index: idx });
+    },
+    [filtered, viewMode],
+  );
 
-        {!immersive && (
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-            {renderControls()}
+  const activeCatalogue = catalogues.find((c) => c._id === catalogueId);
 
-            <div aria-live="polite" aria-busy={loading}>
-              {loading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {[...Array(8)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="relative overflow-hidden rounded-xl bg-[#E0BFA2]/30 shadow-sm animate-pulse aspect-[3/4]"
-                    ></div>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {displayItems.length > 0 && (
-                    <div className="flex items-center justify-center gap-4 mb-4 flex-wrap">
-                      <p className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#a07f61]">
-                        {displayItems.length} Pieces Curated
-                      </p>
-                      {displayItems.length > 2 && (
-                        <button
-                          type="button"
-                          onClick={() => setShuffleKey((k) => k + 1)}
-                          className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-sans text-[10px] tracking-[0.2em] uppercase font-bold text-[#7A3D2A] border border-[#BE6E5B]/40 bg-white/60 hover:bg-[#7A3D2A] hover:text-white hover:border-[#7A3D2A] transition-all duration-300 active:scale-95"
-                        >
-                          ✨ Surprise Me
-                        </button>
-                      )}
-                    </div>
-                  )}
+  const openCatalogue = (id, replace = false) => {
+    setBadLink(false);
+    window.history[replace ? "replaceState" : "pushState"](
+      null,
+      "",
+      id ? `/lookbook?catalogue=${id}` : "/lookbook",
+    );
+    setActiveCategory(ALL);
+    setSearchQuery("");
+    setFeaturedOnly(false);
+    setSelectedOnly(false);
+    setCatalogueId(id);
+    window.scrollTo({ top: 0 });
+  };
 
-                  <div
-                    className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ${
-                      viewMode === "grid" ? "" : "hidden"
-                    }`}
-                  >
-                    {displayItems.map((item, index) => {
-                      const isShortlisted = shortlist.some(
-                        (i) => i._id === item._id,
-                      );
+  // Only one catalogue published: open it directly.
+  useEffect(() => {
+    if (cataloguesLoaded && catalogueId === null && catalogues.length === 1) {
+      openCatalogue(catalogues[0]._id, true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cataloguesLoaded, catalogueId, catalogues]);
 
-                      return (
-                        <article
-                          key={item._id}
-                          onClick={() => setSelectedIndex(index)}
-                          style={{ animationDelay: `${(index % 9) * 60}ms` }}
-                          className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-500 border border-[#BE6E5B]/15 cursor-pointer opacity-0 animate-[cardIn_0.6s_ease_forwards] hover:-translate-y-1.5 bg-white flex flex-col"
-                        >
-                          <div className="relative w-full aspect-[3/4] bg-[#FAF3E8] overflow-hidden">
-                            <img
-                              src={`${BACKEND_URL}${item.image}`}
-                              onError={handleImgError}
-                              alt={`${item.title} - Wholesale Ethnic Wear Collection`}
-                              loading="lazy"
-                              decoding="async"
-                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-105"
-                            />
+  const shareCatalogue = async () => {
+    const url = `${window.location.origin}/lookbook?catalogue=${catalogueId}`;
+    const title = activeCatalogue?.title || "SANWARIYAS Catalogue";
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareMsg("Catalogue link copied");
+    } catch {
+      setShareMsg(url);
+    }
+    setTimeout(() => setShareMsg(""), 3500);
+  };
 
-                            <div className="absolute top-[40%] left-[30%] z-20 group/hotspot hidden md:block">
-                              <div className="relative flex items-center justify-center w-5 h-5">
-                                <span className="absolute inline-flex w-full h-full rounded-full bg-white opacity-60 animate-ping"></span>
-                                <span className="relative inline-flex w-2 h-2 rounded-full bg-white shadow"></span>
-                              </div>
-                              <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/hotspot:opacity-100 transition-all duration-300 bg-white/95 backdrop-blur-sm text-[#7A3D2A] text-[9px] tracking-[0.1em] uppercase font-bold px-3 py-1.5 rounded shadow-lg pointer-events-none whitespace-nowrap transform -translate-x-2 group-hover/hotspot:translate-x-0">
-                                Authentic {item.category}
-                              </div>
-                            </div>
+  const clearFilters = () => {
+    setActiveCategory(ALL);
+    setSearchQuery("");
+    setFeaturedOnly(false);
+    setSelectedOnly(false);
+  };
 
-                            {/* LEFT SIDE: Badge and Add (+) Button */}
-                            <div className="absolute top-3 left-3 flex flex-col items-start gap-2 z-10">
-                              {item.badge && item.badge !== "None" && (
-                                <span
-                                  className={`px-2.5 py-1 rounded-full text-[8px] font-bold tracking-[0.2em] uppercase text-white shadow-md ${
-                                    badgeStyles[item.badge] || "bg-[#7A3D2A]"
-                                  }`}
-                                >
-                                  {item.badge}
-                                </span>
-                              )}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleShortlist(item);
-                                }}
-                                title={
-                                  isShortlisted
-                                    ? "Remove from inquiry"
-                                    : "Add to Bulk Inquiry"
-                                }
-                                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shadow-sm ${
-                                  isShortlisted
-                                    ? "bg-[#7A3D2A] text-white border border-[#7A3D2A]"
-                                    : "bg-white/25 backdrop-blur-md border border-white/40 text-white opacity-80 group-hover:opacity-100 hover:bg-white hover:text-[#7A3D2A]"
-                                }`}
-                              >
-                                {isShortlisted ? "✓" : "+"}
-                              </button>
-                            </div>
-
-                            {/* RIGHT SIDE: Quick View (Eye) Button */}
-                            <div className="absolute top-3 right-3 flex gap-2 z-10">
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedIndex(index);
-                                }}
-                                title="Quick View"
-                                className="w-8 h-8 rounded-full bg-white/25 backdrop-blur-md border border-white/40 flex items-center justify-center text-white opacity-80 group-hover:opacity-100 hover:bg-white hover:text-[#7A3D2A] transition-all duration-300 shadow-sm"
-                              >
-                                <svg
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-
-                            <div
-                              aria-hidden="true"
-                              className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                            />
-
-                            <div className="absolute inset-x-0 bottom-0 p-4 flex flex-col justify-end translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out pointer-events-none">
-                              <p className="font-sans text-[8px] tracking-[0.3em] uppercase text-[#E8D5A3] font-bold mb-1.5">
-                                {item.styleNumber
-                                  ? `${item.styleNumber} · `
-                                  : ""}
-                                {item.category}
-                              </p>
-                              <h2 className="font-display text-base md:text-lg text-white font-bold leading-snug mb-0">
-                                {item.title}
-                              </h2>
-                            </div>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-
-                  {filteredItems.length === 0 && (
-                    <div className="text-center py-20 bg-white/40 backdrop-blur-sm rounded-xl border border-[#BE6E5B]/20">
-                      <p className="font-display text-2xl text-[#7A3D2A] mb-2 font-bold">
-                        No collections found
-                      </p>
-                      <p className="font-sans text-sm text-[#a07f61]">
-                        Try adjusting your search or selecting a different
-                        category.
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+  if (
+    catalogueId === undefined ||
+    (catalogueId === null && !cataloguesLoaded)
+  ) {
+    return (
+      <div className="lb-root min-h-screen">
+        <div className="lb-wrap">
+          <div className="lb-grid" aria-busy="true">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="lb-skel" />
+            ))}
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (catalogueId === null) {
+    return (
+      <div className="lb-root min-h-screen">
+        <header className="lb-hero">
+          <div className="lb-wrap">
+            <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+            <h1 className="lb-title">Our Catalogues</h1>
+            <p className="lb-sub">
+              Choose a catalogue to browse, tick the designs you like and send
+              them to us in one WhatsApp inquiry.
+            </p>
+            {badLink && (
+              <p className="lb-notice" role="status">
+                Sorry, that catalogue link is not valid. Please choose a
+                catalogue below.
+              </p>
+            )}
+          </div>
+        </header>
+        <main className="lb-wrap" id="lookbook-content">
+          {catalogues.length === 0 ? (
+            <div className="lb-empty">
+              <h2>New designs are on their way</h2>
+              <p>
+                No catalogue has been published yet. Please check back soon.
+              </p>
+            </div>
+          ) : (
+            <ul className="lb-cat-grid">
+              {catalogues.map((c) => (
+                <li key={c._id}>
+                  <button
+                    type="button"
+                    className="lb-cat-card"
+                    onClick={() => openCatalogue(c._id)}
+                  >
+                    <span className="lb-pick-cover">
+                      {c.cover ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={getImageUrl(c.cover)}
+                          alt={`${c.title} cover`}
+                          loading="lazy"
+                        />
+                      ) : null}
+                    </span>
+                    <span className="lb-cat-body">
+                      <strong>{c.title}</strong>
+                      <span className="lb-meta">
+                        {[c.season, `${c.count} designs`]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                      <span className="lb-cat-open">View catalogue →</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (complete && !items.length && !loadError) {
+    return (
+      <div className="lb-root min-h-screen">
+        <header className="lb-hero">
+          <div className="lb-wrap">
+            <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+            <h1 className="lb-title">This catalogue is no longer available</h1>
+            <p className="lb-sub">
+              Sorry, the catalogue or image from this link has been removed or
+              replaced. Please see our current catalogues.
+            </p>
+          </div>
+        </header>
+        <main className="lb-wrap" id="lookbook-content">
+          <div className="lb-empty">
+            <button
+              type="button"
+              className="lb-btn lb-btn--accent"
+              onClick={() => openCatalogue(null)}
+            >
+              See the new catalogues
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="lb-root min-h-screen">
+      <header className="lb-hero">
+        <div className="lb-wrap">
+          <p className="lb-eyebrow">SANWARIYAS · Wholesale Ethnic Wear</p>
+          <h1 className="lb-title">
+            {activeCatalogue ? activeCatalogue.title : "Catalogue"}
+          </h1>
+          <p className="lb-sub">
+            {activeCatalogue
+              ? [activeCatalogue.season, activeCatalogue.description]
+                  .filter(Boolean)
+                  .join(" · ") ||
+                "Browse the collection and select your favourites."
+              : "Tick every design you like and send them all to us in one WhatsApp inquiry."}
+          </p>
+          <div className="lb-hero-actions">
+            {catalogues.length > 1 && (
+              <button
+                type="button"
+                className="lb-chip"
+                onClick={() => openCatalogue(null)}
+              >
+                ← All catalogues
+              </button>
+            )}
+            <button type="button" className="lb-chip" onClick={shareCatalogue}>
+              Share this catalogue
+            </button>
+          </div>
+          {shareMsg && (
+            <p className="lb-meta" role="status">
+              {shareMsg}
+            </p>
+          )}
+          {linkNotice && (
+            <p className="lb-notice" role="status">
+              {linkNotice}
+            </p>
+          )}
+        </div>
+      </header>
+
+      <LookbookMagazineBar
+        categories={[]}
+        activeCategory={activeCategory}
+        onCategory={setActiveCategory}
+        searchQuery={searchQuery}
+        onSearch={setSearchQuery}
+        viewMode={viewMode}
+        onView={changeView}
+        hasFeatured={items.some((i) => i.isFeatured)}
+        featuredOnly={featuredOnly}
+        onToggleFeatured={() => setFeaturedOnly((v) => !v)}
+        selectedOnly={selectedOnly}
+        onToggleSelectedOnly={() => setSelectedOnly((v) => !v)}
+        selectedCount={count}
+        resultCount={filtered.length}
+      />
+
+      <main className="lb-wrap" id="lookbook-content">
+        {loading && !items.length ? (
+          <div
+            className="lb-grid"
+            aria-busy="true"
+            aria-label="Loading designs"
+          >
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="lb-skel" />
+            ))}
+          </div>
+        ) : loadError && !items.length ? (
+          <div className="lb-empty" role="alert">
+            <h2>Couldn&apos;t load the lookbook</h2>
+            <p>{loadError}</p>
+            <button
+              type="button"
+              className="lb-btn lb-btn--accent"
+              onClick={() => setReloadKey((k) => k + 1)}
+            >
+              Try again
+            </button>
+          </div>
+        ) : !items.length ? (
+          <div className="lb-empty">
+            <h2>Catalogue unavailable</h2>
+            <p>
+              This catalogue is not available. It may have been unpublished.
+            </p>
+            {catalogues.length > 0 && (
+              <button
+                type="button"
+                className="lb-btn lb-btn--accent"
+                onClick={() => openCatalogue(null)}
+              >
+                View all catalogues
+              </button>
+            )}
+          </div>
+        ) : !filtered.length ? (
+          <div className="lb-empty">
+            <h2>No designs match</h2>
+            <p>Try a different collection or search term.</p>
+            <button
+              type="button"
+              className="lb-btn lb-btn--accent"
+              onClick={clearFilters}
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : viewMode === "grid" ? (
+          <LookbookGrid
+            items={filtered}
+            selectedSet={selectedSet}
+            focusId={focusId}
+            onFocus={setFocusId}
+            onToggle={toggleDesign}
+            onOpen={openViewer}
+          />
+        ) : (
+          <LookbookMagazine
+            items={filtered}
+            selectedSet={selectedSet}
+            keysEnabled={!lightbox && !sheetOpen}
+            focusId={focusId}
+            onFocus={setFocusId}
+            onToggle={toggleDesign}
+            onOpen={openViewer}
+          />
+        )}
+        {loadError && items.length > 0 && (
+          <p className="lb-note" role="alert">
+            Some designs could not be loaded. {loadError}
+          </p>
         )}
       </main>
 
-      {/* ═════ FULL-SCREEN MAGAZINE ═════ */}
-      {immersive && (
-        <div
-          className="fixed inset-0 z-[60] flex flex-col"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 0%, #4a3a33 0%, #1c1614 75%)",
-          }}
+      {count > 0 && !sheetOpen && !lightbox && (
+        <button
+          type="button"
+          className="lb-btn lb-btn--wa lb-fab"
+          onClick={() => setSheetOpen(true)}
         >
-          <LookbookMagazineBar
-            categories={visibleCategories}
-            hiddenCategories={hiddenCategories}
-            activeCategory={activeCategory}
-            onCategory={setActiveCategory}
-            searchQuery={searchQuery}
-            onSearch={setSearchQuery}
-            hasFeatured={items.some((i) => i.isFeatured)}
-            featuredOnly={featuredOnly}
-            onToggleFeatured={() => setFeaturedOnly((v) => !v)}
-            canShuffle={displayItems.length > 2}
-            onShuffle={() => setShuffleKey((k) => k + 1)}
-            onGrid={() => setViewMode("grid")}
-            onOpenInbox={() => setIsBoxOpen(true)}
-            count={shortlist.length}
-          />
+          Send Inquiry on WhatsApp ({count} Design{count === 1 ? "" : "s"})
+        </button>
+      )}
 
-          <div className="flex-1 min-h-0">
-            {displayItems.length > 0 ? (
-              <LookbookMagazine
-                key={`${activeCategory}|${searchQuery}|${featuredOnly}|${shuffleKey}|${displayItems.length}`}
-                items={displayItems}
-                questions={questions}
-                backendUrl={BACKEND_URL}
-                shortlist={shortlist}
-                toggleShortlist={toggleShortlist}
-                answers={answers}
-                setAnswer={setAnswer}
-                onOpenInquiry={() => setIsBoxOpen(true)}
-                onSwitchToGrid={() => setViewMode("grid")}
-                initialItemId={sharedItemId}
-                keyboardEnabled={!isBoxOpen && selectedIndex === null}
-              />
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center px-6">
-                <p className="font-display text-2xl text-white font-bold mb-2">
-                  No collections found
-                </p>
-                <p className="font-sans text-sm text-white/60">
-                  Try adjusting your search or selecting a different category.
-                </p>
-              </div>
-            )}
-          </div>
+      {selection.notice && (
+        <div className="lb-toast" role="status">
+          {selection.notice}
         </div>
       )}
 
-      {shortlist.length > 0 && !immersive && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] bg-[#7A3D2A] text-white px-2 py-2 pr-6 rounded-full shadow-2xl flex items-center justify-between gap-4 animate-[popIn_0.3s_ease] border border-white/20 min-w-[320px]">
-          <button
-            onClick={() => setIsBoxOpen(true)}
-            className="flex items-center gap-3 pl-2 hover:opacity-80 transition-opacity cursor-pointer text-left"
-            title="View selected items"
-          >
-            <span className="flex items-center justify-center bg-white text-[#7A3D2A] w-8 h-8 rounded-full font-bold text-sm">
-              {shortlist.length}
-            </span>
-            <span className="font-sans text-[10px] tracking-[0.2em] uppercase font-semibold">
-              View Box
-            </span>
-          </button>
-          <button
-            onClick={() => setIsBoxOpen(true)}
-            className="bg-[#25D366] text-white px-5 py-2.5 rounded-full font-sans text-[10px] tracking-[0.2em] uppercase font-bold hover:brightness-110 transition flex items-center gap-2 shadow-lg"
-          >
-            Inquire Bulk
-            <span>→</span>
-          </button>
-        </div>
+      {lightbox && (
+        <LookbookModal
+          items={lightbox.items}
+          index={lightbox.index}
+          selectedSet={selectedSet}
+          onIndex={(index) =>
+            setLightbox((l) => {
+              if (l?.items[index]) setFocusId(l.items[index]._id);
+              return l && { ...l, index };
+            })
+          }
+          onClose={() => setLightbox(null)}
+          onToggle={toggleDesign}
+        />
       )}
 
-      <LookbookInquirySheet
-        open={isBoxOpen}
-        onClose={() => setIsBoxOpen(false)}
-        shortlist={shortlist}
-        answers={answers}
-        backendUrl={BACKEND_URL}
-        onRemove={toggleShortlist}
-        onClear={() => {
-          setShortlist([]);
-          setAnswers({});
-        }}
-      />
-
-      <LookbookModal
-        item={selectedIndex !== null ? displayItems[selectedIndex] : null}
-        backendUrl={BACKEND_URL}
-        onClose={() => setSelectedIndex(null)}
-        onNext={() =>
-          setSelectedIndex((i) => (i < displayItems.length - 1 ? i + 1 : i))
-        }
-        onPrev={() => setSelectedIndex((i) => (i > 0 ? i - 1 : i))}
-        hasNext={
-          selectedIndex !== null && selectedIndex < displayItems.length - 1
-        }
-        hasPrev={selectedIndex !== null && selectedIndex > 0}
-        currentIndex={selectedIndex || 0}
-        totalCount={displayItems.length}
-        shortlist={shortlist}
-        toggleShortlist={toggleShortlist}
-      />
+      {sheetOpen && (
+        <LookbookInquirySheet
+          open
+          items={selectedItems}
+          questions={questions}
+          answers={answers}
+          whatsappNumber={whatsappNumber}
+          onAnswer={onAnswer}
+          onRemove={remove}
+          onClear={clear}
+          onClose={() => setSheetOpen(false)}
+        />
+      )}
 
       <Footer />
-
-      <style jsx global>{`
-        @keyframes cardIn {
-          from {
-            opacity: 0;
-            transform: translateY(24px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes popIn {
-          0% {
-            transform: translate(-50%, 100%) scale(0.9);
-            opacity: 0;
-          }
-          100% {
-            transform: translate(-50%, 0) scale(1);
-            opacity: 1;
-          }
-        }
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes slideInRight {
-          from {
-            transform: translateX(100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-      `}</style>
-    </>
+    </div>
   );
 }

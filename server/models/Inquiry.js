@@ -36,7 +36,10 @@ const inquirySchema = new mongoose.Schema(
     email: { type: String, required: true, trim: true, maxlength: 150 },
     whatsapp: { type: String, required: true, trim: true, maxlength: 20 },
     country: { type: String, required: true, trim: true, maxlength: 80 },
+    // Optional at schema level so records created before this field existed stay valid.
+    state: { type: String, trim: true, maxlength: 80, default: "" },
     productCategory: { type: String, trim: true, maxlength: 100 },
+    quantity: { type: Number, min: 1 },
     budgetRange: { type: String, trim: true, maxlength: 50 },
     message: { type: String, required: true, trim: true, maxlength: 3000 },
 

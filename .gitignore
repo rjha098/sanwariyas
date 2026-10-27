@@ -75,3 +75,6 @@ coverage/
 # ===============================
 tmp/
 temp/
+# ===============================
+server/storage/
+server/uploads/lookbook/catalogues/

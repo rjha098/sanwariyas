@@ -10,8 +10,69 @@ import { Resend } from "resend";
 import { normalizeEmail, normalizePhone } from "../utils/normalize.js";
 import { removeStoredInquiryImages } from "../middlewares/inquiryUpload.js";
 import { formatPhone } from "../utils/formatPhone.js";
+import { validateState } from "../utils/validateState.js";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hrsanwariyas@gmail.com";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const OBJECT_ID_RE = /^[a-f\d]{24}$/i;
+const badRequest = (message) => {
+  const err = new Error(message);
+  err.status = 400;
+  return err;
+};
+const asText = (v) => (typeof v === "string" ? v.trim() : null);
+
+export const validateInquiryInput = (data = {}) => {
+  const required = [
+    ["name", 120, "Name"],
+    ["companyName", 150, "Company name"],
+    ["country", 80, "Country"],
+    ["message", 3000, "Message"],
+  ];
+  for (const [key, max, label] of required) {
+    const v = asText(data[key]);
+    if (!v) throw badRequest(`${label} is required.`);
+    if (v.length > max)
+      throw badRequest(`${label} must be ${max} characters or fewer.`);
+  }
+  const email = asText(data.email);
+  if (!email || email.length > 150 || !EMAIL_RE.test(email)) {
+    throw badRequest("Please enter a valid email address.");
+  }
+  const digits =
+    typeof data.whatsapp === "string" || typeof data.whatsapp === "number"
+      ? normalizePhone(data.whatsapp)
+      : "";
+  if (digits.length < 7 || digits.length > 20) {
+    throw badRequest("Please enter a valid WhatsApp number.");
+  }
+  for (const [key, max] of [
+    ["productCategory", 100],
+    ["budgetRange", 50],
+  ]) {
+    const v = data[key];
+    if (v !== undefined && v !== null && v !== "") {
+      if (typeof v !== "string" || v.trim().length > max)
+        throw badRequest(`Invalid ${key}.`);
+    }
+  }
+  if (
+    data.quantity !== undefined &&
+    data.quantity !== null &&
+    data.quantity !== ""
+  ) {
+    const q = Number(data.quantity);
+    if (!Number.isFinite(q) || q < 10 || q > 1e9)
+      throw badRequest("Minimum order quantity is 10 pieces.");
+  }
+  if (
+    data.productId &&
+    !(typeof data.productId === "string" && OBJECT_ID_RE.test(data.productId))
+  ) {
+    throw badRequest("Invalid product.");
+  }
+};
 
 const STATUS_ALIASES = {
   pending: ["pending", "New"],
@@ -19,13 +80,73 @@ const STATUS_ALIASES = {
   resolved: ["resolved", "Closed"],
 };
 
+const aliasesFor = (status) =>
+  typeof status === "string" && Object.hasOwn(STATUS_ALIASES, status)
+    ? STATUS_ALIASES[status]
+    : null;
+
+const DUPLICATE_WINDOW_MS = 60 * 1000;
+const inflightInquiries = new Map();
+
 export const createInquiry = async (data, userId, sampleImages = []) => {
+  validateInquiryInput(data);
+  const email = data.email ? normalizeEmail(data.email) : "";
+  const whatsapp = normalizePhone(data.whatsapp);
+  const message = String(data.message).trim();
+  const key = [
+    userId || "guest",
+    email,
+    whatsapp,
+    message,
+    data.productCategory || "",
+    data.quantity || "",
+  ].join("\u0001");
+  const discard = () => removeStoredInquiryImages(sampleImages).catch(() => {});
+
+  if (inflightInquiries.has(key)) {
+    const first = await inflightInquiries.get(key);
+    await discard();
+    return first;
+  }
+  const work = (async () => {
+    const recent = await Inquiry.findOne({
+      userId: userId || null,
+      email,
+      whatsapp,
+      message,
+      createdAt: { $gte: new Date(Date.now() - DUPLICATE_WINDOW_MS) },
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+    if (recent) {
+      await discard();
+      return recent;
+    }
+    return createInquiryCore(data, userId, sampleImages);
+  })();
+  inflightInquiries.set(key, work);
+  try {
+    return await work;
+  } finally {
+    inflightInquiries.delete(key);
+  }
+};
+
+const createInquiryCore = async (data, userId, sampleImages = []) => {
+  validateInquiryInput(data);
+  const checkedState = validateState(data.state);
+  if (checkedState.error) {
+    const err = new Error(checkedState.error);
+    err.status = 400;
+    throw err;
+  }
   const inquiry = await Inquiry.create({
     name: data.name,
     companyName: data.companyName,
     email: data.email ? normalizeEmail(data.email) : "",
     whatsapp: normalizePhone(data.whatsapp),
     country: data.country,
+    state: checkedState.value,
     productCategory: data.productCategory,
     quantity: data.quantity,
     budgetRange: data.budgetRange,
@@ -64,6 +185,7 @@ export const createInquiry = async (data, userId, sampleImages = []) => {
             <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
             <p><strong>WhatsApp:</strong> ${escapeHtml(data.whatsapp ? formatPhone(data.whatsapp) : "Not provided")}</p>
             <p><strong>Company:</strong> ${escapeHtml(data.companyName || "Not provided")}</p>
+            <p><strong>State:</strong> ${escapeHtml(checkedState.value)}</p>
             <p><strong>Category:</strong> ${escapeHtml(data.productCategory || "Not provided")}</p>
             <hr style="border: 1px solid #E0BFA2; margin: 20px 0;">
             <h3>Message:</h3>
@@ -83,8 +205,8 @@ export const createInquiry = async (data, userId, sampleImages = []) => {
 
 export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
   const query = {};
-  if (status && status !== "all") {
-    query.status = { $in: STATUS_ALIASES[status] || [status] };
+  if (typeof status === "string" && status && status !== "all") {
+    query.status = { $in: aliasesFor(status) || [status] };
   }
 
   const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -144,21 +266,28 @@ export const getAllInquiries = async ({ page = 1, limit = 20, status }) => {
 // enough (that let a new registration read someone else's guest inquiries);
 // guest inquiries join an account through the verified claim flow
 // (inquiryClaimService.js), which sets userId.
-export const getUserInquiries = async (userId) => {
-  const page = 1;
-  const limit = 50;
-  const skip = (page - 1) * limit;
 
-  const inquiries = await Inquiry.find({ userId })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
 
+
+
+
+
+export const getUserInquiriesPage = async (userId, { page, limit } = {}) => {
+  const p = Math.max(1, parseInt(page, 10) || 1);
+  const l = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
+  const [rows, total] = await Promise.all([
+    Inquiry.find({ userId }).sort({ createdAt: -1 }).skip((p - 1) * l).limit(l).lean(),
+    Inquiry.countDocuments({ userId }),
+  ]);
   const isAdminOnline = await isAdminCurrentlyOnline();
-
-  return inquiries.map((inq) => ({ ...inq, isAdminOnline }));
+  return {
+    inquiries: rows.map((inq) => ({ ...inq, isAdminOnline })),
+    pagination: { total, page: p, limit: l, pages: Math.ceil(total / l) },
+  };
 };
+
+export const getUserInquiries = async (userId) =>
+  (await getUserInquiriesPage(userId)).inquiries;
 
 export const getInquiryById = async (id) => {
   const inquiry = await Inquiry.findById(id)
@@ -191,7 +320,7 @@ export const getInquiryById = async (id) => {
 };
 
 export const updateInquiryStatus = async (id, { status, adminNotes }) => {
-  if (status && !STATUS_ALIASES[status]) {
+  if (status && !aliasesFor(status)) {
     const err = new Error("Invalid inquiry status");
     err.statusCode = 400;
     throw err;
