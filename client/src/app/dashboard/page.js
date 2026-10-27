@@ -801,7 +801,7 @@ export default function UserDashboard() {
 
       <div className="min-h-screen bg-[#FAF3E8]">
         {/* Top bar */}
-        <div className="bg-white border-b border-[#E8D5A3]/60 sticky top-0 z-30">
+        <div className="bg-white border-b border-[#E8D5A3]/60 sticky top-[83px] z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/*  SEO FIX: Descriptive aria-label for accessibility */}
@@ -869,12 +869,12 @@ export default function UserDashboard() {
           {/* Sidebar */}
           <aside
             className={`
-            fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-[#E8D5A3]/60 transform transition-transform lg:static lg:translate-x-0 lg:h-auto lg:z-auto
+            fixed top-[83px] bottom-0 left-0 z-40 w-64 overflow-y-auto bg-white border-r border-[#E8D5A3]/60 transform transition-transform lg:static lg:overflow-visible lg:translate-x-0 lg:h-auto lg:z-auto
             ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           `}
           >
             {/* User info */}
-            <div className="p-6 border-b border-[#E8D5A3]/40 mt-16 lg:mt-0">
+            <div className="p-6 border-b border-[#E8D5A3]/40">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#6F4E37] flex items-center justify-center flex-shrink-0">
                   <span className="font-display text-white text-lg">
