@@ -140,7 +140,8 @@ export const replyToInquiry = async (req, res) => {
     const senderId = userObj.id || userObj._id || userObj.userId;
     const role = userObj.role;
 
-    if (!senderId || !role) {
+    // The pure-ENV admin has no database id, so only they may reply without one.
+    if (!role || (!senderId && role !== "admin")) {
       return res
         .status(401)
         .json({ success: false, message: "Unauthorized. Please login." });

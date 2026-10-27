@@ -4,10 +4,11 @@ import mongoose from "mongoose";
 
 const replySchema = new mongoose.Schema(
   {
+    // null for the pure-ENV admin (no User row / no ObjectId)
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: null,
     },
     role: {
       type: String,
