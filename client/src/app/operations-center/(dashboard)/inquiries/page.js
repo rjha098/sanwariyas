@@ -45,6 +45,8 @@ function InquiriesContent() {
     deleteInquiry,
     markAsViewed,
     loadInquiries,
+    exportInquiries,
+    exporting,
   } = useInquiries(token, "admin", { page: urlPage, filter: urlStatus });
 
   // Latest filter state, tracked in a ref so several setter calls in the same tick
@@ -129,7 +131,10 @@ function InquiriesContent() {
 
   useEffect(() => {
     if (!inquiryMessage) return;
-    showToast(inquiryMessage, isErrorMessage(inquiryMessage) ? "error" : "success");
+    showToast(
+      inquiryMessage,
+      isErrorMessage(inquiryMessage) ? "error" : "success",
+    );
   }, [inquiryMessage, showToast]);
 
   return (
@@ -147,6 +152,8 @@ function InquiriesContent() {
           handleInquiryStatus={handleInquiryStatus}
           deleteInquiry={deleteInquiry}
           markAsViewed={markAsViewed}
+          exportInquiries={exportInquiries}
+          exporting={exporting}
           highlightedInquiryId={highlightedInquiryId}
         />
       </section>

@@ -334,6 +334,10 @@
 //             <strong className="text-brand-african">Country:</strong>{" "}
 //             {inquiry.country}
 //           </p>
+//           <p className="text-sm mt-2">
+//             <strong className="text-brand-african">State:</strong>{" "}
+//             {inquiry.state || "—"}
+//           </p>
 //         </div>
 
 //         <div className="bg-brand-parchment p-6">
@@ -494,9 +498,6 @@
 //   );
 // }
 
-
-
-
 // FILE: client/src/app/operations-center/inquiries/[id]/page.js
 
 "use client";
@@ -509,6 +510,7 @@ import api from "@/lib/api";
 import { deleteNotificationByInquiry } from "@/lib/api";
 import { getImageUrl } from "@/lib/imageUrl";
 import { inquiryListHrefFromSearch } from "@/lib/adminRoutes";
+import ContactLogPanel from "@/components/admin/ContactLogPanel";
 
 export default function InquiryDetailsPage() {
   const params = useParams();
@@ -681,6 +683,21 @@ export default function InquiryDetailsPage() {
       setSendingReply(false);
     }
   };
+
+  // Merge the latest private contact-log state returned by the API.
+  const handleContactLogChange = useCallback((updated) => {
+    setInquiry((prev) =>
+      prev
+        ? {
+            ...prev,
+            status: updated.status,
+            contactLogs: updated.contactLogs,
+            lastContactedAt: updated.lastContactedAt,
+            nextFollowUpAt: updated.nextFollowUpAt,
+          }
+        : prev,
+    );
+  }, []);
 
   if (!isAuthenticated) return null;
 
@@ -958,6 +975,15 @@ export default function InquiryDetailsPage() {
           </div>
         </div>
       )}
+
+      <ContactLogPanel
+        inquiryId={inquiry._id}
+        token={token}
+        status={inquiry.status}
+        logs={inquiry.contactLogs || []}
+        nextFollowUpAt={inquiry.nextFollowUpAt}
+        onChange={handleContactLogChange}
+      />
 
       <div className="border-t border-brand-lightgold/40 pt-8">
         <h3 className="text-[11px] tracking-[0.2em] uppercase text-brand-gold mb-3 font-sans">
