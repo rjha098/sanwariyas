@@ -3,6 +3,7 @@
 
 import crypto from "crypto";
 import { validatePassword } from "../utils/validators.js";
+import { COUNTRY_DIAL_CODES } from "../utils/countryDialCodes.js";
 
 const STAFF_DEPARTMENTS = [
   "Sales",
@@ -647,6 +648,22 @@ export const getMe = async (req, res) => {
   }
 };
 
+// Dial code (digits) that owns this user's PHONE NUMBER. The phone is the
+// source of truth: it is locked and cannot be edited. `countryCode` is only used
+// when it really is a prefix of the phone (the schema default "91" is not
+// trusted on its own), so the dial is never guessed wrong for older accounts.
+const ALL_DIALS = [
+  ...new Set(Object.values(COUNTRY_DIAL_CODES).map((c) => c.dial)),
+].sort((a, b) => b.length - a.length);
+
+const dialForUser = (user) => {
+  const phone = String(user.phone || "").replace(/\D/g, "");
+  const candidates = ALL_DIALS.filter((d) => phone.startsWith(d));
+  const stored = String(user.countryCode || "").replace(/\D/g, "");
+  if (stored && candidates.includes(stored)) return stored;
+  return candidates[0] || "";
+};
+
 export const updateProfile = async (req, res) => {
   try {
     const { name, company, country } = req.body || {};
@@ -663,9 +680,38 @@ export const updateProfile = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
 
+      // Country must belong to the (locked) phone number's country code, so an
+    // Indian +91 number cannot be saved as "Australia". Only checked when the
+    // country is actually being changed.
+    const newCountry = typeof country === "string" ? country.trim() : "";
+    if (
+      newCountry &&
+      newCountry.toLowerCase() !== String(user.country || "").trim().toLowerCase()
+    ) {
+      const entry = COUNTRY_DIAL_CODES[newCountry.toLowerCase()];
+      const dial = dialForUser(user);
+      if (!entry) {
+        const message = "Please enter a valid country name.";
+        return res
+          .status(400)
+          .json({ success: false, message, fieldErrors: { country: message } });
+      }
+      if (dial && entry.dial !== dial) {
+        const owners = Object.values(COUNTRY_DIAL_CODES)
+          .filter((c) => c.dial === dial)
+          .map((c) => c.name);
+        const message =
+          `Country must match your phone number (+${dial}${owners.length ? ` - ${owners.join(" / ")}` : ""}). ` +
+          "To use a different country, please contact support to change your phone number.";
+        return res
+          .status(400)
+          .json({ success: false, message, fieldErrors: { country: message } });
+      }
+      user.country = entry.name; // saved in proper form, e.g. "Australia"
+    }
+
     user.name = name || user.name;
     user.company = company || user.company;
-    user.country = country || user.country;
     await user.save();
 
     res.json({

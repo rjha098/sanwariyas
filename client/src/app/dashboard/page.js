@@ -17,6 +17,7 @@ import api, { deleteNotificationByInquiry } from "@/lib/api";
 import Toast from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import PhoneInput from "@/components/ui/PhoneInput";
+import { countryCodes } from "@/utils/countryCodes";
 import SampleImageGallery from "@/components/ui/SampleImageGallery";
 
 const Icon = {
@@ -521,6 +522,21 @@ function InquiryDetail({ inquiry, token, onClose, onRefresh }) {
   );
 }
 
+// Countries that own the (locked) phone number's dial code, e.g. 918229868864 -> ["India"].
+const countriesForPhone = (phone) => {
+  const digits = String(phone || "").replace(/\D/g, "");
+  if (!digits) return [];
+  let best = "";
+  for (const c of countryCodes) {
+    const d = String(c.code || "").replace(/\D/g, "");
+    if (d && digits.startsWith(d) && d.length > best.length) best = d;
+  }
+  if (!best) return [];
+  return countryCodes
+    .filter((c) => String(c.code || "").replace(/\D/g, "") === best)
+    .map((c) => c.name);
+};
+
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 export default function UserDashboard() {
   const { token, user, isAuthenticated, authChecking, logout } = useAuth();
@@ -664,7 +680,15 @@ export default function UserDashboard() {
     e.preventDefault();
     setProfileLoading(true);
     try {
-      await api.put("/auth/profile", profileData, {
+      const allowedCountries = countriesForPhone(profileData.phone);
+      const payload = {
+        ...profileData,
+        country:
+          allowedCountries.length === 1
+            ? allowedCountries[0]
+            : profileData.country,
+      };
+      await api.put("/auth/profile", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       showToast("Profile updated successfully!", "success");
@@ -1259,7 +1283,7 @@ export default function UserDashboard() {
                             className={inputCls}
                           />
                         </div>
-                        <div className="md:col-span-2">
+                        {/* <div className="md:col-span-2">
                           <label className={labelCls}>Country</label>
                           <input
                             type="text"
@@ -1273,6 +1297,70 @@ export default function UserDashboard() {
                             placeholder="e.g. United States, India, UK"
                             className={inputCls}
                           />
+                        </div> */}
+
+                        <div className="md:col-span-2">
+                          <label className={labelCls}>Country</label>
+                          {(() => {
+                            const allowed = countriesForPhone(
+                              profileData.phone,
+                            );
+                            if (allowed.length === 1) {
+                              return (
+                                <>
+                                  <input
+                                    type="text"
+                                    value={allowed[0]}
+                                    disabled
+                                    readOnly
+                                    className="w-full px-4 py-2.5 border border-[#E8D5A3]/60 rounded-lg font-sans text-sm text-[#574325] bg-[#FAF3E8]/50 opacity-60 cursor-not-allowed outline-none"
+                                  />
+                                  <p className="mt-1.5 font-sans text-[11px] text-[#a07f61] italic">
+                                    Country follows your phone number. Contact
+                                    support to change it.
+                                  </p>
+                                </>
+                              );
+                            }
+                            if (allowed.length > 1) {
+                              return (
+                                <select
+                                  value={
+                                    allowed.includes(profileData.country)
+                                      ? profileData.country
+                                      : allowed[0]
+                                  }
+                                  onChange={(e) =>
+                                    setProfileData({
+                                      ...profileData,
+                                      country: e.target.value,
+                                    })
+                                  }
+                                  className={inputCls}
+                                >
+                                  {allowed.map((name) => (
+                                    <option key={name} value={name}>
+                                      {name}
+                                    </option>
+                                  ))}
+                                </select>
+                              );
+                            }
+                            return (
+                              <input
+                                type="text"
+                                value={profileData.country}
+                                onChange={(e) =>
+                                  setProfileData({
+                                    ...profileData,
+                                    country: e.target.value,
+                                  })
+                                }
+                                placeholder="e.g. United States, India, UK"
+                                className={inputCls}
+                              />
+                            );
+                          })()}
                         </div>
                       </div>
 
