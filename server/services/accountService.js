@@ -175,6 +175,19 @@ export const linkGoogleToCurrentUser = async (userId, credential) => {
     if (user.googleId === g.sub) return user; // already connected (idempotent)
     throw httpError(409, "A different Google account is already connected.");
   }
+
+    // The Google account must use the SAME email as this account. Otherwise a
+  // person could connect any other Google account (e.g. one that happens to be
+  // signed in on the device) and later sign in to this account with it.
+  // (400, not 401: the client treats 401 as "session expired".)
+  if (normalizeEmail(g.email) !== normalizeEmail(user.email)) {
+    throw httpError(
+      400,
+      `This Google account (${g.email}) uses a different email than your account. ` +
+        `Please choose the Google account with the same email as your account (${user.email}).`,
+    );
+  }
+  
   const clash = await User.findOne({ googleId: g.sub }).select("_id");
   if (clash) {
     throw httpError(
