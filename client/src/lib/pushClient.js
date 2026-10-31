@@ -1,5 +1,5 @@
 // // FILE: client/src/lib/pushClient.js
-// // Browser side of Web Push: register the service worker, ask permission,
+// // // Browser side of Web Push: register the service worker, ask permission,
 // // subscribe, and tell the server about this device.
 // import api from "@/lib/api";
 
@@ -104,16 +104,13 @@
 //   }
 // };
 
-// export const sendTestPush = (token) =>
-//   api.post("/notification/push/test", {}, auth(token)).then((r) => r.data);
-
-
-
-
-
 // FILE: client/src/lib/pushClient.js
 // Browser side of Web Push: register the service worker, ask permission,
 // subscribe, and tell the server about this device.
+//
+// Every step that can wait on the browser / phone / network has a time limit,
+// so the screen can never stay on "Please wait..." forever (this happened on
+// iPhone when a step never answered).
 import api from "@/lib/api";
 
 const auth = (token) => ({ headers: { Authorization: `Bearer ${token}` } });
@@ -143,44 +140,80 @@ const urlBase64ToUint8Array = (base64) => {
 export const registerServiceWorker = () =>
   navigator.serviceWorker.register("/sw.js", { scope: "/" });
 
+// Rejects with { isTimeout: true, pushStep: name } if `promise` does not finish in `ms`.
+export const withTimeout = (promise, ms, name) =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      const e = new Error(`${name} timed out`);
+      e.pushStep = name;
+      e.isTimeout = true;
+      reject(e);
+    }, ms);
+    Promise.resolve(promise).then(
+      (v) => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(timer);
+        reject(e);
+      },
+    );
+  });
+
 // Runs one step and tags any error with the step name, so the screen can say
-// exactly WHERE enabling notifications failed.
+// what failed (kept in plain words, not shown as codes).
 const step = async (name, fn) => {
   try {
     return await fn();
   } catch (e) {
-    e.pushStep = name;
+    if (!e.pushStep) e.pushStep = name;
     throw e;
   }
 };
 
+// Asks the phone for permission. Long limit: the person may take time to decide.
+export const askPermission = () =>
+  withTimeout(Notification.requestPermission(), 60000, "permission");
+
+// Push calls must fail fast and must NOT silently wait out a 429 lockout
+// (api.js would otherwise sit on "Please wait" for minutes).
+const pushCall = { timeout: 15000, skipRateLimitRetry: true };
+
 // Subscribes this device (permission must already be "granted") and saves it for the logged-in user.
 export const subscribeThisDevice = async (token) => {
   const reg = await step("service-worker", async () => {
-    const r = await registerServiceWorker();
-    await navigator.serviceWorker.ready;
-    return r;
+    await registerServiceWorker();
+    // resolves with the ACTIVE registration; on iPhone this is the step that can stall
+    return withTimeout(navigator.serviceWorker.ready, 10000, "service-worker");
   });
 
-  let sub = await reg.pushManager.getSubscription();
+  let sub = await step("service-worker", () =>
+    withTimeout(reg.pushManager.getSubscription(), 8000, "service-worker"),
+  );
   if (!sub) {
     const publicKey = await step(
       "server-key",
       async () =>
-        (await api.get("/notification/push/public-key")).data.publicKey,
+        (await api.get("/notification/push/public-key", pushCall)).data
+          .publicKey,
     );
     sub = await step("browser-subscribe", () =>
-      reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey),
-      }),
+      withTimeout(
+        reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicKey),
+        }),
+        20000,
+        "browser-subscribe",
+      ),
     );
   }
   await step("save-device", () =>
     api.post(
       "/notification/push/subscribe",
       { subscription: sub.toJSON(), userAgent: navigator.userAgent },
-      auth(token),
+      { ...auth(token), ...pushCall },
     ),
   );
   return sub;
