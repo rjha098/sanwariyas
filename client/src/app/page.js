@@ -1,4 +1,3 @@
-
 // FILE: client/src/app/page.js
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
@@ -11,6 +10,8 @@ import InstagramReelsSection from "@/components/home/InstagramReelsSection";
 import ManufacturingInfoSections from "@/components/home/ManufacturingInfoSections";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import InquiryCTASection from "@/components/home/InquiryCTASection";
+import DiwaliBanner from "@/components/festival/DiwaliBanner";
+
 // import { fetchProducts } from "@/lib/api";
 
 //  Highly optimized Metadata for E-commerce B2B Homepage
@@ -97,6 +98,7 @@ export default async function HomePage() {
       {/* <Navbar /> */}
       <main id="main-content">
         <HeroSection />
+        <DiwaliBanner />
 
         {/* ── LOOKBOOK TEASER SECTION ── */}
         <section

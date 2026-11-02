@@ -1,0 +1,288 @@
+/* FILE: client/src/components/festival/diwali.css
+   Diwali theme for SANWARIYAS. Every class is prefixed `dw-` so it
+   can never clash with the rest of the site.
+
+   v2: no rotating mandala, only ONE diya, buttons match the site theme,
+       homepage banner uses the cream / brown / gold look of the website. */
+
+.dw-scope {
+  --dw-night: #14030a;
+  --dw-wine: #3d0b17;
+  --dw-maroon: #5e1224;
+  --dw-ruby: #8c1d34;
+  --dw-gold: #d9b45a;
+  --dw-gold-hi: #f6df9b;
+  --dw-gold-lo: #a9812c;
+  --dw-saffron: #ff9a2e;
+  --dw-cream: #fff4de;
+
+  /* website theme tokens (match the Home page) */
+  --sw-brown-1: #7a4e12;
+  --sw-brown-2: #9a6420;
+  --sw-brown-3: #b0693a;
+  --sw-ink: #4a2d12;
+  --sw-text: #6b4a2b;
+  --sw-gold-line: #c9a24a;
+  --sw-paper: #fff9ef;
+
+  --dw-hindi: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Playfair Display", serif;
+  --dw-serif: "Cormorant Garamond", Georgia, serif;
+  --dw-sans: "Jost", system-ui, sans-serif;
+}
+
+/* ───────────── shared building blocks ───────────── */
+.dw-gold-text {
+  background: linear-gradient(100deg, #b88a2e 0%, #f6df9b 26%, #fff8dc 48%, #e0b64f 68%, #b88a2e 100%);
+  background-size: 230% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: dwShine 7s linear infinite;
+}
+@keyframes dwShine { to { background-position: -230% 0; } }
+
+.dw-hindi {
+  font-family: var(--dw-hindi);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  filter: drop-shadow(0 4px 22px rgba(255, 154, 46, 0.35));
+}
+
+.dw-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  border: 1px solid rgba(217, 180, 90, 0.55);
+  border-radius: 999px;
+  background: rgba(217, 180, 90, 0.08);
+  font-family: var(--dw-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--dw-gold-hi);
+}
+.dw-chip i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--dw-saffron);
+  box-shadow: 0 0 10px 2px rgba(255, 154, 46, 0.7);
+  animation: dwPulse 2s ease-in-out infinite;
+}
+@keyframes dwPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: .7; } }
+
+/* ── Buttons: same look as "Explore Collection" / "Get Wholesale Price" ── */
+.dw-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 17px 36px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--dw-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .3s ease, box-shadow .3s ease, background .3s ease, color .3s ease, border-color .3s ease;
+}
+.dw-btn:focus-visible { outline: 2px solid var(--sw-gold-line); outline-offset: 3px; }
+
+.dw-btn--gold {
+  color: #fff;
+  background: linear-gradient(100deg, var(--sw-brown-1) 0%, var(--sw-brown-2) 55%, var(--sw-brown-3) 100%);
+  box-shadow: 0 10px 26px rgba(122, 78, 18, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.dw-btn--gold:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(122, 78, 18, 0.42), inset 0 1px 0 rgba(255,255,255,.28); }
+
+.dw-btn--ghost {
+  color: var(--sw-brown-1);
+  background: var(--sw-paper);
+  border-color: var(--sw-gold-line);
+  box-shadow: 0 6px 18px rgba(122, 78, 18, 0.10);
+}
+.dw-btn--ghost:hover { transform: translateY(-2px); background: #fff0d6; border-color: var(--sw-brown-2); }
+
+/* on the dark popup, give the brown button a fine gold edge so it never gets lost */
+.dw-overlay .dw-btn--gold { border-color: rgba(246, 223, 155, 0.55); }
+
+/* flame, glow, sway */
+.dw-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: dwFlicker 1.7s ease-in-out infinite; }
+@keyframes dwFlicker {
+  0%,100% { transform: scale(1, 1) skewX(0); }
+  20% { transform: scale(.94, 1.07) skewX(-2deg); }
+  40% { transform: scale(1.05, .96) skewX(1.6deg); }
+  60% { transform: scale(.97, 1.05) skewX(-1deg); }
+  80% { transform: scale(1.03, .98) skewX(2deg); }
+}
+.dw-glow { transform-box: fill-box; transform-origin: center; animation: dwGlow 2.6s ease-in-out infinite; }
+@keyframes dwGlow { 0%,100% { opacity: .72; transform: scale(1); } 50% { opacity: 1; transform: scale(1.12); } }
+
+.dw-sway { transform-origin: 50% 0; animation: dwSway 5.5s ease-in-out infinite; }
+@keyframes dwSway { 0%,100% { transform: rotate(-3.2deg); } 50% { transform: rotate(3.2deg); } }
+
+@keyframes dwRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes dwTwinkle { 0%,100% { opacity: 0; transform: scale(.4); } 50% { opacity: .95; transform: scale(1); } }
+
+/* ═══════════════ FULL-SCREEN GREETING (popup) ═══════════════
+   Starts fully opaque so it is the very first thing a visitor sees. */
+.dw-overlay {
+  position: fixed; inset: 0; z-index: 9990;
+  overflow-y: auto;
+  background: radial-gradient(75% 70% at 50% 46%, #6e1429 0%, #3b0a16 46%, #14030a 100%);
+  opacity: 1;
+}
+.dw-overlay.is-closing { animation: dwFadeOut .6s ease forwards; pointer-events: none; }
+@keyframes dwFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+.dw-ov-decor { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.dw-ov-decor::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(40% 38% at 50% 40%, rgba(255,154,46,.18), transparent 72%);
+}
+.dw-ov-decor canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dw-ov-toran { position: absolute; top: 0; left: 0; width: 100%; filter: drop-shadow(0 8px 14px rgba(0,0,0,.45)); }
+.dw-ov-lantern { position: absolute; top: 18px; width: clamp(46px, 6.5vw, 82px); }
+.dw-ov-lantern--a { left: 5%;  } .dw-ov-lantern--b { left: 12%; width: clamp(38px, 5vw, 64px); }
+.dw-ov-lantern--c { right: 12%; width: clamp(38px, 5vw, 64px); } .dw-ov-lantern--d { right: 5%; }
+.dw-ov-lantern--b .dw-sway { animation-delay: -1.6s; } .dw-ov-lantern--c .dw-sway { animation-delay: -3s; } .dw-ov-lantern--d .dw-sway { animation-delay: -.8s; }
+
+.dw-ov-close {
+  position: fixed; top: 108px; right: 16px; z-index: 5;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(217,180,90,.55);
+  background: rgba(20,3,10,.55);
+  color: var(--dw-gold-hi);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: transform .3s ease, background .3s ease;
+}
+.dw-ov-close:hover { transform: rotate(90deg); background: rgba(217,180,90,.22); }
+.dw-ov-close:focus-visible { outline: 2px solid var(--dw-gold-hi); outline-offset: 3px; }
+
+.dw-ov-scroll { position: relative; z-index: 3; min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 110px 20px 70px; }
+.dw-ov-content { max-width: 760px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.dw-ov-diya { width: clamp(110px, 16vw, 170px); height: auto; overflow: visible; margin-bottom: 4px; }
+.dw-ov-eyebrow { font-family: var(--dw-sans); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500; letter-spacing: .42em; text-transform: uppercase; color: var(--dw-gold); margin: 10px 0 14px; padding-left: .42em; }
+.dw-ov-title { font-size: clamp(58px, 11vw, 128px); }
+.dw-ov-english { font-family: var(--dw-serif); font-style: italic; font-weight: 500; font-size: clamp(24px, 3.6vw, 40px); color: var(--dw-cream); letter-spacing: .04em; margin-top: 6px; }
+.dw-orn { display: flex; align-items: center; gap: 14px; width: min(340px, 70vw); margin: 22px 0; color: var(--dw-gold); }
+.dw-orn::before, .dw-orn::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--dw-gold)); }
+.dw-orn::after { background: linear-gradient(270deg, transparent, var(--dw-gold)); }
+.dw-orn span { font-size: 13px; letter-spacing: .4em; }
+.dw-ov-wish { font-family: var(--dw-serif); font-weight: 500; font-size: clamp(21px, 2.5vw, 28px); line-height: 1.55; letter-spacing: .01em; color: var(--dw-gold-hi); max-width: 640px; text-wrap: balance; text-shadow: 0 2px 18px rgba(255,154,46,.25); }
+.dw-ov-sign { margin-top: 22px; font-family: var(--dw-sans); font-size: 12px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--dw-gold-hi); }
+.dw-ov-actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; width: 100%; }
+
+.dw-overlay .dw-rise { opacity: 0; animation: dwRise 1s cubic-bezier(.22,1,.36,1) forwards; animation-delay: var(--d, 0s); }
+
+/* ═══════════════ HOMEPAGE BANNER (light, matches the site) ═══════════════ */
+.dw-banner {
+  position: relative; overflow: hidden; isolation: isolate; color: var(--sw-ink);
+  background:
+    radial-gradient(50% 75% at 78% 45%, rgba(255,190,100,.34), transparent 65%),
+    radial-gradient(45% 60% at 8% 95%, rgba(217,180,90,.20), transparent 65%),
+    linear-gradient(135deg, #fdf3e3 0%, #f7e5c8 55%, #f1d8b3 100%);
+  border-top: 1px solid rgba(201,162,74,.55);
+  border-bottom: 1px solid rgba(201,162,74,.55);
+}
+.dw-banner-jaali {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><path d='M24 0L48 24 24 48 0 24z' fill='none' stroke='%23b88a2e' stroke-opacity='.16'/></svg>");
+  -webkit-mask-image: radial-gradient(85% 95% at 50% 50%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(85% 95% at 50% 50%, #000 40%, transparent 100%);
+}
+.dw-banner-sparks { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.dw-spark {
+  position: absolute; border-radius: 50%;
+  width: var(--s); height: var(--s);
+  background: radial-gradient(circle, #fff3c4 0%, #e8b84a 45%, transparent 72%);
+  animation: dwTwinkle var(--t) ease-in-out infinite; animation-delay: var(--d);
+}
+.dw-banner-toran { position: absolute; top: 0; left: 0; width: 100%; z-index: 3; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(90,40,10,.25)); }
+
+.dw-banner-inner {
+  position: relative; z-index: 2;
+  max-width: 1280px; margin: 0 auto;
+  padding: 128px 24px 72px;
+  display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center;
+}
+@media (min-width: 1024px) {
+  .dw-banner-inner { grid-template-columns: 1.1fr .9fr; padding: 132px 56px 80px; gap: 24px; }
+}
+.dw-banner-copy { display: flex; flex-direction: column; align-items: center; text-align: center; }
+@media (min-width: 1024px) { .dw-banner-copy { align-items: flex-start; text-align: left; } }
+
+.dw-banner .dw-chip {
+  border-color: rgba(154,100,32,.45);
+  background: rgba(255,255,255,.6);
+  color: var(--sw-brown-1);
+}
+.dw-banner .dw-hindi { filter: drop-shadow(0 3px 10px rgba(176,105,58,.22)); }
+.dw-banner .dw-gold-text {
+  background-image: linear-gradient(100deg, #6e4410 0%, #a8702a 30%, #cf9a3c 50%, #9a6420 75%, #6e4410 100%);
+  background-size: 230% 100%;
+}
+.dw-banner-title { font-size: clamp(56px, 9vw, 112px); margin-top: 18px; }
+.dw-banner-english { font-family: var(--dw-serif); font-style: italic; font-weight: 500; font-size: clamp(24px, 2.8vw, 34px); color: var(--sw-brown-1); margin-top: 4px; letter-spacing: .02em; text-wrap: balance; }
+.dw-banner-wish { font-family: var(--dw-sans); font-weight: 400; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.85; color: var(--sw-text); max-width: 520px; margin-top: 16px; text-wrap: pretty; }
+
+.dw-countdown-label { margin-top: 26px; font-family: var(--dw-sans); font-size: 11px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; color: var(--sw-brown-2); }
+.dw-countdown { margin-top: 12px; display: flex; gap: 10px; }
+.dw-tile {
+  min-width: 72px; padding: 13px 8px 10px; text-align: center;
+  border: 1px solid rgba(154,100,32,.32); border-radius: 14px;
+  background: rgba(255,255,255,.66);
+  box-shadow: 0 8px 20px rgba(122,78,18,.10);
+}
+.dw-tile b { display: block; font-family: var(--dw-serif); font-weight: 600; font-size: 34px; line-height: 1; color: var(--sw-ink); font-variant-numeric: tabular-nums; }
+.dw-tile small { display: block; margin-top: 7px; font-family: var(--dw-sans); font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--sw-brown-2); }
+.dw-done { margin-top: 22px; font-family: var(--dw-serif); font-style: italic; font-size: 26px; color: var(--sw-brown-1); }
+.dw-banner-ctas { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+@media (min-width: 1024px) { .dw-banner-ctas { justify-content: flex-start; } }
+
+/* decorative stage on the right: ONE diya, soft static glow, nothing spinning */
+.dw-stage { position: relative; width: min(380px, 70vw); aspect-ratio: 1; margin: 6px auto 0; }
+.dw-stage::before {
+  content: ""; position: absolute; inset: 4%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,184,84,.55) 0%, rgba(255,184,84,.18) 45%, transparent 70%);
+}
+.dw-stage-core { position: absolute; inset: 0; display: grid; place-items: center; }
+.dw-stage-diya { width: 62%; height: auto; overflow: visible; filter: drop-shadow(0 16px 24px rgba(90,40,10,.28)); }
+
+/* lanterns hang straight from the toran (desktop only) */
+.dw-banner-lanterns { display: none; }
+@media (min-width: 1024px) {
+  .dw-banner-lanterns { display: block; position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .dw-banner-lantern { position: absolute; top: 14px; }
+  .dw-banner-lantern--a { right: 6%;  width: 62px; }
+  .dw-banner-lantern--b { right: 19%; width: 52px; }
+  .dw-banner-lantern--c { right: 31%; width: 62px; }
+  .dw-banner-lantern--b .dw-sway { animation-delay: -2s; }
+  .dw-banner-lantern--c .dw-sway { animation-delay: -3.4s; }
+}
+
+/* scroll reveal (banner only; content stays visible if JS is off) */
+.dw-banner.is-armed .dw-rise { opacity: 0; }
+.dw-banner.is-armed.is-in .dw-rise { animation: dwRise 1s cubic-bezier(.22,1,.36,1) forwards; animation-delay: var(--d, 0s); }
+
+/* ───────────── small screens ───────────── */
+@media (max-width: 639px) {
+  .dw-ov-actions, .dw-banner-ctas { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; }
+  .dw-ov-lantern--b, .dw-ov-lantern--c { display: none; }
+}
+
+/* ───────────── reduced motion ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  .dw-scope *, .dw-scope *::before, .dw-scope *::after { animation: none !important; transition: none !important; }
+  .dw-overlay, .dw-overlay .dw-rise, .dw-banner.is-armed .dw-rise { opacity: 1 !important; transform: none !important; }
+  .dw-spark { opacity: .6; }
+}
