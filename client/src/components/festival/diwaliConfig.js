@@ -20,16 +20,16 @@ export const DIWALI = {
   bannerEyebrow: "Festival of Lights · Diwali 2026",
   bannerLine: "Warm wishes from the SANWARIYAS family",
   bannerWish:
-    "May the glow of a thousand diyas bring prosperity to your boutique, joy to your family and success to every season ahead. Thank you for being a part of our journey.",
+    "May the glow of a thousand diyas light up your home, your work and every relationship you value. Thank you for trusting us and being a part of our journey. Here's to a brighter, more prosperous year together.",
   overlayWish:
     "May the light of this Diwali fill your home with joy, your business with prosperity, and every dream you carry with a bright new beginning.",
   overlaySign: "With gratitude · The SANWARIYAS Family, Jaipur",
-  countdownLabel: "Countdown",
+  countdownLabel: "Countdown to Lakshmi Puja",
   doneLine: "Today we light the lamps — Happy Diwali!",
 
   // ── Buttons ──────────────────────────────────────────────────────────
-  primaryCta: { label: "Send Wholesale Inquiry", href: "/contact" },
-  secondaryCta: { label: "", href: "" },
+  primaryCta: { label: "Explore Festive Catalogues", href: "/lookbook" },
+  secondaryCta: { label: "Send Wholesale Inquiry", href: "/contact" },
 
   // ── Full-screen greeting popup ───────────────────────────────────────
   // It is rendered together with the first page HTML, so it appears the
