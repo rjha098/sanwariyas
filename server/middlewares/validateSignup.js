@@ -20,6 +20,7 @@ import {
   validateCountryMatchesDial,
   validatePassword,
   validateConfirmPassword,
+  SIGNUP_DUPLICATE_MESSAGE,
 } from "../utils/validators.js";
 
 const sendFieldErrors = (res, status, message, errors) =>
@@ -98,20 +99,11 @@ export const validateSignup = async (req, res, next) => {
       .lean();
 
     if (existing) {
-      const duplicateErrors = {};
-      if (existing.email === body.email) {
-        duplicateErrors.email = "An account with this email already exists.";
-      }
-      if (existing.phone === body.phone) {
-        duplicateErrors.phone =
-          "An account with this phone number already exists.";
-      }
-      return sendFieldErrors(
-        res,
-        409,
-        Object.values(duplicateErrors)[0],
-        duplicateErrors,
-      );
+      // Neutral message, and NO per-field errors, so nothing shows which of
+      // the email / phone matched (the form shows this one message).
+      return res
+        .status(409)
+        .json({ success: false, message: SIGNUP_DUPLICATE_MESSAGE });
     }
 
     return next();

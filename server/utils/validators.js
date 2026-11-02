@@ -329,3 +329,11 @@ export const validateCountryMatchesDial = (country, countryCode) => {
   }
   return "";
 };
+
+
+
+// One neutral message for "this email / phone is already registered" at signup,
+// so the form never tells a stranger WHICH details exist (same idea as the
+// login "Invalid credentials" message).
+export const SIGNUP_DUPLICATE_MESSAGE =
+  "Invalid credentials. If you already have an account, please sign in or use Forgot Password.";

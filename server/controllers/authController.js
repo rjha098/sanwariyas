@@ -2,7 +2,10 @@
 //usage --->>>>  controllers/authController.js & services/authService.js: Handles the heavy lifting of user identity. It processes customer signups, issues HTTP-only cookies, triggers Resend OTP emails for staff/admin 2FA, and seamlessly merges old "guest" inquiries into new accounts based on matching phone/email data.
 
 import crypto from "crypto";
-import { validatePassword } from "../utils/validators.js";
+import {
+  validatePassword,
+  SIGNUP_DUPLICATE_MESSAGE,
+} from "../utils/validators.js";
 import { COUNTRY_DIAL_CODES } from "../utils/countryDialCodes.js";
 
 const STAFF_DEPARTMENTS = [
@@ -80,11 +83,9 @@ export const customerSignup = async (req, res) => {
     // Rare race condition: two signups with the same email/phone hit the
     // DB at nearly the same time and both pass the earlier existence check.
     if (error.code === 11000) {
-      const field = error.keyPattern?.email ? "email" : "phone number";
-      return res.status(409).json({
-        success: false,
-        message: `An account with this ${field} already exists.`,
-      });
+      return res
+        .status(409)
+        .json({ success: false, message: SIGNUP_DUPLICATE_MESSAGE });
     }
     return res.status(error.statusCode || 500).json({
       success: false,
@@ -680,13 +681,16 @@ export const updateProfile = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
 
-      // Country must belong to the (locked) phone number's country code, so an
+    // Country must belong to the (locked) phone number's country code, so an
     // Indian +91 number cannot be saved as "Australia". Only checked when the
     // country is actually being changed.
     const newCountry = typeof country === "string" ? country.trim() : "";
     if (
       newCountry &&
-      newCountry.toLowerCase() !== String(user.country || "").trim().toLowerCase()
+      newCountry.toLowerCase() !==
+        String(user.country || "")
+          .trim()
+          .toLowerCase()
     ) {
       const entry = COUNTRY_DIAL_CODES[newCountry.toLowerCase()];
       const dial = dialForUser(user);

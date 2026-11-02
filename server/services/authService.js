@@ -18,6 +18,7 @@ import { Resend } from "resend";
 import User from "../models/User.js";
 import Inquiry from "../models/Inquiry.js";
 import { safeCompare } from "../utils/authUtils.js";
+
 import {
   validatePassword,
   validateConfirmPassword,
@@ -26,7 +27,9 @@ import {
   validateCompany,
   validateCountry,
   validateCountryMatchesDial,
+  SIGNUP_DUPLICATE_MESSAGE,
 } from "../utils/validators.js";
+
 import {
   normalizeEmail,
   normalizePhone,
@@ -97,26 +100,18 @@ export const signupCustomer = async ({
   const cleanPhone = normalizePhone(phone);
 
   if (isReservedAdminEmail(cleanEmail)) {
-    const err = new Error("An account with this email already exists.");
-    err.statusCode = 403;
+    const err = new Error(SIGNUP_DUPLICATE_MESSAGE);
+    err.statusCode = 409;
     throw err;
   }
 
-  // Check email and phone together so we can give a precise error message,
-  // and so that "same email + same phone" always resolves to a single
-  // account no matter which field a future login uses.
+  // Email or phone already used -> ONE neutral message (never says which).
   const existing = await User.findOne({
     $or: [{ email: cleanEmail }, { phone: cleanPhone }],
-  });
+  }).select("_id");
 
   if (existing) {
-    if (existing.email === cleanEmail) {
-      const err = new Error("An account with this email already exists.");
-      err.statusCode = 409;
-      throw err;
-    }
-
-    const err = new Error("An account with this phone number already exists.");
+    const err = new Error(SIGNUP_DUPLICATE_MESSAGE);
     err.statusCode = 409;
     throw err;
   }
@@ -815,16 +810,15 @@ export const googleCompleteSignup = async ({
       { googleId: claims.sub },
     ],
   }).select("email phone googleId");
+
   if (clash) {
-    const fe = {};
+    // Phone numbers are NOT proven by Google, so a phone clash gets the same
+    // neutral message as normal signup. (The email here is already proven by
+    // Google, so it is fine to tell its owner that the account exists.)
     if (clash.phone === cleanPhone) {
-      fe.phone = "An account with this phone number already exists.";
+      throw httpError(409, SIGNUP_DUPLICATE_MESSAGE);
     }
-    throw httpError(
-      409,
-      fe.phone || "An account with this email already exists.",
-      Object.keys(fe).length ? { fieldErrors: fe } : {},
-    );
+    throw httpError(409, "An account with this email already exists.");
   }
 
   try {
@@ -848,15 +842,8 @@ export const googleCompleteSignup = async ({
       throw httpError(
         409,
         isPhone
-          ? "An account with this phone number already exists."
+          ? SIGNUP_DUPLICATE_MESSAGE
           : "An account with this email already exists.",
-        isPhone
-          ? {
-              fieldErrors: {
-                phone: "An account with this phone number already exists.",
-              },
-            }
-          : {},
       );
     }
     throw error;
