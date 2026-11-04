@@ -6,9 +6,19 @@ import { usePathname } from "next/navigation";
 import "./diwali.css";
 import { DIWALI, isDiwaliLive } from "./diwaliConfig";
 import { DiwaliFonts, Diya, Toran, Lantern } from "./DiwaliArt";
+import DiwaliAnar from "./DiwaliAnar";
+import DiyaLamp from "./DiyaLamp";
 
-/* Rising golden embers — drawn from one pre-rendered glow sprite, so it stays
-   smooth even on mobile. Stops completely when the popup closes. */
+/* Rising golden embers + crackers (rockets that burst, and two "anaar"
+   fountains at the bottom corners). Everything is drawn on one canvas, so it
+   stays smooth even on mobile. Stops completely when the popup closes. */
+const FW_COLORS = [
+  "255,211,107", // gold
+  "255,154,46", // saffron
+  "255,110,140", // pink
+  "255,244,214", // cream
+  "240,80,100", // ruby
+];
 function useEmbers(canvasRef, active) {
   useEffect(() => {
     if (!active) return;
@@ -25,6 +35,9 @@ function useEmbers(canvasRef, active) {
       raf = 0,
       last = 0,
       parts = [];
+    let rockets = [],
+      sparks = [],
+      launchIn = 0.5;
 
     const S = 64;
     const sprite = document.createElement("canvas");
@@ -61,6 +74,119 @@ function useEmbers(canvasRef, active) {
       parts = Array.from({ length: n }, () => spawn(true));
     };
 
+    const pick = () => FW_COLORS[(Math.random() * FW_COLORS.length) | 0];
+    const scale = () => Math.max(0.6, Math.min(1.25, w / 1200));
+
+    const launch = () => {
+      const k = scale();
+      const targetY = h * (0.12 + Math.random() * 0.36);
+      const g = 520 * k;
+      rockets.push({
+        x: w * (0.1 + Math.random() * 0.8),
+        y: h + 8,
+        vx: (Math.random() - 0.5) * 40,
+        vy: -Math.sqrt(2 * g * (h - targetY)),
+        g,
+      });
+    };
+
+    const burst = (x, y) => {
+      const k = scale();
+      const main = pick();
+      const second = Math.random() < 0.5 ? pick() : "255,244,214";
+      const n = 46 + ((Math.random() * 26) | 0);
+      for (let i = 0; i < n; i++) {
+        const a = (Math.PI * 2 * i) / n + Math.random() * 0.12;
+        const sp = (70 + Math.random() * 150) * k;
+        sparks.push({
+          x,
+          y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp,
+          g: 120,
+          drag: 1.5,
+          life: 0,
+          max: 1.1 + Math.random() * 0.8,
+          c: i % 3 === 0 ? second : main,
+          w: 2,
+        });
+      }
+    };
+
+    const fountain = (x, dir, dt) => {
+      const k = scale();
+      const count = Math.max(1, Math.round(dt * 90));
+      for (let i = 0; i < count; i++) {
+        sparks.push({
+          x: x + (Math.random() - 0.5) * 8,
+          y: h - 4,
+          vx:
+            (dir * (20 + Math.random() * 60) + (Math.random() - 0.5) * 70) * k,
+          vy: -(300 + Math.random() * 260) * k,
+          g: 560 * k,
+          drag: 0.2,
+          life: 0,
+          max: 0.9 + Math.random() * 0.8,
+          c: Math.random() < 0.55 ? "255,211,107" : "255,154,46",
+          w: 1.8,
+        });
+      }
+      if (sparks.length > 900) sparks.splice(0, sparks.length - 900);
+    };
+
+    const crackers = (dt) => {
+      launchIn -= dt;
+      if (launchIn <= 0) {
+        launch();
+        if (Math.random() < 0.35) launch();
+        launchIn = 0.9 + Math.random() * 1.3;
+      }
+      fountain(w * 0.07, 1, dt);
+      fountain(w * 0.93, -1, dt);
+
+      for (let i = rockets.length - 1; i >= 0; i--) {
+        const r = rockets[i];
+        r.vy += r.g * dt;
+        r.x += r.vx * dt;
+        r.y += r.vy * dt;
+        // short glowing trail
+        ctx.globalAlpha = 0.9;
+        ctx.strokeStyle = "rgba(255,226,150,1)";
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(r.x - r.vx * 0.05, r.y - r.vy * 0.05);
+        ctx.lineTo(r.x, r.y);
+        ctx.stroke();
+        if (r.vy >= -30) {
+          burst(r.x, r.y);
+          rockets.splice(i, 1);
+        }
+      }
+
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const p = sparks[i];
+        p.life += dt;
+        if (p.life >= p.max) {
+          sparks.splice(i, 1);
+          continue;
+        }
+        p.vx *= 1 - p.drag * dt;
+        p.vy = p.vy * (1 - p.drag * dt) + p.g * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        const a = 1 - p.life / p.max;
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = `rgba(${p.c},1)`;
+        ctx.lineWidth = p.w * (0.6 + 0.4 * a);
+        ctx.beginPath();
+        ctx.moveTo(p.x - p.vx * 0.035, p.y - p.vy * 0.035);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    };
+
     const render = (t) => {
       const dt = Math.min((t - (last || t)) / 1000, 0.05);
       last = t;
@@ -77,6 +203,7 @@ function useEmbers(canvasRef, active) {
         if (p.y < -20) Object.assign(p, spawn(false));
       }
       ctx.globalAlpha = 1;
+      if (!reduce) crackers(dt);
     };
 
     const loop = (t) => {
@@ -214,6 +341,7 @@ export default function DiwaliGreeting() {
 
       <div className="dw-ov-decor" aria-hidden="true">
         <canvas ref={canvasRef} />
+        <DiwaliAnar />
         <Toran className="dw-ov-toran" height={96} />
         <div className="dw-ov-lantern dw-ov-lantern--a">
           <div className="dw-sway">
@@ -261,7 +389,7 @@ export default function DiwaliGreeting() {
 
       <div className="dw-ov-scroll">
         <div className="dw-ov-content">
-          <Diya className="dw-ov-diya dw-rise" style={{ "--d": ".1s" }} />
+          <DiyaLamp className="dw-ov-diya dw-rise" style={{ "--d": ".15s" }} />{" "}
           <p className="dw-ov-eyebrow dw-rise" style={{ "--d": ".25s" }}>
             SANWARIYAS · Jaipur
           </p>

@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import "./diwali.css";
 import { DIWALI, isDiwaliLive } from "./diwaliConfig";
-import { DiwaliFonts, Diya, Toran, Lantern } from "./DiwaliArt";
+import { DiwaliFonts, Toran, Lantern } from "./DiwaliArt";
+import DiyaCluster from "./DiyaCluster";
 
 /* fixed (not random) values => identical on server & client, no hydration warning */
 const SPARKS = Array.from({ length: 24 }, (_, i) => ({
@@ -74,6 +75,10 @@ export default function DiwaliBanner() {
           pad(total % 60),
         ];
   const done = left === 0;
+  const hasCtas = Boolean(
+    (DIWALI.primaryCta?.label && DIWALI.primaryCta?.href) ||
+    (DIWALI.secondaryCta?.label && DIWALI.secondaryCta?.href),
+  );
 
   return (
     <section
@@ -147,19 +152,26 @@ export default function DiwaliBanner() {
             </>
           )}
 
-          <div className="dw-banner-ctas dw-rise" style={{ "--d": ".68s" }}>
-            <Link href={DIWALI.primaryCta.href} className="dw-btn dw-btn--gold">
-              {DIWALI.primaryCta.label}
-            </Link>
-            {DIWALI.secondaryCta?.label && DIWALI.secondaryCta?.href && (
-              <Link
-                href={DIWALI.secondaryCta.href}
-                className="dw-btn dw-btn--ghost"
-              >
-                {DIWALI.secondaryCta.label}
-              </Link>
-            )}
-          </div>
+          {hasCtas && (
+            <div className="dw-banner-ctas dw-rise" style={{ "--d": ".68s" }}>
+              {DIWALI.primaryCta?.label && DIWALI.primaryCta?.href && (
+                <Link
+                  href={DIWALI.primaryCta.href}
+                  className="dw-btn dw-btn--gold"
+                >
+                  {DIWALI.primaryCta.label}
+                </Link>
+              )}
+              {DIWALI.secondaryCta?.label && DIWALI.secondaryCta?.href && (
+                <Link
+                  href={DIWALI.secondaryCta.href}
+                  className="dw-btn dw-btn--ghost"
+                >
+                  {DIWALI.secondaryCta.label}
+                </Link>
+              )}
+            </div>
+          )}
         </div>
 
         {/* one diya, soft static glow — nothing rotating */}
@@ -169,7 +181,7 @@ export default function DiwaliBanner() {
           aria-hidden="true"
         >
           <div className="dw-stage-core">
-            <Diya className="dw-stage-diya" />
+            <DiyaCluster />
           </div>
         </div>
       </div>

@@ -46,7 +46,13 @@ export const parseInternationalNumber = (raw = "") => {
 
   // Just "+" or "00" typed so far — wait for more digits.
   if (!digits) {
-    return { dial: "", local: "", countries: [], ambiguous: false, pending: true };
+    return {
+      dial: "",
+      local: "",
+      countries: [],
+      ambiguous: false,
+      pending: true,
+    };
   }
 
   // Find the longest known dial code that matches the start of `digits`.
@@ -62,7 +68,13 @@ export const parseInternationalNumber = (raw = "") => {
     // Could still be a prefix of a valid dial code (e.g. user typed "+9" on the way to "+91").
     const couldBecomeDial = SORTED_DIALS_DESC.some((d) => d.startsWith(digits));
     if (couldBecomeDial && digits.length < 4) {
-      return { dial: "", local: "", countries: [], ambiguous: false, pending: true };
+      return {
+        dial: "",
+        local: "",
+        countries: [],
+        ambiguous: false,
+        pending: true,
+      };
     }
     return null;
   }
@@ -81,7 +93,8 @@ export const parseInternationalNumber = (raw = "") => {
   );
 
   const pending =
-    local.length === 0 || (longerDialPossible && !hasExplicitSeparator && digits.length < 4);
+    local.length === 0 ||
+    (longerDialPossible && !hasExplicitSeparator && digits.length < 4);
 
   return {
     dial: matchedDial,
@@ -100,7 +113,7 @@ export const PHONE_RULES = {
     min: 10,
     max: 10,
     start: /^[6-9]/,
-    hint: "10-digit Indian mobile number (starts with 6-9)",
+    hint: "10-digit Indian mobile number",
   },
   1: {
     min: 10,
@@ -314,7 +327,9 @@ export const validateCountry = (country) => {
 // Ensures the selected Country actually owns the selected phone dial code
 // (e.g. blocks Country = "India" with dial code "+60").
 export const validateCountryMatchesDial = (country, dial) => {
-  const c = String(country || "").trim().toLowerCase();
+  const c = String(country || "")
+    .trim()
+    .toLowerCase();
   const d = String(dial || "").replace(/\D/g, "");
   if (!c || !d) return "";
 

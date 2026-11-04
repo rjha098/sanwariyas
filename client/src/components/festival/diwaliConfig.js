@@ -24,12 +24,12 @@ export const DIWALI = {
   overlayWish:
     "May the light of this Diwali fill your home with joy, your business with prosperity, and every dream you carry with a bright new beginning.",
   overlaySign: "With gratitude · The SANWARIYAS Family, Jaipur",
-  countdownLabel: "Countdown to Lakshmi Puja",
+  countdownLabel: "Countdown",
   doneLine: "Today we light the lamps — Happy Diwali!",
 
   // ── Buttons ──────────────────────────────────────────────────────────
-  primaryCta: { label: "Explore Festive Catalogues", href: "/lookbook" },
-  secondaryCta: { label: "Send Wholesale Inquiry", href: "/contact" },
+  primaryCta: { label: "", href: "" }, // empty = button hidden
+  secondaryCta: { label: "", href: "" }, // empty = button hidden
 
   // ── Full-screen greeting popup ───────────────────────────────────────
   // It is rendered together with the first page HTML, so it appears the
