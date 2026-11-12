@@ -827,3 +827,44 @@ html:has(.admin-wrapper.dark) ::-webkit-scrollbar-track { background: var(--ad-s
 }
 .clog-del:hover:not(:disabled) { opacity: 1; border-color: var(--cl-due-border); background: var(--cl-due-bg); }
 .clog-del:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY SYSTEM (public website)
+   Three families only:  Playfair Display (headings / display),
+   Cormorant Garamond (editorial accents), Jost (body, buttons, navigation).
+   Heavy weights (bold / extra-bold / black, inline 700-900) are softened to
+   600 and semibold to 500 so the site keeps an elegant, light feel.
+   The admin panel (.admin-wrapper) is left untouched.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-accent: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-jost), system-ui, sans-serif;
+}
+
+.font-cormorant { font-family: var(--font-accent); }
+
+body:not(:has(.admin-wrapper)) :is(strong, b, th) { font-weight: 600; }
+body:not(:has(.admin-wrapper)) :is(.font-black, .font-extrabold, .font-bold) { font-weight: 600; }
+body:not(:has(.admin-wrapper)) .font-semibold { font-weight: 500; }
+body:not(:has(.admin-wrapper)) [style*="font-weight:700"],
+body:not(:has(.admin-wrapper)) [style*="font-weight:800"],
+body:not(:has(.admin-wrapper)) [style*="font-weight:900"],
+body:not(:has(.admin-wrapper)) [style*="font-weight: 700"],
+body:not(:has(.admin-wrapper)) [style*="font-weight: 800"],
+body:not(:has(.admin-wrapper)) [style*="font-weight: 900"] {
+  font-weight: 600 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CAROUSEL / SLIDER NAVIGATION BUTTONS — visible keyboard focus
+   Covers every "Previous …" / "Next …" button (hero, reels, trust badges,
+   lookbook pager and lookbook modal). Shows only for keyboard focus.
+   ═══════════════════════════════════════════════════════════════════════ */
+button[aria-label^="Previous"]:focus-visible,
+button[aria-label^="Next"]:focus-visible {
+  outline: 3px solid #7A3D2A !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 3px #ffffff !important;
+}

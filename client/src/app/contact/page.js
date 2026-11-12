@@ -1175,6 +1175,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import Toast from "@/components/ui/Toast";
+import FieldError from "@/components/ui/FieldError";
+import QuantityInput, { getQuantityError } from "@/components/ui/QuantityInput";
 import PhoneInput from "@/components/ui/PhoneInput";
 import CountrySelect from "@/components/ui/CountrySelect";
 import {
@@ -1277,29 +1279,6 @@ const contactItems = [
   },
 ];
 
-// ── Custom field error message ─────────────────────────────────────────────────
-function FieldError({ message }) {
-  if (!message) return null;
-  return (
-    <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200/70">
-      <svg
-        viewBox="0 0 16 16"
-        fill="none"
-        className="w-3.5 h-3.5 flex-shrink-0 text-red-500"
-      >
-        <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
-        <path
-          d="M8 5v3.5M8 11v.5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-      <p className="font-sans text-xs text-red-600">{message}</p>
-    </div>
-  );
-}
-
 // ── Styled input wrapper — shows red/green border on validation ───────────────
 function StyledInput({
   id,
@@ -1335,6 +1314,7 @@ function StyledInput({
       readOnly={readOnly}
       placeholder={placeholder}
       min={min}
+      aria-invalid={error ? "true" : undefined}
       className={`w-full px-4 py-3 border text-sm text-[#7A3D2A] focus:outline-none transition-colors duration-200 ${borderCls} ${readOnly ? "cursor-not-allowed opacity-70" : ""} ${className}`}
       {...rest}
     />
@@ -1688,10 +1668,11 @@ function ContactPageContent() {
       error = "Please describe your requirements.";
     }
     if (name === "quantity") {
-      const num = parseInt(value);
-      if (value && (isNaN(num) || num < 10)) {
-        error = "Minimum order quantity is 10 pieces (2 Sets).";
-      }
+      error = getQuantityError(
+        value,
+        10,
+        "Minimum order quantity is 10 pieces (2 Sets).",
+      );
     }
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
     return error;
@@ -1712,11 +1693,12 @@ function ContactPageContent() {
 
     if (!formData.message.trim())
       errors.message = "Please describe your requirements.";
-    if (formData.quantity) {
-      const num = parseInt(formData.quantity);
-      if (isNaN(num) || num < 10)
-        errors.quantity = "Minimum order quantity is 10 pieces (2 Sets).";
-    }
+    const quantityErr = getQuantityError(
+      formData.quantity,
+      10,
+      "Minimum order quantity is 10 pieces (2 Sets).",
+    );
+    if (quantityErr) errors.quantity = quantityErr;
 
     const whatsappErr = getPhoneError(phoneParts);
     if (whatsappErr) errors.whatsapp = whatsappErr;
@@ -1744,21 +1726,22 @@ function ContactPageContent() {
     e.preventDefault();
     setShowLoginPrompt(false);
 
-    // Run custom validation first and show Toast if invalid
+    // Field-level errors are shown inline next to each field (no toast).
     if (!validateAll()) {
-      // Scroll to first error
-      formTopRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-
-      // Toast message for empty or invalid inputs
-      setToastConfig({
-        isVisible: true,
-        type: "error",
-        message:
-          "Please check your form inputs. Some fields are empty or invalid.",
-      });
+      closeToast();
+      setTimeout(() => {
+        const firstInvalid = document.querySelector(
+          'form [aria-invalid="true"]',
+        );
+        if (firstInvalid) {
+          firstInvalid.focus();
+        } else {
+          formTopRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 0);
       return; // Stop form submission
     }
 
@@ -2090,6 +2073,9 @@ function ContactPageContent() {
                     onBlur={handleBlur}
                     required
                     readOnly={isAuthenticated && !!user?.name} // FREEZE FIX
+                    aria-describedby={
+                      fieldErrors.name ? "error-name" : undefined
+                    }
                     error={!!fieldErrors.name}
                     success={
                       touchedFields.name &&
@@ -2097,7 +2083,7 @@ function ContactPageContent() {
                       formData.name.trim()
                     }
                   />
-                  <FieldError message={fieldErrors.name} />
+                  <FieldError id="error-name" message={fieldErrors.name} />
                 </div>
 
                 {/* Email */}
@@ -2117,6 +2103,9 @@ function ContactPageContent() {
                     onBlur={handleBlur}
                     required
                     readOnly={isAuthenticated}
+                    aria-describedby={
+                      fieldErrors.email ? "error-email" : undefined
+                    }
                     error={!!fieldErrors.email}
                     success={
                       touchedFields.email &&
@@ -2130,7 +2119,7 @@ function ContactPageContent() {
                       in your dashboard.
                     </p>
                   )}
-                  <FieldError message={fieldErrors.email} />
+                  <FieldError id="error-email" message={fieldErrors.email} />
                 </div>
 
                 {/* WhatsApp + Country */}
@@ -2190,8 +2179,14 @@ function ContactPageContent() {
                   </div>
                   {(fieldErrors.whatsapp || fieldErrors.country) && (
                     <div className="md:col-span-2 -mt-4">
-                      <FieldError message={fieldErrors.whatsapp} />
-                      <FieldError message={fieldErrors.country} />
+                      <FieldError
+                        id="error-whatsapp"
+                        message={fieldErrors.whatsapp}
+                      />
+                      <FieldError
+                        id="error-country"
+                        message={fieldErrors.country}
+                      />
                     </div>
                   )}
                 </div>
@@ -2246,12 +2241,12 @@ function ContactPageContent() {
                     onChange={handleChange}
                     maxLength={80}
                     placeholder="e.g. Rajasthan"
+                    error={!!fieldErrors.state}
+                    aria-describedby={
+                      fieldErrors.state ? "error-state" : undefined
+                    }
                   />
-                  {fieldErrors.state && (
-                    <p role="alert" className="mt-1 text-xs text-red-600">
-                      {fieldErrors.state}
-                    </p>
-                  )}
+                  <FieldError id="error-state" message={fieldErrors.state} />
                 </div>
 
                 {/* Quantity — custom validation, no browser tooltip */}
@@ -2265,29 +2260,30 @@ function ContactPageContent() {
                       (Min. 10 Pieces / 2 Sets)
                     </span>
                   </label>
-                  <div className="relative">
-                    <StyledInput
-                      id="quantity"
-                      name="quantity"
-                      type="number"
-                      value={formData.quantity}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder="e.g. 100"
-                      error={!!fieldErrors.quantity}
-                      success={
+                  <QuantityInput
+                    id="quantity"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    min={10}
+                    error={!!fieldErrors.quantity}
+                    errorId={
+                      fieldErrors.quantity ? "error-quantity" : undefined
+                    }
+                    success={
+                      !!(
                         touchedFields.quantity &&
                         !fieldErrors.quantity &&
                         formData.quantity &&
-                        parseInt(formData.quantity) >= 10
-                      }
-                    />
-                    {/* Suffix label */}
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 font-sans text-[11px] text-[#a07f61] pointer-events-none">
-                      pcs
-                    </span>
-                  </div>
-                  <FieldError message={fieldErrors.quantity} />
+                        parseInt(formData.quantity, 10) >= 10
+                      )
+                    }
+                  />
+                  <FieldError
+                    id="error-quantity"
+                    message={fieldErrors.quantity}
+                  />
                   {!fieldErrors.quantity && (
                     <p className="font-sans text-[11px] text-[#a07f61] mt-1.5">
                       Minimum wholesale order is 10 Pieces (2 Sets).{" "}
@@ -2310,6 +2306,10 @@ function ContactPageContent() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     required
+                    aria-invalid={fieldErrors.message ? "true" : undefined}
+                    aria-describedby={
+                      fieldErrors.message ? "error-message" : undefined
+                    }
                     rows={5}
                     className={`w-full px-4 py-3 border text-sm text-[#7A3D2A] focus:outline-none transition-colors duration-200 resize-none ${
                       fieldErrors.message
@@ -2320,7 +2320,10 @@ function ContactPageContent() {
                     }`}
                     placeholder="Describe your requirements, preferred fabrics, delivery timeline, etc."
                   />
-                  <FieldError message={fieldErrors.message} />
+                  <FieldError
+                    id="error-message"
+                    message={fieldErrors.message}
+                  />
                 </div>
 
                 {/* Product sample images — optional */}
